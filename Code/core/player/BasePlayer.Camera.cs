@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.Marshalling;
 using Sandbox.Engine.Settings;
 namespace Core;
 
@@ -6,7 +7,7 @@ public partial class BasePlayer
 {
 	// default_fov is goldsrc and regular source up to OB, where it was superceeded by fov (default_fov still exists but its a bit of a longer story)
 	// it still exists to this day, which can be found here in sbox, not letting me override it :(
-	public float DefaultFOV => GameSettings.FieldOfView;
+	public virtual float DefaultFOV => GameSettings.FieldOfView;
 
 	[ConVar( "cl_showpos" ), Description( "Show player position and rotation debug." )] public static bool ShowPos { get; set; } = false;
 	[ConVar( "cl_showcrouch" ), Description( "Show player crouch debug." )] public static bool ShowCrouchDebug { get; set; } = false;

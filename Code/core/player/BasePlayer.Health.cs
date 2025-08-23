@@ -14,15 +14,7 @@ public partial class BasePlayer
 	/// <summary>
 	/// Does the player have suit on
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public virtual bool HasSuit { get; set; } = false;
-	/// <summary>
-	/// give the suit straight up
-	/// </summary>
-	[ConCmd( "givesuit" )] private static void GiveSuit() { Local.HasSuit = true; }
-	/// <summary>
-	/// Remove the suit straight up
-	/// </summary>
-	[ConCmd( "removesuit" )] private static void RemoveSuit() { Local.HasSuit = false; }
+	[Property, ReadOnly, Feature( "Debug" )] public virtual bool HasSuit { get; protected set; } = false;
 	/// <summary>
 	/// Are we alive or are we dead, or a secret third thing
 	/// </summary>
@@ -225,7 +217,6 @@ public partial class BasePlayer
 		Controller.EnableSwimming = false;
 		Controller.EnableUse = false;
 		Controller.EnableLadders = false;
-
 	}
 
 	/// <summary>
@@ -248,6 +239,17 @@ public partial class BasePlayer
 		Controller.EnableSwimming = true;
 		Controller.EnableUse = true;
 		Controller.EnableLadders = true;
+	}
 
+	public void PickupSuit()
+	{
+		Local.HasSuit = true;
+		Log.Info( "Suit was picked up!" );
+	}
+
+	public void DropSuit()
+	{
+		Local.HasSuit = false;
+		Log.Info( "Suit was dropped!" );
 	}
 }

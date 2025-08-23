@@ -267,7 +267,7 @@ public partial class BasePlayer
 
 	private void UpdateSwayOffset()
 	{
-		Vector3 targetSway = new Vector3(
+		Vector3 targetSway = new(
 			-ViewYawInertia * SwayIntensity,
 			ViewPitchInertia * SwayIntensity
 		);
@@ -751,16 +751,16 @@ public partial class BasePlayer
 		if ( ViewmodelWeapon.Model != null )
 		{
 			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_forward", Local.GetEyeForward() );
+			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
 			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_fov", Local.Controller.Camera.FieldOfView );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", Local.GetEyePos() );
+			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", GetEyePos() );
 
 			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_fov", ViewmodelFOV );
 
 			ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", Local.GetEyeForward() );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
 			ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", Local.Controller.Camera.FieldOfView );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", Local.GetEyePos() );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", GetEyePos() );
 
 			ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", ViewmodelFOV );
 		}
