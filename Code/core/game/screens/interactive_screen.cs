@@ -15,7 +15,7 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 {
 	protected override string GetEditorVis() { return null; }
 
-	[DebugExpose,Property, Header( "Screen" ), MakeDirty] public InteractPanel Screen { get; set; }
+	[DebugExpose, Property, Header( "Screen" ), MakeDirty] public InteractPanel Screen { get; set; }
 
 	private float _renderScale = 1f;
 	private Vector2 _screenSize = new Vector2( 1024, 768 );

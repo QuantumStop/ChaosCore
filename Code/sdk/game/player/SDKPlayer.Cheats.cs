@@ -4,7 +4,7 @@ namespace SDK;
 
 public partial class Player
 {
-	[ConCmd("ch_createbattery", ConVarFlags.Cheat)]
+	[ConCmd( "ch_createbattery", ConVarFlags.Cheat )]
 	static private void CreateBattery()
 	{
 		CreateEntity( "item_battery" );

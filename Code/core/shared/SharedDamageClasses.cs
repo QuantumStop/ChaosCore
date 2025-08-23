@@ -217,43 +217,43 @@ public class TakeDamageController : Component
 
 public class DamageTagSet : TagSet
 {
-    [Description("Get all default tags for damage types.")]
-    public override IEnumerable<string> GetSuggested()
-    {
-        // Return the predefined static damage tags
-        return new[]
-        {
-            DamageTypes.DMG_GENERIC,
-            DamageTypes.DMG_CRUSH,
-            DamageTypes.DMG_BULLET,
-            DamageTypes.DMG_SLASH,
-            DamageTypes.DMG_BURN,
-            DamageTypes.DMG_VEHICLE,
-            DamageTypes.DMG_FALL,
-            DamageTypes.DMG_CLUB,
-            DamageTypes.DMG_SHOCK,
-            DamageTypes.DMG_SONIC,
-            DamageTypes.DMG_ENERGYBEAM,
-            DamageTypes.DMG_PREVENT_PHYSICS_FORCE,
-            DamageTypes.DMG_NEVERGIB,
-            DamageTypes.DMG_ALWAYSGIB,
-            DamageTypes.DMG_DROWN,
-            DamageTypes.DMG_PARALYZE,
-            DamageTypes.DMG_NERVEGAS,
-            DamageTypes.DMG_POISON,
-            DamageTypes.DMG_RADIATION,
-            DamageTypes.DMG_DROWNRECOVER,
-            DamageTypes.DMG_ACID,
-            DamageTypes.DMG_SLOWBURN,
-            DamageTypes.DMG_REMOVENORAGDOLL,
-            DamageTypes.DMG_PHYSGUN,
-            DamageTypes.DMG_PLASMA,
-            DamageTypes.DMG_AIRBOAT,
-            DamageTypes.DMG_DISSOLVE,
-            DamageTypes.DMG_BLAST_SURFACE,
-            DamageTypes.DMG_DIRECT,
-            DamageTypes.DMG_BUCKSHOT,
-            DamageTypes.DMG_BLAST
-        };
-    }
+	[Description( "Get all default tags for damage types." )]
+	public override IEnumerable<string> GetSuggested()
+	{
+		// Return the predefined static damage tags
+		return new[]
+		{
+			DamageTypes.DMG_GENERIC,
+			DamageTypes.DMG_CRUSH,
+			DamageTypes.DMG_BULLET,
+			DamageTypes.DMG_SLASH,
+			DamageTypes.DMG_BURN,
+			DamageTypes.DMG_VEHICLE,
+			DamageTypes.DMG_FALL,
+			DamageTypes.DMG_CLUB,
+			DamageTypes.DMG_SHOCK,
+			DamageTypes.DMG_SONIC,
+			DamageTypes.DMG_ENERGYBEAM,
+			DamageTypes.DMG_PREVENT_PHYSICS_FORCE,
+			DamageTypes.DMG_NEVERGIB,
+			DamageTypes.DMG_ALWAYSGIB,
+			DamageTypes.DMG_DROWN,
+			DamageTypes.DMG_PARALYZE,
+			DamageTypes.DMG_NERVEGAS,
+			DamageTypes.DMG_POISON,
+			DamageTypes.DMG_RADIATION,
+			DamageTypes.DMG_DROWNRECOVER,
+			DamageTypes.DMG_ACID,
+			DamageTypes.DMG_SLOWBURN,
+			DamageTypes.DMG_REMOVENORAGDOLL,
+			DamageTypes.DMG_PHYSGUN,
+			DamageTypes.DMG_PLASMA,
+			DamageTypes.DMG_AIRBOAT,
+			DamageTypes.DMG_DISSOLVE,
+			DamageTypes.DMG_BLAST_SURFACE,
+			DamageTypes.DMG_DIRECT,
+			DamageTypes.DMG_BUCKSHOT,
+			DamageTypes.DMG_BLAST
+		};
+	}
 }

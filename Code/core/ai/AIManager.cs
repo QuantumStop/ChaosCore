@@ -6,8 +6,8 @@ public class AIManager : GameObjectSystem
 {
 	public AIManager( Scene scene ) : base( scene )
 	{
-		if (Game.IsPlaying)
-		Start();
+		if ( Game.IsPlaying )
+			Start();
 	}
 
 	public int sceneAICount { get; set; }
@@ -30,8 +30,8 @@ public class AIManager : GameObjectSystem
 		Log.Info( $"AIManager::AddAI() {NPC.TargetName} added to manager." );
 
 		sceneAICount++;
-		currentNPCsInScene.Add(NPC);
-		
+		currentNPCsInScene.Add( NPC );
+
 	}
 
 	public void RemoveAI( BaseNpc NPC )
@@ -59,7 +59,7 @@ public class AIThinkScheduler : GameObjectSystem
 
 	public AIThinkScheduler( Scene scene ) : base( scene )
 	{
-		
+
 	}
 
 	private static int spawnedThisFrame = 0;

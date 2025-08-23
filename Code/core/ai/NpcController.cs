@@ -37,20 +37,20 @@ public class NpcController : BaseEntity
 	[Property, Feature( "Debug" )] public bool enableNavDebug { get; private set; }
 
 	private GameObject systems;
-	
+
 	protected override string GetEditorVis()
 	{
 		// Gets the first model from the NPC definition, as rendering several models in gizmo isn't ideal
-	    // Then return the model path, fallback model if no model is present
-		string modelVis = Definition?.Models?.First().ResourcePath; 
-      
-		return modelVis ?? "models/humans/basemesh_male.vmdl"; 
+		// Then return the model path, fallback model if no model is present
+		string modelVis = Definition?.Models?.First().ResourcePath;
+
+		return modelVis ?? "models/humans/basemesh_male.vmdl";
 	}
 
 	protected override void EntityDefaultGizmo( string editorVis, bool isModel )
 	{
 		Gizmo.Draw.Color = Color.White;
-		var editorvis    = GetEditorVis();
+		var editorvis = GetEditorVis();
 
 		if ( editorvis == null )
 			return;
@@ -136,7 +136,7 @@ public class NpcController : BaseEntity
 			Brain.idealState = AIState.SCRIPTED;
 			shouldFollowMoveToTarget = true;
 
-		//	BaseNPC._currentPathCorner = MoveToTarget.pathPoints[0];
+			//	BaseNPC._currentPathCorner = MoveToTarget.pathPoints[0];
 			//BaseNPC._currentPathCorner.currentUser = BaseNPC;
 
 			Brain.StartSchedule( AISchedules.SCHED_SCRIPTED_MOVE );

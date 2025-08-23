@@ -43,10 +43,10 @@ public class KelvinPointLight : PointLight
 	
 	private float energy_omni() { return 4 * MathF.PI; }
 	private float ResultBrightness => Brightness / energy_omni();
-	#else
+#else
 	[Property, Range( 0, 15 ), MakeDirty, Title( "Brightness" ), Header( "Brightness" )] public float Brightness { get; set; } = 1;
 	private float ResultBrightness => Brightness;
-	#endif
+#endif
 
 	public void Refresh()
 	{

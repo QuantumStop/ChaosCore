@@ -46,24 +46,24 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool isDebug = false;
 
 	[HideIf( "isDebug", false )][Property, Feature( "Debug" ), Title( "Show Trigger Items List" )] public bool b_ShowTriggerItems { get; set; } = false;
-	[DebugExpose] [HideIf( "b_ShowTriggerItems", false )][ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems;
+	[DebugExpose][HideIf( "b_ShowTriggerItems", false )][ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems;
 
 	/// <summary>
 	/// The entity specifying the point to which entities should be teleported. Usually either a info_teleport_destination or info_target.
 	/// </summary>
-	[DebugExpose ( DisplayMember = "TargetName" )] [Property] public BaseEntity RemoteDestination { get; set; }
+	[DebugExpose( DisplayMember = "TargetName" )][Property] public BaseEntity RemoteDestination { get; set; }
 
 	/// <summary>
 	/// If specified, then teleported entities are offset from the target by their initial offset from the landmark.
 	/// </summary>
-	[DebugExpose ( DisplayMember = "TargetName" )] [Property] public BaseEntity LocalDestinationLandmark { get; set; }
+	[DebugExpose( DisplayMember = "TargetName" )][Property] public BaseEntity LocalDestinationLandmark { get; set; }
 
 	/// <summary>
 	/// If selected will rotate the teleported entities to match the rotation of the target.
 	/// </summary>
-	[DebugExpose,Title( "Rotation Offset" )] [Property] public bool b_RotationOffset { get; set; }
+	[DebugExpose, Title( "Rotation Offset" )][Property] public bool b_RotationOffset { get; set; }
 
-	[Property, MakeDirty] private bool isEnabled  { get; set; }
+	[Property, MakeDirty] private bool isEnabled { get; set; }
 
 
 	protected override void OnStart()
@@ -97,14 +97,14 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 			return;
 		}
 
-		if ( inTriggerItems == null && isDebug || inTriggerItems.Count == 0  && isDebug )
+		if ( inTriggerItems == null && isDebug || inTriggerItems.Count == 0 && isDebug )
 		{
 			Log.Warning( "trigger_teleport: No items in trigger to teleport!" );
 			return;
 		}
 
 		foreach ( var item in inTriggerItems )
-		{ 
+		{
 			if ( item == null ) continue;
 
 			item.WorldPosition = RemoteDestination.WorldPosition;

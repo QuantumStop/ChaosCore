@@ -82,7 +82,7 @@ public class ui_text : BaseEntity
 	/// The scanning color for the letter being scanned if the Text Effect keyvalue is set to Scan Out—usually a different shade of primary color.
 	/// </summary>	
 	[Property] public Color ScanColorFX { get; set; }
-	
+
 	/// <summary>
 	/// Z-Index order, can be used to layer things nicely! I.e: Need to have text be readable on top screen fade, or not.
 	/// </summary>

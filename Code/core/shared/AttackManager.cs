@@ -96,7 +96,7 @@ public class AttackManager
 															(-transform.Forward).LerpTo( -attack.Last.Normal, 0.8f ).Normal );
 
 				DebrisManager.StaticRef.CreateMuzzleflash( coreDamageInfo?.BaseCombatWeapon.WeaponData,
-														    attack.Last.EndPosition );
+															attack.Last.EndPosition );
 
 				DebrisManager.StaticRef.CreateBulletDecal( attack.Last.EndPosition,
 															transform.Forward.LerpTo( -attack.Last.Normal, 0.75f ).Normal,

@@ -36,7 +36,7 @@ public class KelvinDirectionalLight : DirectionalLight
 		OnDirty();
 	}
 #else
-[Property, Range( 0, 15 ), MakeDirty, Title( "Brightness" ), Header( "Brightness" )] public float Brightness { get; set; } = 1;
+	[Property, Range( 0, 15 ), MakeDirty, Title( "Brightness" ), Header( "Brightness" )] public float Brightness { get; set; } = 1;
 #endif
 	[Property, Hide, Space] new Color SkyColor { get; set; } = Color.Black.WithAlpha( 0 );
 

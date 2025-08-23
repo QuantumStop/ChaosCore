@@ -30,7 +30,7 @@ public class trigger_look : BaseTrigger
 	/// How close the player has to be looking at the target. 
 	/// 1.0 = straight ahead, 0.0 = ~90 degrees, -1.0 = all directions.
 	/// </summary>
-	[Property, Order( 3 ), Range(-1f, 1f)] public float FieldOfView { get; set; }
+	[Property, Order( 3 ), Range( -1f, 1f )] public float FieldOfView { get; set; }
 
 	/// <summary>
 	/// The time, in seconds, to wait after player enters the trigger 
@@ -39,18 +39,18 @@ public class trigger_look : BaseTrigger
 	/// </summary>
 	[Property, Order( 3 )] public float Timeout { get; set; }
 
-	
+
 	[ShowIf( "isDebug", true ), ReadOnly]
 	[Feature( "Debug" ), Title( "Player looking at:" ), Property] public GameObject PlayerLookTarget { get; set; }
 
 	public override bool IsTouchable => true;
 
 	public bool containsBasePlayer = false;
-	private bool hasBasePlayer     = false;
-    private bool hasTimedOut       = false;
-	private bool TriggerFired      = false;
+	private bool hasBasePlayer = false;
+	private bool hasTimedOut = false;
+	private bool TriggerFired = false;
 
-	private float elapsedLookTime      = 0f;
+	private float elapsedLookTime = 0f;
 	private float elapsedTimeInTrigger = 0f;
 
 
@@ -104,7 +104,7 @@ public class trigger_look : BaseTrigger
 		// Debug view update
 		if ( isDebug && hasBasePlayer && BasePlayer.Local?.LifeState == LifeState.Alive )
 		{
-			IsPlayerLookingAtTarget( LookTarget ); 
+			IsPlayerLookingAtTarget( LookTarget );
 		}
 	}
 
@@ -183,18 +183,18 @@ public class trigger_look : BaseTrigger
 
 	protected void StopTimeout()
 	{
-		if (Timeout <= 0)
+		if ( Timeout <= 0 )
 			return;
 
 		elapsedTimeInTrigger = 0f;
-		elapsedLookTime      = 0f;
+		elapsedLookTime = 0f;
 
-		if (!FireOnce)
-			TriggerFired     = false;
+		if ( !FireOnce )
+			TriggerFired = false;
 
-		hasTimedOut      = false;
+		hasTimedOut = false;
 	}
- 
+
 	private bool IsTimeOut()
 	{
 		if ( Timeout <= 0 || elapsedTimeInTrigger < Timeout || hasTimedOut )

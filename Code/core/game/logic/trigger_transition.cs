@@ -20,7 +20,7 @@ public class trigger_transition : BaseTrigger
 	{
 		base.OnTriggerIn();
 
-		foreach ( var items in trackedItems.Keys)
+		foreach ( var items in trackedItems.Keys )
 		{
 			items.Flags = GameObjectFlags.DontDestroyOnLoad;
 		}

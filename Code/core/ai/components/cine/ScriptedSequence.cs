@@ -59,7 +59,7 @@ public class ScriptedSequence : BaseEntity
 	TimeSince startTime;
 	int counter { get; set; } = -1;
 
-	
+
 	protected override void OnStart()
 	{
 		if ( StartActive )
@@ -71,7 +71,7 @@ public class ScriptedSequence : BaseEntity
 
 
 	protected override string GetEditorVis() { return TargetNPC?.EditorVis; }
-    private SceneObject previewModel;
+	private SceneObject previewModel;
 
 	protected override void EntityDefaultGizmo( string editorVis, bool isModel )
 	{
@@ -128,16 +128,17 @@ public class ScriptedSequence : BaseEntity
 
 	}
 
-	[Button] public void BeginScriptedSequence()
+	[Button]
+	public void BeginScriptedSequence()
 	{
-		if ( MoveToPosition < MovementOptions.DontMove)
+		if ( MoveToPosition < MovementOptions.DontMove )
 		{
 			TargetNPC.BaseNPC.shouldMoveToCine = true;
 			isWaitingForNPCMovement = true;
 		}
 
 		directPlayback = TargetNPC.BaseNPC.AGDirectPlayback;
-		
+
 		TargetNPC.Brain.idealState = NpcBrain.AIState.SCRIPTED;
 		TargetNPC.BaseNPC._Cine = this;
 		TargetNPC.BaseNPC.inCine = true;
@@ -148,14 +149,14 @@ public class ScriptedSequence : BaseEntity
 			RunEntry();
 			isActive = true;
 		}
-	
+
 
 		//	RunPostAction();
 
 	}
 
-    protected override void OnFixedUpdate()
-    {
+	protected override void OnFixedUpdate()
+	{
 		if ( isWaitingForNPCMovement && TargetNPC.BaseNPC.hasReachedCine )
 		{
 			isWaitingForNPCMovement = false;
@@ -172,11 +173,11 @@ public class ScriptedSequence : BaseEntity
 		}
 
 		base.OnFixedUpdate();
-    }
+	}
 
-    void KeepTrack()
+	void KeepTrack()
 	{
-	if ( isAnimPlaying )
+		if ( isAnimPlaying )
 		{
 			float elapsed = startTime;
 			float duration = directPlayback.Duration;
@@ -219,7 +220,7 @@ public class ScriptedSequence : BaseEntity
 		isActive = false;
 
 		if ( NextScript != null ) // if we have another script to do, get to it
-		NextScript.BeginScriptedSequence();
+			NextScript.BeginScriptedSequence();
 		else
 			TargetNPC.Brain.idealState = NpcBrain.AIState.IDLE;
 	}
@@ -230,7 +231,7 @@ public class ScriptedSequence : BaseEntity
 		directPlayback.StartTime = Time.Now;
 		startTime = 0;
 		isAnimPlaying = true;
-		directPlayback.Play(EntryAnimation);
+		directPlayback.Play( EntryAnimation );
 		counter = 0;
 	}
 

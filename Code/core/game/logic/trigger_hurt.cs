@@ -87,7 +87,7 @@ public class trigger_hurt : BaseTrigger
 	[HideIf( "isDebug", false )][Feature( "Debug" ), Title( "TimeSince last damaged: " ), Property] public bool b_RealTimer => isDebug && isRealTimer;
 
 	[DebugExpose]
-	[HideIf( "isDebug", false )][Feature("Debug"), Title("Last Damage Dealt:"), Property, ReadOnly] public float lastDamageValue = 0f;
+	[HideIf( "isDebug", false )][Feature( "Debug" ), Title( "Last Damage Dealt:" ), Property, ReadOnly] public float lastDamageValue = 0f;
 
 
 	[HideIf( "isDebug", false )][Feature( "Debug" ), Property, ReadOnly] public int Mintime;

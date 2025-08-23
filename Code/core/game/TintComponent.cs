@@ -42,22 +42,22 @@ public sealed class TintComponent : Component
 
 
 		if ( IsOnProp && Prop != null )
+		{
+			if ( Prop.WhichTints == GameProp.PropTintCount.OneTint )
 			{
-				if ( Prop.WhichTints == GameProp.PropTintCount.OneTint )
-				{
-					Prop.PropBatchableDebug = true;
-					SetBatchable( true );
-				}
-				else
-				{
-					Prop.PropBatchableDebug = false;
-					SetBatchable( false );
-				}
+				Prop.PropBatchableDebug = true;
+				SetBatchable( true );
 			}
 			else
 			{
+				Prop.PropBatchableDebug = false;
 				SetBatchable( false );
 			}
+		}
+		else
+		{
+			SetBatchable( false );
+		}
 
 		mdlrender.Tint = TintA;
 
@@ -71,7 +71,7 @@ public sealed class TintComponent : Component
 		if ( mdlrender?.SceneObject != null )
 			mdlrender.SceneObject.Batchable = value;
 		else
-			Log.Warning( $"[SetBatchable] Skipped setting Batchable — mdlrender or SceneObject was null." );	
+			Log.Warning( $"[SetBatchable] Skipped setting Batchable — mdlrender or SceneObject was null." );
 	}
 
 }

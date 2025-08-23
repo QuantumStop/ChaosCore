@@ -24,7 +24,7 @@ partial class GameProp
 
 	private string _materialGroup;
 
-	[Property, Order( 11 ), Header( "Rendering" ), Title("Skin")]
+	[Property, Order( 11 ), Header( "Rendering" ), Title( "Skin" )]
 	[Model.MaterialGroup]
 	[ShowIf( "HasMaterialGroups", true )]
 	public string MaterialGroup
@@ -42,8 +42,8 @@ partial class GameProp
 
 	protected bool HasMaterialGroups { get { return Model?.MaterialGroupCount > 0; } }
 
-	[Property, Order( 17 ), Title("Cast Shadows?")]
-	public ModelRenderer.ShadowRenderType shadowRenderType 
+	[Property, Order( 17 ), Title( "Cast Shadows?" )]
+	public ModelRenderer.ShadowRenderType shadowRenderType
 	{
 		get => _shadowRenderType;
 		set

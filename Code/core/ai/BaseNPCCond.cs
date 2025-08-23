@@ -34,7 +34,7 @@ public class BaseNPCConditions : Component
 		COND_SEE_PLAYER,
 		COND_HEAR_BULLET_IMPACT,
 		COND_HEAR_PHYSICS_DANGER,
-		
+
 	}
 
 
@@ -43,7 +43,7 @@ public class BaseNPCConditions : Component
 	[Property] public float nextGatherCondTime { get; set; } = 2.0f;
 	public bool conditionsGathered { get; set; } = false;
 	public List<AIConditions> conditionQueue { get; set; } = new List<AIConditions>(); // old idea, keeping incase its needed during conditions expansion
-	
+
 	protected override void OnFixedUpdate()
 	{
 		/*nextGatherCondTime -= Time.Delta;
@@ -60,7 +60,7 @@ public class BaseNPCConditions : Component
 
 			foreach ( var cond in ActiveConditions )
 			{
-				
+
 				Gizmo.Draw.IgnoreDepth = true;
 
 				var textPosition = position + Vector3.Up * offsetY;
@@ -90,8 +90,8 @@ public class BaseNPCConditions : Component
 	{
 		if ( !HasCondition( condition ) )
 		{
-			if (DrawDebug)
-			Log.Info($"{condition} set!");
+			if ( DrawDebug )
+				Log.Info( $"{condition} set!" );
 			ActiveConditions.Add( condition );
 		}
 	}

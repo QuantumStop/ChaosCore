@@ -741,7 +741,7 @@ public partial class BasePlayer
 		if ( IsProxy ) // only on viewmodel you can see
 			return;
 
-		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid())
+		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid() )
 			return;
 
 		if ( !ViewmodelWeaponObject.Active )    // because we toggle the viewmodel object, check if its active (enabled)

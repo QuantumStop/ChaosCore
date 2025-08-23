@@ -7,7 +7,7 @@ public partial class Player : BasePlayer
 {
 	public override string PlayerName { get; protected set; } = "Example Player";
 
-	[Property, ReadOnly, Feature( "Debug" )] public override bool HasSuit {get;set;} = true;
+	[Property, ReadOnly, Feature( "Debug" )] public override bool HasSuit { get; set; } = true;
 
 	protected override void OnFixedUpdate()
 	{

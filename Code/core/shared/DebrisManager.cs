@@ -310,23 +310,23 @@ public class DebrisManager : BaseEntity
 		if ( !beam.IsValid )
 			return;
 
-			beam.WorldPosition = muzzlePos;
-			beam.TargetPosition = tracerEnd;
+		beam.WorldPosition = muzzlePos;
+		beam.TargetPosition = tracerEnd;
 
-			ParticleFloat travel = beam.TravelLerp;
+		ParticleFloat travel = beam.TravelLerp;
 
-			travel.Evaluation = ParticleFloat.EvaluationType.Life;
-			travel.Type = ParticleFloat.ValueType.Range;
-			travel.ConstantA = 0f;
-			travel.ConstantB = 1f;
+		travel.Evaluation = ParticleFloat.EvaluationType.Life;
+		travel.Type = ParticleFloat.ValueType.Range;
+		travel.ConstantA = 0f;
+		travel.ConstantB = 1f;
 
-			beam.TravelBetweenPoints = true;
-			beam.TravelLerp = travel;
+		beam.TravelBetweenPoints = true;
+		beam.TravelLerp = travel;
 
-			beam.Lighting = true;
-			beam.Additive = true;
+		beam.Lighting = true;
+		beam.Additive = true;
 
-			beam.SpawnBeam();
+		beam.SpawnBeam();
 	}
 
 	public void CreateMuzzleflash( WeaponParse weapon, Vector3 position )
@@ -344,7 +344,7 @@ public class DebrisManager : BaseEntity
 		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
 
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultMuzzleflashPath );
-		GameObject muzzleflash  = prefabObject.Clone( position );
+		GameObject muzzleflash = prefabObject.Clone( position );
 
 		muzzleflash.SetParent( GameObject );
 		muzzleflash.Tags.Add( "debris" );

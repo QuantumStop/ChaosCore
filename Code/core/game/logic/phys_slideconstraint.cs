@@ -3,13 +3,13 @@ namespace Core;
 using Microsoft.VisualBasic;
 using SliderJoint = Sandbox.SliderJoint;
 
-[Description("A constraint that constrains an entity along a line segment.")]
+[Description( "A constraint that constrains an entity along a line segment." )]
 [Icon( "desk" )]
 public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
-{	
+{
 	public static phys_slideconstraint StaticRef { get; set; }
 	[Property, ReadOnly, RequireComponent] public SliderJoint _joint { get; set; }
-	[Property, MakeDirty, Title("Parent:")] public GameObject ParentGameObject { get; set; } 
+	[Property, MakeDirty, Title( "Parent:" )] public GameObject ParentGameObject { get; set; }
 	[Property, MakeDirty] public bool ShowCreatedComponents { get; set; }
 	List<Component> ProceduralComponents { get; set; }
 
@@ -20,43 +20,43 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 	}
 
 	public enum SlideAxis
-	{	
-		[Description("Slide the object on the X axis")]
+	{
+		[Description( "Slide the object on the X axis" )]
 		X,
-		[Description("Slide the object on the Y axis")]
+		[Description( "Slide the object on the Y axis" )]
 		Y,
-		[Description("Slide the object on the Z axis")]		
+		[Description( "Slide the object on the Z axis" )]
 		Z
 	}
-	
-    /// <summary>
+
+	/// <summary>
 	/// This will dictate in what direction within a selected axis the object should slide.
 	/// Example: Selecting Y axis and picking reverse option, will make it slide on -Y axis relative to parented object.
-    /// </summary>
+	/// </summary>
 
-	[Header("Joint Options")]
+	[Header( "Joint Options" )]
 	[Property, MakeDirty] public SlideDirection _slideDirection { get; set; }
 
-    /// <summary>
+	/// <summary>
 	/// This will dictate on what axis our object should slide, relative to parent.
 	/// Influences local rotation of the joint on start of the scene to do so.
-    /// </summary>
-	[Property, MakeDirty] public SlideAxis _slideAxis  { get; set; }
+	/// </summary>
+	[Property, MakeDirty] public SlideAxis _slideAxis { get; set; }
 
 	[Property, MakeDirty] public bool EnableCollission { get; set; }
-	[Property, MakeDirty] public float MinLength       { get; set; }
-	[Property, MakeDirty] public float MaxLength       { get; set; }
-	[Property, MakeDirty] public float Friction        { get; set; }
-	
+	[Property, MakeDirty] public float MinLength { get; set; }
+	[Property, MakeDirty] public float MaxLength { get; set; }
+	[Property, MakeDirty] public float Friction { get; set; }
 
 
-	[Group("Breaking")] [Property, MakeDirty, ] public bool StartBroken  { get; set; }
-	[Group("Breaking")] [Property, MakeDirty] public float BreakForce    { get; set; }
-	[Group("Breaking")] [Property, MakeDirty] public float BreakTorque   { get; set; }
-	[Group("Breaking")] [Property, MakeDirty] public Action OnBreak      { get; set; }
+
+	[Group( "Breaking" )][Property, MakeDirty,] public bool StartBroken { get; set; }
+	[Group( "Breaking" )][Property, MakeDirty] public float BreakForce { get; set; }
+	[Group( "Breaking" )][Property, MakeDirty] public float BreakTorque { get; set; }
+	[Group( "Breaking" )][Property, MakeDirty] public Action OnBreak { get; set; }
 
 
-	[Feature("Debug")]
+	[Feature( "Debug" )]
 	[Property, ReadOnly] public float Speed;
 	private Vector3 startLocation;
 
@@ -79,7 +79,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	protected override void OnStart()
 	{
-		startLocation     = _joint.GameObject.WorldPosition;
+		startLocation = _joint.GameObject.WorldPosition;
 		UpdateSlideDirection( _slideAxis );
 	}
 
@@ -122,16 +122,16 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	protected override void OnFixedUpdate()
 	{
-	// TODO: (distance / time) * vector
-	//var endPosition   = _joint.
+		// TODO: (distance / time) * vector
+		//var endPosition   = _joint.
 
 
 
-	//	var distance = 
-	//	var time     =
+		//	var distance = 
+		//	var time     =
 
 
-	//	_joint?.GetSpeed();
+		//	_joint?.GetSpeed();
 
 	}
 
@@ -153,7 +153,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			UpdateComponents();
 		}
 	}
-	
+
 	void UpdateComponents()
 	{
 		if ( _joint is null ) return;
@@ -166,7 +166,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 	{
 		SliderJoint slider;
 
-		slider        = Components.GetOrCreate<SliderJoint>();
+		slider = Components.GetOrCreate<SliderJoint>();
 		slider.Flags |= ComponentFlags.Hidden | ComponentFlags.NotSaved;
 
 		AddProcedural( slider );

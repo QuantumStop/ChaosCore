@@ -14,7 +14,7 @@ public partial class BasePlayer
 	/// <summary>
 	/// Does the player have suit on
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public virtual bool HasSuit {get;set;} = false;
+	[Property, ReadOnly, Feature( "Debug" )] public virtual bool HasSuit { get; set; } = false;
 	/// <summary>
 	/// give the suit straight up
 	/// </summary>

@@ -517,13 +517,13 @@ public sealed class PoweredRagdoll : Component, Component.ExecuteInEditor
 		DestroyPhysics();
 	}
 
-	public void ApplyImpulseToRagdoll( Vector3 impulse)
+	public void ApplyImpulseToRagdoll( Vector3 impulse )
 	{
 		foreach ( var body in Bodies )
 		{
 			if ( body.Component.IsValid() )
 			{
-				body.Component.ApplyImpulse( impulse);
+				body.Component.ApplyImpulse( impulse );
 			}
 		}
 	}

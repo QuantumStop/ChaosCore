@@ -257,7 +257,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 	}
 
-		public bool CheckRangeAttack1()
+	public bool CheckRangeAttack1()
 	{
 		if ( CurrentEnemy == null )
 		{
@@ -298,7 +298,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 							condition = AIConditions.COND_HEAR_DANGER;
 						break;
 
-				//	case SoundType.SOUND_THUMPER: condition = AIConditions.COND_HEAR_THUMPER; break;
+					//	case SoundType.SOUND_THUMPER: condition = AIConditions.COND_HEAR_THUMPER; break;
 					case SoundType.SOUND_COMBAT:
 						/*if ( pCurrentSound->SoundChannel() == SOUNDENT_CHANNEL_SPOOKY_NOISE )
 						{
@@ -309,7 +309,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 							condition = AIConditions.COND_HEAR_COMBAT;
 						}
 						break;
-					
+
 					case SoundType.SOUND_WORLD: condition = AIConditions.COND_HEAR_WORLD; break;
 					case SoundType.SOUND_PLAYER: condition = AIConditions.COND_HEAR_PLAYER; break;
 					case SoundType.SOUND_BULLET_IMPACT: condition = AIConditions.COND_HEAR_BULLET_IMPACT; break;
@@ -319,7 +319,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 					case SoundType.SOUND_PLAYER_VEHICLE: condition = AIConditions.COND_HEAR_PLAYER; break;
 
 					default:
-					
+
 						break;
 
 				}
@@ -338,7 +338,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 	// This is dum, will fix one day
 	public bool OnReachedMoveTarget()
 	{
-		
+
 		float distanceThreshold = 25f;
 		float speedThreshold = 5f;
 
@@ -697,8 +697,8 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 	public void EventKilled()
 	{
 		// will re-add
-	//	var carcass = Components.GetOrCreate<NpcCarcass>();
-	//	carcass.Owner = this;
+		//	var carcass = Components.GetOrCreate<NpcCarcass>();
+		//	carcass.Owner = this;
 		RagdollPhysics.MotionEnabled = true;
 		RagdollPhysics.Enabled = true;
 		Brain.SetNextThink( 999 ); // hack to make it stop thinking
@@ -814,7 +814,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 		LastRotation = WorldRotation.Angles();
 	}
 
-	
+
 	public void UpdateFacing( bool specifiedLook )
 	{
 		if ( specifiedLook && vecIdealYaw != null )
@@ -852,7 +852,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 			dmginfo.Damage = 0;
 
 		Log.Info( $"{this.TargetName} taking {dmginfo.Damage} damage from {dmginfo.Attacker}" );
-		
+
 
 		Vector3 vecDir = WorldPosition;
 		if ( dmginfo.Attacker != null )
@@ -872,7 +872,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 		}
 
 		Agent.Stop();// Bad call to agent, really this should be done elsewhere
-		
+
 		BodyModel.Set( "b_Interrupt", true ); // flinch test
 
 		/*if ( dmginfo.Hitbox != null && dmginfo.Hitbox.Tags.Has( "HITGROUP_HEAD" ) )
@@ -957,7 +957,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 		EquippedWeaponSlot = IdealEquippedWeaponSlot;
 		OffhandWeaponSlot = IdealOffhandWeaponSlot;
-		
+
 		RunAI();
 	}
 
@@ -984,7 +984,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 
 
-		
+
 
 		if ( DebugMode )
 		{
@@ -1028,7 +1028,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 		// Set our ideal yaw if we've taken damage
 		if ( Conditions.HasCondition( AIConditions.COND_LIGHT_DAMAGE ) ||
-			 Conditions.HasCondition( AIConditions.COND_HEAVY_DAMAGE ))
+			 Conditions.HasCondition( AIConditions.COND_HEAVY_DAMAGE ) )
 		{
 			Vector3 vecEnemyLKP;
 
@@ -1065,7 +1065,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 			Vector3? pSound = Targeting.GetClosestSoundPosition();
 			if ( pSound != null )
 			{
-			
+
 				Vector3 direction = (pSound.Value - WorldPosition).WithZ( 0 ).Normal;
 				if ( direction.Length > 0.001f )
 				{
@@ -1109,7 +1109,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 			Vector3 vecEnemyLKP;
 
 			// Fill in where we're trying to look
-			if ( GetEnemy() != null)
+			if ( GetEnemy() != null )
 			{
 				vecEnemyLKP = GetEnemyLKP();
 			}
@@ -1122,10 +1122,10 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 					else
 					{*/
 				// Don't have an enemy, so face the direction the last attack came from (don't face north)
-				
+
 				vecEnemyLKP = WorldPosition + (lastAttackDir * 128);
-				if (DebugMode)
-				Log.Info( $"Facing damage at {vecEnemyLKP} " );
+				if ( DebugMode )
+					Log.Info( $"Facing damage at {vecEnemyLKP} " );
 				//}
 			}
 			lastDisturbanceTime = Time.Now;
@@ -1139,7 +1139,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 			 Conditions.HasCondition( AIConditions.COND_HEAR_COMBAT ) ||
 			 Conditions.HasCondition( AIConditions.COND_HEAR_BULLET_IMPACT )
 			 )
-        {
+		{
 			Vector3? pSound = Targeting.GetClosestSoundPosition();
 			if ( pSound != null )
 			{
@@ -1159,7 +1159,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 		if ( ShouldGoToIdleState() )
 		{
-			Brain.StartSchedule(AISchedules.SCHED_IDLE_WANDER);
+			Brain.StartSchedule( AISchedules.SCHED_IDLE_WANDER );
 			return AIState.IDLE;
 		}
 
@@ -1182,7 +1182,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 	public bool IsFacingIdeal( float toleranceDegrees = 5f )
 	{
-		
+
 		Vector3 targetDir = (vecIdealYaw - WorldPosition).WithZ( 0 ).Normal;
 		Vector3 forwardDir = WorldRotation.Forward.WithZ( 0 ).Normal;
 
@@ -1206,7 +1206,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 				}
 			case AIState.ALERT:
 				{
-					
+
 					AIState nState = SelectAlertIdealState();
 					return nState;
 					break;
@@ -1394,6 +1394,6 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 	// Cine
 
-	
+
 
 }

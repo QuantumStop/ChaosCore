@@ -36,14 +36,14 @@ public class NpcTargeting : Component
 	{
 		if ( !Owner.IsValid() )
 			return Transform.World;
-		
+
 		return Owner.BodyModel.GetAttachment( Owner.NpcDef.ModelInfo.EyeAttachment ).GetValueOrDefault( new Transform( WorldPosition ) );
 	}
 
 	protected override void OnFixedUpdate()
 	{
 		// Moved sound and vision memory updating to function called by npc
-//		figure out which target we should actually be focusing on
+		//		figure out which target we should actually be focusing on
 		base.OnFixedUpdate();
 	}
 
@@ -118,7 +118,7 @@ public class NpcTargeting : Component
 
 	protected void UpdateVisionMemory()
 	{
-//		get visible targets
+		//		get visible targets
 		List<NpcRelations> visibleTargets = new();
 
 		foreach ( var target in Scene.Components.GetAll<NpcRelations>() )
@@ -139,7 +139,7 @@ public class NpcTargeting : Component
 				}
 			}
 		}
-//		update untracked targets
+		//		update untracked targets
 		List<Guid> activeTargets = new();
 		foreach ( var target in visibleTargets )
 		{
@@ -188,7 +188,7 @@ public class NpcTargeting : Component
 	{
 		if ( DrawDebug )
 		{
-//			SIGHT
+			//			SIGHT
 			Gizmo.Draw.IgnoreDepth = false;
 			Gizmo.Draw.Color = Color.Blue.WithAlpha( 0.1f );
 			Gizmo.Transform = Gizmo.Transform.WithRotation( GetEyeTransform().Rotation );
@@ -206,7 +206,7 @@ public class NpcTargeting : Component
 				Gizmo.Draw.LineCapsule( new Capsule( target.Value.LastKnownPosition, target.Value.LastKnownPosition + Vector3.Up * 50f, 16f ) );
 			}
 
-//			SOUNDS, SMELL
+			//			SOUNDS, SMELL
 			var soundroot = GetEyeTransform().Position - Vector3.Up * 5f;
 			var returns = "";
 			Gizmo.Draw.IgnoreDepth = true;

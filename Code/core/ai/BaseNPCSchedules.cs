@@ -120,8 +120,8 @@ public class NpcBrain : Component
 			return;
 
 		NPCThink();
-		
-		
+
+
 
 		_NextThinkTime = Time.Now + 0.1f /*Scene.GetSystem<AIThinkScheduler>().GetNextThinkTime()*/;
 	}
@@ -160,8 +160,8 @@ public class NpcBrain : Component
 
 		bool bInPVS = Owner.CheckPVSCondition();
 
-		if (Owner.GetSleepState() > BaseNpc.AI_SleepState.SLEEPSTATE_AWAKE)
-		Owner.UpdateSleepState( bInPVS );
+		if ( Owner.GetSleepState() > BaseNpc.AI_SleepState.SLEEPSTATE_AWAKE )
+			Owner.UpdateSleepState( bInPVS );
 
 		// Why do this? Well, my current thinking is that
 		// the NPCThink should be centralized in the brain.
@@ -241,7 +241,7 @@ public class NpcBrain : Component
 						StartIdleSchedule();
 						//TestFlockingSchedule();
 					}
-					
+
 					break;
 				}
 			case (AIState.ALERT):
@@ -252,7 +252,7 @@ public class NpcBrain : Component
 						//	InterruptSchedule( "Heard danger - switching to ALERT" );
 						StartSchedule( AISchedules.SCHED_ALERT_RUN_RANDOM );
 					}*/
-					StartSchedule(AISchedules.SCHED_IDLE_STAND);
+					StartSchedule( AISchedules.SCHED_IDLE_STAND );
 					break;
 				}
 			case (AIState.COMBAT):
@@ -328,8 +328,8 @@ public class NpcBrain : Component
 							Log.Info( $"{Owner.TargetName} beginning scripted sequence" );
 						StartSchedule( AISchedules.SCHED_CINE );
 					}
-				
-					
+
+
 				}
 				break;
 		}
@@ -357,13 +357,13 @@ public class NpcBrain : Component
 					if ( Owner.shouldWanderOnIdle )
 						StartIdleSchedule();
 					else
-						StartSchedule(AISchedules.SCHED_IDLE_STAND);
+						StartSchedule( AISchedules.SCHED_IDLE_STAND );
 
 				}
 			}
 		}
 
-		
+
 	}
 
 	public bool TaskComplete( AITask task )
@@ -404,8 +404,8 @@ public class NpcBrain : Component
 		task.Reset();
 		// Clear current schedule queue
 		TaskList?.Clear();
-		
-		
+
+
 		TaskList = null;
 	}
 
@@ -424,7 +424,7 @@ public class NpcBrain : Component
 	public void MaintainSchedule()
 	{
 		if ( DrawDebug )
-			Log.Info("MaintainSchedule: Starting");
+			Log.Info( "MaintainSchedule: Starting" );
 		if ( !Conditions.conditionsGathered )
 		{
 			Owner.GatherConditions();
@@ -462,10 +462,10 @@ public class NpcBrain : Component
 		if ( !Conditions.HasCondition( AIConditions.COND_SCHEDULE_DONE ) )
 			return true;
 
-		if ( (State == AIState.COMBAT) && ( Owner.GetEnemy() == null) )
+		if ( (State == AIState.COMBAT) && (Owner.GetEnemy() == null) )
 			return true;
 
-		if ( (State == AIState.IDLE || State == AIState.ALERT ) && ( Owner.GetEnemy() != null) )
+		if ( (State == AIState.IDLE || State == AIState.ALERT) && (Owner.GetEnemy() != null) )
 			return true;
 
 		return false;
@@ -485,10 +485,10 @@ public class NpcBrain : Component
 		{
 			StartSchedule( AISchedules.SCHED_IDLE_WANDER );
 		}
-			
+
 
 		State = AIState.IDLE;
-		
+
 	}
 
 	// This will eventually all be improved (including tasks) 
@@ -511,12 +511,12 @@ public class NpcBrain : Component
 	},
 
 		new AIConditions[]
-			{ 
+			{
 				AIConditions.COND_NEW_ENEMY,
 				AIConditions.COND_SEE_ENEMY,
-				
+
 			}
-		
+
 		);
 
 		// Flocking test
@@ -578,9 +578,9 @@ public class NpcBrain : Component
 
 			   new AITask[]
 			{
-			
+
 			new AITask { Name = "Scripted Movement", Execute = NpcTaskHandlers.TASK_SCRIPTED_MOVE, TaskData = 0 },
-		
+
 			}
 
 		);
@@ -608,7 +608,7 @@ public class NpcBrain : Component
 			new AITask { Name = "Wait", Execute = NpcTaskHandlers.TASK_WAIT, TaskData = 0.1f },
 			new AITask { Name = "Range Attack 1", Execute = NpcTaskHandlers.TASK_RANGE_ATTACK1, TaskData = 0 }
 			}
-		
+
 		);
 		//CINE Move to Position Schedule
 		public static AISchedule SCHED_CINE_MOVE_TO_POSITION = new AISchedule(
@@ -617,7 +617,7 @@ public class NpcBrain : Component
 			   new AITask[]
 			{
 			new AITask { Name = "Move to Scripted Sequence", Execute = NpcTaskHandlers.TASK_CINE_MOVE_TO_POSITION, TaskData = 0 },
-		
+
 			}
 
 		);
@@ -633,7 +633,7 @@ public class NpcBrain : Component
 		);
 	}
 
-	
+
 
 
 }

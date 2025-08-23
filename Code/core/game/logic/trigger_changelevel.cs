@@ -16,13 +16,13 @@ public class trigger_changelevel : BaseTrigger
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
-		DebugOverlay.ScreenText(new Vector2(250,25), "current scene:" + Game.ActiveScene.Source.ToString());
+		DebugOverlay.ScreenText( new Vector2( 250, 25 ), "current scene:" + Game.ActiveScene.Source.ToString() );
 		DebugOverlay.ScreenText( new Vector2( 250, 50 ), nextScene?.ToString() );
 	}
 
 	protected override void OnTriggerIn()
 	{
-		
+
 		base.OnTriggerIn();
 
 		var item = trackedItems.Keys.FirstOrDefault( i => i.Tags.Has( "player" ) && isEnabled );
@@ -43,7 +43,7 @@ public class trigger_changelevel : BaseTrigger
 
 	}
 
-	
+
 
 	void ChangeScene()
 	{
@@ -76,5 +76,5 @@ public class trigger_changelevel : BaseTrigger
 		//
 		//Game.ChangeScene(load);
 	}
-	
+
 }

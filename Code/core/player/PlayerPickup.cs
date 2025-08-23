@@ -152,7 +152,7 @@ public class PlayerPickup : BaseEntity
 	/// </summary>
 	public void UpdatePickup()
 	{
-		if ( Input.Pressed( "use" )  )
+		if ( Input.Pressed( "use" ) )
 		{
 
 			if ( HeldProp.IsValid() )

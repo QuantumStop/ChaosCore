@@ -61,7 +61,7 @@ public static class NpcTaskHandlers
 
 		if ( !task.HasStarted )
 		{
-			
+
 			owner.BodyModel.Set( "b_IsMoving", true );
 			owner.Agent.MaxSpeed = 180.0f;
 
@@ -71,7 +71,7 @@ public static class NpcTaskHandlers
 			{
 				owner.hasWaypoint = true;
 				if ( owner.DebugMode )
-					Log.Info( $"TASK_WANDER: Moving to {point}");
+					Log.Info( $"TASK_WANDER: Moving to {point}" );
 				//	owner.Agent.MoveTo( point.Value );
 				owner.DoMovement( point, BaseNpc.GoalType.GOALTYPE_LOCATION );
 				task.HasStarted = true;
@@ -86,20 +86,20 @@ public static class NpcTaskHandlers
 			}
 		}
 		else if ( task.HasStarted )
-		{ 
-		// They like to sometimes stop moving. Ill fix it, eventually.. but for now just shit the bed and cancel the task
-		var forwardAmount = Vector3.Dot( owner.WorldRotation.Forward, owner.Agent.Velocity.Normal ); 
-
-		if ( task.ElapsedTime >= 5.0f && forwardAmount <= 0.01f )
 		{
+			// They like to sometimes stop moving. Ill fix it, eventually.. but for now just shit the bed and cancel the task
+			var forwardAmount = Vector3.Dot( owner.WorldRotation.Forward, owner.Agent.Velocity.Normal );
+
+			if ( task.ElapsedTime >= 5.0f && forwardAmount <= 0.01f )
+			{
 				if ( owner.DebugMode )
 					Log.Info( "TASK_WANDER: Uh oh, we stopped moving for some reason. Hard shutdown!" );
-			owner.Agent.Stop();
-			task.Reset();
-			return true;
+				owner.Agent.Stop();
+				task.Reset();
+				return true;
+			}
 		}
-		}
-		
+
 
 		if ( owner.OnReachedMoveTarget() )
 		{
@@ -122,7 +122,7 @@ public static class NpcTaskHandlers
 
 		if ( !task.HasStarted )
 		{
-			
+
 			owner.BodyModel.Set( "b_IsMoving", true );
 			owner.Agent.MaxSpeed = 180.0f;
 
@@ -137,7 +137,7 @@ public static class NpcTaskHandlers
 				if ( owner.DebugMode )
 					Log.Info( "TASK_MOVE_TO_SOUND: Movement started" );
 
-				
+
 			}
 			return true;
 		}
@@ -146,7 +146,7 @@ public static class NpcTaskHandlers
 		if ( owner.OnReachedMoveTarget() )
 		{
 
-			StopMovement(owner, task );
+			StopMovement( owner, task );
 			return true;
 		}
 
@@ -234,7 +234,7 @@ public static class NpcTaskHandlers
 			var previousTarget = owner._currentPathCorner;
 			//previousTarget.OnReachedPathTarget();
 
-			if ( owner._currentPathCorner != null ) 
+			if ( owner._currentPathCorner != null )
 			{
 				// Start next move if there is a new corner, otherwise come to a stop and finish the task
 				StartScriptedMove( owner, task );
@@ -257,7 +257,7 @@ public static class NpcTaskHandlers
 
 		if ( point == null )
 		{
-			
+
 			Log.Warning( "StartMove called but _currentPathCorner is null!!" );
 			return;
 		}
@@ -306,7 +306,7 @@ public static class NpcTaskHandlers
 		if ( task.HasStarted )
 		{
 			StopMovement( owner, task );
-			return true;	
+			return true;
 		}
 		else
 		{
@@ -336,9 +336,9 @@ public static class NpcTaskHandlers
 		{
 			// Maybe an anim can be played here
 
-				owner.StopTask();
-				return true;
-			
+			owner.StopTask();
+			return true;
+
 		}
 
 		return false;
@@ -368,7 +368,7 @@ public static class NpcTaskHandlers
 			{
 				owner.BodyModel.Set( "b_Busy", false );
 				owner.BodyModel.Set( "b_IsMoving", true );
-				
+
 				owner.StopTask();
 				return true;
 			}
@@ -419,7 +419,7 @@ public static class NpcTaskHandlers
 			Log.Info( $"{task.Name}: Reached move target. Stopping..." );
 		owner.hasWaypoint = false;
 		owner.Agent.Stop();
-		
+
 		//task.Reset();
 	}
 
@@ -433,7 +433,7 @@ public static class NpcTaskHandlers
 
 		if ( !owner.HasTaskStarted )
 		{
-			StopMovement(owner,task); // REALLY make sure! post statement: not that easy now is it. Review and fix this
+			StopMovement( owner, task ); // REALLY make sure! post statement: not that easy now is it. Review and fix this
 			if ( owner.DebugMode )
 				Log.Info( "NPC is attacking" );
 			owner.BodyModel.Set( "b_IsMoving", false );
@@ -443,23 +443,23 @@ public static class NpcTaskHandlers
 			owner.nextRangeAttackTime = Time.Now + 3.0f;
 			//	owner.WaitTime = taskData;
 		}
-		else 
+		else
 		{
 			if ( owner.BodyModel.Sequence.IsFinished )
 			{
 				owner.BodyModel.Set( "b_Attack", false );
 				owner.BodyModel.Set( "b_IsMoving", true );
-				
+
 				owner.StopTask();
 				return true;
 			}
 			return false;
 		}
-		
 
-			
 
-		
+
+
+
 
 		return false;
 	}
@@ -477,10 +477,10 @@ public static class NpcTaskHandlers
 		{
 
 			owner.BodyModel.Set( "b_IsMoving", true );
-			if (owner._Cine.MoveToPosition == ScriptedSequence.MovementOptions.Walk)
-			owner.Agent.MaxSpeed = 75.0f;
+			if ( owner._Cine.MoveToPosition == ScriptedSequence.MovementOptions.Walk )
+				owner.Agent.MaxSpeed = 75.0f;
 			else
-			owner.Agent.MaxSpeed = 125.0f;
+				owner.Agent.MaxSpeed = 125.0f;
 
 
 			var point = owner._Cine.WorldPosition;
@@ -490,13 +490,13 @@ public static class NpcTaskHandlers
 			task.HasStarted = true;
 			owner._currentTarget = point;
 			if ( owner.DebugMode )
-					Log.Info( "TASK_CINE_MOVE_TO_POSITION: Movement started" );
+				Log.Info( "TASK_CINE_MOVE_TO_POSITION: Movement started" );
 
 
-			
-		//	return false;
+
+			//	return false;
 		}
-		
+
 
 		if ( owner.OnReachedMoveTarget() )
 		{

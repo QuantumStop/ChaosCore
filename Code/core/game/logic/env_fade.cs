@@ -54,12 +54,12 @@ public class ui_fade : BaseEntity
 		return new VanityChannel
 		{
 			Id = $"Vanity_{TargetName}",
-			Effect          = "fade",
+			Effect = "fade",
 			BackgroundColor = FadeColor,
 
 			// Fade-in vs fade-out direction
-			FadeInTime  = FadeFrom ? 0f : Duration,
-			HoldTime    = StayOut ? 99999f : HoldFade, // long hold for permanent fade
+			FadeInTime = FadeFrom ? 0f : Duration,
+			HoldTime = StayOut ? 99999f : HoldFade, // long hold for permanent fade
 			FadeOutTime = FadeFrom ? Duration : (StayOut ? 0f : Duration),
 			IsDrawPermanent = StayOut,
 			FadeFrom = FadeFrom,

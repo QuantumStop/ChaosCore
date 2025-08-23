@@ -26,7 +26,7 @@ public class KelvinSpotLight : SpotLight
 
 	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), MakeDirty, Header( "Temperature" )] public float MiredTemperature { get; set; } = 154f;
 
-	#if PLU
+#if PLU
 	/// <summary>
 	/// Lumens
 	/// </summary>
@@ -51,10 +51,10 @@ public class KelvinSpotLight : SpotLight
 	/// Conversion to candela
 	/// </summary>
 	private float ResultBrightness => Brightness / energy_spot();
-	#else
+#else
 	[Property, Range( 0, 15 ), MakeDirty, Title( "Brightness" ), Header( "Brightness" )] public float Brightness { get; set; } = 1;
 	private float ResultBrightness => Brightness;
-	#endif
+#endif
 
 	public void Refresh()
 	{
@@ -65,12 +65,12 @@ public class KelvinSpotLight : SpotLight
 	{
 		base.OnDirty();
 
-		#if PLU
+#if PLU
 		if ( Focused )
 			ConeInner = ConeOuter;
 		else
 			ConeInner = 0;
-		#endif
+#endif
 
 		if ( IsKelvin )
 		{

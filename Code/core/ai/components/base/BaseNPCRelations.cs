@@ -25,12 +25,12 @@ public class NpcRelations : Component
 	public BaseEntity Owner { get; set; }
 	public Vector3 Velocity { get; set; }
 
-//	not strictly relation related but targeting needs to know it
+	//	not strictly relation related but targeting needs to know it
 	public static Dictionary<string, Dictionary<string, Relation>> Relations { get; private set; }
 
 	protected override void OnEnabled()
 	{
-//		load faction relations
+		//		load faction relations
 		Relations = new();
 		var file = JsonNode.Parse( FileSystem.Mounted.ReadAllText( "scripts\\ai_faction_relations.fac" ) ).AsObject();
 		if ( !FileSystem.Mounted.FileExists( "scripts\\ai_faction_relations.fac" ) )
@@ -85,7 +85,7 @@ public class NpcRelations : Component
 			Log.Warning( $"EMPTY FACS" );
 			return Relation.NEUTRAL;
 		}
-		
+
 
 		if ( !Relations.TryGetValue( Faction, out var factionRelations ) )
 		{
@@ -104,7 +104,7 @@ public class NpcRelations : Component
 
 	protected override void OnUpdate()
 	{
-		
+
 		if ( DrawDebug )
 		{
 			foreach ( var ent in Scene.Components.GetAll<NpcRelations>() )

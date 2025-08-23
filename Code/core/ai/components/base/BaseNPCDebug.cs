@@ -10,7 +10,7 @@ public class NavDebugRenderer : Component
 	protected override void OnStart()
 	{
 		Npc.Brain.OnThink += Think;
-	
+
 		pathLine = Components.Create<LineRenderer>();
 		wishLine = Components.Create<LineRenderer>();
 		actualLine = Components.Create<LineRenderer>();
@@ -52,7 +52,7 @@ public class NavDebugRenderer : Component
 
 	protected override void OnFixedUpdate()
 	{
-		
+
 	}
 
 	private void ClearLines()
