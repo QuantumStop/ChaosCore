@@ -61,17 +61,24 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		{
 			HUDGameObject.Components.GetOrCreate<ScreenPanel>().Enabled = true;
 
-			foreach ( var classname in PlayerCfg.HudRazorClasses )
+			foreach ( var entry in PlayerCfg.HudEntries )
 			{
-				var hudtype = GlobalGameNamespace.TypeLibrary.GetType( classname );
+				if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
+					continue;
 
-				if ( hudtype != null )
+				string GetClassName( string path )
 				{
-					if ( HUDGameObject.Components.Get( hudtype.TargetType ) == null )
-						HUDGameObject.Components.Create( hudtype );
-					else
-						Log.Info( "Found " + hudtype.TargetType );
+					return System.IO.Path.GetFileNameWithoutExtension( path );
 				}
+
+				string className = GetClassName( entry.RazorPath );
+
+				TypeDescription type = GlobalGameNamespace.TypeLibrary.GetType( className );
+
+				if ( type != null )
+					HUDGameObject.Components.Create( type );
+				else
+					Log.Warning( $"HUD class not found for {entry.RazorPath} (expected {className})" );
 			}
 		}
 

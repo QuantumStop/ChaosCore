@@ -1,6 +1,6 @@
-@inherits PanelComponent
+@namespace SDK
 
-@namespace ChaosCore;
+@inherits PanelComponent
 @using Core;
 
 <root>
@@ -60,10 +60,10 @@
 
 	protected override void OnFixedUpdate()
 	{
-		if (!_bShowPos) return; // I'm paranoid, ok?
+	//	if (!_bShowPos) return; 
 
 		var player = BasePlayer.Local;
-		if (player == null || player.Movement == null) return;
+	//	if (player == null || player.Movement == null) return;
 
 		var pos = player.WorldPosition;
 		var ang = player.Controller.Head?.WorldRotation.Angles() ?? Angles.Zero;
@@ -74,10 +74,10 @@
 		PlayerposZ = pos.z.ToString("0.00");
 
 		PlayerAngPitch = ang.pitch.ToString("0.00");
-		PlayerAngYaw = ang.yaw.ToString("0.00");
-		PlayerAngRoll = ang.roll.ToString("0.00");
+		PlayerAngYaw   = ang.yaw.ToString("0.00");
+		PlayerAngRoll  = ang.roll.ToString("0.00");
 
-		PlayerVelocity = vel.Length.ToString("0.00");
+		PlayerVelocity   = vel.Length.ToString("0.00");
 		PlayerVelocity2D = vel.WithZ(0).Length.ToString("0.00");
 	}
 

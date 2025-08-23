@@ -1,30 +1,29 @@
 standaloneversion 
 {
 	position: absolute;
-    top: 0%;
+    top: 0;
     left: 0;
-    right: 0%;
+    right: 3vh;
     bottom: 0;
-	font-size: 11%;
+	font-size: 1.4vh;
     color: white;
     font-family: 'Courier New';
 	filter-drop-shadow: 1px 1px 0px 0px black, -1px -1px 0px 0px black,
 		1px -1px 0px 0px black, -1px 1px 0px 0px black, -1px 0px 0px 0px black,
 		1px 0px 0px 0px black, 0px -1px 0px 0px black, 0px 1px 0px 0px black;
 	font-smooth: never;
+    padding-top: 2vh;
+    justify-content: flex-end;
+    text-align: right;
+
+    .DevDate, .DevVersion {
+        column-gap: 2vh;
+        flex-direction: column;
+    }
+
+    .DevVersion {
+        font-size: 1.8vh;
+    }
 }
 
-.DevDate
-{
-    padding-top: 0.5%;
-    padding-right: 0.5%;
-    padding-left: 0.5%;
-}
 
-// i tried centering it but i cant so these are separate, maybe still do them under one div idk
-.DevVersion
-{
-    padding-top: 0.5%;
-    padding-right: 0.5%;
-    padding-left: 0.5%;
-}

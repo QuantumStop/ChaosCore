@@ -1,17 +1,26 @@
-﻿@namespace ChaosCore;
+﻿@namespace SDK
+
+@inherits PanelComponent
 @using Core;
 @using Sandbox.Menu
 @using Sandbox.UI;
 @using System;
-@inherits PanelComponent
-
 
 <root>
-	@if (bIsStandalone)
+
+	@if (!bIsStandalone)
 	{
-		<div class=DevDate>Chaos Theory Development Build Date: @sBuildVersion</div>
-		<div class=DevVersion>Build: @iBuildNumber</div>
+		<div class=DevDate>
+			@{
+				var projectName = Sandbox.Game.Ident.Replace("local.", "");
+				if (!string.IsNullOrEmpty(projectName))
+					projectName = char.ToUpper(projectName[0]) + projectName.Substring(1);
+			}
+			@projectName Development Build: @sBuildVersion
+			<div class=DevVersion>Build: @iBuildNumber</div>
+		</div>
 	}
+
 </root>
 
 @code

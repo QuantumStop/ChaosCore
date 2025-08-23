@@ -4,7 +4,7 @@
     "__version": 1,
     "Flags": 0,
     "Name": "player",
-    "Position": "-26.53734,-50.6647,-1241486",
+    "Position": "-7552.101,-14421.62,-384320700",
     "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
     "Tags": "player",
@@ -92,7 +92,7 @@
         "__type": "XMovement.PlayerMovement",
         "__guid": "0a1b686c-516a-4697-94c4-096e97ed052e",
         "__enabled": true,
-        "Acceleration": 21,
+        "Acceleration": 10,
         "AirAcceleration": 10,
         "AirControl": 30,
         "BaseAcceleration": 10,
@@ -149,7 +149,7 @@
         "StepHeight": 18,
         "StopSpeed": 100,
         "UseCollisionRules": false,
-        "Velocity": "-27.07893,-51.69865,-1267116"
+        "Velocity": "-27.07893,-51.69865,-1489484"
       },
       {
         "__type": "Sandbox.VR.VRAnchor",
@@ -365,7 +365,10 @@
           "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f"
         },
         "ViewmodelYawInertiaScale": 5,
-        "WeaponGameObject": null,
+        "WeaponGameObject": {
+          "_type": "gameobject",
+          "go": "4657070b-965f-4c06-8bb8-0a33e2bab2cb"
+        },
         "WeaponList": [],
         "WeaponToEquip": null,
         "YawInertia": 0,
@@ -544,7 +547,7 @@
         "__version": 1,
         "Flags": 0,
         "Name": "Head",
-        "Position": "0,0,64",
+        "Position": "0,0,32",
         "Rotation": "0,0,0,1",
         "Scale": "1,1,1",
         "Tags": "",
@@ -834,7 +837,7 @@
         "Name": "MovementCollider",
         "Position": "0,0,0",
         "Rotation": "0,0,0,1",
-        "Scale": "1,1,1",
+        "Scale": "1,1,0.9999999",
         "Tags": "movement,movecollider",
         "Enabled": true,
         "NetworkMode": 2,
@@ -1013,7 +1016,7 @@
         "Name": "PhysicsBody",
         "Position": "0,0,0",
         "Rotation": "0,0,0,1",
-        "Scale": "1,1,1",
+        "Scale": "1,1,0.9999999",
         "Tags": "movement,playertrig",
         "Enabled": true,
         "NetworkMode": 1,

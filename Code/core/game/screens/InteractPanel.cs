@@ -57,7 +57,7 @@ public class InteractPanel : PanelComponent
 		CursorPanel.AddClass( "cursor" );
 
 		// All the styling and stuff, so everything is correcto mundo
-		CursorPanel.StyleSheet.Load( "ui/chaoscore/interactive/cursor.scss" );
+		CursorPanel.StyleSheet.Load( "ui/SDK/interactive/cursor.scss" );
 		CursorPanel.Style.Position = PositionMode.Absolute;
 		CursorPanel.Style.PointerEvents = PointerEvents.None;
 

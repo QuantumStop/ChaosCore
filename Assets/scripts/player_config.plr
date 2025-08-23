@@ -1,10 +1,27 @@
 {
-  "ViewmodelHands": "models/weapons/c_hands.vmdl",
+  "ViewmodelHands": null,
   "BodyModel": null,
-  "HudRazorClasses": [
-    "BaseVanity",
-    "ExpoMetering",
-    "ChaosHUD"
+  "HudEntries": [
+    {
+      "RazorPath": "..\\Code\\ui\\SDK\\HUD\\ChaosHUD.razor",
+      "RequireSuitToDraw": false
+    },
+    {
+      "RazorPath": "..\\Code\\ui\\Core\\Vanity\\BaseVanity.razor",
+      "RequireSuitToDraw": false
+    },
+    {
+      "RazorPath": "..\\Code\\ui\\Core\\Debug\\ExpoMetering.razor",
+      "RequireSuitToDraw": false
+    },
+    {
+      "RazorPath": "..\\Code\\ui\\Core\\Debug\\StandaloneVersion.razor",
+      "RequireSuitToDraw": false
+    },
+    {
+      "RazorPath": "..\\Code\\ui\\Core\\Debug\\PlayerDebugInfo.razor",
+      "RequireSuitToDraw": false
+    }
   ],
   "Faction": "PLAYER",
   "__references": [],

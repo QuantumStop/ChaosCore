@@ -13,10 +13,6 @@ WeaponSelection {
         gap: $hud-select-gap; 
     }
 
-    .label {
-        mask-image: url(resource/ui/player/hud/scanline2x2.png);
-    }
-
     .bucket {
         position: relative;
         flex-direction: column;
