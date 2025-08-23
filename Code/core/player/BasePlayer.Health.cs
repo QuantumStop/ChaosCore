@@ -178,14 +178,14 @@ public partial class BasePlayer
 		}
 		else if ( dmginfo.Tags.Has( "club" ) )
 		{
-			if ( dmginfo is CoreDamageInfo coreDamageInfo )
+			if ( dmginfo is CoreDamageInfo )
 			{
 				Log.Info( $"Player State: Player got club damage: {dmginfo.Damage}" );
 			}
 		}
 		else if ( dmginfo.Tags.Has( "blast" ) )
 		{
-			if ( dmginfo is CoreDamageInfo coreDamageInfo )
+			if ( dmginfo is CoreDamageInfo )
 			{
 				Log.Info( $"Player State: Player got blast damage: {dmginfo.Damage}" );
 			}
