@@ -344,6 +344,10 @@ public class DebrisManager : BaseEntity
 		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
 
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultMuzzleflashPath );
+
+		if ( prefabObject is null )
+			return;
+
 		GameObject muzzleflash = prefabObject.Clone( position );
 
 		muzzleflash.SetParent( GameObject );
