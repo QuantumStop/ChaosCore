@@ -452,7 +452,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( reloadPrimary )
 		{
-			// only handle singly for primary, secondary most of the time is already singly anyway (hl2 SMG1 grenade, hl2k M16 grenade, etc etc etc)
+			// only handle singly for primary, secondary most of the time is already singly anyway (hl2 SMG1 grenade, chaos M16 grenade, etc etc etc)
 			if ( ReloadsSingly )
 			{
 				// TODO

@@ -85,7 +85,7 @@ public partial class BasePlayer
 		if ( flag == HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR )
 			return true;
 
-		// Need the HEV/PCV suit ( HL2K )
+		// Need the suit
 		if ( (flag == HIDEHUD_FLAGS.HIDEHUD_NEEDSUIT) && (!Local.HasSuit) )
 			return true;
 

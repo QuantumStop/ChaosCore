@@ -18,7 +18,7 @@ public class XGUI_MainMenu : BaseEntity
 	{
 		Local = this;
 
-		GameChapters = ResourceLibrary.Get<GameChaptersDefinition>("scripts/hl2k_chapters.chptdef");
+		GameChapters = ResourceLibrary.Get<GameChaptersDefinition>("scripts/chaos_chapters.chptdef");
 
 		var mainMenuPanel = new Main_Menu
 		{
