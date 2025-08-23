@@ -1,74 +1,78 @@
-@namespace Core
+@namespace SDK
 
 @using Sandbox;
 @using Sandbox.UI;
 @using XGUI;
 @using System;
 @inherits Window
-
-@attribute [StyleSheet( "Level_select.razor.scss" )]
 @using Core;
+
+@attribute [StyleSheet("Level_select.razor.scss")]
 
 
 <root title="Level Selection" isresizable="False" width="560px" height="320px" x="40px" y="40px" autofocus="False">
 	<div class="window-content">
 
-	<div class="Seperate"><Seperator/></div>	
+		<div class="Seperate">
+			<Seperator />
+		</div>
 
-	<body>
+		<body>
 
-		<level-container style="flex-direction: row; height: 80%; padding-top: 10px; justify-content: center; ">
+			<level-container style="flex-direction: row; height: 80%; padding-top: 10px; justify-content: center; ">
 
 				<levels-embded style="justify-content: center; gap: 10px; ">
-		
-		@if (PagedLevels.Any())
-		{
-			foreach (var level in PagedLevels)
-			{
-				<level>
-					<div class="Chapter">Chapter @level.ChapterOrder</div>
-					<div class="Name">@level.ChapterName</div>
-					<preview onclick="@(() => XGUI_MainMenu.Local?.SetLevelToLoad(level.SceneSource))">
-					</preview>
-				</level>
-			}
-		}
-		else
-		{
-			<p>No chapters available.</p>
-		}
+
+					@if (PagedLevels.Any())
+					{
+						foreach (var level in PagedLevels)
+						{
+							<level>
+								<div class="Chapter">Chapter @level.ChapterOrder</div>
+								<div class="Name">@level.ChapterName</div>
+								<preview onclick="@(() => XGUI_MainMenu.Local?.SetLevelToLoad(level.SceneSource))">
+								</preview>
+							</level>
+						}
+					}
+					else
+					{
+						<p>No chapters available.</p>
+					}
 
 
-			</levels-embded>
+				</levels-embded>
 
-		</level-container>
+			</level-container>
 
-		<levelbuttons-container>
+			<levelbuttons-container>
 
-			@if ( _currentPage > 1 ) { 
-				<button class="button-left"  onclick="@(() => PreviousPage())" > &#3C; Previous Page </button> 
-			}
+				@if (_currentPage > 1)
+				{
+					<button class="button-left" onclick="@(() => PreviousPage())"> &#3C; Previous Page </button>
+				}
 
-			<buttons-space/>
+				<buttons-space />
 
-			@if ( _currentPage != TotalPages ) {
-				<button class="button-right" onclick="@(() => NextPage())" > Next Page  &#3E; </button>
-			}
+				@if (_currentPage != TotalPages)
+				{
+					<button class="button-right" onclick="@(() => NextPage())"> Next Page &#3E; </button>
+				}
 
-		</levelbuttons-container>
-		
-	</body>
+			</levelbuttons-container>
 
-	<div class="Seperate">
-		<Seperator/>
-	</div>	
+		</body>
 
-	<footer>
+		<div class="Seperate">
+			<Seperator />
+		</div>
 
-		<button onclick="@(() => XGUI_MainMenu.Local?.LoadCurrentLevel())"> Load selected level </button>
-		<button onclick="@(() => Close())"> Cancel </button>
+		<footer>
 
-	</footer>
+			<button onclick="@(() => XGUI_MainMenu.Local?.LoadCurrentLevel())"> Load selected level </button>
+			<button onclick="@(() => Close())"> Cancel </button>
+
+		</footer>
 
 	</div>
 
@@ -77,9 +81,9 @@
 @code {
 
 	public static GameChaptersDefinition currentChapterList => XGUI_MainMenu.GameChapters;
-	
-    private int _currentPage = 1;
-    private int _pageSize = 3;
+
+	private int _currentPage = 1;
+	private int _pageSize = 3;
 
 	private IEnumerable<GameChapter> PagedLevels =>
 	currentChapterList?.GameChapterList?
@@ -95,19 +99,19 @@
 			_currentPage++;
 	}
 
-    public void PreviousPage()
-    {
-        if ( _currentPage > 1 )
-            _currentPage--;
-    }
+	public void PreviousPage()
+	{
+		if (_currentPage > 1)
+			_currentPage--;
+	}
 
-    public override void OnClose()
+	public override void OnClose()
 	{
 		ClearCurrentLevel();
 	}
 
-    public void ClearCurrentLevel()
-    {
+	public void ClearCurrentLevel()
+	{
 		XGUI_MainMenu.Local?.ClearCurrentLevel();
 	}
 

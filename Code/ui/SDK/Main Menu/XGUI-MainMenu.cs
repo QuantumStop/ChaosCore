@@ -1,7 +1,8 @@
-namespace Core;
+namespace SDK;
+
+using Core;
 using Sandbox.UI;
 using XGUI;
-
 public class XGUI_MainMenu : BaseEntity
 {
 	public static XGUI_MainMenu Local { get; set; }
