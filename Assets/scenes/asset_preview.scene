@@ -3,23 +3,31 @@
   "GameObjects": [
     {
       "__guid": "5e6e44dc-d8e3-4d33-aaa3-3b82f56a5431",
+      "__version": 1,
       "Flags": 0,
       "Name": "Directional Light",
       "Position": "11.07671,-22.86441,47.27077",
       "Rotation": "-0.0002567582,0.8436366,0.4089521,0.3479015",
+      "Scale": "1,1,1",
       "Tags": "light_directional,light",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Core.KelvinDirectionalLight",
           "__guid": "2f4806e2-cc4f-4987-927d-514fbd4bba53",
+          "__enabled": true,
           "Brightness": 110000,
           "ColorMode": "Color",
           "ColorPreset": "SunNoon",
           "FogMode": "Enabled",
           "FogStrength": 1,
+          "KelvinTemperature": 6500,
           "LightColor": "110000,110000,110000,110000",
-          "LightTemperature": 5000,
+          "MiredTemperature": 154,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -29,22 +37,31 @@
           "RGB_Color": "1,1,1,1",
           "Shadows": true,
           "SkyColor": "0,0,0,0",
-          "SunBrightnessPreset": "Noon"
+          "SunBrightnessPreset": "Noon",
+          "TemperatureMode": "Kelvin"
         }
       ],
       "Children": []
     },
     {
       "__guid": "5de51b9d-e185-4d43-8e24-486760cf09bc",
+      "__version": 1,
       "Flags": 0,
       "Name": "Skybox",
       "Position": "0,0,100",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
       "Tags": "skybox",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.SkyBox2D",
           "__guid": "62b9e65e-b455-40ba-bf86-57a7571c6afc",
+          "__enabled": true,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -60,12 +77,18 @@
     },
     {
       "__guid": "061b6e99-a6bd-46d2-8b6a-725e48d99fd6",
+      "__version": 1,
       "Flags": 0,
       "Name": "Model",
       "Position": "-64,-16.02077,21.60947",
       "Rotation": "0.08914135,-0.05373931,-0.329462,0.9384137",
       "Scale": "2,2,2",
+      "Tags": "",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.ModelRenderer",
@@ -73,8 +96,10 @@
           "__enabled": false,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
+          "LodOverride": null,
           "MaterialGroup": null,
           "MaterialOverride": null,
+          "Materials": null,
           "Model": "models/weapons/v_wrench.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -94,10 +119,13 @@
         {
           "__type": "Sandbox.ModelRenderer",
           "__guid": "84a72b1c-4734-4bb2-80f8-602483b3d096",
+          "__enabled": true,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
+          "LodOverride": null,
           "MaterialGroup": null,
           "MaterialOverride": null,
+          "Materials": null,
           "Model": "models/weapons/v_smg2.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -119,12 +147,18 @@
     },
     {
       "__guid": "023191a8-e41a-4b4d-8582-24e87554c144",
+      "__version": 1,
       "Flags": 0,
       "Name": "Model (1)",
       "Position": "-54.40052,54.51892,12.96914",
       "Rotation": "-0.2485657,-0.1051759,0.1264904,0.9545435",
       "Scale": "2,2,2",
+      "Tags": "",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.ModelRenderer",
@@ -132,8 +166,10 @@
           "__enabled": false,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
+          "LodOverride": null,
           "MaterialGroup": null,
           "MaterialOverride": null,
+          "Materials": null,
           "Model": "models/weapons/v_wrench.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -153,10 +189,13 @@
         {
           "__type": "Sandbox.ModelRenderer",
           "__guid": "1cbe02da-d815-489f-8819-0cf5af4c467a",
+          "__enabled": true,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
+          "LodOverride": null,
           "MaterialGroup": null,
           "MaterialOverride": null,
+          "Materials": null,
           "Model": "models/weapons/v_smg2.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -178,15 +217,23 @@
     },
     {
       "__guid": "4de2ef45-c173-40cd-8006-d1c080408b7c",
+      "__version": 1,
       "Flags": 0,
       "Name": "Tonemap + Camera",
       "Position": "77.1432,27.65141,20.71445",
       "Rotation": "0,0,0.9659259,0.2588193",
+      "Scale": "1,1,1",
+      "Tags": "",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Sandbox.CameraComponent",
           "__guid": "4d97291b-2c0f-4665-83e6-c8e49ebaaecc",
+          "__enabled": true,
           "BackgroundColor": "0.33333,0.46275,0.52157,1",
           "ClearFlags": "All",
           "FieldOfView": 50,
@@ -209,8 +256,9 @@
           "ZNear": 10
         },
         {
-          "__type": "HL2K.Tonemapper",
-          "__guid": "73c422e0-f144-433f-b992-be87746755e1",
+          "__type": "Core.Tonemapper",
+          "__guid": "bfb4dc75-45ef-4e4f-9b42-db0b0ae4ed2e",
+          "__enabled": true,
           "CustomLUT": null,
           "ExposureBias": 1,
           "GammaIn": 2.4,
@@ -221,47 +269,41 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
-        },
-        {
-          "__type": "Sandbox.Bloom",
-          "__guid": "ccf833be-3370-4400-b65d-b16e8ab618b6",
-          "__version": 1,
-          "Gamma": 2.2,
-          "Mode": "Additive",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "Strength": 0.11,
-          "Threshold": 0,
-          "Tint": "1,1,1,1"
+          "Vibrance": 1
         }
       ],
       "Children": []
     },
     {
       "__guid": "2465bf92-c1a9-4754-ac50-5d7bb8fe4751",
+      "__version": 1,
       "Flags": 0,
       "Name": "Point Light (2)",
       "Position": "-32,96.00002,-16",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
       "Tags": "light_point,light",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Core.KelvinPointLight",
           "__guid": "abadda20-9b73-4fad-89f2-6e7fb334bed8",
+          "__enabled": true,
           "Attenuation": 10,
           "Brightness": 10000,
           "ColorMode": "ColorTemperature",
           "ColorPreset": "NeutralWhite",
           "FogMode": "Enabled",
           "FogStrength": 1,
-          "LightColor": "31415.93,1307.268,104.8252,31415.93",
-          "LightTemperature": 1000,
+          "KelvinTemperature": 6500,
+          "LightColor": "795.7747,750.704,782.0797,795.7747",
           "LumenBrightnessPresets": "ExteriorLight",
+          "MiredTemperature": 153.84616,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -269,32 +311,42 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Radius": 139.20003,
-          "RGB_Color": "1,0.04161,0.00334,1",
-          "Shadows": true
+          "RGB_Color": "1,0.94336,0.98279,1",
+          "Shadows": true,
+          "TemperatureMode": "Kelvin"
         }
       ],
       "Children": []
     },
     {
       "__guid": "cf994eae-ef8a-46ad-8666-f6972f6e7d64",
+      "__version": 1,
       "Flags": 0,
       "Name": "Point Light (1)",
       "Position": "-99.9286,-50.88404,-15.07429",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
       "Tags": "light_point,light",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Core.KelvinPointLight",
           "__guid": "ca384101-973b-45d2-b75f-89000dd4dad2",
+          "__enabled": true,
           "Attenuation": 7.2,
           "Brightness": 10000,
           "ColorMode": "ColorTemperature",
           "ColorPreset": "NeutralWhite",
           "FogMode": "Enabled",
           "FogStrength": 1,
-          "LightColor": "31415.93,1307.268,104.8252,31415.93",
-          "LightTemperature": 1000,
+          "KelvinTemperature": 6500,
+          "LightColor": "795.7747,750.704,782.0797,795.7747",
           "LumenBrightnessPresets": "ExteriorLight",
+          "MiredTemperature": 153.84616,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -302,32 +354,42 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Radius": 235.30014,
-          "RGB_Color": "1,0.04161,0.00334,1",
-          "Shadows": true
+          "RGB_Color": "1,0.94336,0.98279,1",
+          "Shadows": true,
+          "TemperatureMode": "Kelvin"
         }
       ],
       "Children": []
     },
     {
       "__guid": "08dc8bbf-18e9-4c99-8f1e-f634a8e530b5",
+      "__version": 1,
       "Flags": 0,
       "Name": "Point Light",
       "Position": "-64,32,48",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
       "Tags": "light_point,light",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "Core.KelvinPointLight",
           "__guid": "730befc1-22c0-4484-a717-6bb1a4ef615c",
+          "__enabled": true,
           "Attenuation": 1,
           "Brightness": 10000,
           "ColorMode": "ColorTemperature",
           "ColorPreset": "PartlyCloudy",
           "FogMode": "Enabled",
           "FogStrength": 1,
-          "LightColor": "16328.34,20485.76,31415.93,31415.93",
-          "LightTemperature": 12000,
+          "KelvinTemperature": 6500,
+          "LightColor": "795.7747,750.704,782.0797,795.7747",
           "LumenBrightnessPresets": "ExteriorLight",
+          "MiredTemperature": 153.84616,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -335,28 +397,40 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Radius": 400,
-          "RGB_Color": "0.51975,0.65208,1,1",
-          "Shadows": true
+          "RGB_Color": "1,0.94336,0.98279,1",
+          "Shadows": true,
+          "TemperatureMode": "Kelvin"
         }
       ],
       "Children": []
     },
     {
       "__guid": "1a68e159-a76e-4fe6-8898-e77b205ad27c",
+      "__version": 1,
       "Flags": 0,
       "Name": "Game Manager",
       "Position": "4096,4096,4096",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
       "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "game_manager",
           "__guid": "8fb7d347-f664-4ea9-b25d-c89ba2d1eddd",
+          "__enabled": true,
           "DontSpawnPlayer": true,
+          "EntTextEntities": [],
           "Initialized": true,
+          "InternalID": "game_manager_r7ZDw",
           "LastEditorCameraPosition": {
-            "Position": "48.9933,-4.392066,19.87511",
+            "Position": "129.7243,21.6687,115.8861",
             "Scale": "1,1,1",
-            "Rotation": "-0.1663442,0.02072134,0.978289,0.1218645"
+            "Rotation": "0.1674069,0.008625353,-0.9845442,0.05072693"
           },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -364,13 +438,16 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
+          "OnKilled": null,
           "SerializedGuid": null,
           "TargetName": "game_manager_hGrgG",
-          "TimeScaleSlider": 1
+          "TimeScaleSlider": 1,
+          "UsePlayerStart": false
         },
         {
           "__type": "Sandbox.SceneInformation",
           "__guid": "92c24abc-cc93-4ec8-bfd4-8bfbdf737d0c",
+          "__enabled": true,
           "Author": null,
           "Changes": "",
           "Description": "",
@@ -389,24 +466,64 @@
       "Children": [
         {
           "__guid": "138a1e2e-bdde-4b8a-86d9-8efda2dcc449",
-          "Flags": 2049,
-          "Name": "Editor Camera",
-          "Tags": "light_spot,light",
-          "Enabled": true,
+          "__version": 1,
           "__Prefab": "prefabs/editor/editor_camera.prefab",
-          "__PrefabVariables": {}
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "b3fa3354-ca11-4766-872e-a11f24f38c83"
+                },
+                "Property": "Flags",
+                "Value": 2049
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "b3fa3354-ca11-4766-872e-a11f24f38c83"
+                },
+                "Property": "Name",
+                "Value": "Editor Camera"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "b3fa3354-ca11-4766-872e-a11f24f38c83": "138a1e2e-bdde-4b8a-86d9-8efda2dcc449",
+            "fb29ace4-e2a7-4426-901d-ff5c11699400": "1416d001-0c10-4bde-9f41-ce95ed4a3300",
+            "bcf83c67-a239-4564-aee6-900bac26ab36": "476318a2-abda-463c-b8d7-4761440f5b48",
+            "dd1756d8-f71a-4533-a797-17f09527dcb4": "9539ebd7-c782-4dd6-a5eb-701360a32ee1",
+            "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9": "443ca486-3f35-4a17-96a0-af831ea207e0",
+            "4fa9c417-0312-4b53-86ed-d0a45557ce0c": "bbae475f-8e3e-4a74-bd36-747ef8f491bf",
+            "9e4823c6-e365-416b-b6f4-7fa283c5a9cf": "91e676e3-ce26-4fb5-af63-d73ec9e7e93a"
+          }
         },
         {
           "__guid": "c3d23b8a-e2d4-4b8f-9b5c-d8b82a5fb09b",
+          "__version": 1,
           "Flags": 0,
           "Name": "Exposure Manager",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
           "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
           "Components": [
             {
               "__type": "Core.CameraExposure",
               "__guid": "8fa2ffdc-3753-4bb8-874a-e94e1f1843a9",
+              "__enabled": true,
               "Aperture": 8,
+              "Blend": 0,
               "Initialized": true,
+              "InternalID": "Core.CameraExposure_B2Y1G",
               "ISO": 100,
               "Mode": "Manual",
               "OnComponentDestroy": null,
@@ -416,12 +533,12 @@
               "OnComponentStart": null,
               "OnComponentUpdate": null,
               "OnKilled": null,
-              "OnUse": null,
               "RealEV": 12.643856,
               "ResultExposure": 0.00013020834,
               "SerializedGuid": null,
               "Shutter": 100,
               "SunND": 1,
+              "TargetEV": 12.643856,
               "TargetName": "Core.CameraExposure_8QH6l"
             }
           ],
@@ -429,16 +546,27 @@
         },
         {
           "__guid": "dc1bf486-b571-46b7-80ef-480f16b2090b",
+          "__version": 1,
           "Flags": 0,
           "Name": "Video Manager",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
           "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
           "Components": [
             {
               "__type": "Core.videoplayer_manager",
               "__guid": "06438a68-eb9d-481d-8633-4c51ac8f10f3",
+              "__enabled": true,
               "b_PlayOnStart": true,
               "GlobalVolume": 1,
               "Initialized": true,
+              "InternalID": "Core.videoplayer_manager_iAXG0",
               "OnComponentDestroy": null,
               "OnComponentDisabled": null,
               "OnComponentEnabled": null,
@@ -448,6 +576,41 @@
               "OnKilled": null,
               "SerializedGuid": null,
               "TargetName": "Core.videoplayer_manager_ndHPq"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "2e983855-40a9-439d-908b-ac9db9cefa62",
+          "__version": 1,
+          "Flags": 0,
+          "Name": "Environment Manager",
+          "Position": "-32,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Core.EnvironmentManager",
+              "__guid": "9def413d-9643-4605-9756-dd0a64752b29",
+              "__enabled": true,
+              "CurrentEnv": "None",
+              "Initialized": false,
+              "InternalID": null,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "OnKilled": null,
+              "SerializedGuid": null,
+              "TargetName": null
             }
           ],
           "Children": []
@@ -473,9 +636,9 @@
       "IncludedBodies": ""
     }
   },
-  "ResourceVersion": 2,
+  "ResourceVersion": 3,
   "Title": null,
   "Description": null,
   "__references": [],
-  "__version": 2
+  "__version": 3
 }
