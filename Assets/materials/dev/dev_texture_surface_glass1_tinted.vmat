@@ -1,0 +1,38 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Transparency ----
+	F_ALPHA 2 // Translucent
+
+	//---- Basic ----
+	TextureColor "materials/dev/textures/dev_texture_surface_glass1.jpg"
+	TextureNormal "materials/default/default_normal.tga"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureRoughness "materials/default/default_rough.tga"
+
+	//---- Translucent ----
+	g_vOpacityScale "1.000"
+	TextureAlphaMask "[0.750000 0.750000 0.750000 0.000000]"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+
+	SystemAttributes
+	{
+		PhysicsSurfaceProperties "2k_default"
+		WorldMappingWidth "64"
+		WorldMappingHeight "64"
+	}
+}

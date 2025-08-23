@@ -1,0 +1,10 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/ghost.shader"
+
+	//---- Appearance ----
+	g_flBorderDistanceFromSphereCenter "10.000"
+	g_flIntersectionSharpness "1.000"
+}

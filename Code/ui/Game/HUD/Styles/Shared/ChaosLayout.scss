@@ -1,0 +1,110 @@
+// ==============================
+// HUD Layout Standards
+// ==============================
+
+// ---------- SCALING ---------- //
+
+// --- Icon ---
+$icon-size-169: 4vh;
+$icon-size-43: 4.25vh;
+$icon-size-ultrawide: 5.75vh;
+
+$icon-size-secondary-169: 2.25vh;
+$icon-size-secondary-43: 4.25vh;
+$icon-size-secondary-ultrawide: 5.75vh;
+
+$weapon-icon-size-169: 10vh;
+$weapon-icon-size-43: 10vh;
+$weapon-icon-size-ultrawide: 12vh;
+
+$weapon-icon-font-size-169: 1.5vh;
+
+
+// --- Ammo ---
+$ammo-font-size-main-169: 5.75vh;
+$ammo-font-size-main-43: 7vh;
+$ammo-font-size-main-ultrawide: 8.5vh;
+
+$ammo-font-size-secondary-169: 2.25vh; 
+$ammo-font-size-secondary-43: 2.25vh; 
+$ammo-font-size-secondary-ultrawide: 2.25vh; 
+
+$ammo-font-size-reserve-169: 3.5vh;
+$ammo-font-size-reserve-43: 3.5vh;
+$ammo-font-size-reserve-ultrawide: 3.5vh;
+
+// --- Status Display ---
+$status-font-size-169: 5vh;
+$status-font-size-43: 6vh;
+$status-font-size-ultrawide: 7.5vh;
+
+$status-font-size-secondary-169: 2.5vh;
+$status-font-size-secondary-43: 5vh;
+$status-font-size-secondary-ultrawide: 7.5vh;
+
+$transform-small-health-offset-169:  translate( 0 1vh );
+$transform-small-health-offset-43:  translate( 0 1vh );
+$transform-small-health-offset-ultrawide:  translate( 0 1vh );
+
+$transform-medium-health-offset-169: translate( 0 6.5vh );
+$transform-medium-health-offset-43: translate( 0 6.5vh );
+$transform-medium-health-offset-ultrawide: translate( 0 6.5vh );
+
+$transform-medium-health-offset-extra-169: translate( 0 7.5vh );
+$transform-medium-health-offset-extra-43: translate( 0 7.5vh );
+$transform-medium-health-offset-extra-ultrawide: translate( 0 7.5vh );
+
+$transform-small-ammo-offset-169:  translate( 0 3.75vh );
+$transform-small-ammo-offset-43:  translate( 0 3.75vh );
+$transform-small-ammo-offset-ultrawide:  translate( 0 3.75vh );
+
+$transform-small-grenadetype-offset-169: translate( 0 9vh );
+$transform-small-grenadetype-offset-43: translate( 0 9vh );
+$transform-small-grenadetype-offset-ultrawide: translate( 0 9vh );
+
+$transform-ammotype-offset-169: translate( 3vh 14vh );
+$transform-ammotype-offset-43: translate( 3vh 14vh );
+$transform-ammotype-offset-ultrawide: translate( 3vh 14vh );
+
+$transform-medium-ammo-offset-169: translate( 0 6.25vh );
+$transform-medium-ammo-offset-43: translate( 0 6.25vh );
+$transform-medium-ammo-offset-ultrawide: translate( 0 6.25vh );
+
+$status-font-size-big-169: 10em;
+$status-font-size-big-43: 8.5em;
+$status-font-size-big-ultrawide: 11em;
+
+// --- Icon Margin ---
+$icon-margin-vertical-169: 1.25vh;
+$icon-margin-vertical-43: 1vh;
+$icon-margin-vertical-ultrawide: 1.5vh;
+
+$icon-text-gap-169: 0.5vh;
+$icon-text-gap-43: 0.35vh;
+$icon-text-gap-ultrawide: 0.65vh;
+
+$stack-gap-169: 0.3vh;
+$stack-gap-43: 0.6vh;
+$stack-gap-ultrawide: 0.85vh;
+
+// ---------- LAYOUT & SPACING ---------- //
+
+$hud-width-small: 2vw;
+$hud-width-medium: 5vw;
+$hud-width-big: 9.5vw;
+
+$hud-select-gap: 0.5vh;
+
+$hud-padding-169: 5vh;
+$hud-padding-43: 4vh;
+$hud-padding-ultrawide: 6vh;
+
+// ---------- CANVAS AREA ---------- //
+
+$canvas-area-x: 0vw;
+$canvas-area-y: 0vh;
+
+// ---------- Z-INDEX ---------- //
+$z-base: 10;
+$z-underlay: -1;
+$z-deep: -900;

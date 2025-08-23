@@ -1,0 +1,53 @@
+{
+  "RootObject": {
+    "__guid": "e6cf5d44-0e98-4c24-a41b-1472d44cf05b",
+    "Flags": 0,
+    "Name": "item_battery",
+    "Enabled": true,
+    "Components": [
+      {
+        "__type": "HL2K.item_battery",
+        "__guid": "43cf6830-0896-46eb-8616-717850f2cdbb",
+        "HealAmount": 15,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnKilled": null,
+        "OnUse": null,
+        "PickUp": false,
+        "SerializedGuid": null,
+        "TargetName": null
+      }
+    ],
+    "Children": [],
+    "__variables": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    }
+  },
+  "ShowInMenu": true,
+  "MenuPath": "Entities/Items/Ohm Battery",
+  "MenuIcon": null,
+  "DontBreakAsTemplate": true,
+  "ResourceVersion": 1,
+  "__references": [],
+  "__version": 1
+}

@@ -1,0 +1,13 @@
+{
+  "Title": "Envmapper",
+  "Type": "library",
+  "Org": "gkaf",
+  "Ident": "envmaptool",
+  "Schema": 1,
+  "IncludeSourceFiles": false,
+  "Resources": null,
+  "PackageReferences": [],
+  "EditorReferences": null,
+  "IsStandaloneOnly": false,
+  "Metadata": {}
+}

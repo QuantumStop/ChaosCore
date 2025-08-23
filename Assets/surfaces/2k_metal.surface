@@ -1,0 +1,59 @@
+{
+  "BaseSurface": "surfaces/2k_default.surface",
+  "AudioSurface": "Metal",
+  "Description": "Generic metal",
+  "Friction": 1,
+  "Elasticity": 0.1,
+  "Density": 1500,
+  "Thickness": -1,
+  "RollingResistance": 0,
+  "BounceThreshold": 0,
+  "Dampening": 0,
+  "ImpactEffects": {
+    "Regular": [],
+    "Bullet": [],
+    "BulletDecal": [],
+    "SoftParticles": [],
+    "SoftDecal": [],
+    "HardParticles": [],
+    "HardDecal": []
+  },
+  "ScrapeEffects": {
+    "RoughnessFactor": 0.25,
+    "RoughThreshold": 0.5,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
+  "Sounds": {
+    "FootLeft": "sounds/footsteps/footstep-metal.sound",
+    "FootRight": "sounds/footsteps/footstep-metal.sound",
+    "FootLaunch": "sounds/footsteps/footstep-metal.sound",
+    "FootLand": "sounds/footsteps/footstep-metal.sound",
+    "Bullet": "sounds/physics/physics.metal.sheet.impact.sound",
+    "ImpactHard": "sounds/physics/physics.metal.sheet.impact.sound",
+    "ImpactSoft": "sounds/physics/physics.metal.sheet.impact.sound",
+    "ScrapeRough": null,
+    "ScrapeSmooth": null
+  },
+  "PrefabCollection": {
+    "BulletImpact": null,
+    "BluntImpact": null
+  },
+  "SoundCollection": {
+    "FootLeft": "sound/physics/footsteps/metal.sound",
+    "FootRight": "sound/physics/footsteps/metal.sound",
+    "FootLaunch": null,
+    "FootLand": null,
+    "Bullet": "sound/physics/metal/metal_solid_impact_bullet.sound",
+    "ImpactHard": null,
+    "ImpactSoft": null,
+    "ScrapeRough": null,
+    "ScrapeSmooth": null,
+    "Break": null
+  },
+  "Tags": null,
+  "__references": [],
+  "__version": 0
+}

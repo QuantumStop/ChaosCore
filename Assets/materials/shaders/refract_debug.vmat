@@ -1,0 +1,27 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_refract.shader"
+
+	//---- Basic ----
+	g_flTintAmount "1.000"
+	g_flTintColor "[1.000000 1.000000 1.000000 0.000000]"
+	TextureColor "materials/default/default_color.tga"
+	TextureNormal "materials/default/default_normal.tga"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Glass ----
+	g_flBlurAmount "0.250"
+	g_flRefractionStrength "1.005"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.400"
+	TextureRoughness "materials/default/default_rough.tga"
+}

@@ -1,0 +1,31 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Rendering ----
+	F_RENDER_BACKFACES 1
+
+	//---- Basic ----
+	TextureColor "materials/dev/textures/TemplateGrid_albedo.png"
+	TextureNormal "materials/dev/textures/TemplateGrid_normal.png"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.700"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/dev/textures/templategrid_ao.png"
+	TextureRoughness "materials/dev/textures/TemplateGrid_rough.png"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

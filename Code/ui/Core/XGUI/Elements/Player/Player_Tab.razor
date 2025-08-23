@@ -1,0 +1,278 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+
+
+@using XGUI
+@attribute [StyleSheet("Player_Tab.razor.scss")]
+
+<div class="player-body-left">
+	<left-top>
+
+		<left-content>
+
+			<player-img>
+				<layoutboxinset class="PlayerImgBox" style="background-image: url(resource/ui/debug/PlayerImg.psd);
+				background-size: cover;">
+				</layoutboxinset>
+			</player-img>
+
+			<left-vertical>
+				<player-modes>
+
+					<label class="TitleState"> Player States: </label>
+					<layoutboxinset class="PlayerStateBox">
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+						<img class="@GodModeStatus" src="@GodMode_icon"> </img>
+					</layoutboxinset>
+				</player-modes>
+
+				<player-health>
+					<label class="TitlePlayer"> Player Health: </label>
+
+					<div class="Health">
+						Health: <layoutboxinset>
+							<label class="PlayerStat"> @f_PlayerHealth% </label>
+						</layoutboxinset>
+						<button class="StatChange" onclick=@(() => AddPlayerHealth(f_amountOverride))>+</button>
+						<button class="StatChange" onclick=@(() => SubtractPlayerHealth(f_amountOverride))>-</button>
+						<label class="AmountInput">Amount:</label>
+						<TextEntry @ref=TextInput class="StatAmount" MaxLength=@(3) Numeric=@(true) />
+					</div>
+
+					<div class="Armor">
+						Armor: <layoutboxinset>
+							<label class="PlayerStat"> @f_PlayerArmor% </label>
+						</layoutboxinset>
+						<button class="StatChange">+</button>
+						<button class="StatChange">-</button>
+						<combobox class="DmgType" default="Generic">
+							<option>Generic</option>
+							<option>Acid</option>
+						</combobox>
+					</div>
+
+				</player-health>
+			</left-vertical>
+
+		</left-content>
+
+		<left-footer>
+
+			<player-inworld>
+				<div class="left">
+					<player-position>
+						<label> Position: </label>
+						<layoutboxinset> @PlayerPos </layoutboxinset>
+
+					</player-position>
+
+					<player-angles>
+						<label> Angles: </label>
+						<layoutboxinset></layoutboxinset>
+
+					</player-angles>
+
+					<player-velocity>
+						<label> Velocity: </label>
+						<layoutboxinset></layoutboxinset>
+					</player-velocity>
+				</div>
+				<div class="right">
+					<button class="GetPos" text="GetPos" onclick=@(() => GetPos()) />
+					<button class="SetPos" text="SetPos" onclick=@(() => SetPos()) />
+				</div>
+			</player-inworld>
+			<player-genericinputs> </player-genericinputs>
+		</left-footer>
+
+	</left-top>
+
+	<left-bottom>
+
+		<left-bottom-panelset>
+
+			@* Add all the player states here, we can add more later if needed *@
+
+			@foreach (PlayerState state in Enum.GetValues(typeof(PlayerState)))
+			{
+				if (state != PlayerState.None)
+				{
+					<button class=@($"{state}") onclick=@(() => PlayerState_toggle(state))>@state</button>
+				}
+			}
+
+		</left-bottom-panelset>
+
+		<left-bottom-panelset-2>
+
+			@foreach (PlayerState state in Enum.GetValues(typeof(PlayerState)))
+			{
+				if (state != PlayerState.None)
+				{
+					<button class=@($"{state}") onclick=@(() => PlayerState_toggle(state))>@state</button>
+				}
+			}
+
+		</left-bottom-panelset-2>
+
+	</left-bottom>
+</div>
+
+<div class="player-body-right">
+	<right-top>
+
+		<player-inventory>
+		</player-inventory>
+
+		<player-inventory-input>
+		</player-inventory-input>
+
+		<player-pickup>
+		</player-pickup>
+
+	</right-top>
+
+	<right-bottom>
+	</right-bottom>
+</div>
+
+
+
+
+@code
+{
+	// ALl of the player states that we can use, we can always add more if needed
+	public enum PlayerState
+	{
+		None,
+		GodMode,
+		Buddha,
+		NoClip,
+		HudToggle,
+		GiveAll,
+		InfiniteAmmo,
+		InfiniteSprint,
+		Explode
+	}
+
+	// Default icons (usually inactive) for player states
+	public string GodMode_icon { get; set; } = "resource/ui/debug/God_mode_active.psd";
+	public string Buddha_icon { get; set; } = "resource/ui/debug/Buddha_mode_active.psd";
+	public string NoClip_icon { get; set; } = "resource/ui/debug/No_clip_active.psd";
+
+
+	private TextEntry TextInput { get; set; }
+
+	public Vector3 PlayerPos { get; set; }
+
+
+	public float f_PlayerHealth => BasePlayer.Local.Health;
+	public float f_PlayerArmor => BasePlayer.Local.Armour;
+	public float f_amountOverride => TextInput != null ? TextInput.Text.ToFloat() : 0f;
+
+	public int StatValue { get; set; } = 0;
+
+
+	private string GodModeStatus => b_IsGodMode ? "active GodMode" : "GodMode inactive";
+	private string BuddhaStatus => b_IsBuddha ? "active Buddha" : "Buddha inactive";
+	private string NoClipStatus => b_IsNoClip ? "active Noclip" : "Noclip inactive";
+	private string InfiniteSprintStatus => b_IsInfiniteSprint ? "active InfiniteSprint" : "InfiniteSprint inactive";
+
+	public bool b_IsGodMode { get; set; } = false;
+	public bool b_IsBuddha { get; set; } = false;
+	public bool b_IsNoClip { get; set; } = false;
+	public bool b_IsInfiniteSprint { get; set; } = false;
+
+	public PlayerState CurrentPlayerState { get; set; } = PlayerState.None;
+
+	public void PlayerState_toggle(PlayerState state)
+	{
+		switch (state)
+		{
+			case PlayerState.GodMode:
+				b_IsGodMode ^= true;
+				break;
+			case PlayerState.Buddha:
+				// Implement Buddha mode logic here
+				break;
+			case PlayerState.NoClip:
+				// Implement NoClip mode logic here
+				break;
+			case PlayerState.GiveAll:
+				// Implement GiveAll mode logic here
+				break;
+			case PlayerState.InfiniteAmmo:
+				// Implement InfiniteAmmo mode logic here
+				break;
+			default:
+				break;
+		}
+	}
+
+	public void GetPos()
+	{
+		var Player = Scene.GetAll<BasePlayer>().FirstOrDefault();
+
+		if (Player != null)
+		{
+			PlayerPos = Player.GameObject.WorldPosition;
+		}
+		else return;
+
+	}
+
+	public void SetPos()
+	{
+		var Player = Scene.GetAll<BasePlayer>().FirstOrDefault();
+
+		if (Player != null && PlayerPos != 0)
+		{
+			Player.GameObject.WorldPosition = PlayerPos;
+		}
+		else return;
+
+	}
+
+	public void SubtractPlayerHealth(float value)
+	{
+		if (BasePlayer.Local != null)
+		{
+
+			var damage = new DamageInfo()
+			{
+				Attacker = null,
+				Damage = value,
+				Tags = { "crush" }
+			};
+
+			BasePlayer.Local.OnDamage(damage);
+
+		}
+	}
+
+	public void AddPlayerHealth(float value)
+	{
+		if (BasePlayer.Local != null)
+		{
+			if (BasePlayer.Local.Health + value < 100)
+			{
+				BasePlayer.Local.Health += value;
+				Core.ScreenFlash.Set(Color.Gray, 1.0f);
+
+			}
+			else if (BasePlayer.Local.Health + value > 100) BasePlayer.Local.Health = 100;
+		}
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine(f_PlayerHealth, f_PlayerArmor, PlayerPos, TextInput);
+
+
+
+}

@@ -1,0 +1,78 @@
+WeaponSelection {
+
+    font-family: Eurostiletext;
+    text-shadow: $shadow-under;
+    font-size: $ammo-font-size-secondary-169; 
+    color: $chaos-green;
+    position: absolute;
+
+    .Selection-Content
+    {
+        padding-left: 5vh;
+        padding-top: $hud-padding-169; 
+        gap: $hud-select-gap; 
+    }
+
+    .label {
+        mask-image: url(resource/ui/player/hud/scanline2x2.png);
+    }
+
+    .bucket {
+        position: relative;
+        flex-direction: column;
+        gap: $hud-select-gap;
+
+
+        .bucket-number {
+            position: absolute;
+            top: 0.5vh;
+            left: 0.5vh;
+        }
+
+        > .bucket-header {
+            background-color: rgba(12,12,12,0.24);
+            width: 4vh; 
+            height: 4vh; 
+            border-radius: 4px;
+        }
+
+        > .weapon {
+            position: relative;
+            background-color: rgba(12, 12, 12, 0.555);
+            width: $hud-width-big;
+            height: 2vw; 
+            border-radius: 4px;
+            align-items: center;
+            justify-content: center;
+
+            .weapon-icon {
+                width:  $weapon-icon-size-169;
+                height: 2vw; 
+                filter: $icon-healthy;
+            }
+
+            .weapon-name {
+                text-align: center;
+                position: absolute;
+                bottom: 0.5vh;
+                left: 1vh;
+                right: 1vh;
+                justify-content: center;
+                font-size: $weapon-icon-font-size-169; 
+
+            }
+
+            &.selected {
+                .weapon-name {
+                    text-shadow: 0 0 2px rgb(150, 181, 60);
+                    color: $chaos-green;
+                }
+                
+                animation-name: weapon-selected;
+                animation-duration: 0.195s;
+                animation-timing-function: cubic-bezier(0.15, 0.055, 0.675, 0.19);
+                animation-iteration-count: 1;
+            }
+        }
+    }
+}

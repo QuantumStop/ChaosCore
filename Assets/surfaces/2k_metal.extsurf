@@ -1,0 +1,12 @@
+{
+  "DecalList": [
+    "scripts/decals/impact/metal/decal_impact_metal01.decal",
+    "scripts/decals/impact/metal/decal_impact_metal02.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/2k_metal.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

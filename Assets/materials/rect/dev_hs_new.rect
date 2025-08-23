@@ -1,0 +1,249 @@
+{
+  "RectangleSets": [
+    {
+      "Rectangles": [
+        {
+          "Min": [
+            0,
+            0
+          ],
+          "Max": [
+            32768,
+            14336
+          ],
+          "Properties": {
+            "AllowRotation": true,
+            "AllowTiling": true
+          }
+        },
+        {
+          "Min": [
+            0,
+            14336
+          ],
+          "Max": [
+            32768,
+            22016
+          ],
+          "Properties": {
+            "AllowRotation": true,
+            "AllowTiling": true
+          }
+        },
+        {
+          "Min": [
+            0,
+            22016
+          ],
+          "Max": [
+            32768,
+            26112
+          ],
+          "Properties": {
+            "AllowRotation": true,
+            "AllowTiling": true
+          }
+        },
+        {
+          "Min": [
+            6144,
+            29696
+          ],
+          "Max": [
+            9216,
+            32768
+          ],
+          "Properties": {}
+        },
+        {
+          "Min": [
+            3072,
+            29696
+          ],
+          "Max": [
+            6144,
+            32768
+          ],
+          "Properties": {}
+        },
+        {
+          "Min": [
+            0,
+            29696
+          ],
+          "Max": [
+            3072,
+            32768
+          ],
+          "Properties": {}
+        },
+        {
+          "Min": [
+            10752,
+            31232
+          ],
+          "Max": [
+            12288,
+            32768
+          ],
+          "Properties": {}
+        },
+        {
+          "Min": [
+            12288,
+            31232
+          ],
+          "Max": [
+            13824,
+            32768
+          ],
+          "Properties": {}
+        },
+        {
+          "Min": [
+            0,
+            28160
+          ],
+          "Max": [
+            32768,
+            29184
+          ],
+          "Properties": {
+            "AllowRotation": true,
+            "AllowTiling": true
+          }
+        },
+        {
+          "Min": [
+            0,
+            29184
+          ],
+          "Max": [
+            32768,
+            29696
+          ],
+          "Properties": {
+            "AllowRotation": true,
+            "AllowTiling": true
+          }
+        },
+        {
+          "Min": [
+            9216,
+            31232
+          ],
+          "Max": [
+            10752,
+            32768
+          ],
+          "Properties": {}
+        },
+        {
+          "Min": [
+            9216,
+            29696
+          ],
+          "Max": [
+            13824,
+            31232
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            13824,
+            29696
+          ],
+          "Max": [
+            16384,
+            30720
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            13824,
+            30720
+          ],
+          "Max": [
+            16384,
+            32768
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            16384,
+            29696
+          ],
+          "Max": [
+            22528,
+            30720
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            16384,
+            30720
+          ],
+          "Max": [
+            22528,
+            32768
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            22528,
+            29696
+          ],
+          "Max": [
+            32768,
+            30720
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            22528,
+            30720
+          ],
+          "Max": [
+            32768,
+            32768
+          ],
+          "Properties": {
+            "AllowRotation": true
+          }
+        },
+        {
+          "Min": [
+            0,
+            26112
+          ],
+          "Max": [
+            32768,
+            28160
+          ],
+          "Properties": {
+            "AllowRotation": true,
+            "AllowTiling": true
+          }
+        }
+      ]
+    }
+  ]
+}

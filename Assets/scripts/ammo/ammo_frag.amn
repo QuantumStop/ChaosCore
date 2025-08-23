@@ -1,0 +1,14 @@
+{
+  "AmmoModel": "models/dev/error.vmdl",
+  "AmmoModelLarge": "models/dev/error.vmdl",
+  "AmmoName": null,
+  "HudSymbol": "v",
+  "HoleSize": 0.01,
+  "DamagePlayer": 150,
+  "MaxAmmo": 5,
+  "DamageNPC": 75,
+  "Grains": 171,
+  "FtPerSec": 1000,
+  "__references": [],
+  "__version": 0
+}

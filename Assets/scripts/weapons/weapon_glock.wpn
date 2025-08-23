@@ -1,0 +1,95 @@
+{
+  "WeaponViewmodel": "models/weapons/v_glock.vmdl",
+  "WeaponWorldmodel": "models/weapons/w_glock.vmdl",
+  "BulletCasingModel": "models/weapons/w_glock_casing.vmdl",
+  "BulletCasingParticle": "prefabs/weapons/shells/9mm_casing.prefab",
+  "WeaponType": "WEAPON_GENERIC",
+  "WeaponCrosshair": "scripts/weapons/crosshairs/crosshair_nodot.crs",
+  "StageAmount": 3,
+  "FiresUnderwater": true,
+  "ReloadsSingly": false,
+  "MuzzleLightCookie": {
+    "$compiler": "texture",
+    "$source": "imagefile",
+    "data": {
+      "FilePath": "materials/cookies/muzzle_light01.tif",
+      "MaxSize": 4096,
+      "ConvertHeightToNormals": false,
+      "NormalScale": 1,
+      "Rotate": 0,
+      "FlipVertical": false,
+      "FlipHorizontal": false,
+      "Cropping": {
+        "Left": 0,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 0
+      },
+      "Padding": {
+        "Left": 0,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 0
+      },
+      "InvertColor": false,
+      "Tint": "1,1,1,1",
+      "Blur": 0,
+      "Sharpen": 0,
+      "Brightness": 1,
+      "Contrast": 1,
+      "Saturation": 1,
+      "Hue": 0,
+      "Colorize": false,
+      "TargetColor": "0,1,0,1",
+      "CacheToDisk": true
+    },
+    "compiled": null
+  },
+  "MuzzleLightTime": 0.02,
+  "MuzzleLightFOV": 60,
+  "MuzzleFlashEffect": null,
+  "TracerEffect": "prefabs/game/particles/weapons/weapon_tracer.prefab",
+  "RecoilStrengthCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "RecoilResetThreshold": 1,
+  "RecoilRampSpeed": 0.1,
+  "RecoilPushForce": 1,
+  "PrimaryAmmoType": "scripts/ammo/ammo_9mm.amn",
+  "PrimaryAmmoCapacity": 17,
+  "DefaultPrimaryAmmo": 17,
+  "PrimaryFireRateRPM": 171,
+  "SpreadDegreesPrimary": 6,
+  "AttackSoundsPrimary": [
+    "sound/weapons/glock/g_mi.sound",
+    "sound/weapons/glock/g_lo.sound"
+  ],
+  "SecondaryAmmoType": null,
+  "SecondaryAmmoCapacity": 0,
+  "DefaultSecondaryAmmo": 0,
+  "SecondaryFireRateRPM": 1,
+  "SpreadDegreesSecondary": 1,
+  "AttackSoundsSecondary": [],
+  "Bucket": 1,
+  "BucketPosition": 0,
+  "Icon": "resource\\ui\\player\\hud\\weapons icons\\pistol.svg",
+  "Name": "Glock",
+  "EquipSlot": "SLOT_PRIMARY",
+  "HasPrimaryAmmoType": true,
+  "HasSecondaryAmmoType": false,
+  "__references": [],
+  "__version": 0
+}

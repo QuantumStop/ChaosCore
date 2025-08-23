@@ -1,0 +1,216 @@
+// ──────────────────────────────────
+// Base Styling (Aspect-Independent)
+// ──────────────────────────────────
+
+PlayerHealth, PlayerArmor 
+{
+    
+	min-height: auto;
+	min-width: auto;
+	max-height: 100%;
+	align-items: flex-end;
+
+	.HPLow.hudIcon 
+    {
+		animation-name: health-beat;
+		animation-duration: 1.5s;
+		animation-iteration-count: infinite;
+	}
+
+	.HP,
+	.Armor 
+    {
+		transition: $transition-healthy;
+
+		.hudtext,
+		.hudUpper {
+			color: $color-healthy;
+			text-shadow: $effect-healthy;
+		}
+
+		.hudIcon {
+			filter: $icon-healthy;
+			transform: translate(0 7.5vh);
+		}
+	}
+
+	.ArmorLow,
+	.HPLow 
+    {
+		transition: $transition-critical;
+
+		.hudtext,
+		.hudUpper 
+        {
+			color: $color-critical;
+			text-shadow: $effect-critical;
+		}
+
+		> .hudIcon 
+        {
+			filter: $icon-critical;
+			transform: translate(0 7.35em);
+		}
+	}
+
+	.hudHP,
+	.hudSUIT 
+    {
+		transition: $transition-quick;
+	}
+
+	.hudNumber 
+    {
+		flex-direction: column;
+		transition: $transition-quicker;
+
+		span {
+			justify-content: flex-end;
+		}
+	}
+
+	.hudNumber,
+	.hudText 
+    {
+		font-family: $font-heading;
+	}
+
+	.hudUnder 
+    {
+		color: $chaos-grey;
+		z-index: $z-deep;
+		text-shadow: $shadow-under;
+	}
+
+
+}
+
+// ────────────────────────────────
+// Aspect-Ratio Specific Overrides
+// ────────────────────────────────
+
+.aspect-169, .aspect-43, .aspect-ultrawide {
+
+	PlayerHealth, PlayerArmor 
+    {
+		margin-bottom: $icon-margin-vertical-169;
+		padding-bottom: $icon-margin-vertical-169;
+		padding-left: $hud-padding-169;
+
+		.hudHP,
+		.hudSUIT 
+        {
+			gap: $icon-text-gap-169;
+		}
+
+		.hudIcon 
+        {
+			width: $icon-size-169;
+			height: $icon-size-169;
+			margin-right: $icon-text-gap-169;
+			font-size: $status-font-size-big-169;
+		}
+
+        .ArmorLow, .HPLow,	
+        .Armor, .HP
+        {
+            > .hudIcon 
+            {
+				transform: $transform-medium-health-offset-extra-169;
+            }
+        }
+
+		.hudNumber
+        {
+			font-size: $status-font-size-169;
+		}
+
+		.hudText
+        {
+			font-size: $status-font-size-secondary-169;
+			padding-left: $stack-gap-169;
+		}
+
+        .hudUpper
+        {
+            position: relative;
+		    transform: $transform-medium-health-offset-169;
+        }
+
+        .hudUnder 
+        {
+		    position: relative;
+		    transform: $transform-small-health-offset-169;
+        }
+
+
+	}
+
+}
+
+// TODO: Eventually if we want to cover 4:3 specifically, we can do it here
+
+// .aspect-43 {
+
+// 	PlayerHealth, PlayerArmor 
+//     {
+// 		margin-bottom: $icon-margin-vertical-43;
+// 		padding-bottom: $icon-margin-vertical-43;
+// 		padding-left: $hud-padding-43;
+
+// 		.hudHP,
+// 		.hudSUIT {
+// 			gap: $icon-text-gap-43;
+// 		}
+
+// 		.hudIcon {
+// 			width: $icon-size-43;
+// 			height: $icon-size-43;
+// 			margin-right: $icon-text-gap-43;
+// 			font-size: $status-font-size-big-43;
+// 		}
+
+// 		.hudNumber {
+// 			font-size: $status-font-size-43;
+// 		}
+
+// 		.hudText {
+// 			font-size: 2vh;
+// 			padding-left: $stack-gap-43;
+// 		}
+// 	}
+
+// }
+
+.aspect-ultrawide {
+
+	PlayerHealth, PlayerArmor 
+    {
+		margin-bottom: $icon-margin-vertical-ultrawide;
+		padding-bottom: $icon-margin-vertical-ultrawide;
+		padding-left: $hud-padding-ultrawide;
+
+		.hudHP,
+		.hudSUIT {
+			gap: $icon-text-gap-ultrawide;
+		}
+
+		.hudIcon {
+			width: $icon-size-ultrawide;
+			height: $icon-size-ultrawide;
+			margin-right: $icon-text-gap-ultrawide;
+			font-size: $status-font-size-big-ultrawide;
+		}
+
+		.hudNumber {
+			font-size: $status-font-size-ultrawide;
+		}
+
+		.hudText {
+			font-size: 2vh;
+			padding-left: $stack-gap-ultrawide;
+		}
+	}
+
+}
+

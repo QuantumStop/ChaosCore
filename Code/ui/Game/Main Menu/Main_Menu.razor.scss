@@ -1,0 +1,129 @@
+main_menu {
+
+    width: 500px;
+
+    // TODO: Find a way to get the state of the camera in the scene
+    // so we can just immediately do this instead of thorugh duration
+
+    // What's conveniant is that until it goes through the anim there's no control
+    // Very useful!
+
+    animation: menu-intro ease-in-out linear;
+    animation-duration: 9s;
+    animation-fill-mode: forwards;
+    pointer-events: all;
+
+    content {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    brand {
+        flex-direction: row;
+        align-items: flex-end;
+        width: auto;
+        height: 60%;
+        padding-left: 12%;
+    }
+
+    buttons {
+        flex-direction: column;
+        height: 40%;
+        // flex-grow: 0;
+        // flex-shrink: 10;
+        padding-left: 12%;
+        padding-top: 2.5vh;    
+    }
+
+    img.GameLogo {
+        width: 50vh;
+    }
+
+    button {
+        min-width: 100px;
+        width: 50vh;
+        height: 4.5vh;
+        padding: 10px 15px 7px;
+
+        align-items: center;
+
+        color: rgb(120, 120, 124);
+
+        font-family: Gordin;
+        font-smooth: always;
+        text-transform: uppercase;
+        font-size: 2.3vh;
+        font-weight: 600;
+
+        text-shadow: 1.5px 1.7px 0.25px rgba(9, 9, 9, 0.256);
+        z-index: 5;
+
+        
+    }
+    
+
+    button:hover {
+        color: rgb(230, 230, 230);
+        background: linear-gradient(to right, rgb(60, 60, 66),  rgba(39, 39, 39, 0));
+ 
+
+        // badabing bada-boom, here comes the animation, zoom
+        animation: button-hovers ease;
+        animation-duration: 0.3s;
+        animation-fill-mode: forwards;
+        transition: font-size 0.05s ease;
+    }
+
+    button.selected {
+
+        // We have to annoying do this, because s&box razor doesn't have @extend option
+        color: rgb(230, 230, 230);
+        background: linear-gradient(to right, rgb(60, 60, 66), rgba(39, 39, 39, 0));
+
+
+        animation: button-hovers ease;
+        animation-duration: 0.3s;
+        animation-fill-mode: forwards;
+        transition: font-size 0.05s ease;        
+    }
+
+
+    button:active {
+        color: rgb(255, 255, 255);
+        background: linear-gradient(to right, rgb(72, 72, 76),  rgba(39, 39, 39, 0));
+    }
+
+
+}
+
+
+@keyframes button-hovers {
+        
+    0% {
+        background-position: -70% 0%, 0% 0%;
+    }
+
+    50% {
+        background-position: -65% 0%, 0% 0%;
+    }
+
+
+    100% {
+        background-position: 0% 0%, 0% 0%;
+    }
+    
+}
+
+@keyframes menu-intro {
+    0% {
+        opacity: 0;
+    }
+
+    60% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1.0;
+    }
+}

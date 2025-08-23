@@ -1,0 +1,13 @@
+{
+  "DecalList": [
+    "scripts/decals/impact/plastic/decal_impact_plastic01.decal",
+    "scripts/decals/impact/plastic/decal_impact_plastic02.decal",
+    "scripts/decals/impact/plastic/decal_impact_plastic03.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/2k_plastic.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

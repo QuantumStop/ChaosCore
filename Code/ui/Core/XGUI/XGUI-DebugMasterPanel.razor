@@ -1,0 +1,98 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System.Collections.Generic;
+@using System;
+@using System.Threading.Tasks
+@using System.Reflection;
+
+@using TOT;
+@using XGUI;
+
+
+
+@attribute [StyleSheet("Elements/DebugMaster_Root.scss")]
+@inherits Window
+
+<root class="xgui_debugmasterpanel" title="DebugMaster" width="930px" height="450px" minwidth="930" minheight="450"
+	x="40px" y="40px">
+
+	<body class="window-content">
+		<tabcontrol>
+
+			<tab tabName="game" slot="tab" tabtext="Game" style="height:100%;">
+				<game_tab />
+			</tab>
+
+			<tab tabName="save" slot="tab" tabtext="Saves" style="height:100%;">
+				<saves_tab />
+			</tab>
+
+			<tab tabName="render" slot="tab" tabtext="Render" style="height:100%;">
+				<render_tab />
+			</tab>
+
+			<tab tabName="postproc" slot="tab" tabtext="Post Processing" style="height:100%;">
+				<postproc_tab />
+			</tab>
+
+			<tab tabName="player" slot="tab" tabtext="Player" style="height:100%;">
+				<player_tab />
+			</tab>
+
+			<tab tabName="world" slot="tab" tabtext="World" style="height:100%;">
+				<world_tab />
+			</tab>
+
+			<tab tabName="ai" slot="tab" tabtext="AI" style="height:100%;">
+				<ai_tab />
+			</tab>
+
+			<tab tabName="script" slot="tab" tabtext="Scripts" style="height:100%;">
+				<scripts_tab />
+			</tab>
+
+			<tab tabName="spawn" slot="tab" tabtext="Spawn" style="height:100%;">
+				<spawn_tab />
+			</tab>
+
+			<tab tabName="gameobject" slot="tab" tabtext="GameObjects" style="height:100%;">
+				<gameobjects_tab />
+			</tab>
+
+			<tab tabName="choreo" slot="tab" tabtext="Choreography" style="height:100%;">
+				<choreo_tab />
+			</tab>
+
+			<tab tabName="tools" slot="tab" tabtext="Tool Settings" style="height:100%;">
+				<toolsettings_tab />
+			</tab>
+
+		</tabcontrol>
+	</body>
+	<resizer></resizer>
+</root>
+
+
+@code {
+	public TextEntry conentry { get; set; }
+	public TextEntry filterentry { get; set; }
+	public TextEntry searchentry { get; set; }
+
+	// private static bool _clearConsole;
+	// public static List<string> conmsg = new();
+	// public static List<string> confilteredmsg = new();
+	// public bool bDebugOptions { get; set; }
+	// public bool bIsFocused { get; set; } = false;
+	// public static bool bIsFiltered { get; set; }
+	// private bool isCloseButtonEventAttached = false;
+
+	// protected override int BuildHash() => System.HashCode.Combine( conmsg, confilteredmsg, filterentry,
+	// searchentry,conentry, bDebugOptions, bIsFocused, CompareMSG );
+
+	//-- Core Console Commands and Console Variables go here --//
+
+	public override void OnClose()
+	{
+		XGUI_DebugMaster_Manager.GenericCountChange();
+	}
+}

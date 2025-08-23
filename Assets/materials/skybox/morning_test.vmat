@@ -1,0 +1,9 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/exposure_sky_hdri.shader"
+
+	//---- Sky ----
+	TextureSky "materials/skybox/textures/MorningSkyHDRI007B_2K-HDR.exr"
+}

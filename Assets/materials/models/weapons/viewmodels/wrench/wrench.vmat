@@ -1,0 +1,34 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Extra ----
+	F_VIEWMODEL 1
+
+	//---- PBR ----
+	F_METALNESS_TEXTURE 1
+
+	//---- Basic ----
+	TextureColor "materials/models/weapons/viewmodels/wrench/textures/Wrench_color.tif"
+	TextureNormal "materials/models/weapons/viewmodels/wrench/textures/Wrench_normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/weapons/viewmodels/wrench/textures/wrench_ao.tif"
+	TextureMetalness "materials/models/weapons/viewmodels/wrench/textures/Wrench_metal.tif"
+	TextureRoughness "materials/models/weapons/viewmodels/wrench/textures/Wrench_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

@@ -1,0 +1,62 @@
+//                                          ░░░░░░░░                                  
+//                                         ░░░░░░░░░░░                                
+//                         ░░░░             █████░░░░░░░                              
+//                        ░░░██             ░░░░░░░░░░░█                              
+//           ░░░░░░░░░░░░ ░░░░░░░░░░░░░  ░░░░░░░░░░░░░▒█ ░░░░░░░░░░░░░  ░░░░░░░░░░░░░█
+//         ░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░███ ░░░░░█░░░░███████░░░░█░░░███████████ 
+//        ░░░▓          ░░░█       ░░░█░░░░░█    ░░░░██░░░█       ░░░█ ░░░░░░░░░░░░   
+//       ░░░░█         ░░░░█      ░░░░█░░░░█    ░░░░░░░▓░█       ░░░█  █████████░░░█  
+//     ░░░░░▓░░░░░█░░░░░░░█       ░░░█░░░░██   ░░░░░░░░░█░░░░░░░░░░██░░░░░░░░░░░░░█   
+//  ░░░░░█░░░░░░░█░░░█░░░█       ░░░█░░░░██    ░░░░▒███░░░░░░░░░░██░░░░░░░░░░░░░██ ░░░
+// ░░░░░░░░░█░░░░░░░░░░░░░░▒ ░░░░░░░░░░░░░█ ░░░░░░░░░░░░░░  ░░░░░░░░░░█░░░█      ░░░░█
+// ██░░░████ ░░█████████░░░█░░░████████░░░█░░░█████████░░██░░░████████ ░░░░    ░░░░██ 
+//  ░░░█    ░░░█       ░░░█ ░░░░░░░░░░░░░█░░░█        ░░░█░░░██        ░░░░█  ░░░██   
+// ░░░█    ░░░█       ░░░██░░░███████████░░░░█       ░░░█ ░░░█         █░░░▓░░░██     
+// ░░░░░░█░░░█        ░░░█░░░░░░░░░░░░░█ ░░░░░░░░░░░░░░█ ░░░█           ░░░░░▓██      
+// ███████████       ████  █████████████ ██████████████ ████            █░░░██        
+//                                                                   ░░░░░██          
+//                                                                  ░░▒███            
+
+//  ChaosHUDTheme.scss - Master Theme Stylesheet
+//  ──────────────────────────────────────────────────────────────────────────────
+//  This file serves as the primary entry point for all HUD-related SCSS styling.
+//  It establishes a consistent, modular, and scalable approach to UI theming by centralizing
+//  the import of shared variables, fonts, color palettes, effects, and layout utilities.
+//
+//  ──────────────────────────────────────────────────────────────────────────────
+//  Structure & Purpose:
+//  - Imports all foundational style definitions required by HUD components.
+//  - Ensures all child Razor components inherit a unified visual language.
+//  - Rapid iteration and maintenance by keeping base styles in sync.
+//  - Encourages modularity, making it easy to extend or override styles in the future.
+//
+//  ──────────────────────────────────────────────────────────────────────────────
+//  Guidelines for Extension:
+//  - Add new shared style modules to the imports below as needed.
+//  - Keep component-specific styles in their respective files and import here only
+//    if they are intended for global use across the HUD.
+//  - Use global vars from the shared modules to maintain consistency.
+//
+//  ──────────────────────────────────────────────────────────────────────────────
+//  Example Usage:
+//  - To add a new color palette, update ChaosColors.scss.
+//  - TO add a new animation or transition, or misc effects, likewise update ChaosFX.scss.
+//  - To introduce new layout utilities, extend ChaosLayout.scss.
+//
+//  ──────────────────────────────────────────────────────────────────────────────
+//  Make sure to:
+//  - Avoid placing component-specific styles directly in this file.
+//  - Use this file only for imports and high-level documentation.
+
+
+@import "/ui/chaoscore/HUD/Styles/Shared/ChaosColors.scss";
+@import "/ui/chaoscore/HUD/Styles/Shared/ChaosFonts.scss";
+@import "/ui/chaoscore/HUD/Styles/Shared/ChaosFX.scss";
+@import "/ui/chaoscore/HUD/Styles/Shared/ChaosLayout.scss";
+
+// == TODO: == //
+// @import "ChaosContainers.scss";
+// @import "ChaosHints.scss";
+// @import "ChaosDamageIndicator.scss";
+// @import "ChaosControls.scss";
+

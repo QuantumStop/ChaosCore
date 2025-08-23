@@ -1,0 +1,11 @@
+{
+  "Sequences": [
+    {
+      "Source": "materials/shaders/textures/arri_logc4_rec709.exr",
+      "IsLooping": true,
+      "Frames": 64
+    }
+  ],
+  "OutputFormat": "RGBA32323232F",
+  "OutputTypeString": "2D"
+}

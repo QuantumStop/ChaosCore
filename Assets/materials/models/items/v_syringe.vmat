@@ -1,0 +1,39 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Emission ----
+	F_EMISSION 1
+
+	//---- PBR ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1
+	F_METALNESS_TEXTURE 1
+
+	//---- Basic ----
+	TextureColor "materials/models/items/textures/syringe_color.tif"
+	TextureNormal "materials/models/items/textures/syringe_normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Glow ----
+	g_flEmissionAlbedoFactor "1.000"
+	g_flEmissionBrightness "0.000"
+	g_flEmissionScale "1.000"
+	g_vEmissionTint "[1.000000 1.000000 1.000000 0.000000]"
+	TextureEmission "materials/models/items/textures/syringe_selfillum.tif"
+
+	//---- PBR ----
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/items/textures/syringe_ao.tif"
+	TextureMetalness "materials/models/items/textures/syringe_metal.tif"
+	TextureRoughness "materials/models/items/textures/syringe_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

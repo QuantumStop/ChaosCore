@@ -1,0 +1,109 @@
+{
+  "RootObject": {
+    "__guid": "b10be44b-aa6f-4095-8075-fc86608de0ee",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "weapon_glock",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "BaseWeaponItem",
+        "__guid": "3161349d-e171-4e49-a7c8-9be00f7af10f",
+        "__enabled": true,
+        "Collider": null,
+        "FillReserveAmmoForWeapon": false,
+        "Initialized": false,
+        "Mesh": null,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnKilled": null,
+        "OnUse": null,
+        "Physics": null,
+        "PickUp": false,
+        "SerializedGuid": null,
+        "SkipFirstEquipAnim": false,
+        "TargetName": null,
+        "WeaponData": "scripts/weapons/weapon_glock.wpn"
+      }
+    ],
+    "Children": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": [
+      {
+        "Id": "Skip First Equip Anim",
+        "Title": "Skip First Equip Anim",
+        "Description": null,
+        "Group": "Weapon",
+        "Order": 1,
+        "Targets": [
+          {
+            "Id": "3161349d-e171-4e49-a7c8-9be00f7af10f",
+            "Property": "SkipFirstEquipAnim"
+          }
+        ]
+      },
+      {
+        "Id": "Fill Reserve Ammo For Weapon",
+        "Title": "Fill Reserve Ammo For Weapon",
+        "Description": null,
+        "Group": "Weapon",
+        "Order": 1,
+        "Targets": [
+          {
+            "Id": "3161349d-e171-4e49-a7c8-9be00f7af10f",
+            "Property": "FillReserveAmmoForWeapon"
+          }
+        ]
+      },
+      {
+        "Id": "Target Name",
+        "Title": "Target Name",
+        "Description": null,
+        "Group": "Weapon",
+        "Order": 0,
+        "Targets": [
+          {
+            "Id": "3161349d-e171-4e49-a7c8-9be00f7af10f",
+            "Property": "TargetName"
+          }
+        ]
+      }
+    ]
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": true,
+  "MenuPath": "Entities/Weapons/Glock",
+  "MenuIcon": null,
+  "DontBreakAsTemplate": true,
+  "__references": [],
+  "__version": 2
+}

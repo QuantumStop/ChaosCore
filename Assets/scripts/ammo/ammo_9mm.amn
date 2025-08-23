@@ -1,0 +1,14 @@
+{
+  "AmmoModel": "models/weapons/w_glock_mag.vmdl",
+  "AmmoModelLarge": "models/dev/error.vmdl",
+  "AmmoName": null,
+  "HudSymbol": "d",
+  "HoleSize": 0.25,
+  "DamagePlayer": 8,
+  "MaxAmmo": 90,
+  "DamageNPC": 5,
+  "Grains": 171,
+  "FtPerSec": 1300,
+  "__references": [],
+  "__version": 0
+}

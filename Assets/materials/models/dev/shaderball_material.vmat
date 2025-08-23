@@ -1,0 +1,26 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Basic ----
+	g_flTintAmount "1.000"
+	g_flTintColor "[1.000000 1.000000 1.000000 0.000000]"
+	TextureColor "[0.854902 0.647059 0.125490 1.000000]"
+	TextureNormal "materials/default/default_normal.tga"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMetalness "1.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureRoughness "[0.100000 0.100000 0.100000 0.000000]"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

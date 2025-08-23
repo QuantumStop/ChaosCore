@@ -1,0 +1,73 @@
+{
+  "RootObject": {
+    "__guid": "f4eb2855-7203-4171-b44a-a686f63861f7",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "weapon_smg2",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "BaseWeaponItem",
+        "__guid": "3b213406-8264-490b-b66f-76d07abd56f2",
+        "__enabled": true,
+        "Collider": null,
+        "FillReserveAmmoForWeapon": false,
+        "Initialized": false,
+        "InternalAmmoCountPrimary": 1,
+        "Mesh": null,
+        "MotionEnabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnKilled": null,
+        "OnUse": null,
+        "Physics": null,
+        "PickUp": false,
+        "PickupTrigger": null,
+        "PickupTriggerScale": 2,
+        "SerializedGuid": null,
+        "SkipFirstEquipAnim": false,
+        "TargetName": null,
+        "WeaponData": "scripts/weapons/weapon_smg2.wpn"
+      }
+    ],
+    "Children": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": true,
+  "MenuPath": "Entities/Weapons/SMG2",
+  "MenuIcon": null,
+  "DontBreakAsTemplate": true,
+  "__references": [],
+  "__version": 2
+}

@@ -1,0 +1,222 @@
+// ──────────────────────────────────
+// Base Styling (Aspect-Independent)
+// ──────────────────────────────────
+
+.Ammo-Content {
+    min-height: auto;
+    min-width: auto;
+    max-height: auto;
+    flex-direction: column;
+    justify-content: flex-end;
+        
+    .hudGrenade_container {
+        justify-content: flex-end;
+        
+        #grenadeCount,
+        #grenadeType {
+            color: $chaos-grey;
+            text-shadow: $shadow-under-alt;
+        }
+
+        #grenadeCount {
+            font-family: $font-heading;
+        }
+    
+        #grenadeType {
+            filter: $icon-empty;
+        }
+
+    }
+
+    .hudAmmoType_container {
+        justify-content: flex-end;
+
+        #ammoType {
+            filter: $icon-healthy;
+            text-shadow: $shadow-healthy;
+        }
+    }
+
+    
+    .hudAmmo_container {
+        transition: $transition-quick;
+
+        .hudUpper {            
+            position: relative;
+            text-shadow: $effect-healthy;    
+            justify-content: flex-end;
+        }
+
+        #breakline {
+            color: $chaos-grey;
+            text-shadow: $shadow-under;
+        }
+    
+        .ammoLayer,
+        .ammoReserveLayer {
+                flex-direction: column;
+
+                .hudUpper, .hudUnder {
+                    font-family: $font-heading;
+                }
+
+                .hudUpper {
+                    color: $color-healthy;
+                    z-index: $z-base;
+                } 
+
+                .hudUnder {
+                    color: $chaos-grey;
+                    z-index: $z-deep;
+                    text-shadow: $shadow-under;
+                }
+        }
+    }
+
+}
+ 
+// ────────────────────────────────
+// Aspect-Ratio Specific Overrides
+// ────────────────────────────────
+
+.aspect-169, .aspect-43 {
+    
+    .Ammo-Content {
+        padding-right: $hud-padding-169;
+        padding-bottom: calc($icon-margin-vertical-169 * 0.12vh); // Adjust Ammo Content to be in-line with Health
+        margin-bottom: $icon-margin-vertical-169;
+
+        .hudGrenade_container {
+            gap: $icon-text-gap-169;
+            transform: $transform-small-grenadetype-offset-169;
+
+            #grenadeType {
+                width: $icon-size-secondary-169;
+                height: $icon-size-secondary-169;
+            }
+    
+            #grenadeCount,
+            #grenadeType {
+                font-size: $ammo-font-size-secondary-169;
+            }
+        }
+
+        .hudAmmoType_container {
+            
+            #ammoType {
+                width: $icon-size-secondary-169;
+                height: $icon-size-secondary-169;
+                transform: $transform-ammotype-offset-169;
+            }
+        }
+
+        .hudAmmo_container {
+                
+            .ammoLayer {
+                font-size: $ammo-font-size-main-169;
+
+                .hudUpper {
+                    transform: $transform-medium-ammo-offset-169;
+                }
+            }
+
+            #breakline {
+                font-size: $ammo-font-size-reserve-169;
+                margin: 0.5vh 0.75vh;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+    
+            .ammoReserveLayer {
+                justify-content: flex-end;
+                font-size: $ammo-font-size-reserve-169;
+                margin: 0.5vh 0;
+
+                .hudUpper {
+                    transform: $transform-small-ammo-offset-169;
+                }                   
+            }
+                
+                
+        }
+    }
+}
+
+// TODO: Eventually if we want to cover 4:3 specifically, we can do it here
+
+// .aspect-43 {
+//     .Ammo-Content {
+//         margin-bottom: $icon-margin-vertical-43;
+//         padding-right: $hud-padding-43;
+
+//         .hudGrenade_container {
+//             gap: $icon-text-gap-43;
+//             padding-bottom: $hud-upper-padding-43;
+
+//             #grenadeType {
+//                 width: $icon-size-43;
+//             }
+//         }
+
+//         .hudAmmo_container {
+//             .ammo {
+//                 padding-bottom: $stack-gap-43;
+
+//                 .ammoLayer {
+//                     font-size: $ammo-font-size-main-43;
+//                     width: $hud-width-big-43;
+//                 }
+
+//                 .ammoReserveLayer {
+//                     padding-top: $hud-upper-padding-43;
+//                     width: $hud-width-medium-43;
+//                 }
+
+//                 #breakline {
+//                     font-size: $status-font-size-43;
+//                 }
+//             }
+
+//             .ammoType_container {
+//                 #ammoType {
+//                     padding-left: $hud-padding-big-43;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+.aspect-ultrawide {
+    .Ammo-Content {
+        margin-bottom: $icon-margin-vertical-ultrawide;
+        padding-right: $hud-padding-ultrawide;
+
+        .hudGrenade_container {
+            gap: $icon-text-gap-ultrawide;
+
+            #grenadeType {
+                width: $icon-size-ultrawide;
+            }
+        }
+
+        .hudAmmo_container {
+            .ammo {
+                padding-bottom: $stack-gap-ultrawide;
+
+                .ammoLayer {
+                    font-size: $ammo-font-size-main-ultrawide;
+                    width: $hud-width-big-ultrawide;
+                }
+
+                .ammoReserveLayer {
+                    width: $hud-width-medium-ultrawide;
+                }
+
+                #breakline {
+                    font-size: $status-font-size-ultrawide;
+                }
+            }
+
+        }
+    }
+}

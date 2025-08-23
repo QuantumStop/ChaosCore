@@ -1,0 +1,64 @@
+{
+  "WeaponCrosshairType": "CROSSHAIR_CIRCLE",
+  "CrosshairScale": 0.2,
+  "CrosshairWidth": 128,
+  "CrosshairGapX": 15,
+  "CrosshairGapY": 15,
+  "CrosshairCircleSegment": [
+    {
+      "CrosshairCircleThickness": 1,
+      "CrosshairCircleSegments": 64,
+      "CrosshairCirclePosition": 11,
+      "CrosshairCircleColor": "0.8,1,0,1",
+      "AnimationSpeed": 0,
+      "AlphaFade": 0.08,
+      "StartAngle": 360,
+      "EndAngle": 0,
+      "GradientToColor": null
+    },
+    {
+      "CrosshairCircleThickness": 1,
+      "CrosshairCircleSegments": 32,
+      "CrosshairCirclePosition": 6,
+      "CrosshairCircleColor": "0.8,1,0,1",
+      "AnimationSpeed": 0,
+      "AlphaFade": 0.91,
+      "StartAngle": 360,
+      "EndAngle": 0,
+      "GradientToColor": null
+    },
+    {
+      "CrosshairCircleThickness": 2,
+      "CrosshairCircleSegments": 64,
+      "CrosshairCirclePosition": 0,
+      "CrosshairCircleColor": "0.8,1,0,1",
+      "AnimationSpeed": 0,
+      "AlphaFade": 0.37,
+      "StartAngle": 360,
+      "EndAngle": 0,
+      "GradientToColor": null
+    },
+    {
+      "CrosshairCircleThickness": 1,
+      "CrosshairCircleSegments": 4,
+      "CrosshairCirclePosition": 13,
+      "CrosshairCircleColor": "0.8,1,0,1",
+      "AnimationSpeed": 0,
+      "AlphaFade": 0.35,
+      "StartAngle": 360,
+      "EndAngle": 0,
+      "GradientToColor": null
+    }
+  ],
+  "CrosshairLength": 18,
+  "CrosshairRecoilScale": 14,
+  "CrosshairColor": "1,1,1,1",
+  "CrosshairHasDot": true,
+  "CrosshairDotOutline": false,
+  "CrosshairDotColor": "1,1,1,1",
+  "CrosshairHasOutline": false,
+  "CrosshairOutlineThickness": 1,
+  "CrosshairOutlineColor": "0.31163,0.31163,0.31163,1",
+  "__references": [],
+  "__version": 0
+}

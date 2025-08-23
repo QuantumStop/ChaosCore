@@ -1,0 +1,17 @@
+{
+  "BaseSurface": "surfaces/default.surface",
+  "AudioSurface": "Leather",
+  "Description": "",
+  "Friction": 0.0,
+  "Elasticity": 0.3,
+  "Density": 900,
+  "Thickness": 0.3,
+  "Dampening": 0,
+  "BounceThreshold": 40,
+  "ImpactEffects": {},
+  "ScrapeEffects": {},
+  "Sounds": {},
+  "Breakables": {},
+  "Tags": null,
+  "__references": []
+}

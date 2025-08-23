@@ -1,0 +1,9 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_editor.shader"
+
+	//---- Main ----
+	TextureColor "materials/models/editor/textures/gray.png"
+}

@@ -1,0 +1,22 @@
+PlayerDebugInfo {
+	position: absolute;
+	top: 2%;
+	left: 2%;
+	right: 0;
+	bottom: 0;
+	font-size: 11%;
+	color: white;
+	font-family: "Courier New";
+	filter-drop-shadow: 1px 1px 0px 0px black, -1px -1px 0px 0px black,
+		1px -1px 0px 0px black, -1px 1px 0px 0px black, -1px 0px 0px 0px black,
+		1px 0px 0px 0px black, 0px -1px 0px 0px black, 0px 1px 0px 0px black;
+	font-smooth: never;
+
+	div {
+		flex-direction: column;
+	}
+
+	div .block {
+		padding-top: 10%;
+	}
+}

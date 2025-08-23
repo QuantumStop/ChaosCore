@@ -1,0 +1,48 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_subsurface.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Extra ----
+	F_VIEWMODEL 1
+
+	//---- SSS ----
+	F_ALBEDO_AFFECTS_TRANSMISSION 1
+
+	//---- Basic ----
+	TextureColor "materials/models/weapons/viewmodels/hands/textures/HandL_Color.tif"
+	TextureNormal "materials/models/weapons/viewmodels/hands/textures/HandL_normal.tif"
+
+	//---- Extra ----
+	TextureSSSMask "materials/default/default_mask.tga"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/weapons/viewmodels/hands/textures/HandL_ao.tif"
+	TextureRoughness "materials/models/weapons/viewmodels/hands/textures/HandL_rough.tif"
+
+	//---- Transmission ----
+	g_flAmbientNormalSoftness "[1.000000 0.301961 0.000000 0.000000]"
+	g_flDiffuseNormalMapBlurScale "0.500"
+	g_flDistortion "1.00"
+	g_flPower "2.00"
+	g_flScale "0.10"
+	g_flSecondLobeRatio "0.450"
+	g_flSecondLobeRoughness "0.460"
+	TextureSubsurfaceLookupTable "materials/default/default_skin_shadowwarp.tga"
+	TextureThickness "[1.000000 1.000000 1.000000 0.000000]"
+	TextureTransmisionColor "[0.713726 0.427451 0.294118 0.000000]"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

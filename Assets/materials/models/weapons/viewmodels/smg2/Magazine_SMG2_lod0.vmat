@@ -1,0 +1,31 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Extra ----
+	F_VIEWMODEL 1
+
+	//---- Basic ----
+	TextureColor "materials/models/weapons/viewmodels/smg2/textures/Magazine_SMG2_color.tif"
+	TextureNormal "materials/models/weapons/viewmodels/smg2/textures/Magazine_SMG2_Normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/weapons/viewmodels/smg2/textures/Magazine_SMG2_ao.tif"
+	TextureRoughness "materials/models/weapons/viewmodels/smg2/textures/Magazine_SMG2_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

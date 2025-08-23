@@ -1,0 +1,19 @@
+@namespace TOT
+
+@using Sandbox.UI;
+@using Sandbox;
+@using XGUI;
+
+@attribute [StyleSheet( "Elements/DebugMaster_Root.scss" )]
+@inherits Panel
+
+
+<root class="custom-tag" style="border: 1px solid black; padding: 10px;">
+    <h3>@Title</h3>
+    <p>@Content</p>
+</root>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Content { get; set; }
+}

@@ -1,0 +1,33 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- PBR ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1
+
+	//---- Tint Mask ----
+	F_ALBEDO_TINT 1
+
+	//---- Basic ----
+	g_flTintAmount "1.000"
+	g_flTintColor "[1.000000 1.000000 1.000000 0.000000]"
+	TextureColor "materials/models/items/textures/item_med_color.tif"
+	TextureNormal "materials/models/items/textures/item_med_normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "0.900"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/items/textures/item_med_ao.tif"
+	TextureRoughness "materials/models/items/textures/item_med_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

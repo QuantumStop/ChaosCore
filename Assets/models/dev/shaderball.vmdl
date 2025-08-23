@@ -1,0 +1,101 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:modeldoc29:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		children = 
+		[
+			{
+				_class = "RenderMeshList"
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						filename = "models/dev/shaderball/ShaderBallOneMat.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+				]
+			},
+			{
+				_class = "MaterialGroupList"
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						remaps = 
+						[
+							{
+								from = "shaderball_material.vmat"
+								to = "materials/models/dev/shaderball_material.vmat"
+							},
+						]
+						use_global_default = false
+						global_default_material = ""
+					},
+					{
+						_class = "MaterialGroup"
+						name = "white"
+						remaps = 
+						[
+							{
+								from = "materials/models/dev/shaderball_material.vmat"
+								to = "materials/models/dev/shaderball_white.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "rough"
+						remaps = 
+						[
+							{
+								from = "materials/models/dev/shaderball_material.vmat"
+								to = "materials/models/dev/shaderball_half_rough.vmat"
+							},
+						]
+					},
+					{
+						_class = "MaterialGroup"
+						name = "complex_bent"
+						remaps = 
+						[
+							{
+								from = "materials/models/dev/shaderball_material.vmat"
+								to = "materials/models/dev/shaderball_complex.vmat"
+							},
+						]
+					},
+				]
+			},
+			{
+				_class = "PhysicsShapeList"
+				children = 
+				[
+					{
+						_class = "PhysicsShapeSphere"
+						parent_bone = "static_prop"
+						surface_prop = "2k_metal"
+						collision_tags = "solid"
+						radius = 38.0
+						center = [ 0.0, 0.0, 44.0 ]
+					},
+				]
+			},
+		]
+		model_archetype = "static_prop_model"
+		primary_associated_entity = "prop_static"
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

@@ -1,0 +1,481 @@
+{
+  "__guid": "fcfa69e5-055e-4393-afb3-a75c8b5f8b6f",
+  "GameObjects": [
+    {
+      "__guid": "5e6e44dc-d8e3-4d33-aaa3-3b82f56a5431",
+      "Flags": 0,
+      "Name": "Directional Light",
+      "Position": "11.07671,-22.86441,47.27077",
+      "Rotation": "-0.0002567582,0.8436366,0.4089521,0.3479015",
+      "Tags": "light_directional,light",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Core.KelvinDirectionalLight",
+          "__guid": "2f4806e2-cc4f-4987-927d-514fbd4bba53",
+          "Brightness": 110000,
+          "ColorMode": "Color",
+          "ColorPreset": "SunNoon",
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "110000,110000,110000,110000",
+          "LightTemperature": 5000,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RGB_Color": "1,1,1,1",
+          "Shadows": true,
+          "SkyColor": "0,0,0,0",
+          "SunBrightnessPreset": "Noon"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "5de51b9d-e185-4d43-8e24-486760cf09bc",
+      "Flags": 0,
+      "Name": "Skybox",
+      "Position": "0,0,100",
+      "Tags": "skybox",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.SkyBox2D",
+          "__guid": "62b9e65e-b455-40ba-bf86-57a7571c6afc",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SkyIndirectLighting": true,
+          "SkyMaterial": "materials/skybox/tomoko.vmat",
+          "Tint": "1,1,1,1"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "061b6e99-a6bd-46d2-8b6a-725e48d99fd6",
+      "Flags": 0,
+      "Name": "Model",
+      "Position": "-64,-16.02077,21.60947",
+      "Rotation": "0.08914135,-0.05373931,-0.329462,0.9384137",
+      "Scale": "2,2,2",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "21ce1b44-290c-4d67-a6c4-fb42bbab3270",
+          "__enabled": false,
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Model": "models/weapons/v_wrench.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "84a72b1c-4734-4bb2-80f8-602483b3d096",
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Model": "models/weapons/v_smg2.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "023191a8-e41a-4b4d-8582-24e87554c144",
+      "Flags": 0,
+      "Name": "Model (1)",
+      "Position": "-54.40052,54.51892,12.96914",
+      "Rotation": "-0.2485657,-0.1051759,0.1264904,0.9545435",
+      "Scale": "2,2,2",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "ae573d7b-2241-44c4-b463-41a349682b66",
+          "__enabled": false,
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Model": "models/weapons/v_wrench.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "1cbe02da-d815-489f-8819-0cf5af4c467a",
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Model": "models/weapons/v_smg2.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "4de2ef45-c173-40cd-8006-d1c080408b7c",
+      "Flags": 0,
+      "Name": "Tonemap + Camera",
+      "Position": "77.1432,27.65141,20.71445",
+      "Rotation": "0,0,0.9659259,0.2588193",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Sandbox.CameraComponent",
+          "__guid": "4d97291b-2c0f-4665-83e6-c8e49ebaaecc",
+          "BackgroundColor": "0.33333,0.46275,0.52157,1",
+          "ClearFlags": "All",
+          "FieldOfView": 50,
+          "FovAxis": "Horizontal",
+          "IsMainCamera": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Orthographic": false,
+          "OrthographicHeight": 1204,
+          "Priority": 1,
+          "RenderExcludeTags": "",
+          "RenderTags": "",
+          "TargetEye": "None",
+          "Viewport": "0,0,1,1",
+          "ZFar": 10000,
+          "ZNear": 10
+        },
+        {
+          "__type": "HL2K.Tonemapper",
+          "__guid": "73c422e0-f144-433f-b992-be87746755e1",
+          "CustomLUT": null,
+          "ExposureBias": 1,
+          "GammaIn": 2.4,
+          "GammaOut": 2.2,
+          "Mode": "Default",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        },
+        {
+          "__type": "Sandbox.Bloom",
+          "__guid": "ccf833be-3370-4400-b65d-b16e8ab618b6",
+          "__version": 1,
+          "Gamma": 2.2,
+          "Mode": "Additive",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Strength": 0.11,
+          "Threshold": 0,
+          "Tint": "1,1,1,1"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "2465bf92-c1a9-4754-ac50-5d7bb8fe4751",
+      "Flags": 0,
+      "Name": "Point Light (2)",
+      "Position": "-32,96.00002,-16",
+      "Tags": "light_point,light",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Core.KelvinPointLight",
+          "__guid": "abadda20-9b73-4fad-89f2-6e7fb334bed8",
+          "Attenuation": 10,
+          "Brightness": 10000,
+          "ColorMode": "ColorTemperature",
+          "ColorPreset": "NeutralWhite",
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "31415.93,1307.268,104.8252,31415.93",
+          "LightTemperature": 1000,
+          "LumenBrightnessPresets": "ExteriorLight",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Radius": 139.20003,
+          "RGB_Color": "1,0.04161,0.00334,1",
+          "Shadows": true
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "cf994eae-ef8a-46ad-8666-f6972f6e7d64",
+      "Flags": 0,
+      "Name": "Point Light (1)",
+      "Position": "-99.9286,-50.88404,-15.07429",
+      "Tags": "light_point,light",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Core.KelvinPointLight",
+          "__guid": "ca384101-973b-45d2-b75f-89000dd4dad2",
+          "Attenuation": 7.2,
+          "Brightness": 10000,
+          "ColorMode": "ColorTemperature",
+          "ColorPreset": "NeutralWhite",
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "31415.93,1307.268,104.8252,31415.93",
+          "LightTemperature": 1000,
+          "LumenBrightnessPresets": "ExteriorLight",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Radius": 235.30014,
+          "RGB_Color": "1,0.04161,0.00334,1",
+          "Shadows": true
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "08dc8bbf-18e9-4c99-8f1e-f634a8e530b5",
+      "Flags": 0,
+      "Name": "Point Light",
+      "Position": "-64,32,48",
+      "Tags": "light_point,light",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "Core.KelvinPointLight",
+          "__guid": "730befc1-22c0-4484-a717-6bb1a4ef615c",
+          "Attenuation": 1,
+          "Brightness": 10000,
+          "ColorMode": "ColorTemperature",
+          "ColorPreset": "PartlyCloudy",
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "16328.34,20485.76,31415.93,31415.93",
+          "LightTemperature": 12000,
+          "LumenBrightnessPresets": "ExteriorLight",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Radius": 400,
+          "RGB_Color": "0.51975,0.65208,1,1",
+          "Shadows": true
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "1a68e159-a76e-4fe6-8898-e77b205ad27c",
+      "Flags": 0,
+      "Name": "Game Manager",
+      "Position": "4096,4096,4096",
+      "Enabled": true,
+      "Components": [
+        {
+          "__type": "game_manager",
+          "__guid": "8fb7d347-f664-4ea9-b25d-c89ba2d1eddd",
+          "DontSpawnPlayer": true,
+          "Initialized": true,
+          "LastEditorCameraPosition": {
+            "Position": "48.9933,-4.392066,19.87511",
+            "Scale": "1,1,1",
+            "Rotation": "-0.1663442,0.02072134,0.978289,0.1218645"
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SerializedGuid": null,
+          "TargetName": "game_manager_hGrgG",
+          "TimeScaleSlider": 1
+        },
+        {
+          "__type": "Sandbox.SceneInformation",
+          "__guid": "92c24abc-cc93-4ec8-bfd4-8bfbdf737d0c",
+          "Author": null,
+          "Changes": "",
+          "Description": "",
+          "Group": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SceneTags": "",
+          "Title": null,
+          "Version": null
+        }
+      ],
+      "Children": [
+        {
+          "__guid": "138a1e2e-bdde-4b8a-86d9-8efda2dcc449",
+          "Flags": 2049,
+          "Name": "Editor Camera",
+          "Tags": "light_spot,light",
+          "Enabled": true,
+          "__Prefab": "prefabs/editor/editor_camera.prefab",
+          "__PrefabVariables": {}
+        },
+        {
+          "__guid": "c3d23b8a-e2d4-4b8f-9b5c-d8b82a5fb09b",
+          "Flags": 0,
+          "Name": "Exposure Manager",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "Core.CameraExposure",
+              "__guid": "8fa2ffdc-3753-4bb8-874a-e94e1f1843a9",
+              "Aperture": 8,
+              "Initialized": true,
+              "ISO": 100,
+              "Mode": "Manual",
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "OnKilled": null,
+              "OnUse": null,
+              "RealEV": 12.643856,
+              "ResultExposure": 0.00013020834,
+              "SerializedGuid": null,
+              "Shutter": 100,
+              "SunND": 1,
+              "TargetName": "Core.CameraExposure_8QH6l"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "dc1bf486-b571-46b7-80ef-480f16b2090b",
+          "Flags": 0,
+          "Name": "Video Manager",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "Core.videoplayer_manager",
+              "__guid": "06438a68-eb9d-481d-8633-4c51ac8f10f3",
+              "b_PlayOnStart": true,
+              "GlobalVolume": 1,
+              "Initialized": true,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "OnKilled": null,
+              "SerializedGuid": null,
+              "TargetName": "Core.videoplayer_manager_ndHPq"
+            }
+          ],
+          "Children": []
+        }
+      ]
+    }
+  ],
+  "SceneProperties": {
+    "NetworkInterpolation": true,
+    "TimeScale": 1,
+    "WantsSystemScene": true,
+    "Metadata": {},
+    "NavMesh": {
+      "Enabled": false,
+      "IncludeStaticBodies": true,
+      "IncludeKeyframedBodies": true,
+      "EditorAutoUpdate": true,
+      "AgentHeight": 64,
+      "AgentRadius": 16,
+      "AgentStepSize": 18,
+      "AgentMaxSlope": 40,
+      "ExcludedBodies": "",
+      "IncludedBodies": ""
+    }
+  },
+  "ResourceVersion": 2,
+  "Title": null,
+  "Description": null,
+  "__references": [],
+  "__version": 2
+}

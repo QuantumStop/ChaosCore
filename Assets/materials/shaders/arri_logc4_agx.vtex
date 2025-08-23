@@ -1,0 +1,18 @@
+{
+  "Images": null,
+  "Sequences": [
+    {
+      "Source": "materials/shaders/textures/arri_logc4_agx.exr",
+      "IsLooping": true,
+      "FlipBook": false,
+      "Columns": 0,
+      "Rows": 0,
+      "Frames": 64
+    }
+  ],
+  "InputColorSpace": "Linear",
+  "OutputFormat": "RGBA32323232F",
+  "OutputColorSpace": "Linear",
+  "OutputMipAlgorithm": "None",
+  "OutputTypeString": "2D"
+}

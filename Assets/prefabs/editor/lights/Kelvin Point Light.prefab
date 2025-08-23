@@ -1,0 +1,71 @@
+{
+  "RootObject": {
+    "__guid": "7e8ccab2-333c-4ecd-9893-5bfd27521f98",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "kelvin point light",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "light_point,light",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "Core.KelvinPointLight",
+        "__guid": "01473035-56f1-4f98-94ca-ec057aa4ddb6",
+        "__enabled": true,
+        "Attenuation": 1,
+        "Brightness": 1000,
+        "ColorMode": "Color",
+        "ColorPreset": "NeutralWhite",
+        "FogMode": "Enabled",
+        "FogStrength": 1,
+        "KelvinTemperature": 6500,
+        "LightColor": "79.57747,79.57747,79.57747,79.57747",
+        "LumenBrightnessPresets": "InteriorLight",
+        "MiredTemperature": 154,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Radius": 400,
+        "RGB_Color": "1,1,1,1",
+        "Shadows": true,
+        "TemperatureMode": "Kelvin"
+      }
+    ],
+    "Children": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": true,
+  "MenuPath": "Light/Point Light (Kelvin)",
+  "MenuIcon": "lightbulb",
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}

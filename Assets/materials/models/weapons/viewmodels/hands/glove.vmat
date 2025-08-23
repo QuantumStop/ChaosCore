@@ -1,0 +1,60 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Extra ----
+	F_VIEWMODEL 1
+
+	//---- Basic ----
+	TextureColor "materials/models/weapons/viewmodels/hands/textures/Glove_Color.tif"
+	TextureNormal "materials/models/weapons/viewmodels/hands/textures/Glove_normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.400"
+	g_flSpecularOcclusionPower "2.500"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/weapons/viewmodels/hands/textures/Glove_ao.tif"
+	TextureRoughness "materials/models/weapons/viewmodels/hands/textures/Glove_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+
+	"StateHistory"
+	{
+		"State_0000"
+		{
+			"ThumbnailCRC32"		"0xFAAF4695"
+			"Thumbnail"		"/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDxdLdx/rpFiTqMjOT+lWo9MyoZZh6/cqjcTvLIBINu3+EjpVq3nkaPy2dishVQd2Mc/wD1/wBDS1GX4rKFIGMzRtuGBnj+vWsSVEjkZY3JByoJ5PtW80PHI56Z9Kz7y1RQzorBl3M3Oc8E96SYFZwkh3qAGI4yMD647VLAyF1Mi/MG5H8I9/T/AD9KpiR2wd6jHFSwz+U43ZJB3DHfFUI6Vo1cMQ2A2cc8+xqG7C+RMoOf3ZPPXp+neopLzCEMynA6egrPuL+Mo6KW3MpXJGOCP/r1mij/2Q=="
+			"Material"
+			{
+				"Layer0"
+				{
+					"shader"		"shaders/hl2k_simple.shader"
+					"F_AMBIENT_OCCLUSION_TEXTURE"		"1"
+					"F_VIEWMODEL"		"1"
+					"TextureColor"		"materials/models/weapons/viewmodels/hands/textures/Glove_Color.tif"
+					"TextureNormal"		"materials/models/weapons/viewmodels/hands/textures/Glove_normal.tif"
+					"g_bFogEnabled"		"1"
+					"g_flMetalness"		"0.000000"
+					"g_flMicroshadowsStrength"		"0.010000"
+					"g_flRoughnessScaleFactor"		"1.400000"
+					"g_flSpecularOcclusionPower"		"8.000000"
+					"g_flSpecularReflectivity"		"0.500000"
+					"TextureAmbientOcclusion"		"materials/models/weapons/viewmodels/hands/textures/Glove_ao.tif"
+					"TextureRoughness"		"materials/models/weapons/viewmodels/hands/textures/Glove_rough.tif"
+					"TextureWetness"		"materials/default/default_black_mask.tga"
+				}
+			}
+		}
+	}
+}

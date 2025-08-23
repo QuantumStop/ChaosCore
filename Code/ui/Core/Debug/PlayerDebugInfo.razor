@@ -1,0 +1,113 @@
+@inherits PanelComponent
+
+<root>
+	<div>
+		@if (_bShowPos)
+		{
+			<div class="block">
+				<div style="color: rgb(209, 73, 27)">pos: @PlayerposX; @PlayerposY; @PlayerposZ</div>
+				<div style="color: rgb(255, 153, 64)">ang: @PlayerAngPitch; @PlayerAngYaw; @PlayerAngRoll</div>
+				<div>vel: @PlayerVelocity </div>
+				<div style="color: rgb(255, 133, 255)">vel2d: @PlayerVelocity2D </div>
+			</div>
+		}
+
+		@if (_bShowCrouchDebug && BasePlayer.Local.Controller is PlayerController controller)
+		{
+			<div class="block">
+				<div style="color: rgb(74, 217, 193)">fDuckRatio: @controller?.DuckRatio.ToString("0.00")</div>
+				<div style="color: rgb(74, 217, 193)">fDuckSpeedScale: @controller?.DuckSpeedScale.ToString("0.00")</div>
+			</div>
+		}
+		@if (_bShowNoclip)
+		{
+			<div class="block">
+				<div style="color: rgb(217, 74, 193)">Noclip Enabled</div>
+			</div>
+		}
+		@if (_bShowGod)
+		{
+			<div class="block">
+				<div style="color: rgb(253, 203, 23)">God Enabled</div>
+			</div>
+		}
+		@if (_bShowBuddha)
+		{
+			<div class="block">
+				<div style="color: yellow">Buddha Enabled</div>
+			</div>
+		}
+	</div>
+</root>
+
+@code
+{
+
+	// All the correct coordindates we need separated
+	private string PlayerposX = "0";
+	private string PlayerposY = "0";
+	private string PlayerposZ = "0";
+
+	private string PlayerAngPitch = "0";
+	private string PlayerAngYaw = "0";
+	private string PlayerAngRoll = "0";
+
+	private string PlayerVelocity = "0";
+	private string PlayerVelocity2D = "0";
+
+	protected override void OnFixedUpdate()
+	{
+		if (!_bShowPos) return; // I'm paranoid, ok?
+
+		var player = BasePlayer.Local;
+		if (player == null || player.Movement == null) return;
+
+		var pos = player.WorldPosition;
+		var ang = player.Controller.Head?.WorldRotation.Angles() ?? Angles.Zero;
+		var vel = player.Movement.Velocity;
+
+		PlayerposX = pos.x.ToString("0.00");
+		PlayerposY = pos.y.ToString("0.00");
+		PlayerposZ = pos.z.ToString("0.00");
+
+		PlayerAngPitch = ang.pitch.ToString("0.00");
+		PlayerAngYaw = ang.yaw.ToString("0.00");
+		PlayerAngRoll = ang.roll.ToString("0.00");
+
+		PlayerVelocity = vel.Length.ToString("0.00");
+		PlayerVelocity2D = vel.WithZ(0).Length.ToString("0.00");
+	}
+
+	// bool for cl_showpos
+	private bool _bShowPos => BasePlayer.ShowPos;
+
+	// cl_showcrouch
+	private bool _bShowCrouchDebug => BasePlayer.ShowCrouchDebug;
+
+	// noclip
+	public bool _bShowNoclip => BasePlayer.Local?.Controller?.IsNoclipping ?? false; // PlayerController.Noclip;
+
+	// god
+	public bool _bShowGod => BasePlayer.God; // BasePlayer.God;
+
+	public bool _bShowBuddha => BasePlayer.Buddha; // BasePlayer.Buddha;
+
+	protected override int BuildHash()
+	{
+		var player = BasePlayer.Local;
+
+		if (player == null || player.Movement == null || player.Controller == null)
+			return 0;
+
+		return System.HashCode.Combine(
+		_bShowPos,
+		_bShowCrouchDebug,
+		_bShowNoclip,
+		_bShowGod,
+		_bShowBuddha,
+		PlayerVelocity,
+		PlayerAngPitch,
+		PlayerposX
+		);
+	}
+}

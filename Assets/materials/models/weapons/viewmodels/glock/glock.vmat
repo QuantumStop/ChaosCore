@@ -1,0 +1,44 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Emission ----
+	F_EMISSION_TEXTURE 1 // Single Emission
+
+	//---- Extra ----
+	F_VIEWMODEL 1
+
+	//---- PBR ----
+	F_METALNESS_TEXTURE 1
+
+	//---- Basic ----
+	TextureColor "materials/models/weapons/viewmodels/glock/textures/glock_color.tif"
+	TextureNormal "materials/models/weapons/viewmodels/glock/textures/glock_normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Glow ----
+	g_flEmissionAlbedoFactor "0.000"
+	g_flEmissionBrightness "-7.000"
+	g_flEmissionScale "1.000"
+	g_vEmissionTint "[1.000000 1.000000 1.000000 0.000000]"
+	TextureEmission "materials/models/weapons/viewmodels/glock/textures/glock_selfillum.tif"
+
+	//---- PBR ----
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "1.000"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/weapons/viewmodels/glock/textures/glock_ao.tif"
+	TextureMetalness "materials/models/weapons/viewmodels/glock/textures/glock_metal.tif"
+	TextureRoughness "materials/models/weapons/viewmodels/glock/textures/glock_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+}

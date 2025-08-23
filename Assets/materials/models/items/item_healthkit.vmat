@@ -1,0 +1,48 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "shaders/hl2k_simple.shader"
+
+	//---- Ambient Occlusion ----
+	F_AMBIENT_OCCLUSION_TEXTURE 1 // Same UV
+
+	//---- Emission ----
+	F_EMISSION_TEXTURE 2 // Double Emission
+
+	//---- Basic ----
+	TextureColor "materials/models/items/textures/healthkit_color.tif"
+	TextureNormal "materials/models/items/textures/healthkit_normal.tif"
+
+	//---- Fog ----
+	g_bFogEnabled "0"
+
+	//---- Glow ----
+	g_flEmission2AlbedoFactor "1.000"
+	g_flEmission2Brightness "-6.000"
+	g_flEmission2Scale "1.000"
+	g_flEmissionAlbedoFactor "1.000"
+	g_flEmissionBrightness "-6.000"
+	g_flEmissionScale "1.000"
+	g_vEmission2Tint "[1.000000 1.000000 1.000000 0.000000]"
+	g_vEmissionTint "[1.000000 1.000000 1.000000 0.000000]"
+	TextureEmission "materials/models/items/textures/healthkit_static_selfillum.tif"
+	TextureEmission2 "materials/models/items/textures/healthkit_animglow_selfillum.tif"
+
+	//---- PBR ----
+	g_flMetalness "0.000"
+	g_flMicroshadowsStrength "1.000"
+	g_flRoughnessScaleFactor "0.700"
+	g_flSpecularOcclusionPower "8.000"
+	g_flSpecularReflectivity "0.500"
+	TextureAmbientOcclusion "materials/models/items/textures/healthkit_ao.tif"
+	TextureRoughness "materials/models/items/textures/healthkit_rough.tif"
+
+	//---- Wetness ----
+	TextureWetness "materials/default/default_black_mask.tga"
+
+	DynamicParams
+	{
+		g_flEmission2Scale "(0.5 * sin( 2*time() ) + 0.5) * 2"
+	}
+}

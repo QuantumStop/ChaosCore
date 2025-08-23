@@ -1,0 +1,40 @@
+{
+  "publish": {
+    "Enabled": false,
+    "ProjectConfig": {
+      "Title": "testbench_new",
+      "Type": "map",
+      "Org": "local",
+      "Ident": "testbench_new",
+      "Schema": 0,
+      "IncludeSourceFiles": false,
+      "Resources": null,
+      "PackageReferences": [],
+      "EditorReferences": [
+        "facepunch.concrete_barrier#33663",
+        "facepunch.crate_stack_01#57600",
+        "facepunch.fold_const_sign#10886",
+        "facepunch.forklift_up_dev#58130",
+        "facepunch.industrial_shelving_01#43527",
+        "facepunch.metalwheelbarrow#79831",
+        "facepunch.modern_shelving_a6#43534",
+        "facepunch.old_cooker#79883",
+        "facepunch.pallet#108387",
+        "facepunch.pendant_light#42627",
+        "facepunch.plywood_stack#61842",
+        "facepunch.washingmachine#80294",
+        "facepunch.weapon_crate_stacka#61261",
+        "facepunch.weapon_crate_stackb#61258",
+        "facepunch.weapon_crate#60570",
+        "facepunch.weapon_crates#58652",
+        "facepunch.weaponcasebase#78914",
+        "fpopium.foldabletable_a#107560"
+      ],
+      "Mounts": null,
+      "IsStandaloneOnly": false,
+      "Metadata": {
+        "SingleAssetSource": "scenes/dev_env/vmap/testbench_new.vmap"
+      }
+    }
+  }
+}

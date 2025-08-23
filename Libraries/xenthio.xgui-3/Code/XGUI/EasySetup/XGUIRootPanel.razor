@@ -1,0 +1,69 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@using XGUI;
+@using XGUI.ImmediateMode;
+@inherits Panel
+@namespace XGUI
+
+<root>
+
+</root>
+
+@code
+{
+
+	public XGUIRootPanel()
+	{
+		Style.Width = Length.Percent(100);
+		Style.Height = Length.Percent(100);
+		Style.PointerEvents = PointerEvents.All;
+		Style.Cursor = "unset";
+		Log.Info("XGUI Root Panel Initialised.");
+	}
+	public Panel PanelAtPos(Vector2 position)
+	{
+		// Helper method to find the deepest panel at the given position
+		return FindPanelAt(this, position);
+	}
+
+	public Panel FindPanelAt(Panel parent, Vector2 position)
+	{
+		// Check if position is within parent bounds
+		if (!parent.Box.Rect.IsInside(position))
+			return null;
+
+		// Check children first (depth-first)
+		foreach (var child in parent.Children)
+		{
+			var result = FindPanelAt(child, position);
+			if (result != null)
+				return result;
+		}
+
+		// If no children contain the position, return the parent
+		return parent;
+	}
+
+	public override void Tick()
+	{
+		base.Tick();
+	}
+	protected override void OnMouseDown(MousePanelEvent e)
+	{
+		base.OnMouseDown(e);
+		// if we're not clicking on anything, blur.
+		if (e.Target == this)
+		{
+			Blur();
+		}
+		else
+		{
+			e.StopPropagation();
+		}
+	}
+	protected override void OnClick(MousePanelEvent e)
+	{
+		base.OnClick(e);	
+	}
+}

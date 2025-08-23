@@ -1,0 +1,72 @@
+@inherits VanityUI
+@using System
+
+<root>
+
+	@if (ActiveChannels.Count > 0)
+	{
+		@foreach (var ch in ActiveChannels.Values)
+		{
+			var isFade = ch.Effect == "fade";
+
+			<div class="@($"{ch.Id} {ch.Effect} ")" style="@GetRootStyle(ch)">
+
+				@if (ch.Effect == "fade")
+				{
+					var animationDirection = ch.FadeFrom
+					? "screen-fade-out"
+					: "screen-fade-in";
+
+					// Determine the animation name based on whether it's permanent or not
+					var animationName = ch.IsDrawPermanent
+					? "screen-fade-in"     // Permanent In
+					: animationDirection;  // Singular one (or blink)
+
+					var totalDuration = ch.IsDrawPermanent
+					? ch.FadeInTime // Only fade-in if permanent
+					: ch.FadeInTime + ch.HoldTime + ch.FadeOutTime; // Fade-in, hold, and fade-out for non-permanent
+
+					// Make sure the fade-in duration doesn't exceed total duration
+					var fadeInDuration = Math.Min(ch.FadeInTime, totalDuration);
+
+					// Apply the animation to the element with properly formatted inline styles
+					<div class="vanity-fade" style="
+			            background-color: @($"{ch.BackgroundColor.ToCssRgba()}");
+			            animation: @($"{animationName} {totalDuration:0.00}s ease-in-out forwards");
+			        "></div>
+				}
+				else
+				{
+					<div class="vanity-text" style="@GetTextBlockStyle(ch)">
+						@{
+							var lines = ch.Text.Split('\n');
+							var totalCharCount = ch.Text.Count(c => c != '\n');
+							int globalCharIndex = 0;
+
+							foreach (var line in lines)
+							{
+								<div class="vanity-line">
+									@foreach (var c in line)
+									{
+										var delay = (totalCharCount > 1)
+										? (ch.ScanTime / (totalCharCount - 1)) * globalCharIndex
+										: 0;
+
+										<span class="vanity-char char-@globalCharIndex" style="
+						                    animation-delay: @($"{delay:0.00}s");
+						                    animation-name: scan-in;
+						                    animation-duration: 0.4s;
+						                    animation-fill-mode: forwards;
+						                ">@c</span>;
+										globalCharIndex++;
+									}
+								</div>
+							}
+						}
+					</div>
+				}
+			</div>
+		}
+	}
+
+</root>

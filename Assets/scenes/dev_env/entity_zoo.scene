@@ -1,0 +1,2026 @@
+{
+  "__guid": "93afeb2a-4129-4ef3-8c12-dcdca5e4fbad",
+  "GameObjects": [
+    {
+      "__guid": "4d74b2fd-b0b0-4b8e-8b07-f336ecdb8106",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "World",
+      "Position": "0,0,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "2c63c912-b605-498b-b667-3846635700d3",
+          "__enabled": true,
+          "Collision": "Mesh",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": false,
+          "IsTrigger": false,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACl2QiQpCMQwER6vP530f//+jlcEtBAuB0kx2N52BD7Dmd5bACpiAHXAALsADWKRk6jnlzWqZp7Bz7i0+05/Xscxsim4Leyu62+QaWebio/Y+mX2Tl70Cvfcuo5da9uVlX2Xnc/YdO7qbmYa/WmawLy/7jL7cPX8lb5ldn6Evq4c9edl3mfeuhrxzZnMn+86bV3815L6PunZewAEAAA==",
+            "Position": "0,0,0",
+            "Rotation": "0,0,0,1",
+            "Positions": [
+              "-256,-472,0",
+              "640,-472,0",
+              "640,472,0",
+              "-256,472,0",
+              "640,-472,64",
+              "640,472,64",
+              "-256,-472,64",
+              "-256,472,64"
+            ],
+            "TextureCoord": [
+              "10,7.375",
+              "4,0",
+              "10,-7.375",
+              "7.375,0",
+              "-4,-7.375",
+              "10,0",
+              "-4,7.375",
+              "7.375,0",
+              "7.375,-1",
+              "-10,0",
+              "-7.375,-1",
+              "0,0",
+              "-7.375,0",
+              "10,-1",
+              "4,-1",
+              "-7.375,0",
+              "-10,-1",
+              "0,0",
+              "7.375,-1",
+              "-4,0",
+              "-7.375,-1",
+              "0,0",
+              "-4,-1",
+              "0,0"
+            ],
+            "TextureUAxis": [
+              "1,0,0",
+              "0,-1,0",
+              "-1,0,0",
+              "0,1,0",
+              "1,0,0"
+            ],
+            "TextureVAxis": [
+              "0,-1,0",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0"
+            ],
+            "MaterialIndex": [
+              0,
+              1,
+              1,
+              1,
+              1
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/dev/dev_measuregeneric01b.vmat",
+              "dev/helper/reflectivity_90b.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": true,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "32160b04-4454-404a-9704-982e1ecea420",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "logic timer",
+      "Position": "-128,-16,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "logic_timer",
+          "__guid": "fe896e5b-4ca8-417d-bff3-73258471a3d9",
+          "__enabled": true,
+          "CurrentRefireInterval": 0,
+          "CurrentTime": 0,
+          "InitialDelay": 0,
+          "Initialized": false,
+          "InternalID": null,
+          "isOscillator": false,
+          "MaximumRandomInterval": 0,
+          "MinimumRandomInterval": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "OnTimer": {
+            "__version": 9,
+            "__guid": "c314612a-ab90-4f6f-93e3-4e3dd045f717",
+            "__changeId": 14,
+            "UserData": {
+              "Title": "On Timer"
+            },
+            "Variables": [],
+            "Nodes": [
+              {
+                "Id": 0,
+                "Type": "input"
+              },
+              {
+                "Id": 2,
+                "Type": "scene.ref",
+                "UserData": {
+                  "Position": "-12,60"
+                }
+              },
+              {
+                "Id": 3,
+                "Type": "call",
+                "Properties": {
+                  "_isStatic": false,
+                  "_name": "Display",
+                  "_type": "ui_text"
+                },
+                "UserData": {
+                  "Position": "204,-0"
+                }
+              },
+              {
+                "Id": 4,
+                "Type": "call",
+                "Properties": {
+                  "_isStatic": false,
+                  "_name": "Disable",
+                  "_type": "BaseEntity"
+                },
+                "UserData": {
+                  "Position": "456,0"
+                }
+              }
+            ],
+            "Links": [
+              {
+                "SrcId": 0,
+                "SrcName": "_signal",
+                "DstId": 3,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 2,
+                "SrcName": "_result",
+                "DstId": 3,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 0,
+                "SrcName": "activator",
+                "DstId": 3,
+                "DstName": "activator"
+              },
+              {
+                "SrcId": 3,
+                "SrcName": "_signal",
+                "DstId": 4,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 3,
+                "SrcName": "_result",
+                "DstId": 4,
+                "DstName": "_target"
+              }
+            ],
+            "Defaults": {
+              "$2.component": {
+                "_type": "component",
+                "component_id": "2bf6cf83-d9c2-42d5-9ebb-86859be993b6",
+                "go": "6b92b5a6-c820-432e-ae72-ffe63e929afc",
+                "component_type": "ui_text"
+              }
+            }
+          },
+          "OnTimerHigh": null,
+          "OnTimerLow": null,
+          "RefireInterval": 3,
+          "SerializedGuid": null,
+          "StartDisabled": true,
+          "TargetName": null,
+          "UseRandomTime": false
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "9d80f3dd-1f98-4e19-b3a5-9e488324bc7b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "CMD",
+      "Position": "-128,16,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "point_clientcommand",
+          "__guid": "2b8fb391-f15c-4265-8f2f-db771217c9e4",
+          "__enabled": true,
+          "Initialized": false,
+          "InternalID": null,
+          "OnCommandIssued": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "SerializedGuid": null,
+          "TargetName": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "6b92b5a6-c820-432e-ae72-ffe63e929afc",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Ui_Text",
+      "Position": "-128,48,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "ui_text",
+          "__guid": "2bf6cf83-d9c2-42d5-9ebb-86859be993b6",
+          "__enabled": true,
+          "CurrentEFfect": "TEXTEFFECT_FADEINOUT",
+          "FadeInTime": 3,
+          "FadeOutTime": 0.5,
+          "FontSize": 0.5,
+          "HoldTime": 2,
+          "Initialized": false,
+          "InternalID": null,
+          "MessageText": {
+            "Text": "The machines rose from the \nashes of the nuclear fire.\nTheir war to exterminate \nmankind has raged for\ndecades, but the final\nbattle would not be fought\nin the future. \nIt would be fought here,\nin our present. \nTonight...",
+            "TextColor": "0.87907,0.87907,0.87907,0.54",
+            "FontName": "GorDIN",
+            "FontSize": 0,
+            "FontWeight": 0,
+            "FontItalic": false,
+            "LineHeight": 0,
+            "LetterSpacing": 0,
+            "WordSpacing": 0,
+            "FilterMode": "Point",
+            "Outline": {
+              "Enabled": false,
+              "Size": 0,
+              "Color": "0,0,0,0"
+            },
+            "Shadow": {
+              "Enabled": false,
+              "Size": 0,
+              "Color": "0,0,0,0",
+              "Offset": "0,0"
+            },
+            "OutlineUnder": {
+              "Enabled": false,
+              "Size": 0,
+              "Color": "0,0,0,0"
+            },
+            "ShadowUnder": {
+              "Enabled": false,
+              "Size": 0,
+              "Color": "0,0,0,0",
+              "Offset": "0,0"
+            }
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "PosX": 0.45731708,
+          "PosY": 0.4898374,
+          "ScanColorFX": "0.04186,1,0.61674,0.7",
+          "ScanTime": 1,
+          "SerializedGuid": null,
+          "TargetName": "GamerText",
+          "TextAlignment": "TEXTALIGNMENT_LEFT",
+          "TextPadding": 0.015,
+          "ZIndex": 155
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "410d936e-42bf-4f17-ad55-4d8213850f0b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Fader",
+      "Position": "-128,80,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "ui_fade",
+          "__guid": "f5802302-2416-414d-8742-f61080b01231",
+          "__enabled": true,
+          "Duration": 2,
+          "FadeColor": "0,0,0,1",
+          "FadeFrom": false,
+          "HoldFade": 6,
+          "Initialized": false,
+          "InternalID": null,
+          "OnBeginFade": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "SerializedGuid": null,
+          "StayOut": true,
+          "TargetName": "Fader",
+          "ZIndex": 1
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "aaf9d433-708e-4f3d-9b4e-8550d81b54c2",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Logic_Auto",
+      "Position": "-128,112,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": false,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "logic_auto",
+          "__guid": "4cb168ba-3681-4311-b4ea-73dc48b6d91c",
+          "__enabled": true,
+          "Initialized": false,
+          "InternalID": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "OnLoadGame": null,
+          "OnMapSpawn": {
+            "__version": 9,
+            "__guid": "fcdfe869-d00e-4b87-9842-6c3df3360ee4",
+            "__changeId": 149,
+            "UserData": {
+              "Title": "On Map Spawn"
+            },
+            "Variables": [],
+            "Nodes": [
+              {
+                "Id": 0,
+                "Type": "input",
+                "UserData": {
+                  "Position": "504,-168",
+                  "Labels": {
+                    "activator": "activator"
+                  }
+                }
+              },
+              {
+                "Id": 21,
+                "Type": "call",
+                "Properties": {
+                  "_isStatic": false,
+                  "_name": "Display",
+                  "_type": "ui_text"
+                },
+                "UserData": {
+                  "Position": "756,-84"
+                }
+              },
+              {
+                "Id": 22,
+                "Type": "call",
+                "Properties": {
+                  "_isStatic": false,
+                  "_name": "Fade",
+                  "_type": "ui_fade"
+                },
+                "UserData": {
+                  "Position": "1044,24"
+                }
+              },
+              {
+                "Id": 41,
+                "Type": "scene.ref",
+                "UserData": {
+                  "Position": "492,12"
+                }
+              },
+              {
+                "Id": 70,
+                "Type": "scene.ref",
+                "UserData": {
+                  "Position": "492,-96"
+                }
+              }
+            ],
+            "Links": [
+              {
+                "SrcId": 0,
+                "SrcName": "_signal",
+                "DstId": 21,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 70,
+                "SrcName": "_result",
+                "DstId": 21,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 0,
+                "SrcName": "activator",
+                "DstId": 21,
+                "DstName": "activator"
+              },
+              {
+                "SrcId": 21,
+                "SrcName": "_signal",
+                "DstId": 22,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 41,
+                "SrcName": "_result",
+                "DstId": 22,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 0,
+                "SrcName": "activator",
+                "DstId": 22,
+                "DstName": "activator"
+              }
+            ],
+            "Defaults": {
+              "$41.component": {
+                "_type": "component",
+                "component_id": "f5802302-2416-414d-8742-f61080b01231",
+                "go": "410d936e-42bf-4f17-ad55-4d8213850f0b",
+                "component_type": "ui_fade"
+              },
+              "$70.component": {
+                "_type": "component",
+                "component_id": "2bf6cf83-d9c2-42d5-9ebb-86859be993b6",
+                "go": "6b92b5a6-c820-432e-ae72-ffe63e929afc",
+                "component_type": "ui_text"
+              }
+            }
+          },
+          "OnMapTransition": null,
+          "OnNewGame": null,
+          "SerializedGuid": null,
+          "TargetName": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "b97c0437-e43e-48d5-9f7b-45a63cc4aa54",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Logic_Relay",
+      "Position": "-128,136,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [],
+      "Children": []
+    },
+    {
+      "__guid": "b63cbd73-906f-4d2b-83db-9bc59c34def4",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "test (2)",
+      "Position": "-128,-48,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "skybox",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.SkyBox2D",
+          "__guid": "eff504eb-ae42-4916-bd12-8bfd133b4601",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SkyIndirectLighting": true,
+          "SkyMaterial": "materials/skybox/evening_sky.vmat",
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.EnvmapProbe",
+          "__guid": "a0fc4175-3ff5-4af8-bdbe-6b4607dfe440",
+          "__enabled": true,
+          "Bounds": {
+            "Mins": "-50000,-50000,-50000",
+            "Maxs": "50000,50000,50000"
+          },
+          "DelayBetweenUpdates": 0.1,
+          "Feathering": 8,
+          "FrameInterval": 5,
+          "MaxDistance": 512,
+          "MultiBounce": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Projection": "Sphere",
+          "RenderDynamically": true,
+          "Resolution": "Small",
+          "Texture": null,
+          "TintColor": "1,1,1,1",
+          "UpdateStrategy": "OnEnabled",
+          "ZFar": 4096,
+          "ZNear": 16
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "fc38d977-6713-4677-9da4-50e1c606c472",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "TeleportDest",
+      "Position": "-40,-176,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "info_player_start",
+          "__guid": "2e3d5be7-14eb-4944-854a-a4994db57fbb",
+          "__enabled": true,
+          "Initialized": false,
+          "InternalID": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "OnPlayerSpawned": null,
+          "Primary": false,
+          "SerializedGuid": null,
+          "TargetName": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "d0131569-0e66-4c96-bba7-8ca6eba67233",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Level Spawn",
+      "Position": "176,-48,0.00003203843",
+      "Rotation": "0,0,0.7071067,0.7071068",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "info_player_start",
+          "__guid": "c107e5ce-d96d-499a-85eb-9080b5cda4ea",
+          "__enabled": true,
+          "Initialized": false,
+          "InternalID": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "OnPlayerSpawned": null,
+          "Primary": true,
+          "SerializedGuid": null,
+          "TargetName": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "52a932a4-5a89-4fc1-a5a9-951f8cf7b46e",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Game Manager",
+      "Position": "-128,-80,96",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "game_manager",
+          "__guid": "fdcf3624-5b83-4f55-b6aa-c72dfd851456",
+          "__enabled": true,
+          "DontSpawnPlayer": false,
+          "EntTextEntities": [],
+          "Initialized": true,
+          "InternalID": "game_manager_U3A2X",
+          "LastEditorCameraPosition": {
+            "Position": "221.6465,-560.6553,193.489",
+            "Scale": "1,1,1",
+            "Rotation": "-0.05749957,0.04101332,0.8120874,0.579246"
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "SerializedGuid": null,
+          "TargetName": "game_manager_86wco",
+          "TimeScaleSlider": 1,
+          "UsePlayerStart": false
+        },
+        {
+          "__type": "Sandbox.SceneInformation",
+          "__guid": "77fc8c4d-cc12-47f8-8425-710b75785a3b",
+          "__enabled": true,
+          "Author": null,
+          "Changes": null,
+          "Description": null,
+          "Group": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SceneTags": "",
+          "Title": null,
+          "Version": null
+        }
+      ],
+      "Children": [
+        {
+          "__guid": "66af86c3-6867-41db-afbf-38e8a22643fb",
+          "__version": 1,
+          "__Prefab": "prefabs/editor/editor_camera.prefab",
+          "__PrefabInstancePatch": {
+            "AddedObjects": [],
+            "RemovedObjects": [],
+            "PropertyOverrides": [
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "b3fa3354-ca11-4766-872e-a11f24f38c83"
+                },
+                "Property": "Flags",
+                "Value": 2049
+              },
+              {
+                "Target": {
+                  "Type": "GameObject",
+                  "IdValue": "b3fa3354-ca11-4766-872e-a11f24f38c83"
+                },
+                "Property": "Name",
+                "Value": "Editor Camera"
+              }
+            ],
+            "MovedObjects": []
+          },
+          "__PrefabIdToInstanceId": {
+            "b3fa3354-ca11-4766-872e-a11f24f38c83": "66af86c3-6867-41db-afbf-38e8a22643fb",
+            "fb29ace4-e2a7-4426-901d-ff5c11699400": "21c6986f-2aff-4204-83e6-a3d99efad1d1",
+            "bcf83c67-a239-4564-aee6-900bac26ab36": "5dde548f-070a-4458-9195-c2f62bef1ed8",
+            "9e4823c6-e365-416b-b6f4-7fa283c5a9cf": "474d1dd8-d744-4e70-9340-231b08eb4b05",
+            "dd1756d8-f71a-4533-a797-17f09527dcb4": "9f383f4a-b243-4c2f-bc7a-d7a74c4677d4",
+            "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9": "2430b9af-9bcf-40d2-b052-7b4ce338c863",
+            "4fa9c417-0312-4b53-86ed-d0a45557ce0c": "e9104036-0981-41a1-957c-fe89e7d794b4"
+          }
+        },
+        {
+          "__guid": "70fe287f-2b02-497e-984c-95074e426aa5",
+          "__version": 1,
+          "Flags": 0,
+          "Name": "Exposure Manager",
+          "Position": "0,-28,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Core.CameraExposure",
+              "__guid": "2fdcd4a1-1032-46f8-a0cf-fa3f8f4f72f3",
+              "__enabled": true,
+              "Aperture": 8.5,
+              "Blend": 0,
+              "Initialized": true,
+              "InternalID": "Core.CameraExposure_TDYQF",
+              "ISO": 500,
+              "Mode": "Manual",
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "OnKilled": null,
+              "RealEV": 11.759889,
+              "ResultExposure": 0.00024029211,
+              "SerializedGuid": null,
+              "Shutter": 240,
+              "SunND": 1,
+              "TargetEV": 11.759889,
+              "TargetName": "Core.CameraExposure_ZKo0t"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "9dadd083-b633-43f5-88ce-3670d5712b5a",
+          "__version": 1,
+          "Flags": 0,
+          "Name": "Video Manager",
+          "Position": "0,-52,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Core.videoplayer_manager",
+              "__guid": "77c7bbd7-a043-4584-858d-8f8b4706d7ed",
+              "__enabled": true,
+              "b_PlayOnStart": true,
+              "GlobalVolume": 1,
+              "Initialized": true,
+              "InternalID": "Core.videoplayer_manager_wye4X",
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "OnKilled": null,
+              "SerializedGuid": null,
+              "TargetName": "Core.videoplayer_manager_Bqe7q"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "b32c30c7-04b8-408d-890c-2071691e8ca1",
+          "__version": 1,
+          "Flags": 0,
+          "Name": "Environment Manager",
+          "Position": "0,-80,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkInterpolation": true,
+          "NetworkOrphaned": 0,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Core.EnvironmentManager",
+              "__guid": "07c92c49-1ca2-40a7-b34e-42bd72831477",
+              "__enabled": true,
+              "CurrentEnv": "None",
+              "Initialized": false,
+              "InternalID": null,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "OnKilled": null,
+              "SerializedGuid": null,
+              "TargetName": null
+            }
+          ],
+          "Children": []
+        }
+      ]
+    },
+    {
+      "__guid": "b6c567bb-2a29-4a30-98c4-c51acab7fb98",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Object",
+      "Position": "-112,-48,192",
+      "Rotation": "-0.2633986,0.40592,0.126029,0.8660061",
+      "Scale": "1,1,1",
+      "Tags": "light_directional,light",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.DirectionalLight",
+          "__guid": "1706e71a-67ed-400f-a657-c5a8a3dacf99",
+          "__enabled": true,
+          "FogMode": "Enabled",
+          "FogStrength": 1,
+          "LightColor": "0.91373,0.98039,1,1",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Shadows": true,
+          "SkyColor": "0,0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "27d0f1ab-a55c-4fe3-a3a8-d191a8cdeb5d",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Envmap Probe",
+      "Position": "8,112,72",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.EnvmapProbe",
+          "__guid": "653b5d55-b0e1-405e-b9d2-3fb898ca0e49",
+          "__enabled": true,
+          "Bounds": {
+            "Mins": "-1000,-1000,-1000",
+            "Maxs": "1000,1000,1000"
+          },
+          "DelayBetweenUpdates": 0.1,
+          "Feathering": 0.02,
+          "FrameInterval": 5,
+          "MaxDistance": 512,
+          "MultiBounce": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Projection": "Box",
+          "RenderDynamically": true,
+          "Resolution": "Medium",
+          "Texture": "textures/cubemaps/default2.vtex",
+          "TintColor": "1,1,1,1",
+          "UpdateStrategy": "OnEnabled",
+          "ZFar": 4096,
+          "ZNear": 16
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "c34a8442-2ffe-4f2a-8933-e39d118fd9ce",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Box",
+      "Position": "-16,112,64.00006",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "trigger",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "97616d21-78a9-4023-a61b-ee342204f090",
+          "__enabled": true,
+          "Collision": "Hull",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": false,
+          "IsTrigger": true,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACl2QCQ7CMAwEp4Qj3NBy/f+laMRGsohUVbFn1+t04ANs+Z0VsM69AwfgBFyAKZ9MPXdgk3qLnsI+Um/h/me9i2ZXfFvYOazafTJN0XRgKZmPyWtfXvYVL73PZRd52WdYPa7xtC8veys7u6t17/7t6Tn0ZtFjvIXZR895zjKjPWf4NiOrGt+ivpXZ3XnozaOndVn9vvVkkTjEAQAA",
+            "Position": "-16,112,64.00006",
+            "Rotation": "0,0,0,1",
+            "Positions": [
+              "-48,-48.00002,31.99994",
+              "48,-48.00002,31.99994",
+              "48,47.99998,31.99994",
+              "-48,47.99998,31.99994",
+              "-48,48,-64",
+              "48,48,-64",
+              "48,-48,-64",
+              "-48,-48,-64"
+            ],
+            "TextureCoord": [
+              "2,-3.999999",
+              "-4,-6",
+              "2,-9.999999",
+              "3.999999,-6",
+              "-4,-9.999999",
+              "-2,-6",
+              "-4,-3.999999",
+              "-9.999999,-6",
+              "2,-10",
+              "4,-0.000003814697",
+              "2,-4",
+              "10,-0.000003814697",
+              "-4,-4",
+              "2,-0.000003814697",
+              "-4,-10",
+              "-4,-0.000003814697",
+              "-3.999999,-6",
+              "-4,-0.000003814697",
+              "-10,-0.000003814697",
+              "4,-6",
+              "4,-0.000003814697",
+              "2,-6",
+              "9.999999,-6",
+              "-2,-0.000003814697"
+            ],
+            "TextureUAxis": [
+              "1,0,0",
+              "1,0,0",
+              "0,-1,0",
+              "0,1,0",
+              "-1,0,0",
+              "1,0,0"
+            ],
+            "TextureVAxis": [
+              "0,-1,0",
+              "0,-1,0",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0"
+            ],
+            "MaterialIndex": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/tools/toolstrigger.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": false,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        },
+        {
+          "__type": "trigger_teleport",
+          "__guid": "edff2a8a-500e-4f76-bbc5-39a226b29232",
+          "__enabled": true,
+          "b_Clients": true,
+          "b_ClientsInVehicles": false,
+          "b_ClientsNotInVehicles": false,
+          "b_Everything": false,
+          "b_Npcs": false,
+          "b_NPCsInVehicles": false,
+          "b_PhysicsDebris": false,
+          "b_PhysicsObjects": false,
+          "b_PlayerAllyNPCs": false,
+          "b_Pushables": false,
+          "b_RotationOffset": true,
+          "b_ShowTriggerItems": true,
+          "b_StartDisabled": true,
+          "Initialized": false,
+          "InternalID": null,
+          "inTriggerItems": [],
+          "isDebug": true,
+          "isEnabled": false,
+          "LocalDestinationLandmark": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "RemoteDestination": null,
+          "SerializedGuid": null,
+          "TargetName": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ede1ec87-67b9-4223-b960-3d324e93a230",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Box (3)",
+      "Position": "400,112,48.00003",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "trigger",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "2f5139c0-1b37-4082-8c82-013423890e44",
+          "__enabled": true,
+          "Collision": "Hull",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": false,
+          "IsTrigger": true,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACl2QCQ7CMAwEp4Qj3NBy/f+laMRGsohUVbFn1+t04ANs+Z0VsM69AwfgBFyAKZ9MPXdgk3qLnsI+Um/h/me9i2ZXfFvYOazafTJN0XRgKZmPyWtfXvYVL73PZRd52WdYPa7xtC8veys7u6t17/7t6Tn0ZtFjvIXZR895zjKjPWf4NiOrGt+ivpXZ3XnozaOndVn9vvVkkTjEAQAA",
+            "Position": "400,112,48.00003",
+            "Rotation": "0,0,0,1",
+            "Positions": [
+              "-48,-48,47.99997",
+              "48,-48,47.99997",
+              "48,48,47.99997",
+              "-48,48,47.99997",
+              "-48,48.00002,-47.99997",
+              "48,48.00002,-47.99997",
+              "48,-47.99998,-47.99997",
+              "-48,-47.99998,-47.99997"
+            ],
+            "TextureCoord": [
+              "28,-4",
+              "22,-6",
+              "28,-10",
+              "4,-6",
+              "22,-10",
+              "-28,-6",
+              "22,-4",
+              "-10,-6",
+              "28,-10",
+              "-22,-0.000003814697",
+              "28,-4.000001",
+              "10,-0.000003814697",
+              "22,-4.000001",
+              "28,-0.000003814697",
+              "22,-10",
+              "-4.000001,-0.000003814697",
+              "-4,-6",
+              "22,-0.000003814697",
+              "-10,-0.000003814697",
+              "-22,-6",
+              "4.000001,-0.000003814697",
+              "28,-6",
+              "10,-6",
+              "-28,-0.000003814697"
+            ],
+            "TextureUAxis": [
+              "1,0,0",
+              "1,0,0",
+              "0,-1,0",
+              "0,1,0",
+              "-1,0,0",
+              "1,0,0"
+            ],
+            "TextureVAxis": [
+              "0,-1,0",
+              "0,-1,0",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0"
+            ],
+            "MaterialIndex": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/tools/toolstrigger.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": false,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        },
+        {
+          "__type": "trigger_look",
+          "__guid": "80eff66d-f842-46c8-b65d-32eaa33c68ab",
+          "__enabled": true,
+          "b_Clients": true,
+          "b_ClientsInVehicles": false,
+          "b_ClientsNotInVehicles": false,
+          "b_Npcs": false,
+          "b_NPCsInVehicles": false,
+          "b_PlayerAllyNPCs": false,
+          "b_StartDisabled": false,
+          "FieldOfView": 0.1921922,
+          "FireOnce": false,
+          "Initialized": false,
+          "InternalID": null,
+          "isDebug": true,
+          "LookTarget": {
+            "_type": "gameobject",
+            "go": "ae4edb42-787b-4343-8a34-41a558cf8979"
+          },
+          "LookTime": 3,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnEndTouch": null,
+          "OnEndTouchAll": null,
+          "OnKilled": null,
+          "OnNotTouching": null,
+          "OnRelease": null,
+          "OnStartTouch": null,
+          "OnStartTouchAll": null,
+          "OnTimeout": {
+            "__version": 9,
+            "__guid": "c07ed4ea-886f-4c00-8336-50ca6c5ec230",
+            "__changeId": 44,
+            "UserData": {
+              "Title": "On Timeout"
+            },
+            "Variables": [],
+            "Nodes": [
+              {
+                "Id": 0,
+                "Type": "input"
+              },
+              {
+                "Id": 1,
+                "Type": "log.info",
+                "UserData": {
+                  "Position": "324,48"
+                }
+              }
+            ],
+            "Links": [
+              {
+                "SrcId": 0,
+                "SrcName": "_signal",
+                "DstId": 1,
+                "DstName": "_signal"
+              },
+              {
+                "Id": 10,
+                "Value": "TimeOut Was called",
+                "DstId": 1,
+                "DstName": "args",
+                "DstIndex": 0
+              }
+            ]
+          },
+          "OnTouching": null,
+          "OnTrigger": {
+            "__version": 9,
+            "__guid": "673812f3-bb2c-4091-b447-a8391d47f546",
+            "__changeId": 55,
+            "UserData": {
+              "Title": "On Trigger"
+            },
+            "Variables": [],
+            "Nodes": [
+              {
+                "Id": 0,
+                "Type": "input"
+              },
+              {
+                "Id": 22,
+                "Type": "log.info",
+                "UserData": {
+                  "Position": "360,24"
+                }
+              }
+            ],
+            "Links": [
+              {
+                "SrcId": 0,
+                "SrcName": "_signal",
+                "DstId": 22,
+                "DstName": "_signal"
+              },
+              {
+                "Id": 31,
+                "Value": "OnTrigger was called",
+                "DstId": 22,
+                "DstName": "args",
+                "DstIndex": 0
+              }
+            ]
+          },
+          "OnTriggerItemsEmpty": null,
+          "OnUse": null,
+          "OnUsing": null,
+          "PlayerLookTarget": null,
+          "SerializedGuid": null,
+          "TargetName": null,
+          "Timeout": 10,
+          "TrackedCount": 0,
+          "trackedItems": {}
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ae4edb42-787b-4343-8a34-41a558cf8979",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "shipping_container",
+      "Position": "400,376,-0.00002880491",
+      "Rotation": "0,0,-0.7071067,0.7071068",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.Prop",
+          "__guid": "6a668ee6-93fc-4550-8f0f-48b26967ed4c",
+          "__enabled": true,
+          "BodyGroups": 18446744073709551615,
+          "Health": 0,
+          "IsStatic": true,
+          "MaterialGroup": null,
+          "Model": "models/props/industrial/shipping_container.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnPropBreak": null,
+          "OnPropTakeDamage": null,
+          "StartAsleep": false,
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "5dec7624-3b4a-45e0-b7de-bf1787567208",
+          "__enabled": true,
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "LodOverride": null,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Materials": null,
+          "Model": "models/props/industrial/shipping_container.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.ModelCollider",
+          "__guid": "b64c76c1-d222-4511-a1dd-9804157f3dc7",
+          "__enabled": true,
+          "Elasticity": null,
+          "Friction": null,
+          "IsTrigger": false,
+          "Model": "models/props/industrial/shipping_container.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RollingResistance": null,
+          "Static": true,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "89e91d25-5acc-4b73-8652-98333fa62f7f",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Box",
+      "Position": "128,352,64.00037",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "44a2f950-459c-4098-b65e-0d131068ea00",
+          "__enabled": true,
+          "Collision": "Hull",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": true,
+          "IsTrigger": true,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACl2QCQ7CMAwEp4Qj3NBy/f+laMRGsohUVbFn1+t04ANs+Z0VsM69AwfgBFyAKZ9MPXdgk3qLnsI+Um/h/me9i2ZXfFvYOazafTJN0XRgKZmPyWtfXvYVL73PZRd52WdYPa7xtC8veys7u6t17/7t6Tn0ZtFjvIXZR895zjKjPWf4NiOrGt+ivpXZ3XnozaOndVn9vvVkkTjEAQAA",
+            "Position": "128,352,64.00037",
+            "Rotation": "0,0,0,1",
+            "Positions": [
+              "-64,-64,64",
+              "64,-64,64",
+              "64,64,64",
+              "-64,64,64",
+              "-64,64,-64",
+              "64,64,-64",
+              "64,-64,-64",
+              "-64,-64,-64"
+            ],
+            "TextureCoord": [
+              "12,-18",
+              "4,-8.000023",
+              "12,-26",
+              "18,-8.000023",
+              "4,-26",
+              "-12,-8.000023",
+              "4,-18",
+              "-26,-8.000023",
+              "12,-26",
+              "-4,-0.00002288818",
+              "12,-18",
+              "26,-0.00002288818",
+              "4,-18",
+              "12,-0.00002288818",
+              "4,-26",
+              "-18,-0.00002288818",
+              "-18,-8.000023",
+              "4,-0.00002288818",
+              "-26,-0.00002288818",
+              "-4,-8.000023",
+              "18,-0.00002288818",
+              "12,-8.000023",
+              "26,-8.000023",
+              "-12,-0.00002288818"
+            ],
+            "TextureUAxis": [
+              "1,0,0",
+              "1,0,0",
+              "0,-1,0",
+              "0,1,0",
+              "-1,0,0",
+              "1,0,0"
+            ],
+            "TextureVAxis": [
+              "0,-1,0",
+              "0,-1,0",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0"
+            ],
+            "MaterialIndex": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/tools/toolstrigger.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": true,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        },
+        {
+          "__type": "trigger_hurt",
+          "__guid": "9e351a02-02d1-4b34-a709-54ef0a667a7c",
+          "__enabled": true,
+          "_DamageModel": "DoublingWithForgiveness",
+          "_DamageType": null,
+          "AlwaysThinkEveryFrame": false,
+          "b_Clients": true,
+          "b_ClientsInVehicles": false,
+          "b_ClientsNotInVehicles": false,
+          "b_Everything": false,
+          "b_Npcs": false,
+          "b_NPCsInVehicles": false,
+          "b_OptimizePhys": false,
+          "b_PhysicsDebris": false,
+          "b_PhysicsObjects": false,
+          "b_PlayerAllyNPCs": false,
+          "b_Pushables": false,
+          "b_RealTimer": false,
+          "b_StartDisabled": false,
+          "Damage": 2,
+          "DamageCap": 20,
+          "DamageForceOverride": "0,0,0",
+          "f_RealTimer": 0,
+          "ForgivenessDelay": 3,
+          "Initialized": false,
+          "InternalID": null,
+          "isDebug": false,
+          "lastDamageValue": 0,
+          "MaxTime": 0,
+          "Mintime": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnEndTouch": null,
+          "OnEndTouchAll": null,
+          "OnKilled": null,
+          "OnNotTouching": null,
+          "OnRelease": null,
+          "OnStartTouch": null,
+          "OnStartTouchAll": null,
+          "OnTouching": null,
+          "OnTrigger": null,
+          "OnTriggerItemsEmpty": null,
+          "OnUse": null,
+          "OnUsing": null,
+          "SerializedGuid": null,
+          "TargetName": null,
+          "TrackedCount": 0,
+          "trackedItems": {},
+          "ZeroDamageForce": false
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "944c5c49-9d5b-427c-8f54-243dede8b258",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Box",
+      "Position": "208,96,64",
+      "Rotation": "0,0,0.008726535,0.9999619",
+      "Scale": "1,1,1",
+      "Tags": "trigger",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "trigger_hurt",
+          "__guid": "52ac06ef-80c3-4dbc-8c48-9f132e2fbb64",
+          "__enabled": true,
+          "_DamageModel": "Normal",
+          "_DamageType": null,
+          "AlwaysThinkEveryFrame": false,
+          "b_Clients": true,
+          "b_ClientsInVehicles": false,
+          "b_ClientsNotInVehicles": false,
+          "b_Everything": false,
+          "b_Npcs": false,
+          "b_NPCsInVehicles": false,
+          "b_OptimizePhys": false,
+          "b_PhysicsDebris": false,
+          "b_PhysicsObjects": false,
+          "b_PlayerAllyNPCs": false,
+          "b_Pushables": false,
+          "b_RealTimer": true,
+          "b_StartDisabled": false,
+          "Damage": 10,
+          "DamageCap": 20,
+          "DamageForceOverride": "0,0,0",
+          "f_RealTimer": 0,
+          "ForgivenessDelay": 3,
+          "Initialized": false,
+          "InternalID": null,
+          "isDebug": true,
+          "lastDamageValue": 0,
+          "MaxTime": 0,
+          "Mintime": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnEndTouch": null,
+          "OnEndTouchAll": null,
+          "OnKilled": null,
+          "OnNotTouching": null,
+          "OnRelease": null,
+          "OnStartTouch": null,
+          "OnStartTouchAll": null,
+          "OnTouching": null,
+          "OnTrigger": null,
+          "OnTriggerItemsEmpty": null,
+          "OnUse": null,
+          "OnUsing": null,
+          "SerializedGuid": null,
+          "TargetName": null,
+          "TrackedCount": 0,
+          "trackedItems": {},
+          "ZeroDamageForce": false
+        },
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "ed724a74-237a-4738-858c-215e9d009cc4",
+          "__enabled": true,
+          "Collision": "Hull",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": false,
+          "IsTrigger": true,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACl2QCQ7CMAwEp4Qj3NBy/f+laMRGsohUVbFn1+t04ANs+Z0VsM69AwfgBFyAKZ9MPXdgk3qLnsI+Um/h/me9i2ZXfFvYOazafTJN0XRgKZmPyWtfXvYVL73PZRd52WdYPa7xtC8veys7u6t17/7t6Tn0ZtFjvIXZR895zjKjPWf4NiOrGt+ivpXZ3XnozaOndVn9vvVkkTjEAQAA",
+            "Position": "208,96,64",
+            "Rotation": "0,0,0.008726535,0.9999619",
+            "Positions": [
+              "-96,-56,64",
+              "96,-56,64",
+              "96,56,64",
+              "-96,56,64",
+              "-96,56,-64",
+              "96,56,-64",
+              "96,-56,-64",
+              "-96,-56,-64"
+            ],
+            "TextureCoord": [
+              "6,3.5",
+              "7.061997,-8",
+              "6,-3.5",
+              "-3.5,-4",
+              "-6,-3.5",
+              "-6,-4",
+              "-6,3.5",
+              "-3.5,-4",
+              "6,-3.5",
+              "6,4",
+              "6,3.5",
+              "3.5,4",
+              "-6,3.5",
+              "19.06017,-0.0000004768372",
+              "-6,-3.5",
+              "3.5,4",
+              "3.5,-4",
+              "7.061997,-0.0000004768372",
+              "-3.5,4",
+              "6,-4",
+              "-3.5,4",
+              "19.06017,-8",
+              "3.5,-4",
+              "-6,4"
+            ],
+            "TextureUAxis": [
+              "0.9998477,0.01745238,0",
+              "0.9998477,0.01745238,0",
+              "0.01745238,-0.9998477,0",
+              "-0.01745224,0.9998477,0",
+              "-0.9998477,-0.0174524,0",
+              "1,0,0"
+            ],
+            "TextureVAxis": [
+              "0.0174524,-0.9998477,0",
+              "0.0174524,-0.9998477,0",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "57.42502,49.42108",
+              "57.42502,49.42108",
+              "49.42114,0.00003051758",
+              "14.57867,0",
+              "6.574951,0.00003051758",
+              "0,0"
+            ],
+            "MaterialIndex": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/tools/toolstrigger.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": false,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    }
+  ],
+  "SceneProperties": {
+    "NetworkInterpolation": true,
+    "TimeScale": 1,
+    "WantsSystemScene": true,
+    "Metadata": {},
+    "NavMesh": {
+      "Enabled": false,
+      "IncludeStaticBodies": true,
+      "IncludeKeyframedBodies": true,
+      "EditorAutoUpdate": true,
+      "AgentHeight": 64,
+      "AgentRadius": 16,
+      "AgentStepSize": 18,
+      "AgentMaxSlope": 40,
+      "ExcludedBodies": "",
+      "IncludedBodies": ""
+    }
+  },
+  "ResourceVersion": 3,
+  "Title": null,
+  "Description": null,
+  "__references": [],
+  "__version": 3
+}

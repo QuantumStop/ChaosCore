@@ -1,0 +1,14 @@
+{
+  "DecalList": [
+    "scripts/decals/impact/concrete/decal_impact_concrete01.decal",
+    "scripts/decals/impact/concrete/decal_impact_concrete02.decal",
+    "scripts/decals/impact/concrete/decal_impact_concrete03.decal",
+    "scripts/decals/impact/concrete/decal_impact_concrete04.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/2k_concrete.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

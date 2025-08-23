@@ -1,0 +1,70 @@
+{
+  "RootObject": {
+    "__guid": "8769453b-7bfe-4446-a090-5d2227485f2d",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "kelvin directional light",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "light_directional,light",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "Core.KelvinDirectionalLight",
+        "__guid": "7d4fc090-b633-48de-af74-f6096354135a",
+        "__enabled": true,
+        "Brightness": 100000,
+        "ColorMode": "Color",
+        "ColorPreset": "NeutralWhite",
+        "FogMode": "Enabled",
+        "FogStrength": 1,
+        "KelvinTemperature": 6500,
+        "LightColor": "100000,100000,100000,100000",
+        "MiredTemperature": 154,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "RGB_Color": "1,1,1,1",
+        "Shadows": true,
+        "SkyColor": "0,0,0,0",
+        "SunBrightnessPreset": "Noon",
+        "TemperatureMode": "Kelvin"
+      }
+    ],
+    "Children": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": true,
+  "MenuPath": "Light/Sun (Kelvin)",
+  "MenuIcon": "light_mode",
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}

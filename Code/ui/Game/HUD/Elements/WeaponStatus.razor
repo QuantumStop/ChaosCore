@@ -1,0 +1,73 @@
+@namespace chaoscore
+@using System;
+
+<root>
+	
+	<div class="Ammo-Content">
+		
+		<!-- Grenades !-->
+		<div class="hudGrenade_container">
+			<h1 id="grenadeCount">0</h1>
+			<svg id="grenadeType" src="resource/ui/player/hud/grenade.svg" color="white"/>
+		</div>
+		
+		<!-- Ammo Type !-->
+		<div class="hudAmmoType_container">
+			<svg id="ammoType" src="resource/ui/player/hud/bullet.svg" color="white"/>
+		</div>
+		
+		<!-- -Ammo- -->
+		<div class="hudAmmo_container">
+
+			@if ( bWeaponUsesPrimaryAmmo )
+			{
+					<div class="ammoLayer">
+						<span class="hudAmmo hudUpper"> @((int)Math.Round((double)iAmmoLoaded)) </span>		
+						<span class="hudAmmo hudUnder">000</span>
+
+					</div>
+						<span id="breakline"> / </span>
+
+					<div class="ammoReserveLayer">
+						<span class="hudAmmo hudUpper"> @((int)Math.Round((double)iAmmoReserve)) </span>
+						
+						<div class="hudAmmo rightContainer" style="flex-direction: column;">
+							<span class="hudAmmo hudUnder">000</span>
+
+						</div>
+
+					</div>
+			}
+			
+		</div>
+
+
+	</div>
+
+</root>
+
+@code
+{
+    // ===== Weapon State Accessors ===== //
+
+	public static BaseCombatWeapon CurrentWeapon => BasePlayer.Local.CurrentWeapon;
+	public static bool bWeaponUsesPrimaryAmmo    => CurrentWeapon.WeaponData.PrimaryAmmoType != null;
+
+	public int iAmmoLoaded  => (bWeaponUsesPrimaryAmmo ? CurrentWeapon.PrimaryAmmoLoaded : 0);
+	public int iAmmoReserve => (bWeaponUsesPrimaryAmmo ? BasePlayer.Local.GetReserveAmmo
+	(CurrentWeapon.WeaponData.PrimaryAmmoType.ResourceName) : 0);
+
+	protected override int BuildHash() => System.HashCode.Combine(iAmmoLoaded, iAmmoReserve, bWeaponUsesPrimaryAmmo);
+}
+
+<style>
+
+	WeaponStatus
+	{
+		width: 100%;
+        min-height: 45%;
+        mask-image: url(resource/ui/player/hud/scanline2x2.png);
+		justify-content: flex-end;
+	}
+
+</style>

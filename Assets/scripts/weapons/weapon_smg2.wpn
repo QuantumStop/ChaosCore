@@ -1,0 +1,126 @@
+{
+  "WeaponViewmodel": "models/weapons/v_smg2.vmdl",
+  "WeaponWorldmodel": "models/weapons/w_smg.vmdl",
+  "BulletCasingModel": "models/weapons/w_glock_casing.vmdl",
+  "BulletCasingParticle": "prefabs/weapons/shells/9mm_casing.prefab",
+  "WeaponType": "WEAPON_GENERIC",
+  "WeaponCrosshair": "scripts/weapons/crosshairs/crosshair_dot.crs",
+  "StageAmount": 3,
+  "FiresUnderwater": false,
+  "ReloadsSingly": false,
+  "MuzzleLightCookie": {
+    "$compiler": "texture",
+    "$source": "imagefile",
+    "data": {
+      "FilePath": "materials/cookies/muzzle_light01.tif",
+      "MaxSize": 4096,
+      "ConvertHeightToNormals": false,
+      "NormalScale": 1,
+      "Rotate": 0,
+      "FlipVertical": false,
+      "FlipHorizontal": false,
+      "Cropping": {
+        "Left": 0,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 0
+      },
+      "Padding": {
+        "Left": 0,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 0
+      },
+      "InvertColor": false,
+      "Tint": "1,1,1,1",
+      "Blur": 0,
+      "Sharpen": 0,
+      "Brightness": 1,
+      "Contrast": 1,
+      "Saturation": 1,
+      "Hue": 0,
+      "Colorize": false,
+      "TargetColor": "0,1,0,1",
+      "CacheToDisk": true
+    },
+    "compiled": null
+  },
+  "MuzzleLightTime": 0.02,
+  "MuzzleLightFOV": 60,
+  "TracerEffect": "prefabs/game/particles/weapons/weapon_tracer.prefab",
+  "RecoilStrengthCurve": {
+    "rangey": "0,0.75",
+    "frames": [
+      {
+        "x": 0,
+        "y": 0,
+        "in": -1,
+        "out": 1,
+        "mode": "Mirrored"
+      },
+      {
+        "x": 0.19785276,
+        "y": 0.7231887,
+        "in": 0,
+        "out": 0,
+        "mode": "Mirrored"
+      },
+      {
+        "x": 0.4631902,
+        "y": 0.13709047,
+        "in": 0,
+        "out": 0,
+        "mode": "Mirrored"
+      },
+      {
+        "x": 0.6119632,
+        "y": 0.5486964,
+        "in": 0,
+        "out": 0,
+        "mode": "Mirrored"
+      },
+      {
+        "x": 0.857362,
+        "y": 0.2762375,
+        "in": 0,
+        "out": 0,
+        "mode": "Mirrored"
+      },
+      {
+        "x": 1,
+        "y": 1,
+        "in": -1,
+        "out": 1,
+        "mode": "Mirrored"
+      }
+    ]
+  },
+  "RecoilResetThreshold": 2,
+  "RecoilRampSpeed": 1,
+  "RecoilPushForce": 1,
+  "PrimaryAmmoType": "scripts/ammo/ammo_smg.amn",
+  "PrimaryAmmoCapacity": 45,
+  "DefaultPrimaryAmmo": 45,
+  "PrimaryFireRateRPM": 600,
+  "SpreadDegreesPrimary": 8,
+  "AttackSoundsPrimary": [
+    "sound/weapons/smg2/smg_hi.sound",
+    "sound/weapons/smg2/smg_lo.sound",
+    "sound/weapons/smg2/smg_mi.sound"
+  ],
+  "SecondaryAmmoType": null,
+  "SecondaryAmmoCapacity": 0,
+  "DefaultSecondaryAmmo": 0,
+  "SecondaryFireRateRPM": 0,
+  "SpreadDegreesSecondary": 1,
+  "AttackSoundsSecondary": [],
+  "Bucket": 2,
+  "BucketPosition": 0,
+  "Icon": "resource\\ui\\player\\hud\\weapons icons\\smg.svg",
+  "Name": "SMG2",
+  "EquipSlot": "SLOT_PRIMARY",
+  "HasPrimaryAmmoType": true,
+  "HasSecondaryAmmoType": false,
+  "__references": [],
+  "__version": 0
+}

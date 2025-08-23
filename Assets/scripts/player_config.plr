@@ -1,0 +1,12 @@
+{
+  "ViewmodelHands": "models/weapons/c_hands.vmdl",
+  "BodyModel": null,
+  "HudRazorClasses": [
+    "BaseVanity",
+    "ExpoMetering",
+    "ChaosHUD"
+  ],
+  "Faction": "PLAYER",
+  "__references": [],
+  "__version": 0
+}

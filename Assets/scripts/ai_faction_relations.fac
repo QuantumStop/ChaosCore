@@ -1,0 +1,17 @@
+{
+  "PLAYER": {
+    "PLAYER": "NEUTRAL",
+    "XEN_WILD": "HATE",
+    "PLAYER_ALLY": "ALLY"
+  },
+  "XEN_WILD": {
+    "PLAYER": "HATE",
+    "XEN_WILD": "ALLY",
+    "PLAYER_ALLY": "HATE"
+  },
+  "PLAYER_ALLY": {
+    "PLAYER": "ALLY",
+    "XEN_WILD": "HATE",
+    "PLAYER_ALLY": "ALLY"
+  }
+}

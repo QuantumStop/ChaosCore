@@ -1,0 +1,19 @@
+{
+  "WeaponCrosshairType": "CROSSHAIR_CROSS_A",
+  "CrosshairScale": 0.5,
+  "CrosshairWidth": 8,
+  "CrosshairGapX": 18,
+  "CrosshairGapY": 8,
+  "CrosshairCircleSegment": [],
+  "CrosshairLength": 128,
+  "CrosshairRecoilScale": 45,
+  "CrosshairColor": "0.8,1,0,1",
+  "CrosshairHasDot": true,
+  "CrosshairDotOutline": true,
+  "CrosshairDotColor": "0.8,1,0,1",
+  "CrosshairHasOutline": true,
+  "CrosshairOutlineThickness": 6,
+  "CrosshairOutlineColor": "0.22126,0.25116,0.10163,1",
+  "__references": [],
+  "__version": 0
+}

@@ -1,0 +1,265 @@
+@using System;
+@using System.Collections.Generic;
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.Razor;
+
+@namespace XGUI
+@inherits Panel
+
+<root class="window">
+    @* Title bar *@
+    <div class="TitleBar">
+        <div class="TitleIcon"></div>
+        <div class="TitleLabel">@Title</div>
+        <div class="TitleSpacer" @onmousedown="DragBarDown" @onmouseup="DragBarUp" @onmousemove="Drag"></div>
+        @if (HasMinimise)
+        {
+            <button class="Control MinimiseButton" @onclick="Minimise">0</button>
+        }
+        @if (HasMaximise)
+        {
+            <button class="Control MaximiseButton" @onclick="Maximise">1</button>
+        }
+        @if (HasClose)
+        {
+            <button class="Control CloseButton" @onclick="Close">r</button>
+        }
+    </div>
+
+    @* Content area *@
+    <div class="window-content">
+        @ChildContent
+    </div>
+</root>
+
+@code {
+    //[Parameter] public virtual RenderFragment ChildContent { get; set; }
+
+    public Vector2 Position;
+    public Vector2 Size;
+    public Vector2 MinSize = new Vector2();
+
+    // Window properties
+    public string Title { get; set; } = "Window";
+    public bool HasMinimise { get; set; } = false;
+    public bool HasMaximise { get; set; } = false;
+    public bool HasClose { get; set; } = true;
+
+    public bool IsResizable = true;
+    public bool IsDraggable = true;
+
+    public WindowNew()
+    {
+        AddClass("Panel");
+        AddClass("Window");
+        Style.Position = PositionMode.Absolute;
+        Style.FlexDirection = FlexDirection.Column;
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        // Apply position to styles
+        Style.Left = Position.x;
+        Style.Top = Position.y;
+    }
+
+    // Window functionality
+    private bool _dragging = false;
+    private float _dragOffsetX = 0;
+    private float _dragOffsetY = 0;
+
+    public void DragBarDown()
+    {
+        var mousePos = FindRootPanel().MousePosition;
+        _dragOffsetX = mousePos.x - Position.x;
+        _dragOffsetY = mousePos.y - Position.y;
+        _dragging = true;
+    }
+
+    public void DragBarUp()
+    {
+        _dragging = false;
+    }
+
+    public void Drag()
+    {
+        if (!_dragging) return;
+
+        var mousePos = FindRootPanel().MousePosition;
+        Position = new Vector2(
+            mousePos.x - _dragOffsetX,
+            mousePos.y - _dragOffsetY
+        );
+    }
+
+    public void Minimise()
+    {
+        // Implement minimize functionality
+    }
+
+    public void Maximise()
+    {
+        // Implement maximize functionality
+    }
+
+    public void Close()
+    {
+        Delete();
+    }
+
+
+    // -------------
+    // Resizing
+    // -------------
+    // I feel like everything about resizing sucks.
+    Vector2 MousePos()
+    {
+        if (FindRootPanel().IsWorldPanel && Game.ActiveScene.IsValid() && Game.ActiveScene.IsValid())
+        {
+            Ray ray = Game.ActiveScene.Camera.ScreenPixelToRay(Mouse.Position);
+            FindRootPanel().RayToLocalPosition(ray, out var pos, out var distance);
+            return pos;
+        }
+        return FindRootPanel().MousePosition;
+    }
+
+    internal bool draggingR = false;
+    internal bool draggingL = false;
+    internal bool draggingT = false;
+    internal bool draggingB = false;
+
+    public void ResizeDown()
+    {
+        if (!IsResizable) return;
+        // TODO FIXME: Don't resize if were dragging a window by the title bar!!
+        var Distance = 5;
+        var mousePos = FindRootPanel().MousePosition;
+        if (mousePos.y.AlmostEqual(this.Box.Rect.Bottom, Distance)) draggingB = true;
+        if (mousePos.x.AlmostEqual(this.Box.Rect.Right, Distance)) draggingR = true;
+        if (mousePos.y.AlmostEqual(this.Box.Rect.Top, Distance)) draggingT = true;
+        if (mousePos.x.AlmostEqual(this.Box.Rect.Left, Distance)) draggingL = true;
+        //draggingT = true;
+        //draggingL = true;
+        xoff1 = (float)((FindRootPanel().MousePosition.x) - this.Box.Rect.Right);
+        yoff1 = (float)((FindRootPanel().MousePosition.y) - this.Box.Rect.Bottom);
+        xoff2 = (float)((FindRootPanel().MousePosition.x) - this.Box.Rect.Left);
+        yoff2 = (float)((FindRootPanel().MousePosition.y) - this.Box.Rect.Top);
+    }
+    public void ResizeUp()
+    {
+        draggingB = false;
+        draggingR = false;
+        draggingT = false;
+        draggingL = false;
+    }
+    internal float xoff1 = 0;
+    internal float yoff1 = 0;
+    internal float xoff2 = 0;
+    internal float yoff2 = 0;
+    public void ResizeMove()
+    {
+        var mousePos = MousePos();
+        if (IsResizable)
+        {
+            var Distance = 5;
+
+            var almostbottom = mousePos.y.AlmostEqual(this.Box.Rect.Bottom, Distance);
+            var almostright = mousePos.x.AlmostEqual(this.Box.Rect.Right, Distance);
+            var almosttop = mousePos.y.AlmostEqual(this.Box.Rect.Top, Distance);
+            var almostleft = mousePos.x.AlmostEqual(this.Box.Rect.Left, Distance);
+
+
+            if ((almostleft && almostbottom) || (draggingL && draggingB)) Style.Cursor = "nesw-resize";
+            else if ((almostright && almosttop) || (draggingR && draggingT)) Style.Cursor = "nesw-resize";
+            else if ((almostright && almostbottom) || (draggingR && draggingB)) Style.Cursor = "nwse-resize";
+            else if ((almostleft && almosttop) || (draggingL && draggingT)) Style.Cursor = "nwse-resize";
+            else if (almostbottom || draggingB) Style.Cursor = "ns-resize";
+            else if (almostright || draggingR) Style.Cursor = "ew-resize";
+            else if (almosttop || draggingT) Style.Cursor = "ns-resize";
+            else if (almostleft || draggingL) Style.Cursor = "ew-resize";
+            else Style.Cursor = "unset";
+        }
+
+        /*if ( Mouse )
+		{
+			ResizeUp( e );
+		}*/
+
+        // This sucks.
+
+        if (draggingB)
+        {
+            //Parent.Style.Width = (FindRootPanel().MousePosition.x - Parent.Box.Rect.Left) - xoff;
+            var newheight = (mousePos.y - Box.Rect.Top) - yoff1;
+            if (newheight > MinSize.y)
+            {
+                Style.Height = newheight;
+            }
+        }
+
+        if (draggingR)
+        {
+            var newwidth = (mousePos.x - Box.Rect.Left) - xoff1;
+            if (newwidth > MinSize.x)
+            {
+                Style.Width = newwidth;
+            }
+            //Parent.Style.Height = (FindRootPanel().MousePosition.y - Parent.Box.Rect.Top) - yoff;
+        }
+        if (draggingT)
+        {
+            var newheight = Box.Rect.Height - ((mousePos.y - yoff2) - Box.Rect.Top);
+            if (newheight > MinSize.y)
+            {
+                Style.Height = newheight;
+                Position.y = mousePos.y - yoff2;
+            }
+        }
+
+        if (draggingL)
+        {
+            var newwidth = Box.Rect.Width - ((mousePos.x - xoff2) - Box.Rect.Left);
+            if (newwidth > MinSize.x)
+            {
+                Style.Width = newwidth;
+                Position.x = mousePos.x - xoff2;
+            }
+        }
+
+
+    }
+
+    // Override SetProperty to handle window attributes
+    public override void SetProperty(string name, string value)
+    {
+        switch (name)
+        {
+            case "title":
+                Title = value;
+                break;
+            case "hasminimise":
+                HasMinimise = bool.Parse(value);
+                break;
+            case "hasmaximise":
+                HasMaximise = bool.Parse(value);
+                break;
+            case "hasclose":
+                HasClose = bool.Parse(value);
+                break;
+            case "x":
+                if (float.TryParse(value, out float x))
+                    Position = new Vector2(x, Position.y);
+                break;
+            case "y":
+                if (float.TryParse(value, out float y))
+                    Position = new Vector2(Position.x, y);
+                break;
+            default:
+                base.SetProperty(name, value);
+                break;
+        }
+    }
+}

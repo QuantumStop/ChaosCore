@@ -1,0 +1,59 @@
+{
+  "BaseSurface": "surfaces/2k_default.surface",
+  "AudioSurface": "Glass",
+  "Description": null,
+  "Friction": 0.8,
+  "Elasticity": 0.25,
+  "Density": 2000,
+  "Thickness": -1,
+  "RollingResistance": 0,
+  "BounceThreshold": 40,
+  "Dampening": 0,
+  "ImpactEffects": {
+    "Regular": null,
+    "Bullet": null,
+    "BulletDecal": null,
+    "SoftParticles": null,
+    "SoftDecal": null,
+    "HardParticles": null,
+    "HardDecal": null
+  },
+  "ScrapeEffects": {
+    "RoughnessFactor": 0,
+    "RoughThreshold": 0,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
+  "Sounds": {
+    "FootLeft": null,
+    "FootRight": null,
+    "FootLaunch": null,
+    "FootLand": null,
+    "Bullet": null,
+    "ImpactHard": null,
+    "ImpactSoft": null,
+    "ScrapeRough": null,
+    "ScrapeSmooth": null
+  },
+  "PrefabCollection": {
+    "BulletImpact": null,
+    "BluntImpact": null
+  },
+  "SoundCollection": {
+    "FootLeft": "sound/physics/footsteps/glass.sound",
+    "FootRight": "sound/physics/footsteps/glass.sound",
+    "FootLaunch": null,
+    "FootLand": null,
+    "Bullet": "sound/physics/glass/glass_impact_bullet.sound",
+    "ImpactHard": null,
+    "ImpactSoft": null,
+    "ScrapeRough": null,
+    "ScrapeSmooth": null,
+    "Break": null
+  },
+  "Tags": null,
+  "__references": [],
+  "__version": 0
+}

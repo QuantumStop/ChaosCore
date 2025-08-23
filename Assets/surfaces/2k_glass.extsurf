@@ -1,0 +1,16 @@
+{
+  "DecalList": [
+    "scripts/decals/impact/glass/decal_impact_glass01.decal",
+    "scripts/decals/impact/glass/decal_impact_glass02.decal",
+    "scripts/decals/impact/glass/decal_impact_glass03.decal",
+    "scripts/decals/impact/glass/decal_impact_glass04.decal",
+    "scripts/decals/impact/glass/decal_impact_glass05.decal",
+    "scripts/decals/impact/glass/decal_impact_glass06.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/2k_glass.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}
