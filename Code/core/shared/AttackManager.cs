@@ -1,4 +1,4 @@
-using Core;
+namespace Core;
 using Microsoft.VisualBasic;
 using Sandbox.Utility;
 using System;

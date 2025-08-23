@@ -1,6 +1,6 @@
 ﻿namespace SDK;
-
 using Core;
+
 [Title( "SDK Example Player" )]
 [Category( "SDK" )]
 public partial class Player : BasePlayer

@@ -1,4 +1,4 @@
-﻿using Core;
+﻿namespace Core;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ public class DebrisManager : BaseEntity
 	[ConVar( "debug_surfacedecal", ConVarFlags.Cheat )] public static bool ShowSurfaceDebug { get; set; } = false;
 	[Property, Feature( "Debug" ), MakeDirty, Title( "Show Debris Objects" )] public bool DisplayDebrisObj { get; set; } = false;
 
-	[Property, Feature( "Debug" ), ShowIf( "DisplayDebrisObj", true )] private List<GameObject> DebrisObjects = new();
+	[Property, Feature( "Debug" ), ShowIf( nameof( DisplayDebrisObj ), true )] private List<GameObject> DebrisObjects = [];
 
 	public DebrisManager() { StaticRef = this; }
 
