@@ -2,6 +2,8 @@
 using XMovement;
 using Sandbox.Internal;
 
+namespace Core;
+
 [Hide]
 public partial class BasePlayer : BaseEntity, Component.IDamageable
 {

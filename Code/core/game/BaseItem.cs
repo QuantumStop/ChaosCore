@@ -1,4 +1,6 @@
-﻿[Hide]
+﻿namespace Core;
+
+[Hide]
 public class BaseItem : BaseUsable
 {
 	[Property, Group( "Outputs" ), Order( 100 ), Title( "On Pickup" )] public ChaosOutput OnPickupOutput { get; set; }

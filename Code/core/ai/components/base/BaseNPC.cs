@@ -1,4 +1,4 @@
-﻿using chaoscore;
+﻿namespace Core;
 using Sandbox.Internal;
 using System;
 using static NpcBrain;

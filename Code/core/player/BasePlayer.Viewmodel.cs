@@ -1,5 +1,7 @@
 using System;
 
+namespace Core;
+
 public partial class BasePlayer
 {
 	/// <summary>
@@ -33,8 +35,8 @@ public partial class BasePlayer
 	private float lastPitch;
 	private float lastYaw;
 
-	[ReadOnly, Property, MakeDirty, Feature( "Viewmodel" )] public float YawInertia { get; set; }
-	[ReadOnly, Property, MakeDirty, Feature( "Viewmodel" )] public float PitchInertia { get; set; }
+	[ReadOnly, Property, Feature( "Viewmodel" )] public float YawInertia { get; set; }
+	[ReadOnly, Property, Feature( "Viewmodel" )] public float PitchInertia { get; set; }
 	private Vector3 lerpedWishMove;
 
 	[Group( "General Sway" ), Property, Feature( "Viewmodel" )] public float ViewInertiaSmoothTime { get; set; } = 0.015f;
@@ -737,6 +739,9 @@ public partial class BasePlayer
 		base.OnPreRender();
 
 		if ( IsProxy ) // only on viewmodel you can see
+			return;
+
+		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid())
 			return;
 
 		if ( !ViewmodelWeaponObject.Active )    // because we toggle the viewmodel object, check if its active (enabled)

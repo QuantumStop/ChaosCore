@@ -1,4 +1,6 @@
-﻿using static BaseNPCConditions;
+﻿namespace Core;
+
+using static BaseNPCConditions;
 using static NpcSoundManager;
 
 public class BaseNPCConditions : Component

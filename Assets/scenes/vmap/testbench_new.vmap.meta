@@ -12,7 +12,6 @@
       "PackageReferences": [],
       "EditorReferences": [
         "facepunch.concrete_barrier#33663",
-        "facepunch.crate_stack_01#57600",
         "facepunch.fold_const_sign#10886",
         "facepunch.forklift_up_dev#58130",
         "facepunch.industrial_shelving_01#43527",
@@ -33,7 +32,7 @@
       "Mounts": null,
       "IsStandaloneOnly": false,
       "Metadata": {
-        "SingleAssetSource": "scenes/dev_env/vmap/testbench_new.vmap"
+        "SingleAssetSource": "scenes/vmap/testbench_new.vmap"
       }
     }
   }

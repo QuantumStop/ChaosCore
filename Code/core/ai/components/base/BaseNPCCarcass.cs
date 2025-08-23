@@ -1,4 +1,5 @@
-﻿public class NpcCarcass : Component
+﻿namespace Core;
+public class NpcCarcass : Component
 {
 	public BaseNpc Owner { get; set; }
 	[Property, ReadOnly] public bool StenchEnabled { get; set; }

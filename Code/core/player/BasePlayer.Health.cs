@@ -1,4 +1,6 @@
-﻿using System;
+﻿namespace Core;
+using System;
+
 public partial class BasePlayer
 {
 	/// <summary>
@@ -12,7 +14,7 @@ public partial class BasePlayer
 	/// <summary>
 	/// Does the player have suit on
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public bool HasSuit = false;
+	[Property, ReadOnly, Feature( "Debug" )] public virtual bool HasSuit {get;set;} = false;
 	/// <summary>
 	/// give the suit straight up
 	/// </summary>

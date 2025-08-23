@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Sandbox.Internal;
 
 namespace Editor;
+using Core;
 
 public static class ChaosUtility
 {

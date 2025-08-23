@@ -1,3 +1,5 @@
+namespace Core;
+
 [Hide]
 public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPressable
 {

@@ -1,4 +1,5 @@
-﻿public class BaseNpcAnimgraphController : Component
+﻿namespace Core;
+public class BaseNpcAnimgraphController : Component
 {
 	[Property, ReadOnly] public BaseNpc Owner { get; set; }
 	[Property, ReadOnly] public SkinnedModelRenderer Skeleton { get; set; }

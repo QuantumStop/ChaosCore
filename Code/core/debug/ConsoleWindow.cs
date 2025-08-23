@@ -1,6 +1,7 @@
 using Sandbox.UI;
 using System;
 using System.Reflection;
+namespace Core;
 
 public class ConsoleWindow : XGUI.Window
 {

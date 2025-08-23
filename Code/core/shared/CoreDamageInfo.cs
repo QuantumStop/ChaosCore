@@ -1,4 +1,6 @@
-﻿public class CoreDamageInfo : DamageInfo
+﻿namespace Core;
+
+public class CoreDamageInfo : DamageInfo
 {
 	/// <summary>
 	/// Physical force of the damage, usually applied as a push

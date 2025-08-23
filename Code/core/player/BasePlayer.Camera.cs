@@ -1,5 +1,7 @@
 ﻿using System;
 using Sandbox.Engine.Settings;
+namespace Core;
+
 public partial class BasePlayer
 {
 	// default_fov is goldsrc and regular source up to OB, where it was superceeded by fov (default_fov still exists but its a bit of a longer story)

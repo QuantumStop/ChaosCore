@@ -1,4 +1,5 @@
-﻿using System;
+﻿namespace Core;
+using System;
 using static NpcSoundManager;
 
 public class NpcTargeting : Component

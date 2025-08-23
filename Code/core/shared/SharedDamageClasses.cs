@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace Core;
+
 public enum LifeState
 {
 	Alive,

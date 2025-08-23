@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
+namespace Core;
+
 [GameResource( "NPC Definition", "npc", "A script file for an NPC", Icon = "emoji_people" )]
 public class NpcDefinition : GameResource
 {
@@ -62,7 +64,7 @@ public class SharedNpcModelInfo : GameResource
 	[Category( "Face" )] public string MouthAttachment { get; set; }
 
 	[Category( "Corpse" )] public string CorpseCenter { get; set; }
-
+	
 	public string GetEquippedAttachment( BaseNpcWeapon weapon )
 	{
 		if ( weapon.WeaponData.EquipSlot == WeaponEquipSlot.SLOT_PRIMARY )

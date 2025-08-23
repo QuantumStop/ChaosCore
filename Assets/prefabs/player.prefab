@@ -191,7 +191,7 @@
         }
       },
       {
-        "__type": "PlayerPickup",
+        "__type": "Core.PlayerPickup",
         "__guid": "73ab63fe-cf2b-4338-9399-fe159d243f83",
         "__enabled": true,
         "HeldProp": null,
@@ -210,54 +210,7 @@
         "TargetName": null
       },
       {
-        "__type": "chaoscore.CustomCrosshair",
-        "__guid": "69d938d7-64a0-49d2-bb08-c1745eea8efb",
-        "__enabled": true,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null
-      },
-      {
-        "__type": "chaoscore.AnimInteraction",
-        "__guid": "e3507e47-8024-4378-8cfe-1f9ac04bfce4",
-        "__enabled": true,
-        "animatedInteractionData": {
-          "PlayOnce": false,
-          "SingleSequenceName": null,
-          "Animgraph": null,
-          "DisableNightvision": false,
-          "InteractableObjects": []
-        },
-        "AnimStarted": false,
-        "AnimStartThreshold": 1,
-        "Blend": 0,
-        "BlendingOut": false,
-        "BlendInTime": 0,
-        "BlendOutTime": 1,
-        "Initialized": false,
-        "InternalID": null,
-        "IsInteracting": false,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "OnKilled": null,
-        "OriginalCameraTransform": {
-          "Position": "0,0,0",
-          "Scale": "0,0,0",
-          "Rotation": "0,0,0,0"
-        },
-        "OriginalPlayerPos": "0,0,0",
-        "SerializedGuid": null,
-        "TestObjects": []
-      },
-      {
-        "__type": "chaoscore.Player",
+        "__type": "SDK.Player",
         "__guid": "f8fa8b81-f144-4063-9f6c-979dbe959f10",
         "__enabled": true,
         "AmmoReserveList": [],
@@ -391,19 +344,43 @@
         "TargetName": null,
         "ViewInertiaSmoothTime": 0.015,
         "ViewMaxInertia": 60,
-        "ViewmodelHands": null,
+        "ViewmodelHands": {
+          "_type": "component",
+          "component_id": "8985a1d6-b3c0-422b-8117-253b71d1e5cb",
+          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
+          "component_type": "SkinnedModelRenderer"
+        },
         "ViewmodelOffsetForward": 2,
         "ViewmodelOffsetRight": 0.2,
         "ViewmodelOffsetUp": 0,
         "ViewmodelPitchInertiaScale": 2.5,
-        "ViewmodelWeapon": null,
-        "ViewmodelWeaponObject": null,
+        "ViewmodelWeapon": {
+          "_type": "component",
+          "component_id": "8985a1d6-b3c0-422b-8117-253b71d1e5cb",
+          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "ViewmodelWeaponObject": {
+          "_type": "gameobject",
+          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f"
+        },
         "ViewmodelYawInertiaScale": 5,
         "WeaponGameObject": null,
         "WeaponList": [],
         "WeaponToEquip": null,
         "YawInertia": 0,
         "YawOffsetLerpSpeed": 6
+      },
+      {
+        "__type": "SDK.CustomCrosshair",
+        "__guid": "89133c2c-4748-4075-a34d-42021299b1ef",
+        "__enabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
       }
     ],
     "Children": [
@@ -462,7 +439,7 @@
             "OwnerTransfer": 1,
             "Components": [
               {
-                "__type": "XGUI_DebugMaster_Manager",
+                "__type": "Core.XGUI_DebugMaster_Manager",
                 "__guid": "d6f711f9-d7bf-4a04-baa0-f7b0ea213eed",
                 "__enabled": true,
                 "ChildCount": 0,
@@ -688,12 +665,10 @@
                 "ConeInner": 0,
                 "ConeOuter": 70,
                 "Cookie": null,
-                "Focused": false,
                 "FogMode": "Enabled",
                 "FogStrength": 1,
                 "KelvinTemperature": 6500,
-                "LightColor": "318.3099,318.3099,318.3099,318.3099",
-                "LumenBrightnessPresets": "InteriorLight",
+                "LightColor": "1000,1000,1000,1000",
                 "MiredTemperature": 154,
                 "OnComponentDestroy": null,
                 "OnComponentDisabled": null,

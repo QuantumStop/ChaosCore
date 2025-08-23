@@ -1,6 +1,8 @@
 ﻿using Sandbox;
 using System;
 
+namespace Core;
+
 public class ScriptedSequence : BaseEntity
 {
 	public enum MovementOptions

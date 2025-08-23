@@ -1,0 +1,40 @@
+@namespace SDK;
+@using System
+@using Sandbox.UI;
+@using Core;
+
+	
+<root>
+
+	@if ( fArmor > 0 )
+	{
+		<div class="hudSUIT @CurrentArmorClass">
+			
+			<svg class="hudIcon @CurrentArmorClass" src="resource/ui/player/hud/armor.svg" color="white" />
+			
+			<div class="hudNumber">
+				<span class="hudArmor hudUpper"> @((int)Math.Round(fArmor)) </span>
+				<span class="hudArmor hudUnder">000</span>
+				<div class="hudText"> PCV </div>
+			</div>
+
+		</div>
+	}
+
+</root>
+
+@code
+{
+	public string CurrentArmorClass  => GetArmorClass();
+	public float fArmor              => BasePlayer.Local.Armour;
+
+	public string GetArmorClass()
+	{
+		if (fArmor >= 25)
+			return "Armor";
+		else
+			return "ArmorLow";
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine( fArmor, CurrentArmorClass  );
+}

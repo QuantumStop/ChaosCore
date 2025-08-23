@@ -56,7 +56,7 @@
           "__enabled": true,
           "__version": 1,
           "EnableCollision": true,
-          "MapName": "scenes/dev_env/vmap/testbench_new.vmap",
+          "MapName": "scenes/vmap/testbench_new.vmap",
           "NoOrigin": false,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -41074,7 +41074,7 @@
           "__version": 1,
           "Flags": 0,
           "Name": "Box",
-          "Position": "-1100.02,757.875,-1575.307",
+          "Position": "-1100.02,757.875,-1575.31",
           "Rotation": "0,0,0.9999999,0.00000005960464",
           "Scale": "1,1,1",
           "Tags": "",
@@ -41096,7 +41096,7 @@
               "IsTrigger": false,
               "Mesh": {
                 "Topology": "H4sIAAAAAAAACo2T6WoCQRCEP426q0ZN1pyQA8x93/f5/i+V8EEtLCE/HBBntqurq6tnNoBvYAL8/FklMAAWgfE/8QvgEDgFzoEtYBlYB2bANXAL3AOPwBLQCo5g6//uP/x/1zQ4uXtABXRSrzNHvrn99NRKjj1Os5dzmH6Nd4NdAxaAAhjFi1bwYleD7cTHMvEiWPtup09/uzkXiY0a+dNwtLOvGrFeag2jx9yVhtYqXmwm3o32fvKrxA4atTfCsTCHf+rczsxJ/lY4ikZvZw1fd1K3PQe/fe/lLvWSPwtHGZ6Dhhd6vw8cN7w+yn10jaL1PVjPJ+mhyDdzPxNbjvZ6jcN1mfriL1LT+pNofQvW81V6KPPN3OfMzNnd5E0M4rtv5CXczuou72UQvNiP6HO2D3lL9b0U+5Va8j2F07h4sa+pb9xaYjybozY9s7767cUejJtvrjXFqkct9lD7qbd66l49arEHz2L0Vs/Mrz2t76H8cjpj56BX3oNas1qtJ+cvHvUd8qgEAAA=",
-                "Position": "2992,5456,576.0188",
+                "Position": "2992,5456,576.0159",
                 "Rotation": "0,0,0.7071067,0.7071068",
                 "Positions": [
                   "-208,-464,64",
@@ -41244,19 +41244,19 @@
                 "TextureOffset": [
                   "192,320",
                   "192,320",
-                  "320,256.0752",
-                  "192,256.0752",
-                  "320,256.0752",
-                  "192,256.0752",
+                  "320,256.0635",
+                  "192,256.0635",
+                  "320,256.0635",
+                  "192,256.0635",
                   "192,320",
                   "192,320",
                   "192,320",
                   "320,320",
                   "192,320",
-                  "0,511.9973",
-                  "128,511.9971",
-                  "0,511.9973",
-                  "384,511.9971"
+                  "0,511.9856",
+                  "128,511.9854",
+                  "0,511.9856",
+                  "384,511.9854"
                 ],
                 "MaterialIndex": [
                   0,
@@ -42177,7 +42177,7 @@
           "HideInGame": false,
           "IsTrigger": false,
           "Mesh": {
-            "Topology": "H4sIAAAAAAAACk2MCQoAIQzE4qqr//9wJdiCA6WQOQawgcbVBwzgT+bJXi0gIkLeM68q69fXm7n1bsv1a6skN2tH394B6DpJeKAAAAA=",
+            "Topology": "H4sIAAAAAAAACmNhYGDgYGBgYGRgYPg/CAEAeTQzxaAAAAA=",
             "Position": "-2784,1344,480",
             "Rotation": "0,0,0,1",
             "Positions": [
@@ -42220,9 +42220,6 @@
               0,
               0,
               0
-            ],
-            "Materials": [
-              "materials/water/water_oily.vmat"
             ]
           },
           "OnComponentDestroy": null,
@@ -42300,248 +42297,7 @@
           "NetworkOrphaned": 0,
           "OwnerTransfer": 1,
           "Components": [],
-          "Children": [
-            {
-              "__guid": "305bd625-4cfa-441a-8c47-1ff27bfc146f",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_smg2.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Name",
-                    "Value": "SMG2"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Position",
-                    "Value": "641.9998,-1894,531.9999"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Rotation",
-                    "Value": "0.5,0.5,0.4999999,0.5000001"
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "f4eb2855-7203-4171-b44a-a686f63861f7": "305bd625-4cfa-441a-8c47-1ff27bfc146f",
-                "3b213406-8264-490b-b66f-76d07abd56f2": "cf72a21f-8eee-4970-88df-ca6d6fd1a635"
-              }
-            },
-            {
-              "__guid": "6fd9d090-86c8-44fa-84ff-1956aef897b2",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_smg2.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Name",
-                    "Value": "SMG2"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Position",
-                    "Value": "657.9999,-1894,531.9998"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Rotation",
-                    "Value": "0.5,0.5,0.4999999,0.5000001"
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "f4eb2855-7203-4171-b44a-a686f63861f7": "6fd9d090-86c8-44fa-84ff-1956aef897b2",
-                "3b213406-8264-490b-b66f-76d07abd56f2": "ca54bea1-3284-46c6-9b06-cc15b798c27a"
-              }
-            },
-            {
-              "__guid": "4d669e6d-df06-4d6b-a298-5019f46b338e",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_smg2.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Name",
-                    "Value": "SMG2"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Position",
-                    "Value": "641.9995,-1916,531.9999"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Rotation",
-                    "Value": "0.5,0.5,0.4999999,0.5000001"
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "f4eb2855-7203-4171-b44a-a686f63861f7": "4d669e6d-df06-4d6b-a298-5019f46b338e",
-                "3b213406-8264-490b-b66f-76d07abd56f2": "76b40c53-638a-480f-9b8e-cb908381f603"
-              }
-            },
-            {
-              "__guid": "e77da3e0-7473-4c86-92de-dfa29fdefe13",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_smg2.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Name",
-                    "Value": "SMG2"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Position",
-                    "Value": "657.9996,-1916,531.9999"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Rotation",
-                    "Value": "0.5,0.5,0.4999999,0.5000001"
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "f4eb2855-7203-4171-b44a-a686f63861f7": "e77da3e0-7473-4c86-92de-dfa29fdefe13",
-                "3b213406-8264-490b-b66f-76d07abd56f2": "15eb976a-527a-4831-9262-5ff3cc30ef97"
-              }
-            },
-            {
-              "__guid": "a63724fc-50e7-4e2c-8711-e423017341c4",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_smg2.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Name",
-                    "Value": "SMG2"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Position",
-                    "Value": "641.9992,-1938,531.9999"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Rotation",
-                    "Value": "0.5,0.5,0.4999999,0.5000001"
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "f4eb2855-7203-4171-b44a-a686f63861f7": "a63724fc-50e7-4e2c-8711-e423017341c4",
-                "3b213406-8264-490b-b66f-76d07abd56f2": "1af63d9d-2737-4102-9705-abfce5c272c9"
-              }
-            },
-            {
-              "__guid": "41e55926-786c-41e0-b050-644d58f9c60a",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_smg2.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Name",
-                    "Value": "SMG2"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Position",
-                    "Value": "657.9993,-1938,531.9998"
-                  },
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "f4eb2855-7203-4171-b44a-a686f63861f7"
-                    },
-                    "Property": "Rotation",
-                    "Value": "0.5,0.5,0.4999999,0.5000001"
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "f4eb2855-7203-4171-b44a-a686f63861f7": "41e55926-786c-41e0-b050-644d58f9c60a",
-                "3b213406-8264-490b-b66f-76d07abd56f2": "9feca191-bc78-4b44-a5ac-143b93c66fff"
-              }
-            }
-          ]
+          "Children": []
         },
         {
           "__guid": "485a991b-65c7-4db7-89d5-a13cce8b62cb",
@@ -42558,260 +42314,7 @@
           "NetworkOrphaned": 0,
           "OwnerTransfer": 1,
           "Components": [],
-          "Children": [
-            {
-              "__guid": "574efe1b-fdcf-4e6a-8343-90a768caa701",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_glock.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "b10be44b-aa6f-4095-8075-fc86608de0ee"
-                    },
-                    "Property": "Position",
-                    "Value": "0.0001220703,0.000001072884,7.999879"
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "SkipFirstEquipAnim",
-                    "Value": true
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "b10be44b-aa6f-4095-8075-fc86608de0ee": "574efe1b-fdcf-4e6a-8343-90a768caa701",
-                "3161349d-e171-4e49-a7c8-9be00f7af10f": "1cf23f47-13f8-4190-8c60-207054c89fc5"
-              }
-            },
-            {
-              "__guid": "eb18944f-f3b7-47e3-b71b-a69e6df219de",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_glock.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "b10be44b-aa6f-4095-8075-fc86608de0ee"
-                    },
-                    "Property": "Position",
-                    "Value": "15.99939,-0.0000629425,8.000002"
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "SkipFirstEquipAnim",
-                    "Value": true
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "b10be44b-aa6f-4095-8075-fc86608de0ee": "eb18944f-f3b7-47e3-b71b-a69e6df219de",
-                "3161349d-e171-4e49-a7c8-9be00f7af10f": "f1cd5bad-9abe-45b7-bd3d-952e827e0089"
-              }
-            },
-            {
-              "__guid": "c9b73203-6c08-4f25-9e73-f35d0f5c4b9f",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_glock.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "b10be44b-aa6f-4095-8075-fc86608de0ee"
-                    },
-                    "Property": "Position",
-                    "Value": "0.000244379,-0.0000007152557,-3.999818"
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "OnPickupOutput",
-                    "Value": {
-                      "__version": 9,
-                      "__guid": "64cd0808-67dd-4d36-a505-6c4a6dda07bb",
-                      "__changeId": 7,
-                      "UserData": {
-                        "Title": "On Pickup",
-                        "ReferencedComponentTypes": []
-                      },
-                      "Variables": [],
-                      "Nodes": [
-                        {
-                          "Id": 0,
-                          "Type": "input"
-                        },
-                        {
-                          "Id": 1,
-                          "Type": "sys.tostring",
-                          "Properties": {
-                            "T": "BasePlayer"
-                          },
-                          "UserData": {
-                            "Position": "144,24"
-                          }
-                        },
-                        {
-                          "Id": 2,
-                          "Type": "log.info",
-                          "UserData": {
-                            "Position": "396,-0"
-                          }
-                        }
-                      ],
-                      "Links": [
-                        {
-                          "SrcId": 0,
-                          "SrcName": "Activator",
-                          "DstId": 1,
-                          "DstName": "input"
-                        },
-                        {
-                          "SrcId": 0,
-                          "SrcName": "_signal",
-                          "DstId": 2,
-                          "DstName": "_signal"
-                        },
-                        {
-                          "SrcId": 1,
-                          "SrcName": "_result",
-                          "DstId": 2,
-                          "DstName": "format"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "SkipFirstEquipAnim",
-                    "Value": true
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "b10be44b-aa6f-4095-8075-fc86608de0ee": "c9b73203-6c08-4f25-9e73-f35d0f5c4b9f",
-                "3161349d-e171-4e49-a7c8-9be00f7af10f": "eb406aea-6aee-4aad-87d4-29ad993fd27d"
-              }
-            },
-            {
-              "__guid": "16c85fa6-5a2a-4eea-9c46-04e55f483556",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_glock.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "b10be44b-aa6f-4095-8075-fc86608de0ee"
-                    },
-                    "Property": "Position",
-                    "Value": "15.99952,-0.00006389618,-3.999695"
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "SkipFirstEquipAnim",
-                    "Value": true
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "b10be44b-aa6f-4095-8075-fc86608de0ee": "16c85fa6-5a2a-4eea-9c46-04e55f483556",
-                "3161349d-e171-4e49-a7c8-9be00f7af10f": "428f0bfe-9238-489f-bd17-26149a6cc9dd"
-              }
-            },
-            {
-              "__guid": "2c28638b-011c-4e40-ba7e-07e5cf5d017a",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_glock.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "b10be44b-aa6f-4095-8075-fc86608de0ee"
-                    },
-                    "Property": "Position",
-                    "Value": "0.0007328987,0.0001196861,-15.99976"
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "SkipFirstEquipAnim",
-                    "Value": true
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "b10be44b-aa6f-4095-8075-fc86608de0ee": "2c28638b-011c-4e40-ba7e-07e5cf5d017a",
-                "3161349d-e171-4e49-a7c8-9be00f7af10f": "312a5595-582d-4eab-abfe-ae238c4f274c"
-              }
-            },
-            {
-              "__guid": "880b775f-2233-4b1b-866f-2e31c473694a",
-              "__version": 1,
-              "__Prefab": "prefabs/weapons/weapon_glock.prefab",
-              "__PrefabInstancePatch": {
-                "AddedObjects": [],
-                "RemovedObjects": [],
-                "PropertyOverrides": [
-                  {
-                    "Target": {
-                      "Type": "GameObject",
-                      "IdValue": "b10be44b-aa6f-4095-8075-fc86608de0ee"
-                    },
-                    "Property": "Position",
-                    "Value": "16,0.00005549192,-15.99964"
-                  },
-                  {
-                    "Target": {
-                      "Type": "Component",
-                      "IdValue": "3161349d-e171-4e49-a7c8-9be00f7af10f"
-                    },
-                    "Property": "SkipFirstEquipAnim",
-                    "Value": true
-                  }
-                ],
-                "MovedObjects": []
-              },
-              "__PrefabIdToInstanceId": {
-                "b10be44b-aa6f-4095-8075-fc86608de0ee": "880b775f-2233-4b1b-866f-2e31c473694a",
-                "3161349d-e171-4e49-a7c8-9be00f7af10f": "7574d4b1-d6e0-4edb-a655-e6da008e1bd1"
-              }
-            }
-          ]
+          "Children": []
         },
         {
           "__guid": "06c91e92-b9be-498b-8d68-ebe8773dedc7",
@@ -44369,9 +43872,9 @@
           "Initialized": true,
           "InternalID": "game_manager_b2VXS",
           "LastEditorCameraPosition": {
-            "Position": "6174.668,2734.921,584.5469",
+            "Position": "656.4423,-1749.015,617.6997",
             "Scale": "1,1,1",
-            "Rotation": "0.002596037,0.007413397,-0.3304932,0.9437757"
+            "Rotation": "0.06241418,0.1026525,-0.5157594,0.8482683"
           },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -44437,7 +43940,7 @@
             "fb29ace4-e2a7-4426-901d-ff5c11699400": "170255b1-fc05-435e-9586-71e411d603ea",
             "bcf83c67-a239-4564-aee6-900bac26ab36": "d2ef913d-3267-4140-99e9-28e2400685c6",
             "9e4823c6-e365-416b-b6f4-7fa283c5a9cf": "9ca3bad5-eff2-49f1-a813-def45948fa76",
-            "dd1756d8-f71a-4533-a797-17f09527dcb4": "e9585688-c933-4551-bda3-ef54c6b29caa",
+            "c75b9a06-98a2-4185-bb02-2fe2a4cb7536": "9e9a98e8-b3cb-40a8-945e-4990dda7271e",
             "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9": "2f13e10d-9179-4c3f-90fe-be73270bab24",
             "4fa9c417-0312-4b53-86ed-d0a45557ce0c": "cc1cc7e6-6b24-413d-898f-1ce4ef434b37"
           }
@@ -44574,7 +44077,7 @@
       "OwnerTransfer": 1,
       "Components": [
         {
-          "__type": "info_target",
+          "__type": "Core.info_target",
           "__guid": "1f8c25cc-e0c7-4c5c-ae16-dc96bc9eca6b",
           "__enabled": true,
           "Initialized": false,
@@ -44655,6 +44158,88 @@
           },
           "Type": "Sphere",
           "Volume": 1
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "ohmbattery",
+      "Position": "664.5002,-1862.715,546.946",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Core.GameProp",
+          "__guid": "d42914a2-274f-44c7-9aaa-4330e6985f9d",
+          "__enabled": true,
+          "BodyGroups": 18446744073709551615,
+          "CanBeHeld": true,
+          "Health": 0,
+          "Initialized": true,
+          "InternalID": "Core.GameProp_DRjef",
+          "IsStatic": false,
+          "MaterialGroup": null,
+          "Model": "models/items/ohmbattery.vmdl",
+          "NewHealth": 0,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnDropped": null,
+          "OnHoldFixedUpdate": null,
+          "OnHoldStart": null,
+          "OnHoldUpdate": null,
+          "OnKilled": null,
+          "OnPropBreak": null,
+          "OnPropTakeDamage": null,
+          "OnUse": null,
+          "OverrideHealth": false,
+          "ProceduralComponents": [
+            {
+              "_type": "component",
+              "component_id": "d2f2e0a3-32c5-4b54-9f6e-775fde051cc5",
+              "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
+              "component_type": "SkinnedModelRenderer"
+            },
+            {
+              "_type": "component",
+              "component_id": "9468bd94-8e49-49b5-b153-6528896ba49e",
+              "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
+              "component_type": "ModelCollider"
+            },
+            {
+              "_type": "component",
+              "component_id": "1b74d1e3-b39a-4a6b-84ad-44de9ff33b16",
+              "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
+              "component_type": "Rigidbody"
+            },
+            {
+              "_type": "component",
+              "component_id": "61130ab0-0a8a-467e-bdd1-6a56d9a9d6f3",
+              "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
+              "component_type": "TintComponent"
+            }
+          ],
+          "PropBatchableDebug": true,
+          "SerializedGuid": null,
+          "shadowRenderType": "On",
+          "StartAsleep": false,
+          "TargetName": "Core.GameProp_DRjef",
+          "Tint": "1,1,1,1",
+          "TintB": "1,1,1,1",
+          "TintC": "1,1,1,1",
+          "WhichTints": "OneTint"
         }
       ],
       "Children": []

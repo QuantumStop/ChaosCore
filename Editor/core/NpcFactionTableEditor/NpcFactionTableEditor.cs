@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Nodes;
+using Core;
 
 [CanEdit( "fac" )]
 [EditorApp( "Npc Faction Relations Editor", "manage_accounts", "With which to edit faction tables" )]

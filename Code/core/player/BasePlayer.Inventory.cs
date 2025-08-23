@@ -1,4 +1,4 @@
-﻿using Core;
+﻿namespace Core;
 using Sandbox.Internal;
 using System;
 

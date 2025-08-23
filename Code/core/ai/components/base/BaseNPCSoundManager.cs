@@ -1,5 +1,5 @@
 ﻿using System;
-
+namespace Core;
 public class NpcSoundManager : Component
 {
 	public enum SoundType

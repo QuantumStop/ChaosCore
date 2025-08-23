@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿namespace Core;
+using Sandbox;
 public class NavDebugRenderer : Component
 {
 	public BaseNpc Npc;

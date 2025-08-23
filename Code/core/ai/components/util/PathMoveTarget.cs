@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Sandbox;
+namespace Core;
 
 public class PathMoveTarget : BaseEntity
 {

@@ -2,8 +2,9 @@ using Sandbox;
 using System;
 using System.Collections.Generic;
 
-public delegate bool TaskFunc( BaseNpc owner, float taskdata, AITask task );
+namespace Core;
 
+public delegate bool TaskFunc( BaseNpc owner, float taskdata, AITask task );
 
 public class AITask
 {

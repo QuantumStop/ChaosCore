@@ -2,6 +2,8 @@ using Sandbox.UI;
 using System;
 using XGUI;
 
+namespace Core;
+
 public class XGUI_DebugMaster_Manager : BaseEntity
 {
 	public XGUISystem xguiSystem => Scene.GetSystem<XGUISystem>();

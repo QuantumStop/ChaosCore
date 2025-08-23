@@ -1,4 +1,4 @@
-﻿using Sandbox;
+﻿namespace Core;
 public class AISquad : Component
 {
 	public BaseNpc Npc;

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using System;
+namespace Core;
 
 public class NpcRelations : Component
 {

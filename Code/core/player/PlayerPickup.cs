@@ -1,5 +1,7 @@
 ﻿using Sandbox.Physics;
 
+namespace Core;
+
 [Title( "Player Pickup" )]
 [Icon( "Backpack" )]
 [Category( "Core" )]

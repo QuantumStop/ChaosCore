@@ -1,0 +1,203 @@
+@namespace SDK;
+@using System;
+@using Sandbox.UI;
+@using Core;
+
+@*Source HL2 bucket system weapon selection HUD*@
+
+<root>
+	
+	<div class="Selection-Content">
+
+	@if (bShowHud || !_bHideUI)
+	{
+			
+		var i = 0;
+		@foreach (var bucket in Player.GetAllSortedBuckets())
+		{
+			i++;
+			<div class="bucket">
+				@if (SelectedBucket == i)
+				{
+					var j = 0;
+					@foreach (var weapon in bucket)
+					{
+						<div class=@($"weapon {(PositionInSelectedBucket == j ? "selected" : "")}")>
+							@if (j == 0)
+							{
+								<div class="bucket-number">@i</div>
+							}
+							
+							<svg src="@weapon.WeaponData.Icon" class="weapon-icon" color=white />
+
+							<div class="weapon-name">
+								@weapon.WeaponData.Name
+							</div>
+						</div>
+						j++;
+					}
+				}
+				else
+				{
+
+					<div class=@($"bucket-header {(SelectedBucket == i ? "selected" : "")}")>
+						<div class="bucket-number">@i</div>
+					</div>
+				}
+			</div>
+		}
+		
+	}
+
+	</div>
+
+</root>
+
+@code
+{
+	public static bool bShowHud => BasePlayer.ShowHud;
+	public BasePlayer Player => BasePlayer.Local;
+
+	public int SelectedBucket = 0;
+	public int PositionInSelectedBucket = 0;
+
+	public TimeSince TimeSinceLastSelect;
+
+	private bool _bHideUI => BasePlayer.Local.IsHUDElementHidden(BasePlayer.HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD |
+	BasePlayer.HIDEHUD_FLAGS.HIDEHUD_NEEDSUIT);
+
+	public override void Tick()
+	{
+	base.Tick();
+
+	var buckets = Player.GetAllSortedBuckets();
+
+	// Handle mouse wheel scrolling through weapons
+	var scrollDelta = Input.MouseWheel.y;
+	if (scrollDelta != 0)
+	{
+		if (buckets.Count == 0)
+			return;
+
+		TimeSinceLastSelect = 0;
+		int direction = scrollDelta < 0 ? 1 : -1;
+
+		if (SelectedBucket <= 0 || SelectedBucket > buckets.Count)
+		{
+			if (direction == 1)
+			{
+				SelectedBucket = 1;
+				PositionInSelectedBucket = 0;
+			}
+			else
+			{
+				SelectedBucket = buckets.Count;
+				var lastBucket = buckets[buckets.Count - 1];
+				PositionInSelectedBucket = lastBucket.Count > 0 ? lastBucket.Count - 1 : 0;
+			}
+
+			// Ignore next attack after scroll starts new selection
+			if (Player.CurrentWeapon.IsValid())
+				Player.CurrentWeapon._ingoreNextAttack = true;
+				
+			return;
+		}
+
+		var currentBucketIndex = SelectedBucket - 1;
+		var currentBucket = buckets[currentBucketIndex];
+		PositionInSelectedBucket += direction;
+
+		if (direction == 1)
+		{
+			if (PositionInSelectedBucket >= currentBucket.Count && currentBucket.Count > 0)
+			{
+				SelectedBucket++;
+				if (SelectedBucket > buckets.Count)
+					SelectedBucket = 1;
+
+				PositionInSelectedBucket = 0;
+			}
+			else if (currentBucket.Count == 0)
+			{
+				SelectedBucket++;
+				if (SelectedBucket > buckets.Count)
+					SelectedBucket = 1;
+
+				PositionInSelectedBucket = 0;
+			}
+		}
+		else
+		{
+			if (PositionInSelectedBucket < 0)
+			{
+				SelectedBucket--;
+				if (SelectedBucket < 1)
+					SelectedBucket = buckets.Count;
+
+				currentBucketIndex = SelectedBucket - 1;
+				var newBucket = buckets[currentBucketIndex];
+				PositionInSelectedBucket = newBucket.Count > 0 ? newBucket.Count - 1 : 0;
+			}
+		}
+	}
+
+	// Handle number key input (Slot1 through Slot10)
+	for (int slot = 1; slot <= 10; slot++)
+	{
+		string inputName = $"Slot{slot}";
+
+		if (Input.Pressed(inputName))
+		{
+			TimeSinceLastSelect = 0;
+
+			int targetIndex = slot - 1;
+			if (targetIndex < buckets.Count)
+			{
+				var bucket = buckets[targetIndex];
+				SelectedBucket = slot;
+				PositionInSelectedBucket = 0;
+
+				if (Player.CurrentWeapon.IsValid())
+					Player.CurrentWeapon._ingoreNextAttack = true;
+			}
+
+			break;
+		}
+	}
+
+	// Clear selection after some time of inactivity and unlock firing
+	if (TimeSinceLastSelect > 1)
+	{
+		SelectedBucket = -1;
+		PositionInSelectedBucket = 0;
+
+		if (Player.CurrentWeapon.IsValid())
+			Player.CurrentWeapon._ingoreNextAttack = false;
+	}
+
+	if (Input.Pressed("Attack1") && SelectedBucket != -1)
+	{
+		Input.ReleaseAction("Attack1");
+		Input.Clear("Attack1");
+
+		if ((SelectedBucket - 1) < buckets.Count)
+		{
+			var weapon = buckets[SelectedBucket - 1][PositionInSelectedBucket];
+			if (weapon.IsValid())
+			{
+				Player.SwitchToWeapon(weapon);
+				
+				// Prevent shooting right after switch
+				weapon._ingoreNextAttack = true;
+
+
+				SelectedBucket = -1;
+				PositionInSelectedBucket = 0;
+			}
+		}
+	}
+	}
+
+	protected override int BuildHash() => System.HashCode.Combine(bShowHud, Player.WeaponList.Count, SelectedBucket,
+	PositionInSelectedBucket, _bHideUI);
+}

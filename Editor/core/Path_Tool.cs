@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Editor.ShaderGraph.Nodes;
-
+using Core;
 
 [EditorTool( "path.tool" )]
 [Title( "Path Tool" )]

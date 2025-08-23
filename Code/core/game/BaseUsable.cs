@@ -1,3 +1,5 @@
+namespace Core;
+
 /// <summary>
 /// Intermediate class to specify which props can receive use input
 /// </summary>

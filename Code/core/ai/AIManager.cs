@@ -1,5 +1,7 @@
 ﻿// A centralized system from which we can call specific npcs without iterating over bullshit or ugly calls
 
+namespace Core;
+
 public class AIManager : GameObjectSystem
 {
 	public AIManager( Scene scene ) : base( scene )

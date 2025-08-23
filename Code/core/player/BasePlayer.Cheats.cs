@@ -1,4 +1,5 @@
 ﻿using Sandbox.Internal;
+namespace Core;
 
 public partial class BasePlayer
 {

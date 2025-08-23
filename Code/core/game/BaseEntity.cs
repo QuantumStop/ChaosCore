@@ -2,6 +2,8 @@ using System;
 using System.Reflection;
 using System.Globalization;
 
+namespace Core;
+
 [AttributeUsage( AttributeTargets.Property | AttributeTargets.Field )]
 public class DebugExposeAttribute : Attribute
 {

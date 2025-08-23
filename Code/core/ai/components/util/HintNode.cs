@@ -1,5 +1,7 @@
 ﻿using Sandbox;
 
+namespace Core;
+
 public class HintNode : BaseEntity
 {
 	public enum AI_Hint 
