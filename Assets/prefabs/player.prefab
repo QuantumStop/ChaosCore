@@ -4,7 +4,7 @@
     "__version": 1,
     "Flags": 0,
     "Name": "player",
-    "Position": "-7552.101,-14421.62,-384320700",
+    "Position": "0,0,0",
     "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
     "Tags": "player",
@@ -149,7 +149,7 @@
         "StepHeight": 18,
         "StopSpeed": 100,
         "UseCollisionRules": false,
-        "Velocity": "-27.07893,-51.69865,-1489484"
+        "Velocity": "-27.07893,-51.69865,-1326220"
       },
       {
         "__type": "Sandbox.VR.VRAnchor",
@@ -290,7 +290,7 @@
         "ForwardLeanAmount": 15,
         "ForwardRollIntensity": 0.2,
         "fSuitZoom": 0,
-        "HasSuit": false,
+        "HasSuit": true,
         "Health": 100,
         "HUDGameObject": {
           "_type": "gameobject",
@@ -346,7 +346,7 @@
         "ViewMaxInertia": 60,
         "ViewmodelHands": {
           "_type": "component",
-          "component_id": "8985a1d6-b3c0-422b-8117-253b71d1e5cb",
+          "component_id": "55f18724-9183-4154-aa32-2dd767a17988",
           "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
           "component_type": "SkinnedModelRenderer"
         },
@@ -365,10 +365,7 @@
           "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f"
         },
         "ViewmodelYawInertiaScale": 5,
-        "WeaponGameObject": {
-          "_type": "gameobject",
-          "go": "4657070b-965f-4c06-8bb8-0a33e2bab2cb"
-        },
+        "WeaponGameObject": null,
         "WeaponList": [],
         "WeaponToEquip": null,
         "YawInertia": 0,
@@ -547,7 +544,7 @@
         "__version": 1,
         "Flags": 0,
         "Name": "Head",
-        "Position": "0,0,32",
+        "Position": "0,0,64",
         "Rotation": "0,0,0,1",
         "Scale": "1,1,1",
         "Tags": "",
@@ -778,7 +775,7 @@
               },
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "af173e84-b76b-47fe-b600-518e71a8a198",
+                "__guid": "55f18724-9183-4154-aa32-2dd767a17988",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -837,7 +834,7 @@
         "Name": "MovementCollider",
         "Position": "0,0,0",
         "Rotation": "0,0,0,1",
-        "Scale": "1,1,0.9999999",
+        "Scale": "1,1,1",
         "Tags": "movement,movecollider",
         "Enabled": true,
         "NetworkMode": 2,
@@ -1016,7 +1013,7 @@
         "Name": "PhysicsBody",
         "Position": "0,0,0",
         "Rotation": "0,0,0,1",
-        "Scale": "1,1,0.9999999",
+        "Scale": "1,1,1",
         "Tags": "movement,playertrig",
         "Enabled": true,
         "NetworkMode": 1,
