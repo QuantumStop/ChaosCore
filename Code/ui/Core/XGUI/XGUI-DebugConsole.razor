@@ -1,5 +1,5 @@
 @namespace Core
-
+#if STANDALONE
 @using Sandbox;
 @using Sandbox.UI;
 @using System.Collections.Generic;
@@ -10,67 +10,63 @@
 @using XGUI;
 @using Core;
 
-@attribute [StyleSheet( "/XGUI/DefaultStyles/OliveGreen.scss" )]
+@attribute [StyleSheet("/XGUI/DefaultStyles/OliveGreen.scss")]
 @inherits ConsoleWindow
 
-<root title="ChaosConsole 2.0" width="560px" height="400px" minwidth="190" minheight="200" x="40px" y="40px" >
+<root title="ChaosConsole 2.0" width="560px" height="400px" minwidth="190" minheight="200" x="40px" y="40px">
 
 	<body class="window-content">
 
-	<layoutboxinset style="margin:3px; margin-top:6px; flex-grow:1; 
+		<layoutboxinset style="margin:3px; margin-top:6px; flex-grow:1; 
 	flex-direction:column; padding-left:7px; padding-top:5px; overflow:scroll;">
 
-	@foreach (var i in (bIsFiltered ? confilteredmsg : conmsg.TakeLast(50)))
-	{
-		<div class="msgentry" style="min-height:16px; flex-wrap:nowrap; flex-shrink:0; 
+			@foreach (var i in (bIsFiltered ? confilteredmsg : conmsg.TakeLast(50)))
+			{
+				<div class="msgentry" style="min-height:16px; flex-wrap:nowrap; flex-shrink:0; 
 		pointer-events: all;
 		">@i</div>
-	}
+			}
 
-	</layoutboxinset>
+		</layoutboxinset>
 
-	@if (bDebugOptions)
-	{
-		<div style="flex-direction:row; margin:3px; margin-top:4px; padding-left: 5px; flex-basis: 25px; gap:5px; min-height:30px;">
-			<label style="flex-grow:0; padding-right: 5px; flex-direction: column; width: 50px;">Filter: </label>
-			<textentry style="flex-grow:1;" 
-			@ref=filterentry 
-			@onfocus=@(() => { bIsFiltered = true;  CompareMSG(); } )
-			@onblur=@(() =>  { bIsFiltered = false; CompareMSG();  })
-			>
+		@if (bDebugOptions)
+		{
+			<div
+				style="flex-direction:row; margin:3px; margin-top:4px; padding-left: 5px; flex-basis: 25px; gap:5px; min-height:30px;">
+				<label style="flex-grow:0; padding-right: 5px; flex-direction: column; width: 50px;">Filter: </label>
+				<textentry style="flex-grow:1;" @ref=filterentry @onfocus=@(() => { bIsFiltered = true; CompareMSG(); } )
+					@onblur=@(() => { bIsFiltered = false; CompareMSG(); })>
+				</textentry>
+			</div>
+
+			<div
+				style="flex-direction:row; margin:3px; margin-top:5px; padding-left: 5px; flex-basis: 25px; gap:5px; min-height:30px;">
+				<label style="flex-grow:0; padding-right: 5px; flex-direction: column; width: 50px; ">Search: </label>
+				<textentry style="flex-grow:1; " @ref=searchentry>
+				</textentry>
+			</div>
+
+				// Will re-add if I'll see point in it, whatever for now.
+			@* <div style="flex-direction:row; margin:3px; margin-top:5px;" @ref= if(bDebugOptions) >
+		<label style="flex-grow:0; padding-right: 5px; flex-direction: column;">Update Time: </label>
+		<sliderscale min=1 max=5 mintext="1.00" maxtext="5.0" step=1; style="margin-top:2px; margin-bottom: 2px;
+		max-height: 30px;"></sliderscale>
+		</div> *@
+		}
+
+		<check style="flex-direction:row; margin:3px; gap:5px; min-height:15px;" @onchecked=@(() => { { bDebugOptions =
+			true; } }) @onunchecked=@(() => { { bDebugOptions = false; } })>
+			Options:
+		</check>
+
+		<div style="flex-direction:row; margin:3px; gap:5px; min-height:30px;">
+			<textentry style="flex-grow:1; margin-bottom:10px; overflow:scroll; padding-left:5px" ; @ref=conentry
+				@onfocus=@(() => { bIsFocused = true; }) @onsubmit=@(() => { if ( conentry != null ) { Submit();
+				Clear(); } }) @onblur=@(() => { bIsFocused = false; })>
 			</textentry>
 		</div>
 
-		<div style="flex-direction:row; margin:3px; margin-top:5px; padding-left: 5px; flex-basis: 25px; gap:5px; min-height:30px;" >
-			<label style="flex-grow:0; padding-right: 5px; flex-direction: column; width: 50px; ">Search: </label>
-			<textentry style="flex-grow:1; " 
-			@ref=searchentry
-			>
-			</textentry>
-		</div>
-
-		// Will re-add if I'll see point in it, whatever for now.
-	    @* <div style="flex-direction:row; margin:3px; margin-top:5px;"  @ref= if(bDebugOptions) >
-		    <label style="flex-grow:0; padding-right: 5px; flex-direction: column;">Update Time: </label>
-		    <sliderscale min=1 max=5 mintext="1.00" maxtext="5.0" step=1; style="margin-top:2px; margin-bottom: 2px; max-height: 30px;"></sliderscale>   
-	    </div> *@
-	}
-
-	<check style="flex-direction:row; margin:3px; gap:5px; min-height:15px;" 
-	@onchecked=@(() => { { bDebugOptions  = true; } })
-	@onunchecked=@(() => { { bDebugOptions = false; } })>
-		Options:
-	</check>
-
-	<div style="flex-direction:row; margin:3px; gap:5px; min-height:30px;" >
-		<textentry style="flex-grow:1; margin-bottom:10px; overflow:scroll; padding-left:5px"; @ref=conentry
-			@onfocus=@(() => { bIsFocused = true;  })
-			@onsubmit=@(() => { if ( conentry != null ) { Submit(); Clear(); } })
-			@onblur=@(() => { bIsFocused = false;  })>
-		</textentry>
-	</div>
-
-    </body>
+	</body>
 
 	<resizer></resizer>
 </root>
@@ -81,9 +77,10 @@
 	public bool bDebugOptions { get; set; }
 	public bool bIsFocused { get; set; } = false;
 	public static bool bIsFiltered { get; set; }
-	//	private bool isCloseButtonEventAttached = false;
+	// private bool isCloseButtonEventAttached = false;
 
-	protected override int BuildHash() => System.HashCode.Combine( conmsg, confilteredmsg, filterentry, searchentry, conentry, bDebugOptions, bIsFocused, CompareMSG );
+	protected override int BuildHash() => System.HashCode.Combine(conmsg, confilteredmsg, filterentry, searchentry,
+	conentry, bDebugOptions, bIsFocused, CompareMSG);
 
 	protected override void OnAfterTreeRender(bool firstTime)
 	{
@@ -96,3 +93,4 @@
 
 
 }
+#endif

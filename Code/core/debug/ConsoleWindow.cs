@@ -16,7 +16,7 @@ public class ConsoleWindow : XGUI.Window
 	internal static bool _hasAddedHooks = false;
 
 	private static bool _enableDevMode = false;
-
+#if STANDALONE
 	public ConsoleWindow()
 	{
 		SetupHooks();
@@ -335,8 +335,10 @@ public class ConsoleWindow : XGUI.Window
 		}
 
 	}
-
-
-
-
+#else
+	public void CompareMSG() { }
+	public void Submit() { }
+	public void Clear() { }
+#endif
 }
+

@@ -5,15 +5,15 @@ using Sandbox;
 
 static class SceneOpenerMenu
 {
-	[Menu( "Editor", "SDK/Scenes/New Testbench" ), Order( 1 )] static void Testbench_New() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/dev_env/testbench_new.scene" ) ); }
-	[Menu( "Editor", "SDK/Scenes/Asset Preview" ), Order( 1 )] static void Asset_Preview() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/dev_env/asset_preview.scene" ) ); }
+	[Menu( "Editor", "SDK/Scenes/New Testbench" ), Order( 1 )] static void Testbench_New() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/testbench.scene" ) ); }
+	[Menu( "Editor", "SDK/Scenes/Asset Preview" ), Order( 1 )] static void Asset_Preview() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/asset_preview.scene" ) ); }
 
 	// Core prefabs (like player, vehicle. Something we have a lot)
 	[Menu( "Editor", "SDK/Core Prefabs/Player" ), Order( 2 )] static void Player_Prefab() { EditorScene.OpenPrefab( ResourceLibrary.Get<PrefabFile>( "prefabs/player.prefab" ) ); }
 
 	// Weapons
 
-	[Menu( "Editor", "SDK/Core Prefabs/Weapons/Glock" ), Order( 3 )] static void Glock_Prefab() { EditorScene.OpenPrefab( ResourceLibrary.Get<PrefabFile>( "prefabs/weapons/weapon_glock.prefab" ) ); }
+	[Menu( "Editor", "SDK/Core Prefabs/Weapons/Example Weapon" ), Order( 3 )] static void Glock_Prefab() { EditorScene.OpenPrefab( ResourceLibrary.Get<PrefabFile>( "prefabs/weapons/weapon_smg.prefab" ) ); }
 
 	[Menu( "Editor", "SDK/Use info_player_start" ), Order( 3 )]
 	public static bool PlayerStart

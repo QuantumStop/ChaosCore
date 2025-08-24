@@ -58,19 +58,6 @@
         "ThinCompensation": 0.5
       },
       {
-        "__type": "HL2K.Chromatic",
-        "__guid": "892bd2a9-618b-49f7-a543-0221d7380a7d",
-        "__enabled": true,
-        "Offset2_Amount": 1,
-        "OffsetAmount": 0.8,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null
-      },
-      {
         "__type": "Sandbox.Bloom",
         "__guid": "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9",
         "__enabled": false,
