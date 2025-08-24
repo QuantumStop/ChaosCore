@@ -21,7 +21,7 @@ It functions as a starting point for all kinds of games that needs some basis to
 - Includes XGUI: VGUI inspired ui creation platform, includes WYSIWYG designer tool for faster production. Scales from being able to create entire user interface creation to simple debug panels, of IMGUI equivalence.
 - Includes XMovemevent: Extendable and robust Player Controller, aimed to create all kinds of movement.
 - Source IO equivalent logic setup for ActionGraph (S&box visual scripter), helps meld the best of two worlds and make it easier, more structured to add actions for various logic entities.
-- Scaleable interaction system with world objects, from simpler interactions to player derived one's.
+- Scaleable interaction system with world objects, from simpler interactions to player input derived one's.
 
 ## Coming in the future
 - Full FMOD support and implementation.
