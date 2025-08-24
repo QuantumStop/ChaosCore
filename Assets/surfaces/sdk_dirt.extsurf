@@ -1,0 +1,13 @@
+{
+  "DecalList": [
+    "decals/impact/dirt/decal_impact_dirt_01.decal",
+    "decals/impact/dirt/decal_impact_dirt_02.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/sdk_dirt.surface",
+    "surfaces/sdk_mud.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

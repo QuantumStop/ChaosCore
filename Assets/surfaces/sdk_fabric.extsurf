@@ -1,0 +1,13 @@
+{
+  "DecalList": [
+    "decals/impact/fabric/decal_impact_fabric_01.decal",
+    "decals/impact/fabric/decal_impact_fabric_02.decal",
+    "decals/impact/fabric/decal_impact_fabric_03.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/sdk_fabric.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

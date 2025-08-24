@@ -1,0 +1,14 @@
+{
+  "DecalList": [
+    "decals/impact/wood/decal_impact_wood_01.decal",
+    "decals/impact/wood/decal_impact_wood_02.decal",
+    "decals/impact/wood/decal_impact_wood_03.decal",
+    "decals/impact/wood/decal_impact_wood_04.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/sdk_wood.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

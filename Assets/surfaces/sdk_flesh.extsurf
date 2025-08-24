@@ -1,0 +1,17 @@
+{
+  "DecalList": [
+    "decals/impact/flesh/decal_impact_flesh_01.decal",
+    "decals/impact/flesh/decal_impact_flesh_02.decal",
+    "decals/impact/flesh/decal_impact_flesh_03.decal",
+    "decals/impact/flesh/decal_impact_flesh_04.decal",
+    "decals/impact/flesh/decal_impact_flesh_05.decal",
+    "decals/impact/flesh/decal_impact_flesh_06.decal",
+    "decals/impact/flesh/decal_impact_flesh_07.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/sdk_flesh.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

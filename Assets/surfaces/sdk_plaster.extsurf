@@ -1,0 +1,13 @@
+{
+  "DecalList": [
+    "decals/impact/plaster/decal_impact_plaster_01.decal",
+    "decals/impact/plaster/decal_impact_plaster_02.decal",
+    "decals/impact/plaster/decal_impact_plaster_03.decal"
+  ],
+  "ExtensionDefault": false,
+  "ExtensionTargets": [
+    "surfaces/sdk_plaster.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}
