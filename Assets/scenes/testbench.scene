@@ -133,7 +133,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -208,7 +208,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -283,7 +283,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -358,7 +358,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -433,7 +433,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -508,7 +508,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -583,7 +583,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -658,7 +658,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -733,7 +733,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -808,7 +808,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -883,7 +883,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -958,7 +958,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1033,7 +1033,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1108,7 +1108,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1183,7 +1183,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1258,7 +1258,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1333,7 +1333,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1408,7 +1408,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1483,7 +1483,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1558,7 +1558,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1633,7 +1633,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1708,7 +1708,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1783,7 +1783,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1858,7 +1858,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -1933,7 +1933,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2008,7 +2008,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2083,7 +2083,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2158,7 +2158,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2233,7 +2233,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2308,7 +2308,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2383,7 +2383,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2458,7 +2458,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2533,7 +2533,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -2608,7 +2608,7 @@
                 "LineHeight": 1,
                 "LetterSpacing": 0,
                 "WordSpacing": 0,
-                "FilterMode": "Point",
+                "FilterMode": "Anisotropic",
                 "Outline": {
                   "Enabled": false,
                   "Size": 4,
@@ -41074,7 +41074,7 @@
           "__version": 1,
           "Flags": 0,
           "Name": "Box",
-          "Position": "-1100.02,757.875,-1575.31",
+          "Position": "-1100.02,757.875,-1575.311",
           "Rotation": "0,0,0.9999999,0.00000005960464",
           "Scale": "1,1,1",
           "Tags": "",
@@ -41096,7 +41096,7 @@
               "IsTrigger": false,
               "Mesh": {
                 "Topology": "H4sIAAAAAAAACo2T6WoCQRCEP426q0ZN1pyQA8x93/f5/i+V8EEtLCE/HBBntqurq6tnNoBvYAL8/FklMAAWgfE/8QvgEDgFzoEtYBlYB2bANXAL3AOPwBLQCo5g6//uP/x/1zQ4uXtABXRSrzNHvrn99NRKjj1Os5dzmH6Nd4NdAxaAAhjFi1bwYleD7cTHMvEiWPtup09/uzkXiY0a+dNwtLOvGrFeag2jx9yVhtYqXmwm3o32fvKrxA4atTfCsTCHf+rczsxJ/lY4ikZvZw1fd1K3PQe/fe/lLvWSPwtHGZ6Dhhd6vw8cN7w+yn10jaL1PVjPJ+mhyDdzPxNbjvZ6jcN1mfriL1LT+pNofQvW81V6KPPN3OfMzNnd5E0M4rtv5CXczuou72UQvNiP6HO2D3lL9b0U+5Va8j2F07h4sa+pb9xaYjybozY9s7767cUejJtvrjXFqkct9lD7qbd66l49arEHz2L0Vs/Mrz2t76H8cjpj56BX3oNas1qtJ+cvHvUd8qgEAAA=",
-                "Position": "2992,5456,576.0159",
+                "Position": "2992,5456,576.0146",
                 "Rotation": "0,0,0.7071067,0.7071068",
                 "Positions": [
                   "-208,-464,64",
@@ -41244,19 +41244,19 @@
                 "TextureOffset": [
                   "192,320",
                   "192,320",
-                  "320,256.0635",
-                  "192,256.0635",
-                  "320,256.0635",
-                  "192,256.0635",
+                  "320,256.0586",
+                  "192,256.0586",
+                  "320,256.0586",
+                  "192,256.0586",
                   "192,320",
                   "192,320",
                   "192,320",
                   "320,320",
                   "192,320",
-                  "0,511.9856",
-                  "128,511.9854",
-                  "0,511.9856",
-                  "384,511.9854"
+                  "0,511.9807",
+                  "128,511.9805",
+                  "0,511.9807",
+                  "384,511.9805"
                 ],
                 "MaterialIndex": [
                   0,
@@ -43872,9 +43872,9 @@
           "Initialized": true,
           "InternalID": "game_manager_b2VXS",
           "LastEditorCameraPosition": {
-            "Position": "656.4423,-1749.015,617.6997",
+            "Position": "1143.151,34.83549,827.4866",
             "Scale": "1,1,1",
-            "Rotation": "0.06241418,0.1026525,-0.5157594,0.8482683"
+            "Rotation": "-0.02752202,0.03606248,0.6060579,0.7941259"
           },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -43940,7 +43940,7 @@
             "fb29ace4-e2a7-4426-901d-ff5c11699400": "170255b1-fc05-435e-9586-71e411d603ea",
             "bcf83c67-a239-4564-aee6-900bac26ab36": "d2ef913d-3267-4140-99e9-28e2400685c6",
             "9e4823c6-e365-416b-b6f4-7fa283c5a9cf": "9ca3bad5-eff2-49f1-a813-def45948fa76",
-            "c75b9a06-98a2-4185-bb02-2fe2a4cb7536": "9e9a98e8-b3cb-40a8-945e-4990dda7271e",
+            "d6db6a0b-fd34-4ada-920f-3b553fb6efa1": "530e9eb9-d8b8-478a-8736-91402578f275",
             "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9": "2f13e10d-9179-4c3f-90fe-be73270bab24",
             "4fa9c417-0312-4b53-86ed-d0a45557ce0c": "cc1cc7e6-6b24-413d-898f-1ce4ef434b37"
           }
@@ -44208,25 +44208,25 @@
           "ProceduralComponents": [
             {
               "_type": "component",
-              "component_id": "d2f2e0a3-32c5-4b54-9f6e-775fde051cc5",
+              "component_id": "c11abd92-56ee-4208-9950-cbb796633a17",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "SkinnedModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "9468bd94-8e49-49b5-b153-6528896ba49e",
+              "component_id": "c96134ae-f7b7-4cf7-bf5c-6847b06e6149",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "1b74d1e3-b39a-4a6b-84ad-44de9ff33b16",
+              "component_id": "527d4e71-ae98-41ea-8b22-8698b0617a13",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "61130ab0-0a8a-467e-bdd1-6a56d9a9d6f3",
+              "component_id": "52c866b6-ad74-4684-aa58-8e118eb0f487",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "TintComponent"
             }

@@ -74,7 +74,7 @@ public class SceneUtils
 	{
 		var scene = GetScene();
 
-		if ( !scene.IsValid() )
+		if ( scene is null )
 			return;
 
 		// doesnt work when not a soundevent, or rather works only for on/true
@@ -83,7 +83,7 @@ public class SceneUtils
 
 		var balls = scene.GetAllComponents<game_manager>().FirstOrDefault();
 
-		if ( balls is null )
+		if ( !scene.GetAllComponents<game_manager>().Any() )
 			return;
 
 		// if there are no start entities, then the bool isnt changed, which may or may not be desired effect, which if its not, move this above the warning check
@@ -97,12 +97,12 @@ public class SceneUtils
 	{
 		var scene = GetScene();
 
-		if ( !scene.IsValid() )
+		if ( scene is null )
 			return false;
 
 		var balls = scene.GetAllComponents<game_manager>().FirstOrDefault();
 
-		if ( balls is null )
+		if ( !scene.GetAllComponents<game_manager>().Any() )
 			return false;
 
 		return balls.UsePlayerStart;
