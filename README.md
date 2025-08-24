@@ -26,7 +26,7 @@ It functions as a starting point for all kinds of games that needs some basis to
 ## Coming in the future
 - Full FMOD support and implementation.
 - User friendly ai relationship setup tool, to be made while inspired by collission matrix rule sets.
-- Faceposer equivalence for choreography creation processes in spirit. Will include various improvements on the idea with better, more stable UX.
+- Faceposer equivalence for choreography. Will include various improvements to the base workflow and a more stable experience with better UX.
 - Extendable object(or entity) placer that can be adjusted per project. Similar to entity placement in Source 1/2, but highly moddable without messing with FGD's.
 - Data driven vehicle system.
 - Proper networking support.
