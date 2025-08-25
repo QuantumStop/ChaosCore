@@ -11,5 +11,7 @@ public class HudRazorClass
 {
 	[Property, Title( "Selected Razor: " ), FilePath( Extension = "razor" )] public string RazorPath { get; set; }
 	public bool RequireSuitToDraw { get; private set; }
+
+	public override string ToString() => RazorPath;
 }
 

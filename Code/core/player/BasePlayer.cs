@@ -61,24 +61,22 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		{
 			HUDGameObject.Components.GetOrCreate<ScreenPanel>().Enabled = true;
 
-			foreach ( var entry in PlayerCfg.HudEntries )
+			if ( PlayerCfg.HudEntries.Count > 0 )
 			{
-				if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
-					continue;
-
-				string GetClassName( string path )
+				foreach ( var entry in PlayerCfg.HudEntries )
 				{
-					return System.IO.Path.GetFileNameWithoutExtension( path );
+					if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
+						continue;
+
+					string className = GetClassName( entry.RazorPath );
+
+					TypeDescription type = GlobalGameNamespace.TypeLibrary.GetType( className );
+
+					if ( type != null )
+						HUDGameObject.Components.Create( type );
+					else
+						Log.Warning( $"HUD class not found for {entry.RazorPath} (expected {className})" );
 				}
-
-				string className = GetClassName( entry.RazorPath );
-
-				TypeDescription type = GlobalGameNamespace.TypeLibrary.GetType( className );
-
-				if ( type != null )
-					HUDGameObject.Components.Create( type );
-				else
-					Log.Warning( $"HUD class not found for {entry.RazorPath} (expected {className})" );
 			}
 		}
 
@@ -91,6 +89,11 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		PickupTrigger.OnTriggerEnter = OnPickupTriggerTouched;
 
 		CheckPrefabSetup();
+	}
+
+	private string GetClassName( string path )
+	{
+		return System.IO.Path.GetFileNameWithoutExtension( path );
 	}
 
 	public void OnPickupTriggerTouched( Collider collider )
