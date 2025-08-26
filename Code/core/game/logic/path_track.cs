@@ -226,7 +226,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		foreach ( var point in pathPoints )
 		{
 			var current = point.WorldPosition;
-			
+
 			if ( !lastKnownPositions.TryGetValue( point, out var last ) || current != last )
 			{
 				lastKnownPositions[point] = current;

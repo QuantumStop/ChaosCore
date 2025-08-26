@@ -228,7 +228,7 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 			{
 				Screen.ActiveButtons[$"button_{i + 1}"] = action;
 			}
-		}		
+		}
 #endif
 	}
 }

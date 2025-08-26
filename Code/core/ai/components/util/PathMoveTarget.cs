@@ -24,7 +24,7 @@ public class PathMoveTarget : BaseEntity
 	/// Current BaseNPC User
 	/// </summary>
 	[Property, ReadOnly] public BaseNpc currentUser { get; set; }
-	
+
 	/// <summary>
 	/// Has our current BaseNPC User reached us?
 	/// </summary>
