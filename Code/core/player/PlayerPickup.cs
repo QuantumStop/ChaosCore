@@ -1,205 +1,269 @@
 ﻿using Sandbox.Physics;
+using Sandbox.Diagnostics;
 
 namespace Core;
 
-[Title( "Player Pickup" )]
-[Icon( "Backpack" )]
-[Category( "Core" )]
+[Title("Player Pickup")]
+[Icon("Backpack")]
+[Category("Core")]
 public class PlayerPickup : BaseEntity
 {
-	BasePlayer Player => BasePlayer.Local;
+    [Property] public BasePlayer Owner { get; private set; }
 
-	[Property, ReadOnly] public GameObject HeldProp { get; set; }
-	[Property, ReadOnly] public Rigidbody PropPhys { get; set; }
-	[Property, ReadOnly] public Angles PropRelativeRot { get; set; }
+    [Property, ReadOnly] public GameObject HeldProp { get; private set; }
+    [Property, ReadOnly] public Rigidbody PropPhys { get; private set; }
+    [Property, ReadOnly] public Angles PropRelativeRot { get; private set; }
 
-	/// <summary>
-	/// Ignore mass requirement for the player pickup
-	/// </summary>
-	[ConVar( "debug_nomass", ConVarFlags.Cheat )]
-	public static bool DebugNoMass { get; set; }
+    private PhysicsJoint Joint;
 
 	/// <summary>
 	/// This is used to know whether we succeeded in pickup
 	/// </summary>
-	private bool UseSuccess { get; set; } = false;
+    private bool UseSuccess { get; set; }
 
-	/// <summary>
-	/// Pickup a GameObject when successful
-	/// </summary>
-	/// <param name="prop">The gameobject in question</param>
-	public void PickUpObject( GameObject prop )
-	{
-		if ( prop.Components.TryGet<Rigidbody>( out var rigidbody ) )
-		{
-			if ( !DebugNoMass )
-				if ( rigidbody.Mass > 35 ) return;  // cant pickup more than 35 kg
+    private Vector3 predictedPosition;
+    private Rotation predictedRotation;
 
-			HeldProp = prop;
-			PropPhys = rigidbody;
-		}
-		else { return; }
+    private Vector3 targetPosition;
+    private Rotation targetRotation;
 
+    [ConVar("debug_nomass", ConVarFlags.Cheat)]
+    public static bool DebugNoMass { get; set; }
 
-		BasePlayer.Local?.CurrentWeapon?.Holster();
+    protected override void OnStart()
+    {
+        base.OnStart();
+        if (Owner == null)
+            Owner = Components.Get<BasePlayer>();
+    }
 
-		PropRelativeRot = HeldProp.WorldRotation.Angles() - Player.Controller.EyeAngles.WithPitch( 0 );
-		HeldProp.Tags.Add( "HELD_PROP" );
+    private void TryPickup(GameObject obj)
+    {
+        if (Owner == null || Owner.LifeState != LifeState.Alive)
+            return;
 
-		if ( HeldProp.Components.TryGet<BaseUsable>( out var usable ) )
-			usable.OnHoldStart?.Invoke( Player );
+        if (!obj.Components.TryGet<Rigidbody>(out var rigidbody))
+            return;
 
-		if ( Player.Controller.Controller.PhysicsBodyRigidbody.PhysicsBody != null )
-		{
-			var point1 = new PhysicsPoint( PropPhys.PhysicsBody );
-			var point2 = new PhysicsPoint( Player.Controller.Controller.PhysicsBodyRigidbody.PhysicsBody );
-			Joint = PhysicsJoint.CreateSpring( point1, point2, 0, 99999 );
-			Joint.Collisions = false;
-		}
-	}
+        if (!DebugNoMass && rigidbody.Mass > 35)
+            return;
 
-	protected override void OnFixedUpdate()
-	{
-		UpdatePickup();
+        HeldProp = obj;
+        PropPhys = rigidbody;
+        PropRelativeRot = HeldProp.WorldRotation.Angles() - Owner.Controller.EyeAngles.WithPitch(0);
+        HeldProp.Tags.Add("HELD_PROP");
 
-		if ( !HeldProp.IsValid() )
-			return;
+        Owner.CurrentWeapon?.Holster();
 
-		if ( Player.Controller.Controller.GroundObject == HeldProp || Player.LifeState == LifeState.Dead )
-		{
-			DropObject();
-			return;
-		}
+        if (Owner.Controller.Controller.PhysicsBodyRigidbody?.PhysicsBody != null)
+        {
+            var point1 = new PhysicsPoint(PropPhys.PhysicsBody);
+            var point2 = new PhysicsPoint(Owner.Controller.Controller.PhysicsBodyRigidbody.PhysicsBody);
+            Joint = PhysicsJoint.CreateSpring(point1, point2, 0, 99999);
+            Joint.Collisions = false;
+        }
 
-		// if where the prop is too far away from where it's supposed to be, drop it
-		if ( Vector3.DistanceBetween( PropPhys.PhysicsBody.MassCenter, Player.Controller.Head.WorldPosition ) > 128f ) { DropObject(); return; }
+        UseSuccess = true;
 
-		var WantedRotation = (PropRelativeRot + Player.Controller.EyeAngles.WithPitch( 0 )).ToRotation();
-		var WantedPosition = Player.Controller.Head.WorldPosition + Player.Controller.EyeAngles.Forward * 80f;
-		WantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
+        predictedPosition = HeldProp.WorldPosition;
+        predictedRotation = HeldProp.WorldRotation;
+        targetPosition = predictedPosition;
+        targetRotation = predictedRotation;
 
-		var vel = PropPhys.PhysicsBody.Velocity;
-		var angvel = PropPhys.PhysicsBody.AngularVelocity;
+        // Broadcast pickup for client visuals
+        OnPickupConfirmed(HeldProp);
+		
+        if ( Networking.IsActive )
+			OnPickupConfirmedRpc( HeldProp );
+    }
 
-		Vector3.SmoothDamp( PropPhys.PhysicsBody.Position, WantedPosition, ref vel, 0.05f, Time.Delta );
-		Rotation.SmoothDamp( PropPhys.PhysicsBody.Rotation, WantedRotation, ref angvel, 0.05f, Time.Delta );
+    public void PickUpObject(GameObject obj)
+    {
+        if (Networking.IsHost || !Networking.IsActive)
+        {
+            TryPickup(obj);
+        }
+        else
+        {
+            PredictPickup(obj);
+            RequestPickupRpc(obj, Owner);
+        }
+    }
 
-		// clamping the velocity to prevent it from going too fast
-		vel = vel.ClampLength( 1250f );
+    private void PredictPickup(GameObject obj)
+    {
+        HeldProp = obj;
+        PropPhys = obj.Components.Get<Rigidbody>();
 
-		PropPhys.PhysicsBody.Velocity = vel;
-		PropPhys.PhysicsBody.AngularVelocity = angvel;
+        predictedPosition = obj.WorldPosition;
+        predictedRotation = obj.WorldRotation;
 
-		//Log.Info( Vector3.DistanceBetween( PropPhys.PhysicsBody.MassCenter, Player.Controller.Head.WorldPosition ) );
+        targetPosition = predictedPosition;
+        targetRotation = predictedRotation;
 
-		if ( HeldProp.Components.TryGet<BaseUsable>( out var usable ) )
-			usable.OnHoldFixedUpdate?.Invoke( Player );
+        Sound.Play("usesuccess").ListenLocal = true;
+    }
 
-		if ( Input.Pressed( "attack1" ) )
-			DropObject( true );
-	}
+    [Rpc.Broadcast] private void OnPickupConfirmedRpc(GameObject obj) => OnPickupConfirmed(obj);
 
-	protected override void OnUpdate()
-	{
-		if ( !HeldProp.IsValid() )
-			return;
+    private void OnPickupConfirmed(GameObject obj)
+    {
+        HeldProp = obj;
+        PropPhys = obj.Components.Get<Rigidbody>();
 
-		base.OnUpdate();
+        targetPosition = obj.WorldPosition;
+        targetRotation = obj.WorldRotation;
+    }
 
-		if ( HeldProp.Components.TryGet<BaseUsable>( out var usable ) )
-			usable.OnHoldUpdate?.Invoke( Player );
-	}
+    public void DropObject(bool punt = false)
+    {
+        if (HeldProp == null || PropPhys == null || Owner == null)
+            return;
 
+        if (Networking.IsHost || !Networking.IsActive)
+        {
+            // Apply real physics
+            PropPhys.PhysicsBody.Velocity += Owner.Controller.Controller.Velocity;
+            PropPhys.PhysicsBody.Velocity = PropPhys.PhysicsBody.Velocity.ClampLength(350f);
 
-	PhysicsJoint Joint;
+            if (punt)
+                PropPhys.PhysicsBody.Velocity += Owner.Controller.EyeAngles.Forward * 400f;
 
-	/// <summary>
-	/// Run checks if we can pickup the GameObject we got
-	/// </summary>
-	/// <param name="obj"></param>
-	protected void TryPickup( GameObject obj )
-	{
-		UseSuccess = false;
+            if (HeldProp.Components.TryGet<BaseUsable>(out var usable))
+                usable.OnDropped?.Invoke(Owner);
 
-		// Extra check, just in case. We are dead, don't forget that...
-		if ( Player.LifeState == LifeState.Dead ) return;
+            PropPhys.PhysicsBody.AngularVelocity *= 0.3f;
 
-		bool allowHold = true;
+            // Update target for clients
+            targetPosition = PropPhys.PhysicsBody.Position;
+            targetRotation = PropPhys.PhysicsBody.Rotation;
+        }
+        else
+        {
+            // Client predicts drop visually
+            predictedPosition += Owner.Controller.EyeAngles.Forward * (punt ? 400f * Time.Delta : 0f);
+        }
 
-		// no rigid body (static) or motion disabled
-		if ( obj.Components.TryGet<Rigidbody>( out var rigid ) ) { if ( !rigid.MotionEnabled ) allowHold = false; }
-		else
-			allowHold = false;
+        HeldProp.Tags.Remove("HELD_PROP");
+        HeldProp = null;
+        PropPhys = null;
 
-		if ( obj.Components.TryGet<BaseUsable>( out var usable ) )
-			if ( !usable.CanBeHeld ) allowHold = false;
+        if (Joint.IsValid())
+            Joint.Remove();
 
-		//		see if we can pick the prop up 
-		if ( allowHold )
-		{
-			PickUpObject( obj );
-			UseSuccess = true;
-			Sound.Play( "usesuccess" ).ListenLocal = true;
-		}
-		else
-		{
-			UseSuccess = false;
-			Sound.Play( "usedeny" ).ListenLocal = true;
-		}
-	}
-	/// <summary>
-	/// The trace, input checks, sounds
-	/// </summary>
-	public void UpdatePickup()
-	{
-		if ( Input.Pressed( "use" ) )
-		{
+        Owner.CurrentWeapon?.Draw();
+    }
 
-			if ( HeldProp.IsValid() )
-			{
-				DropObject();
-				return;
-			}
-
-			var tr = Scene.Trace.Ray( Player.Controller.AimRay, 100f )
-				.IgnoreGameObjectHierarchy( this.GameObject )
-				.WithoutTags( "trigger" )
-				.HitTriggers()
-				.Run();
-
-			if ( tr.Hit && tr.GameObject.IsValid() )
-			{
-				TryPickup( tr.GameObject );
-			}
-			else
-			{
-				Sound.Play( "usedeny" ).ListenLocal = true;
-			}
-		}
-
-	}
-	/// <summary>
-	/// Drop the object
-	/// </summary>
-	/// <param name="punt">Do we throw it</param>
-	public void DropObject( bool punt = false )
-	{
-		PropPhys.PhysicsBody.Velocity += Player.Controller.Controller.Velocity;
-		PropPhys.PhysicsBody.Velocity = PropPhys.PhysicsBody.Velocity.ClampLength( 350f );
-
-		if ( punt )
-			PropPhys.PhysicsBody.Velocity += Player.Controller.EyeAngles.Forward * 400f;
-
-		if ( HeldProp.Components.TryGet<BaseUsable>( out var usable ) )
-			usable.OnDropped?.Invoke( Player );
-
-		PropPhys.PhysicsBody.AngularVelocity *= 0.3f;
-		HeldProp.Tags.Remove( "HELD_PROP" );
-		HeldProp = null;
-		PropPhys = null;
-		if ( Joint.IsValid() ) Joint.Remove();
+    [Rpc.Host] private void RequestDropRpc(bool punt) { DropObject(punt); OnDropConfirmedRpc(); }
+    [Rpc.Broadcast] private void OnDropConfirmedRpc() => HeldProp = null;
+    [Rpc.Host] private void RequestPickupRpc(GameObject obj, BasePlayer requestingPlayer) { Owner = requestingPlayer; TryPickup(obj); }
 
 
-		BasePlayer.Local.CurrentWeapon?.Draw();
-	}
+    protected override void OnFixedUpdate()
+    {
+        if (Owner == null)
+            return;
+
+        UpdatePickup();
+
+        if (HeldProp == null || PropPhys == null)
+            return;
+
+        // Drop if dead or standing on held prop
+        if (Owner.LifeState != LifeState.Alive || Owner.Controller.Controller.GroundObject == HeldProp)
+        {
+            DropObject();
+            return;
+        }
+
+        // Drop if too far
+        if (Vector3.DistanceBetween(PropPhys.PhysicsBody.MassCenter, Owner.Controller.Head.WorldPosition) > 128f)
+        {
+            DropObject();
+            return;
+        }
+
+        if (!Networking.IsHost)
+        {
+            // Client-side prediction: interpolate to target positions
+            predictedPosition = Vector3.Lerp(predictedPosition, targetPosition, 0.2f);
+            predictedRotation = Rotation.Slerp(predictedRotation, targetRotation, 0.2f);
+
+            PropPhys.PhysicsBody.Position = predictedPosition;
+            PropPhys.PhysicsBody.Rotation = predictedRotation;
+        }
+        else
+        {
+            // Host authoritative movement
+            var wantedRotation = (PropRelativeRot + Owner.Controller.EyeAngles.WithPitch(0)).ToRotation();
+            var wantedPosition = Owner.Controller.Head.WorldPosition + Owner.Controller.EyeAngles.Forward * 80f;
+			
+            wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
+
+            var vel = PropPhys.PhysicsBody.Velocity;
+            var angvel = PropPhys.PhysicsBody.AngularVelocity;
+
+            Vector3.SmoothDamp(PropPhys.PhysicsBody.Position, wantedPosition, ref vel, 0.05f, Time.Delta);
+            Rotation.SmoothDamp(PropPhys.PhysicsBody.Rotation, wantedRotation, ref angvel, 0.05f, Time.Delta);
+
+            vel = vel.ClampLength(1250f);
+
+            PropPhys.PhysicsBody.Velocity = vel;
+            PropPhys.PhysicsBody.AngularVelocity = angvel;
+
+            // Update target positions for clients
+            targetPosition = PropPhys.PhysicsBody.Position;
+            targetRotation = PropPhys.PhysicsBody.Rotation;
+        }
+
+        // Drop / punt input
+        if (Input.Pressed("attack1"))
+        {
+            if (Networking.IsActive)
+                RequestDropRpc(true);
+            else
+                DropObject(true);
+        }
+    }
+
+    protected override void OnUpdate()
+    {
+        if (HeldProp == null)
+            return;
+
+        base.OnUpdate();
+
+        if (HeldProp.Components.TryGet<BaseUsable>(out var usable))
+            usable.OnHoldUpdate?.Invoke(Owner);
+    }
+
+    public void UpdatePickup()
+    {
+        if (Owner == null || !Input.Pressed("use"))
+            return;
+
+        if (HeldProp != null && HeldProp.IsValid())
+        {
+            if (Networking.IsHost || !Networking.IsActive)
+                DropObject();
+            else
+                RequestDropRpc(false);
+            return;
+        }
+
+        var tr = Scene.Trace.Ray(Owner.Controller?.AimRay ?? default, 100f)
+            .IgnoreGameObjectHierarchy(this.GameObject)
+            .WithoutTags("trigger")
+            .HitTriggers()
+            .Run();
+
+        if (tr.Hit && tr.GameObject.IsValid())
+        {
+            PickUpObject(tr.GameObject);
+        }
+        else
+        {
+            Sound.Play("usedeny").ListenLocal = true;
+        }
+    }
 }
