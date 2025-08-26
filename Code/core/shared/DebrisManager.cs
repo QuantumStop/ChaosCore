@@ -129,6 +129,9 @@ public class DebrisManager : BaseEntity
 		*/
 
 		GameObject decalobject = Scene.CreateObject();
+
+		decalobject.NetworkSpawn();
+
 		var decal = decalobject.Components.Create<Decal>();
 		decal.Transient = true; // abide by maxdecals command but doesnt seem to work
 		var temp = decalobject.Components.Create<TemporaryEffect>();
@@ -218,6 +221,8 @@ public class DebrisManager : BaseEntity
 		GameObject particleObject = prefabObject.Clone( position, rotation );
 		ParticleEffect effect = particleObject.Components.Get<ParticleEffect>();
 
+		particleObject.NetworkSpawn();
+
 		IncreaseAmount( particleObject );
 
 		particleObject.Tags.Add( "debris" );
@@ -297,6 +302,8 @@ public class DebrisManager : BaseEntity
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultTracerPath );
 		GameObject tracer = prefabObject.Clone( weaponMuzzle.WorldPosition, weaponMuzzle.WorldRotation );
 
+		tracer.NetworkSpawn();
+
 		tracer.SetParent( GameObject );
 		tracer.Tags.Add( "debris" );
 		tracer.Name = "tracer_particle_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() )
@@ -349,6 +356,8 @@ public class DebrisManager : BaseEntity
 			return;
 
 		GameObject muzzleflash = prefabObject.Clone( position );
+
+		muzzleflash.NetworkSpawn();
 
 		muzzleflash.SetParent( GameObject );
 		muzzleflash.Tags.Add( "debris" );
