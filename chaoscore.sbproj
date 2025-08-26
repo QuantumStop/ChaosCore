@@ -1,11 +1,11 @@
 {
   "Title": "ChaosCore",
   "Type": "game",
-  "Org": "local",
+  "Org": "metalheart",
   "Ident": "chaoscore",
   "Schema": 1,
   "IncludeSourceFiles": false,
-  "Resources": null,
+  "Resources": "resource/interactive/*\nresource/ui/*\nresource/videos/*",
   "PackageReferences": [],
   "EditorReferences": null,
   "Mounts": null,
@@ -41,6 +41,7 @@
         "unittest"
       ],
       "DistinctAssemblyReferences": []
-    }
+    },
+    "StartupScene": "scenes/networking_debug.scene"
   }
 }

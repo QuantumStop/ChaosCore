@@ -25,9 +25,9 @@
           "Initialized": true,
           "InternalID": "game_manager_48bRM",
           "LastEditorCameraPosition": {
-            "Position": "-832.7446,-548.7756,503.71",
+            "Position": "-434.4866,-198.5221,285.9299",
             "Scale": "1,1,1",
-            "Rotation": "-0.09277442,0.2234256,0.3720982,0.8961121"
+            "Rotation": "-0.0604482,0.09673718,0.5264609,0.8425122"
           },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
