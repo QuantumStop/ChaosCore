@@ -1,0 +1,14 @@
+{
+  "AmmoModel": "models/weapons/w_smg_mag.vmdl",
+  "AmmoModelLarge": "models/dev/error.vmdl",
+  "AmmoName": null,
+  "HudSymbol": "r",
+  "HoleSize": 0.3,
+  "DamagePlayer": 6,
+  "MaxAmmo": 135,
+  "DamageNPC": 4,
+  "Grains": 171,
+  "FtPerSec": 1000,
+  "__references": [],
+  "__version": 0
+}
