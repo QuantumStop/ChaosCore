@@ -149,7 +149,7 @@
         "StepHeight": 18,
         "StopSpeed": 100,
         "UseCollisionRules": false,
-        "Velocity": "-27.07893,-51.69865,-1326220"
+        "Velocity": "-27.07893,-51.69865,-1327212"
       },
       {
         "__type": "Sandbox.VR.VRAnchor",
@@ -479,7 +479,7 @@
         "Flags": 0,
         "Name": "Body",
         "Position": "0,0,0",
-        "Rotation": "0,0,0.3585391,-0.9335147",
+        "Rotation": "0,0,0,1",
         "Scale": "1,1,1",
         "Tags": "",
         "Enabled": true,
@@ -906,7 +906,7 @@
         "Scale": "3,3,1",
         "Tags": "pickuptrigger",
         "Enabled": true,
-        "NetworkMode": 2,
+        "NetworkMode": 1,
         "NetworkInterpolation": true,
         "NetworkOrphaned": 0,
         "OwnerTransfer": 1,
