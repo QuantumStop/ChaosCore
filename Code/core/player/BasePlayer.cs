@@ -36,13 +36,19 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 
 	protected override void OnStart()
 	{
-		if ( !IsProxy ) Local = this;
+		if ( !IsProxy )
+			Local = this;
+
+		// In some cases if we spawn very quickly we can die immediately from fall damage, this prevents it.
+		if ( Controller?.Controller != null )
+			Controller.Controller.Velocity = Vector3.Zero;
+		
 		base.OnStart();
 
 		GameObject.Name = PlayerName;
 
 		// It's annoying to get anything consistently or to debug without doing this
-		GameObject.BreakFromPrefab();
+	//	GameObject.BreakFromPrefab();
 
 		// becauase they are static set them off on spawn, this might be fucked for save loading (saved with god mid gunfight) or we just dont care
 		Buddha = false;
@@ -183,12 +189,19 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 	{
 		base.OnUpdate();
 
+		if ( IsProxy )
+			return;
+
 		ViewmodelUpdate();
 	}
 
 	override protected void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
+
+		if ( IsProxy )
+			return;
+
 		ViewmodelFixedUpdate();
 		UpdateFallDamage();
 		HandleWeaponInventory();

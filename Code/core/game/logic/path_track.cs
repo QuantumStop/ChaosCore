@@ -227,15 +227,11 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		{
 			var current = point.WorldPosition;
 			
-			#if EDITOR
-
 			if ( !lastKnownPositions.TryGetValue( point, out var last ) || current != last )
 			{
 				lastKnownPositions[point] = current;
 				anyMoved = true;
 			}
-
-			#endif
 		}
 
 		if ( anyMoved )
