@@ -51,6 +51,8 @@ public class BaseEntity : BaseCustomSerialize
 	[Property, Feature( "Debug" ), ReadOnly, Order( 9999 )] protected bool Initialized = false;
 
 	// Handle Data for Ent_Text purposes
+#if STANDALONE
+
 	public virtual IEnumerable<DebugEntry> GetDebugProperties()
 	{
 		var entries = new List<DebugEntry>();
@@ -132,7 +134,8 @@ public class BaseEntity : BaseCustomSerialize
 
 		return entries.OrderBy( e => e.Group ).ThenBy( e => e.Order );
 	}
-
+    
+#endif
 
 	//	============= Hooks ============= //
 	protected override void OnEnabled()
@@ -296,6 +299,7 @@ public class BaseEntity : BaseCustomSerialize
 
 		return activator ?? null;
 	}
+
 	/// <summary>
 	/// Kill only the root GameObject
 	/// </summary>

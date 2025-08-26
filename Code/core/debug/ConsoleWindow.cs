@@ -13,10 +13,13 @@ public class ConsoleWindow : XGUI.Window
 	public static List<string> conmsg = new();
 	public static List<string> confilteredmsg = new();
 
+#if STANDALONE
+
 	internal static bool _hasAddedHooks = false;
 
 	private static bool _enableDevMode = false;
-#if STANDALONE
+
+
 	public ConsoleWindow()
 	{
 		SetupHooks();

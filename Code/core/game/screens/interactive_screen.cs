@@ -203,17 +203,32 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 		}
 	}
 
+	public Action[] Buttons = new Action[5];
+
 	private void MapActiveButtons()
 	{
-		for ( int i = 1; i <= 5; i++ )
+#if STANDALONE
+    // Your original reflection-based version
+    for (int i = 1; i <= 5; i++)
+    {
+        string key = $"button_{i}";
+        var action = GetType().GetProperty($"Button_{i}")?.GetValue(this) as Action;
+
+        if (action != null && Screen != null)
+            Screen.ActiveButtons[key] = action;
+    }
+#else
+		// Reflection-free version (safe for s&box)
+		if ( Screen == null ) return;
+
+		for ( int i = 0; i < Buttons.Length; i++ )
 		{
-			string key = $"button_{i}";
-			var action = GetType().GetProperty( $"Button_{i}" )?.GetValue( this ) as Action;
-
-			if ( action != null && Screen != null )
-				Screen.ActiveButtons[key] = action;
-		}
-
+			var action = Buttons[i];
+			if ( action != null )
+			{
+				Screen.ActiveButtons[$"button_{i + 1}"] = action;
+			}
+		}		
+#endif
 	}
-
 }

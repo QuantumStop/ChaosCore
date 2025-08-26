@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Core;
 
 public class PathMoveTarget : BaseEntity
@@ -16,14 +14,17 @@ public class PathMoveTarget : BaseEntity
 	/// Time to wait at this path corner
 	/// </summary>
 	[Property] public float waitHereFor { get; private set; }
+
 	/// <summary>
 	/// Is this path corner currently being used?
 	/// </summary>
-	[Property, ReadOnly] private bool isActive = false;
+	[Property, ReadOnly] public bool isActive = false;
+
 	/// <summary>
 	/// Current BaseNPC User
 	/// </summary>
 	[Property, ReadOnly] public BaseNpc currentUser { get; set; }
+	
 	/// <summary>
 	/// Has our current BaseNPC User reached us?
 	/// </summary>

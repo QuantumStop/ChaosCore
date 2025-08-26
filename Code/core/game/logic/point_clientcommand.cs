@@ -9,6 +9,8 @@ namespace Core;
 [Description( "An entity that issues commands to the client console, as if it was typed in by the player (if activator is a player, or the local player in single player)." )]
 public class point_clientcommand : BaseEntity
 {
+#if STANDALONE
+
 	public new delegate void ChaosOutput( point_clientcommand activator );
 
 	/// <summary>
@@ -48,11 +50,14 @@ public class point_clientcommand : BaseEntity
 		ConsoleBypassDemo.TryRunProtectedCommand( "mat_fullbright", "1" );
 	}
 
+#endif
 }
 
 
 public static class ConsoleBypassDemo
 {
+#if STANDALONE
+
 	public static void TryRunProtectedCommand( string commandName, params string[] args )
 	{
 		// Get the internal ConsoleCommand struct type
@@ -96,5 +101,7 @@ public static class ConsoleBypassDemo
 		{
 			Log.Error( $"Reflection failed: {ex}" );
 		}
-	}
+	}	
+
+#endif
 }

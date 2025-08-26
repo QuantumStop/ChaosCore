@@ -1209,7 +1209,6 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 
 					AIState nState = SelectAlertIdealState();
 					return nState;
-					break;
 				}
 		}
 

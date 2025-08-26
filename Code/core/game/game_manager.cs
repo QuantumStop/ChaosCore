@@ -531,7 +531,10 @@ public class game_manager : BaseEntity, Component.ExecuteInEditor
 	/// </summary>
 	private void DrawAllDebugGizmos()
 	{
+#if STANDALONE
+
 		UpdateEntityText();
+#endif
 	}
 
 	/// <summary>
@@ -556,6 +559,7 @@ public class game_manager : BaseEntity, Component.ExecuteInEditor
 	private Dictionary<BaseEntity, TextRenderer> textRenderersCache = [];//  Caching TeDictionaryxtRenderer components for each entity
 	private record EntTextParams( BaseEntity Entity, string DisplayText, Color Color, float Size = 32f );
 
+#if STANDALONE
 
 	/// <summary>
 	/// Draws EntText debug in-game for all selected entities.
@@ -633,5 +637,6 @@ public class game_manager : BaseEntity, Component.ExecuteInEditor
 		}
 	}
 
+#endif
 
 }

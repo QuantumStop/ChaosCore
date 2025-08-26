@@ -8,8 +8,6 @@
 
 @attribute [StyleSheet( "Main_Menu.razor.scss" )]
 
-
-
 <root style="width: 100%; height: 100%;">
 
 	<content>
@@ -45,7 +43,7 @@
 {
 	// TODO:
 	// In the future lets switch this up for localization tokens
-	// Like this: [Display(Name = "Menu.NewGame")]. 
+	// Like this: [Display(Name = "#Menu.NewGame")]. 
 	// This will just work, we just need em to begin with
 	public enum MenuEntries
 	{
@@ -94,25 +92,22 @@
 
 	private string GetDisplayName(Enum enumValue)
 	{
+		#if STANDALONE
+
 		var displayAttribute = enumValue
 		.GetType()
 		.GetField(enumValue.ToString())
 		?.GetCustomAttributes(typeof(DisplayAttribute), false)
-		.FirstOrDefault() as DisplayAttribute;
+		.FirstOrDefault() as DisplayAttribute;	
 		
 		return displayAttribute?.Name ?? enumValue.ToString();
+
+		#else 
+
+		return null;
+
+		#endif
 	}
-
-	// It's really awesome we can actually do this
-	// Need to make some of these for general use lol
-	// what I've almost tried here is insanity however, use this for icons and vids instead lol.
-
-//	 [AttributeUsage(AttributeTargets.Field)]
-//	public class ButtonMethodAttribute : Attribute
-//	{
-//		public bool HoverStatus { get; }
-///		public ButtonMethodAttribute(bool HoverStatus) => HoverStatus = HoverStatus;
-//	}  
 
 
 }
