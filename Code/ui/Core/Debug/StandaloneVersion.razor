@@ -7,19 +7,22 @@
 
 <root>
 
-	@if (!bIsStandalone)
+	@if ( bIsStandalone )
 	{
 		<div class=DevDate>
-			@{
-				var projectName = Sandbox.Game.Ident.Replace("local.", "");
-				if (!string.IsNullOrEmpty(projectName))
-					projectName = char.ToUpper(projectName[0]) + projectName.Substring(1);
-			}
-			@projectName Development Build: @sBuildVersion
-			<div class=DevVersion>Build: @iBuildNumber</div>
+
+		@{
+			var projectName = Sandbox.Game.Ident.Replace("local.", "");
+			if (!string.IsNullOrEmpty(projectName))
+				projectName = char.ToUpper(projectName[0]) + projectName.Substring(1);
+		}
+
+		@projectName Development Build: @sBuildVersion
+		<div class=DevVersion>Build: @iBuildNumber</div>
+		
 		</div>
 	}
-
+	
 </root>
 
 @code
@@ -34,14 +37,7 @@
 		CalcBuildNumber();
 
 		if (Application.IsStandalone)
-		{
-			ToggleVerPreview();
-		}
-
-		void ToggleVerPreview()
-		{
-			bIsStandalone = true;
-		}
+		bIsStandalone = true;
 	}
 
 	private void CalcBuildNumber()
