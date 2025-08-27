@@ -52,7 +52,7 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 
 		if ( PickUpOwner == null )
 			PickUpOwner = Local;
-			
+
 		// becauase they are static set them off on spawn, this might be fucked for save loading (saved with god mid gunfight) or we just dont care
 		Buddha = false;
 		God = false;
@@ -98,7 +98,7 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		PickupTrigger.OnTriggerEnter = OnPickupTriggerTouched;
 
 		CheckPrefabSetup();
-		
+
 
 	}
 
@@ -210,7 +210,7 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		ViewmodelFixedUpdate();
 		UpdateFallDamage();
 		HandleWeaponInventory();
-		UpdatePickupPhysics();	
+		UpdatePickupPhysics();
 	}
 
 	public float FallingSpeed = 0;

@@ -18,6 +18,10 @@ public partial class GameManager : BaseEntity, Component.ExecuteInEditor, IScene
 	/// Which rules are used to determine gameworks
 	/// </summary>
 	public static GameRules Rules;
+	/// <summary>
+	/// Set the proper gamerules on start, don't call base on override
+	/// </summary>
+	protected virtual void DecideGameRules() { Rules = new GameRulesFallback(); }
 
 	public GameObject Player { get; set; }
 	[Property, ReadOnly] protected Transform LastEditorCameraPosition { get; set; }
@@ -59,7 +63,7 @@ public partial class GameManager : BaseEntity, Component.ExecuteInEditor, IScene
 		Rules?.GameTick();
 	}
 
-	protected override void OnStart() { SetInstanceThis(); }
+	protected override void OnStart() { Instance = this; }
 
 	protected override void OnEnabled()
 	{
@@ -74,14 +78,4 @@ public partial class GameManager : BaseEntity, Component.ExecuteInEditor, IScene
 		PlayerSpawn();
 		PostSpawn();
 	}
-
-	/// <summary>
-	/// Set the proper gamerules on start, don't call base on override
-	/// </summary>
-	protected virtual void DecideGameRules() { Rules = new GameRulesFallback(); }
-
-	/// <summary>
-	/// Set the instance to this unique manager, don't call base on override
-	/// </summary>
-	protected virtual void SetInstanceThis() { Instance = this; }
 }

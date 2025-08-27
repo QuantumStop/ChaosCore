@@ -141,15 +141,15 @@ public partial class BasePlayer
 
 	void ApplyInertia()
 	{
-		var camera   = Local.Controller.Camera;
+		var camera = Local.Controller.Camera;
 		var newPitch = camera.WorldRotation.Pitch();
-		var newYaw   = camera.WorldRotation.Yaw();
+		var newYaw = camera.WorldRotation.Yaw();
 
 		PitchInertia = Angles.NormalizeAngle( newPitch - lastPitch );
-		YawInertia   = Angles.NormalizeAngle( lastYaw - newYaw );
+		YawInertia = Angles.NormalizeAngle( lastYaw - newYaw );
 
 		lastPitch = newPitch;
-		lastYaw   = newYaw;
+		lastYaw = newYaw;
 	}
 
 	// ======== Viewmodel Offset ======== //
