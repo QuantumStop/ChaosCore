@@ -43298,31 +43298,6 @@
       "OwnerTransfer": 1,
       "Components": [
         {
-          "__type": "game_manager",
-          "__guid": "0d25f798-5bb2-4a15-9c6d-bb7d3653c989",
-          "__enabled": true,
-          "DontSpawnPlayer": false,
-          "EntTextEntities": [],
-          "Initialized": true,
-          "InternalID": "game_manager_b2VXS",
-          "LastEditorCameraPosition": {
-            "Position": "304.8786,187.5409,800.6759",
-            "Scale": "1,1,1",
-            "Rotation": "0.1114597,0.113422,-0.6919907,0.704174"
-          },
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "OnKilled": null,
-          "SerializedGuid": null,
-          "TargetName": "game_manager_FAWxu",
-          "TimeScaleSlider": 1,
-          "UsePlayerStart": false
-        },
-        {
           "__type": "Sandbox.SceneInformation",
           "__guid": "4345dd6d-4d5b-497e-9d4d-98fb20f90f7a",
           "__enabled": true,
@@ -43339,6 +43314,30 @@
           "SceneTags": "",
           "Title": null,
           "Version": null
+        },
+        {
+          "__type": "SDK.SDKGameManager",
+          "__guid": "1e5a2774-18ce-4283-8c60-6f42857cd77e",
+          "__enabled": true,
+          "DontSpawnPlayer": false,
+          "Initialized": true,
+          "InternalID": "SDK.SDKGameManager_ax6SH",
+          "LastEditorCameraPosition": {
+            "Position": "-317.8989,735.2933,792.0166",
+            "Scale": "1,1,1",
+            "Rotation": "0.2296887,0.03084823,-0.9641188,0.1294855"
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnKilled": null,
+          "SerializedGuid": null,
+          "TargetName": "SDK.SDKGameManager_ax6SH",
+          "TimeScaleSlider": 1,
+          "UsePlayerStart": false
         }
       ],
       "Children": [
@@ -43373,7 +43372,7 @@
             "b3fa3354-ca11-4766-872e-a11f24f38c83": "d14aed49-6948-4786-9047-eaf59d2b3eff",
             "fb29ace4-e2a7-4426-901d-ff5c11699400": "170255b1-fc05-435e-9586-71e411d603ea",
             "bcf83c67-a239-4564-aee6-900bac26ab36": "d2ef913d-3267-4140-99e9-28e2400685c6",
-            "9e4823c6-e365-416b-b6f4-7fa283c5a9cf": "9ca3bad5-eff2-49f1-a813-def45948fa76",
+            "9e4823c6-e365-416b-b6f4-7fa283c5a9cf": "7f239b1d-3533-4307-b010-cefb7e25e40f",
             "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9": "2f13e10d-9179-4c3f-90fe-be73270bab24",
             "4fa9c417-0312-4b53-86ed-d0a45557ce0c": "cc1cc7e6-6b24-413d-898f-1ce4ef434b37"
           }
@@ -43497,25 +43496,25 @@
           "ProceduralComponents": [
             {
               "_type": "component",
-              "component_id": "8c19c1cc-5528-493b-9f8b-cfdcdff5ef71",
+              "component_id": "1b87158c-1629-4f97-9748-07675243313c",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "SkinnedModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "01d58486-8b59-4a94-926d-c5ca77740e41",
+              "component_id": "d906a4de-0ded-4dd5-b338-34ef84adfdcc",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "653736fb-a385-450f-8042-b32fb237b9fa",
+              "component_id": "e20502c4-9713-4648-857e-28978d5ac322",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "806988af-2396-4472-a517-18783717b8c1",
+              "component_id": "01a11d92-d07c-4749-ad72-f0e41e6528b4",
               "go": "e7204cba-6982-474d-b379-6d4ccb4c4b09",
               "component_type": "TintComponent"
             }
@@ -43531,6 +43530,23 @@
           "WhichTints": "OneTint"
         }
       ],
+      "Children": []
+    },
+    {
+      "__guid": "71e20698-fdea-4f7b-b1f4-c75aad75b1b5",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Game Manager",
+      "Position": "4096,4096,4096",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [],
       "Children": []
     }
   ],

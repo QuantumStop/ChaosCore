@@ -15,6 +15,172 @@
     "OwnerTransfer": 1,
     "Components": [
       {
+        "__type": "SDK.Player",
+        "__guid": "f8fa8b81-f144-4063-9f6c-979dbe959f10",
+        "__enabled": true,
+        "AmmoReserveList": [],
+        "Armour": 0,
+        "BackwardLeanAmount": 15,
+        "BobAmplitudeCurve": [
+          {
+            "x": 0,
+            "y": 0.05,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0,
+            "y": 0.15,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0,
+            "y": 0.35,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          }
+        ],
+        "BobFrequencyCurve": [
+          {
+            "x": 0,
+            "y": 0.5,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0,
+            "y": 1.5,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0,
+            "y": 2,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          }
+        ],
+        "BobHorizontalScale": 1.25,
+        "BobRollScale": 0.45,
+        "Controller": {
+          "_type": "component",
+          "component_id": "2bc68ce9-5044-4dd1-8823-2bd40130fdc7",
+          "go": "55197006-f7a6-4f1c-8242-809225d5757d",
+          "component_type": "PlayerController"
+        },
+        "CurrentCrosshair": null,
+        "CurrentWeapon": null,
+        "DownwardPitchYawOffset": 0.5,
+        "ForwardLeanAmount": 15,
+        "ForwardRollIntensity": 0.2,
+        "fSuitZoom": 0,
+        "HasSuit": true,
+        "Health": 100,
+        "HeldProp": null,
+        "HUDGameObject": {
+          "_type": "gameobject",
+          "go": "566b1312-0abc-4eff-8dc1-c654d837cd80"
+        },
+        "InertiaRollIntensity": 0.1,
+        "Initialized": false,
+        "InternalID": null,
+        "isDebug": false,
+        "isZoomedFully": false,
+        "LeanLerpSpeed": 6,
+        "LeanLookBackMultiplier": 0.25,
+        "LifeState": "Alive",
+        "MaxLeanAngle": 60,
+        "MaxTotalRoll": 15,
+        "Movement": {
+          "_type": "component",
+          "component_id": "0a1b686c-516a-4697-94c4-096e97ed052e",
+          "go": "55197006-f7a6-4f1c-8242-809225d5757d",
+          "component_type": "PlayerMovement"
+        },
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnKilled": null,
+        "PickUpOwner": null,
+        "PickupTrigger": {
+          "_type": "component",
+          "component_id": "bc99ab78-bf6b-4401-8328-1ddcdcac966b",
+          "go": "90c62171-ff1b-4859-ab06-50bd3e63739d",
+          "component_type": "ModelCollider"
+        },
+        "PitchInertia": 0,
+        "PitchLeanMax": 1,
+        "PitchLeanMin": -1,
+        "PlayerCfg": "scripts/player_config.plr",
+        "PropPhys": null,
+        "PropRelativeRot": "0,0,0",
+        "ProximityLeanFactor": 40,
+        "ProximityThreshold": 0.35,
+        "RollLerpSpeed": 6,
+        "RotationRollIntensity": 0.25,
+        "SerializedGuid": null,
+        "StrafeRollAngle": 5,
+        "StrafeRollIntensity": 0.35,
+        "StrafeRollLerpSpeed": 20,
+        "StrafeRollSpeed": 350,
+        "SwayIntensity": 8,
+        "SwayMaxOffset": 2.5,
+        "SwayReturnSpeed": 8,
+        "TargetName": null,
+        "ViewInertiaSmoothTime": 0.015,
+        "ViewMaxInertia": 60,
+        "ViewmodelHands": {
+          "_type": "component",
+          "component_id": "55f18724-9183-4154-aa32-2dd767a17988",
+          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "ViewmodelOffsetForward": 2,
+        "ViewmodelOffsetRight": 0.2,
+        "ViewmodelOffsetUp": 0,
+        "ViewmodelPitchInertiaScale": 2.5,
+        "ViewmodelWeapon": {
+          "_type": "component",
+          "component_id": "8985a1d6-b3c0-422b-8117-253b71d1e5cb",
+          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "ViewmodelWeaponObject": {
+          "_type": "gameobject",
+          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f"
+        },
+        "ViewmodelYawInertiaScale": 5,
+        "WeaponGameObject": null,
+        "WeaponList": [],
+        "WeaponToEquip": null,
+        "YawInertia": 0,
+        "YawOffsetLerpSpeed": 6
+      },
+      {
         "__type": "PlayerController",
         "__guid": "2bc68ce9-5044-4dd1-8823-2bd40130fdc7",
         "__enabled": true,
@@ -189,187 +355,6 @@
           "go": "f57a7a30-a821-4603-952e-2a394a53830c",
           "component_type": "SkinnedModelRenderer"
         }
-      },
-      {
-        "__type": "Core.PlayerPickup",
-        "__guid": "73ab63fe-cf2b-4338-9399-fe159d243f83",
-        "__enabled": true,
-        "HeldProp": null,
-        "Initialized": false,
-        "InternalID": null,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "OnKilled": null,
-        "PropPhys": null,
-        "PropRelativeRot": "0,0,0",
-        "SerializedGuid": null,
-        "TargetName": null
-      },
-      {
-        "__type": "SDK.Player",
-        "__guid": "f8fa8b81-f144-4063-9f6c-979dbe959f10",
-        "__enabled": true,
-        "AmmoReserveList": [],
-        "Armour": 0,
-        "BackwardLeanAmount": 15,
-        "BobAmplitudeCurve": [
-          {
-            "x": 0,
-            "y": 0.05,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          },
-          {
-            "x": 0,
-            "y": 0.15,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          },
-          {
-            "x": 0,
-            "y": 0.35,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          },
-          {
-            "x": 0,
-            "y": 1,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          }
-        ],
-        "BobFrequencyCurve": [
-          {
-            "x": 0,
-            "y": 0.5,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          },
-          {
-            "x": 0,
-            "y": 1,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          },
-          {
-            "x": 0,
-            "y": 1.5,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          },
-          {
-            "x": 0,
-            "y": 2,
-            "in": 0,
-            "out": 0,
-            "mode": "Mirrored"
-          }
-        ],
-        "BobHorizontalScale": 1.25,
-        "BobRollScale": 0.45,
-        "Controller": {
-          "_type": "component",
-          "component_id": "2bc68ce9-5044-4dd1-8823-2bd40130fdc7",
-          "go": "55197006-f7a6-4f1c-8242-809225d5757d",
-          "component_type": "PlayerController"
-        },
-        "CurrentCrosshair": null,
-        "CurrentWeapon": null,
-        "DownwardPitchYawOffset": 0.5,
-        "ForwardLeanAmount": 15,
-        "ForwardRollIntensity": 0.2,
-        "fSuitZoom": 0,
-        "HasSuit": true,
-        "Health": 100,
-        "HUDGameObject": {
-          "_type": "gameobject",
-          "go": "566b1312-0abc-4eff-8dc1-c654d837cd80"
-        },
-        "InertiaRollIntensity": 0.1,
-        "Initialized": false,
-        "InternalID": null,
-        "isDebug": false,
-        "isZoomedFully": false,
-        "LeanLerpSpeed": 6,
-        "LeanLookBackMultiplier": 0.25,
-        "LifeState": "Alive",
-        "MaxLeanAngle": 60,
-        "MaxTotalRoll": 15,
-        "Movement": {
-          "_type": "component",
-          "component_id": "0a1b686c-516a-4697-94c4-096e97ed052e",
-          "go": "55197006-f7a6-4f1c-8242-809225d5757d",
-          "component_type": "PlayerMovement"
-        },
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "OnKilled": null,
-        "PickupTrigger": {
-          "_type": "component",
-          "component_id": "bc99ab78-bf6b-4401-8328-1ddcdcac966b",
-          "go": "90c62171-ff1b-4859-ab06-50bd3e63739d",
-          "component_type": "ModelCollider"
-        },
-        "PitchInertia": 0,
-        "PitchLeanMax": 1,
-        "PitchLeanMin": -1,
-        "PlayerCfg": "scripts/player_config.plr",
-        "ProximityLeanFactor": 40,
-        "ProximityThreshold": 0.35,
-        "RollLerpSpeed": 6,
-        "RotationRollIntensity": 0.25,
-        "SerializedGuid": null,
-        "StrafeRollAngle": 5,
-        "StrafeRollIntensity": 0.35,
-        "StrafeRollLerpSpeed": 20,
-        "StrafeRollSpeed": 350,
-        "SwayIntensity": 8,
-        "SwayMaxOffset": 2.5,
-        "SwayReturnSpeed": 8,
-        "TargetName": null,
-        "ViewInertiaSmoothTime": 0.015,
-        "ViewMaxInertia": 60,
-        "ViewmodelHands": {
-          "_type": "component",
-          "component_id": "55f18724-9183-4154-aa32-2dd767a17988",
-          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
-          "component_type": "SkinnedModelRenderer"
-        },
-        "ViewmodelOffsetForward": 2,
-        "ViewmodelOffsetRight": 0.2,
-        "ViewmodelOffsetUp": 0,
-        "ViewmodelPitchInertiaScale": 2.5,
-        "ViewmodelWeapon": {
-          "_type": "component",
-          "component_id": "8985a1d6-b3c0-422b-8117-253b71d1e5cb",
-          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f",
-          "component_type": "SkinnedModelRenderer"
-        },
-        "ViewmodelWeaponObject": {
-          "_type": "gameobject",
-          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f"
-        },
-        "ViewmodelYawInertiaScale": 5,
-        "WeaponGameObject": null,
-        "WeaponList": [],
-        "WeaponToEquip": null,
-        "YawInertia": 0,
-        "YawOffsetLerpSpeed": 6
       },
       {
         "__type": "SDK.CustomCrosshair",

@@ -40,8 +40,8 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 			Local = this;
 
 		// In some cases if we spawn very quickly we can die immediately from fall damage, this prevents it.
-		if ( Controller?.Controller != null )
-			Controller.Controller.Velocity = Vector3.Zero;
+		if ( Local.Controller?.Controller != null )
+			Local.Controller.Controller.Velocity = Vector3.Zero;
 
 		base.OnStart();
 
@@ -50,6 +50,9 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		// It's annoying to get anything consistently or to debug without doing this
 		//	GameObject.BreakFromPrefab();
 
+		if ( PickUpOwner == null )
+			PickUpOwner = Local;
+			
 		// becauase they are static set them off on spawn, this might be fucked for save loading (saved with god mid gunfight) or we just dont care
 		Buddha = false;
 		God = false;
@@ -95,6 +98,8 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		PickupTrigger.OnTriggerEnter = OnPickupTriggerTouched;
 
 		CheckPrefabSetup();
+		
+
 	}
 
 	private string GetClassName( string path )
@@ -205,8 +210,8 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 		ViewmodelFixedUpdate();
 		UpdateFallDamage();
 		HandleWeaponInventory();
+		UpdatePickupPhysics();	
 	}
-
 
 	public float FallingSpeed = 0;
 	protected void UpdateFallDamage()
