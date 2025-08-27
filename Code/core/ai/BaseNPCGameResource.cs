@@ -2,7 +2,11 @@
 
 namespace Core;
 
-[GameResource( "NPC Definition", "npc", "A script file for an NPC", Icon = "emoji_people" )]
+//[GameResource( "NPC Definition", "npc", "A script file for an NPC", Icon = "emoji_people" )]
+/// <summary>
+/// A script file for an NPC
+/// </summary>
+[AssetType( Name = "NPC Definition", Extension = "npc" ), Icon( "emoji_people" )]
 public class NpcDefinition : GameResource
 {
 	[Category( "Model Config" )] public List<Model> Models { get; set; }
@@ -30,7 +34,8 @@ public class NpcDefinition : GameResource
 	[Category( "Sounds" )] public List<SoundEvent> AlertSounds { get; set; } = new();
 }
 
-[GameResource( "NPC Shared Model Information", "npcsmi", "WIDE SELECTION OF MOVIES FROM    THE CLASSICS TO NEW DVD RELEASES\r\n", Icon = "groups_3" )]
+//[GameResource( "NPC Shared Model Information", "npcsmi", "WIDE SELECTION OF MOVIES FROM    THE CLASSICS TO NEW DVD RELEASES\r\n", Icon = "groups_3" )]
+[AssetType( Name = "NPC Shared Model Information", Extension = "npcsmi" ), Icon( "groups_3" )]
 public class SharedNpcModelInfo : GameResource
 {
 	[Category( "Weaponry" )] public string PrimaryWeaponAttachmentEquipped { get; set; }

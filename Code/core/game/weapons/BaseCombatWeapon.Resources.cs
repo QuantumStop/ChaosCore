@@ -2,7 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Core;
 
-[GameResource( "Weapon Script", "wpn", "A weapon script, like scripts/weapons/weapon_glock.txt", Icon = "plumbing", IconFgColor = "#2b2b17", IconBgColor = "#acac5c" )]
+//[GameResource( "Weapon Script", "wpn", "A weapon script, like scripts/weapons/weapon_glock.txt", Icon = "plumbing", IconFgColor = "#2b2b17", IconBgColor = "#acac5c" )]
+/// <summary>
+/// A weapon script, like scripts/weapons/weapon_glock.txt
+/// </summary>
+[AssetType( Name = "Weapon Script", Extension = "wpn" ), Icon( "plumbing", "#2b2b17", "#acac5c" )]
 public class WeaponParse : GameResource
 {
 	[Order( 0 )] public Model WeaponViewmodel { get; set; }
@@ -112,7 +116,8 @@ public class WeaponParse : GameResource
 	}
 }
 
-[GameResource( "Ammo Data", "amn", "Ammunition file\r\n", Icon = "create", IconFgColor = "#2b2b17", IconBgColor = "#acac5c" )]
+//[GameResource( "Ammo Data", "amn", "Ammunition file\r\n", Icon = "create", IconFgColor = "#2b2b17", IconBgColor = "#acac5c" )]
+[AssetType( Name = "Ammo Data", Extension = "amn" ), Icon( "create", "#acac5c", "#2b2b17" )]
 public class AmmoInfo : GameResource
 {
 	[Hide, JsonIgnore] new public bool IsValid { get; set; } = false;

@@ -1,6 +1,10 @@
 namespace Core;
 
-[GameResource( "Crosshair Data", "crs", "Crosshair configuration for weapons", Icon = "center_focus_strong", IconFgColor = "#ffffff", IconBgColor = "#007acc" )]
+//[GameResource( "Crosshair Data", "crs", "Crosshair configuration for weapons", Icon = "center_focus_strong", IconFgColor = "#ffffff", IconBgColor = "#007acc" )]
+/// <summary>
+/// Crosshair configuration for weapons
+/// </summary>
+[AssetType( Name = "Crosshair Data", Extension = "crs" ), Icon( "center_focus_strong", "#007acc", "#ffffff" )]
 public class CrosshairData : GameResource
 {
 	[Order( 0 )] public WeaponCrosshairType WeaponCrosshairType { get; set; }

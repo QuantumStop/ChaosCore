@@ -24,9 +24,13 @@ namespace Editor;
 //--------------------------------------------------------------------//
 
 
-[GameResource( "Animation Graph Template", "agtmp", "Resource to generate Animgraphs from template", Icon = "directions_run", IconBgColor = "#674426",
-IconFgColor = "orange", Category = "Animation" ), Icon( "directions_run", "#674426", "#674426" )]
+//[GameResource( "Animation Graph Template", "agtmp", "Resource to generate Animgraphs from template", Icon = "directions_run", IconBgColor = "#674426",
+//IconFgColor = "orange", Category = "Animation" ), Icon( "directions_run", "#674426", "#674426" )]
 
+/// <summary>
+/// Resource to generate Animgraphs from template
+/// </summary>
+[AssetType( Name = "Animation Graph Template", Extension = "agtmp", Category = "Animation" ), Icon( "directions_run", "#674426", "#674426" )]
 public class AG_Template : GameResource
 {
 
@@ -76,7 +80,7 @@ public class AG_Template : GameResource
 		try
 		{
 			// Get full dev assets path
-			var devPath     = $"{Project.Current.GetRootPath().Replace( '\\', '/' )}/assets";
+			var devPath = $"{Project.Current.GetRootPath().Replace( '\\', '/' )}/assets";
 			string filePath = Path.Combine( devPath, ExistingAg.ResourcePath );
 
 			if ( !System.IO.File.Exists( filePath ) )
@@ -122,8 +126,8 @@ public class AG_Template : GameResource
 				);
 
 
-				var parsedTags   = new List<AGTags>();
-				var seenTagIds   = new HashSet<int>();
+				var parsedTags = new List<AGTags>();
+				var seenTagIds = new HashSet<int>();
 				var seenTagNames = new HashSet<string>( StringComparer.OrdinalIgnoreCase );
 
 				foreach ( Match match in tagBlockMatches )
@@ -252,7 +256,7 @@ public class AG_Template : GameResource
 			{
 				Log.Warning( "[Animgraph Template] ❌ No global m_previewModels match found." );
 			}
- 
+
 
 			// And extract Bone Merge Models as well before we start parsing parameters next
 			var boneMergeMatch = Regex.Match(
@@ -273,7 +277,7 @@ public class AG_Template : GameResource
 
 				BoneMergeModels ??= new List<Model>();
 				BoneMergeModels.Clear();
-				
+
 
 				foreach ( Match m in matches )
 				{
@@ -660,11 +664,11 @@ public class AG_Template : GameResource
 
 			string classType = param.Type switch
 			{
-				AGParameter.ParameterType.Bool       => "CBoolAnimParameter",
-				AGParameter.ParameterType.Enum       => "CEnumAnimParameter",
-				AGParameter.ParameterType.Float      => "CFloatAnimParameter",
-				AGParameter.ParameterType.Int        => "CIntAnimParameter",
-				AGParameter.ParameterType.Vector     => "CVectorAnimParameter",
+				AGParameter.ParameterType.Bool => "CBoolAnimParameter",
+				AGParameter.ParameterType.Enum => "CEnumAnimParameter",
+				AGParameter.ParameterType.Float => "CFloatAnimParameter",
+				AGParameter.ParameterType.Int => "CIntAnimParameter",
+				AGParameter.ParameterType.Vector => "CVectorAnimParameter",
 				AGParameter.ParameterType.Quaternion => "CQuaternionAnimParameter",
 				_ => "CParameter"
 			};
@@ -938,15 +942,15 @@ public class AG_Template : GameResource
 			return;
 		}
 
-		var devPath          = $"{Project.Current.GetRootPath().Replace( '\\', '/' )}/assets";
+		var devPath = $"{Project.Current.GetRootPath().Replace( '\\', '/' )}/assets";
 		string filePathToRef = Path.Combine( devPath, refAg.ResourcePath );
-		string refContent    = File.ReadAllText( filePathToRef );
+		string refContent = File.ReadAllText( filePathToRef );
 
 		// Extract reference parameter IDs
 		var paramIdMap = new Dictionary<string, int>();
 		{
 			string paramPattern = @"\{\s*_class\s*=\s*""C\w+AnimParameter""[^}]*?m_name\s*=\s*""(.*?)""[^}]*?m_id\s*=\s*\{\s*m_id\s*=\s*(\d+)\s*\}";
-			var paramMatches    = Regex.Matches( refContent, paramPattern, RegexOptions.Singleline );
+			var paramMatches = Regex.Matches( refContent, paramPattern, RegexOptions.Singleline );
 			foreach ( Match match in paramMatches )
 			{
 				string name = match.Groups[1].Value;
@@ -960,7 +964,7 @@ public class AG_Template : GameResource
 		var tagIdMap = new Dictionary<string, int>();
 		{
 			string tagPattern = @"\{\s*_class\s*=\s*""C(?:String|Event)AnimTag""[^}]*?m_name\s*=\s*""(.*?)""[^}]*?m_tagID\s*=\s*\{\s*m_id\s*=\s*(\d+)\s*\}";
-			var tagMatches    = Regex.Matches( refContent, tagPattern, RegexOptions.Singleline );
+			var tagMatches = Regex.Matches( refContent, tagPattern, RegexOptions.Singleline );
 			foreach ( Match match in tagMatches )
 			{
 				string name = match.Groups[1].Value;
@@ -973,7 +977,7 @@ public class AG_Template : GameResource
 		foreach ( var graph in childAg )
 		{
 			string filePathToChild = Path.Combine( devPath, graph.ResourcePath );
-		
+
 			if ( graph == null || string.IsNullOrEmpty( filePathToChild ) )
 				continue;
 
@@ -984,7 +988,7 @@ public class AG_Template : GameResource
 			// Replace parameters
 			{
 				string paramPattern = @"(\{\s*_class\s*=\s*""C\w+AnimParameter""[^}]*?m_name\s*=\s*"")(.*?)(""[^}]*?m_id\s*=\s*\{\s*m_id\s*=\s*)(\d+)(\s*\})";
-				childContent        = Regex.Replace( childContent, paramPattern, match =>
+				childContent = Regex.Replace( childContent, paramPattern, match =>
 				{
 					string name = match.Groups[2].Value;
 					if ( paramIdMap.TryGetValue( name, out int newId ) && match.Groups[4].Value != newId.ToString() )

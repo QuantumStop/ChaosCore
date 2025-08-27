@@ -1,4 +1,8 @@
-﻿[GameResource( "Player Config", "plr", "LARGEST BABY SUPER STORE ONLINE", Icon = "accessibility_new" )]
+﻿//[GameResource( "Player Config", "plr", "LARGEST BABY SUPER STORE ONLINE", Icon = "accessibility_new" )]
+/// <summary>
+/// Config for A player
+/// </summary>
+[AssetType( Name = "Player Config", Extension = "plr" ), Icon( "accesibility_new" )]
 public class PlayerConfig : GameResource
 {
 	public Model ViewmodelHands { get; set; }

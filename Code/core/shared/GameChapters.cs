@@ -1,5 +1,9 @@
 
-[GameResource( "Chapters Definition", "chptdef", "A script file for all chapters", Icon = "flag_circle", IconBgColor = "#399bc2ff" )]
+//[GameResource( "Chapters Definition", "chptdef", "A script file for all chapters", Icon = "flag_circle", IconBgColor = "#399bc2ff" )]
+/// <summary>
+/// A script file for all chapters
+/// </summary>
+[AssetType( Name = "Chapters Definition", Extension = "chptdef" ), Icon( "flag_circle", "#399bc2ff", "#1a2c17" )]
 public class GameChaptersDefinition : GameResource
 {
 	[Header( "All of the chapters" )]

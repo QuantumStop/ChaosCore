@@ -2,7 +2,11 @@
 using System.Text.Json.Serialization;
 namespace Core;
 
-[GameResource( "NPC Ability", "npcabl", "GET EVERYTHING YOU NEED FOR A BETTER INTERNET EXPERIENCE\r\n", Icon = "bolt" )]
+//[GameResource( "NPC Ability", "npcabl", "GET EVERYTHING YOU NEED FOR A BETTER INTERNET EXPERIENCE\r\n", Icon = "bolt" )]
+/// <summary>
+/// NPC Ability
+/// </summary>
+[AssetType( Name = "NPC Ability", Extension = "npcabl" ), Icon( "bolt" )]
 public class NpcAbilityResource : GameResource
 {
 	public string AnimEventPrefix { get; set; }
