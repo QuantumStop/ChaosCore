@@ -20,7 +20,7 @@ public partial class GameManager : BaseEntity, Component.ExecuteInEditor, IScene
 	public static GameRules Rules;
 
 	public GameObject Player { get; set; }
-	[Property, ReadOnly, JsonIgnore] protected Transform LastEditorCameraPosition { get; set; }
+	[Property, ReadOnly] protected Transform LastEditorCameraPosition { get; set; }
 	[Property, ReadOnly, Range( 0f, 2f )] public float TimeScaleSlider { get; set; } = 1f;
 
 	private float PreviousTimeScaleSlider { get; set; } = 1f;

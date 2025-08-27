@@ -56,15 +56,17 @@ public partial class GameManager
 	{
 		if ( !DontSpawnPlayer )
 		{
+			//	otherwise spawn player at editor camera position
+			SceneTraceResult tr = Scene.Trace.Ray( LastEditorCameraPosition.Position, LastEditorCameraPosition.Position - Vector3.Up * 64f ).Run();
+
 			Player = Scene.GetPrefab( "prefabs/player.prefab" ).Clone();
 
-			// if this is standalone there is no editor camera, so spawn at 0 0 0 (sucks but better than spawning in a random spot)
-			Player.WorldPosition = Vector3.Zero;
-			Player.WorldRotation = Angles.Zero;
+			Player.WorldPosition = !Application.IsEditor ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero;
+			Player.WorldRotation = !Application.IsEditor ? LastEditorCameraPosition.Rotation.Angles().WithPitch( 0 ).WithRoll( 0 ).ToRotation() : Angles.Zero;
 
 			if ( Player.Components.TryGet<BasePlayer>( out var playerComponent2 ) )
 			{
-				playerComponent2.Controller.EyeAngles = !Application.IsStandalone ? LastEditorCameraPosition.Rotation : Angles.Zero;
+				playerComponent2.Controller.EyeAngles = !Application.IsEditor ? LastEditorCameraPosition.Rotation : Angles.Zero;
 				playerComponent2.Controller.Controller.Velocity = Vector3.Zero;
 				playerComponent2.Controller.Controller.BaseVelocity = Vector3.Zero;
 			}

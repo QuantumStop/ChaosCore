@@ -16,7 +16,7 @@ public class GameInit : GameObjectSystem<GameInit>
 	GameObject Video { get; set; }
 	GameObject Env { get; set; }
 
-	public void CreateEditorStuff( bool IsRefresh, CameraExposure.ExposureMode exposureMode = CameraExposure.ExposureMode.Manual, float ISO = 100, float Shutter = 100, float Aperture = 16, float ND = 1 )
+	public void CreateEditorStuff( bool IsRefresh )
 	{
 		if ( !IsRefresh && !Scene.GetAll<SDKGameManager>().Any() )
 		{

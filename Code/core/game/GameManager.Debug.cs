@@ -221,11 +221,11 @@ public partial class GameManager
 	private void UpdateEntityText()
 	{
 		// Skip if there are no entities to display or the game isn't running
-		if ( GameManager?.EntTextEntities == null || GameManager.EntTextEntities.Count == 0 || !Game.IsPlaying )
+		if ( Instance?.EntTextEntities == null || Instance.EntTextEntities.Count == 0 || !Game.IsPlaying )
 			return;
 
 		// Ensure TextRenderers are up-to-date in the cache
-		foreach ( var ent in GameManager.EntTextEntities )
+		foreach ( var ent in Instance.EntTextEntities )
 		{
 			if ( !textRenderersCache.ContainsKey( ent ) )
 			{
@@ -235,12 +235,12 @@ public partial class GameManager
 			}
 		}
 
-		foreach ( var ent in GameManager.EntTextEntities.ToList() )
+		foreach ( var ent in Instance.EntTextEntities.ToList() )
 		{
 			// First things first lets super safe guard it from objects become destroyed/picked up/killed
 			if ( ent == null || ent.GameObject?.IsValid() != true )
 			{
-				GameManager.EntTextEntities.Remove( ent );
+				Instance.EntTextEntities.Remove( ent );
 				textRenderersCache.Remove( ent );
 				continue;
 			}
