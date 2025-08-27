@@ -264,7 +264,7 @@ public class BaseEntity : BaseCustomSerialize
 
 	private bool TryGetGameManager( out GameManager gm )
 	{
-		return GameObject.Components.TryGet<GameManager>(
+		return GameObject.Components.TryGet(
 			out gm,
 			FindMode.Enabled | FindMode.Disabled | FindMode.InSelf
 		);

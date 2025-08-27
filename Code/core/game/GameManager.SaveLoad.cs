@@ -3,13 +3,13 @@ using System;
 using System.Text.Json.Nodes;
 public partial class GameManager
 {
-	[ConCmd( "restart", ConVarFlags.Replicated )]
+	[ConCmd( "restart" )]
 	public static void RestartLevel()   // restart current map as if it was loaded again from scratch
 	{
 		Game.ActiveScene.Load( Game.ActiveScene.Source );
 	}
 
-	[ConCmd( "reload", ConVarFlags.Replicated )]
+	[ConCmd( "reload" )]
 	public static void ReloadLevel()   // load whatever latest save is
 	{
 		if ( Rules is SingleplayerRules sp && sp.CanSaveLoad )
