@@ -2,11 +2,10 @@
 
 namespace Core;
 
-[EditorHandle( "" )]
-
 /// <summary>
 /// The new and cool prop component which you should use instead of the old one
 /// </summary>
+[EditorHandle( "" )]
 [Title( "Game Prop" )]
 [Category( "Game" )]
 [Icon( "inventory" )]
