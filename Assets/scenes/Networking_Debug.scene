@@ -20,13 +20,13 @@
           "__type": "SDK.SDKGameManager",
           "__guid": "cd44ea1c-0a6b-45a3-8af6-cf0b03b65e7d",
           "__enabled": true,
-          "DontSpawnPlayer": false,
+          "DontSpawnPlayer": true,
           "Initialized": true,
           "InternalID": "SDK.SDKGameManager_5oXgi",
           "LastEditorCameraPosition": {
-            "Position": "-59.26204,389.5568,58.1053",
+            "Position": "-177.7237,374.2127,143.5807",
             "Scale": "1,1,1",
-            "Rotation": "0.01204092,0.1099445,-0.1081993,0.9879575"
+            "Rotation": "0.02391063,0.2005127,-0.1159692,0.9725091"
           },
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
