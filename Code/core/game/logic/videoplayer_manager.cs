@@ -1,6 +1,5 @@
-using System;
-
 namespace Core;
+using System;
 
 // i would rather ask for an actual resource
 /*

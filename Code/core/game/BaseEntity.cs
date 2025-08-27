@@ -262,9 +262,9 @@ public class BaseEntity : BaseCustomSerialize
 		return (path, isModel);
 	}
 
-	private bool TryGetGameManager( out game_manager gm )
+	private bool TryGetGameManager( out GameManager gm )
 	{
-		return GameObject.Components.TryGet<game_manager>(
+		return GameObject.Components.TryGet<GameManager>(
 			out gm,
 			FindMode.Enabled | FindMode.Disabled | FindMode.InSelf
 		);

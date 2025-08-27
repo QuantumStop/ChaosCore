@@ -1,4 +1,5 @@
 using Core;
+using SDK;
 public class GameInit : GameObjectSystem<GameInit>
 {
 	public GameInit( Scene scene ) : base( scene )
@@ -17,14 +18,14 @@ public class GameInit : GameObjectSystem<GameInit>
 
 	public void CreateEditorStuff( bool IsRefresh, CameraExposure.ExposureMode exposureMode = CameraExposure.ExposureMode.Manual, float ISO = 100, float Shutter = 100, float Aperture = 16, float ND = 1 )
 	{
-		if ( !IsRefresh && !Scene.GetAll<game_manager>().Any() )
+		if ( !IsRefresh && !Scene.GetAll<SDKGameManager>().Any() )
 		{
 			Manager = Scene.CreateObject();
 			Manager.WorldPosition = new Vector3( 4096, 4096, 4096 );
 			Manager.Name = "Game Manager";
-			Manager.Components.Create<game_manager>();
+			Manager.Components.Create<SDKGameManager>();
 		}
-		else { Manager = Scene.GetAll<game_manager>().FirstOrDefault().GameObject; } // assign the existing manager object to a variable so the rest can still regenerate
+		else { Manager = Scene.GetAll<SDKGameManager>().FirstOrDefault().GameObject; } // assign the existing manager object to a variable so the rest can still regenerate
 
 		if ( !Game.IsPlaying ) // dont do this if the game is running, apparently EditorOnly still picks it up
 		{

@@ -60,7 +60,7 @@ public class trigger_changelevel : BaseTrigger
 		}
 
 
-		game_manager.GameManager.EnterLevelTransition( nextScene.ResourcePath );
+		GameManager.Instance.EnterLevelTransition( nextScene.ResourcePath );
 
 		//var load = new SceneLoadOptions();
 		//

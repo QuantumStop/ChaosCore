@@ -1,5 +1,6 @@
 using Facepunch.ActionGraphs;
 using Core;
+using SDK;
 
 public class SceneUtils
 {
@@ -81,9 +82,9 @@ public class SceneUtils
 		SoundEvent sound = which ? ResourceLibrary.Get<SoundEvent>( "sound/ui/editor_player_start_on.sound" ) : ResourceLibrary.Get<SoundEvent>( "sound/ui/editor_player_start_off.sound" );
 		Sound.Play( sound );
 
-		var balls = scene.GetAllComponents<game_manager>().FirstOrDefault();
+		var balls = scene.GetAllComponents<SDKGameManager>().FirstOrDefault();
 
-		if ( !scene.GetAllComponents<game_manager>().Any() )
+		if ( !scene.GetAllComponents<SDKGameManager>().Any() )
 			return;
 
 		// if there are no start entities, then the bool isnt changed, which may or may not be desired effect, which if its not, move this above the warning check
@@ -100,9 +101,9 @@ public class SceneUtils
 		if ( scene is null )
 			return false;
 
-		var balls = scene.GetAllComponents<game_manager>().FirstOrDefault();
+		var balls = scene.GetAllComponents<SDKGameManager>().FirstOrDefault();
 
-		if ( !scene.GetAllComponents<game_manager>().Any() )
+		if ( !scene.GetAllComponents<SDKGameManager>().Any() )
 			return false;
 
 		return balls.UsePlayerStart;

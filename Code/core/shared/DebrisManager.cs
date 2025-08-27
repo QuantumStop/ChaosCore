@@ -130,7 +130,7 @@ public class DebrisManager : BaseEntity
 
 		GameObject decalobject = Scene.CreateObject();
 
-		decalobject.NetworkSpawn();
+		if ( GameManager.Rules.IsOnline ) decalobject.NetworkSpawn();
 
 		var decal = decalobject.Components.Create<Decal>();
 		decal.Transient = true; // abide by maxdecals command but doesnt seem to work
@@ -221,7 +221,7 @@ public class DebrisManager : BaseEntity
 		GameObject particleObject = prefabObject.Clone( position, rotation );
 		ParticleEffect effect = particleObject.Components.Get<ParticleEffect>();
 
-		particleObject.NetworkSpawn();
+		if ( GameManager.Rules.IsOnline ) particleObject.NetworkSpawn();
 
 		IncreaseAmount( particleObject );
 
@@ -302,7 +302,7 @@ public class DebrisManager : BaseEntity
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultTracerPath );
 		GameObject tracer = prefabObject.Clone( weaponMuzzle.WorldPosition, weaponMuzzle.WorldRotation );
 
-		tracer.NetworkSpawn();
+		if ( GameManager.Rules.IsOnline ) tracer.NetworkSpawn();
 
 		tracer.SetParent( GameObject );
 		tracer.Tags.Add( "debris" );
@@ -357,7 +357,7 @@ public class DebrisManager : BaseEntity
 
 		GameObject muzzleflash = prefabObject.Clone( position );
 
-		muzzleflash.NetworkSpawn();
+		if ( GameManager.Rules.IsOnline ) muzzleflash.NetworkSpawn();
 
 		muzzleflash.SetParent( GameObject );
 		muzzleflash.Tags.Add( "debris" );
@@ -382,6 +382,7 @@ public class DebrisManager : BaseEntity
 		}
 
 		GameObject casingObject = prefabObject.Clone( position, rotation );
+		if ( GameManager.Rules.IsOnline ) casingObject.NetworkSpawn();
 
 		casingObject.SetParent( GameObject );
 		casingObject.Tags.Add( "debris" );
@@ -548,7 +549,11 @@ public class DebrisManager : BaseEntity
 
 }
 
-[GameResource( "Surface Extension", "extsurf", "Unshitting the surface", Category = "Physics", Icon = "iron" )]
+//[GameResource( "Surface Extension", "extsurf", "Unshitting the surface", Category = "Physics", Icon = "iron" )]
+/// <summary>
+/// Unshitting the surface
+/// </summary>
+[AssetType( Name = "Surface Extension", Extension = "extsurf", Category = "Physics" ), Icon( "iron" )]
 public class SurfaceExtension : ResourceExtension<Surface, SurfaceExtension>
 {
 	public List<DecalDefinition> DecalList { get; set; }
