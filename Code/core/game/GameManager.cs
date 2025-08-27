@@ -71,11 +71,8 @@ public partial class GameManager : BaseEntity, Component.ExecuteInEditor, IScene
 		DecideGameRules();
 
 		PreSpawn();
-
 		PlayerSpawn();
-
 		PostSpawn();
-
 	}
 
 	/// <summary>

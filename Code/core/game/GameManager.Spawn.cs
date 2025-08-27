@@ -61,12 +61,12 @@ public partial class GameManager
 
 			Player = Scene.GetPrefab( "prefabs/player.prefab" ).Clone();
 
-			Player.WorldPosition = !Application.IsEditor ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero;
-			Player.WorldRotation = !Application.IsEditor ? LastEditorCameraPosition.Rotation.Angles().WithPitch( 0 ).WithRoll( 0 ).ToRotation() : Angles.Zero;
+			Player.WorldPosition = Application.IsEditor ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero;
+			Player.WorldRotation = Application.IsEditor ? LastEditorCameraPosition.Rotation.Angles().WithPitch( 0 ).WithRoll( 0 ).ToRotation() : Angles.Zero;
 
 			if ( Player.Components.TryGet<BasePlayer>( out var playerComponent2 ) )
 			{
-				playerComponent2.Controller.EyeAngles = !Application.IsEditor ? LastEditorCameraPosition.Rotation : Angles.Zero;
+				playerComponent2.Controller.EyeAngles = Application.IsEditor ? LastEditorCameraPosition.Rotation : Angles.Zero;
 				playerComponent2.Controller.Controller.Velocity = Vector3.Zero;
 				playerComponent2.Controller.Controller.BaseVelocity = Vector3.Zero;
 			}
