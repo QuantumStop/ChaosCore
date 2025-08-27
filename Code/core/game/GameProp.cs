@@ -9,7 +9,6 @@ namespace Core;
 [Title( "Game Prop" )]
 [Category( "Game" )]
 [Icon( "inventory" )]
-[Description( "A better prop, again" )]
 public partial class GameProp : BaseUsable, Component.ExecuteInEditor, Component.IDamageable
 {
 	protected override string GetEditorVis()
