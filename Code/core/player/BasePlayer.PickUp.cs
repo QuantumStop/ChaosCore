@@ -1,9 +1,5 @@
 namespace Core;
-
-using System;
 using Sandbox.Physics;
-using Sandbox.Diagnostics;
-
 public partial class BasePlayer
 {
 	[Property, Feature( "PickUp" )] public BasePlayer PickUpOwner { get; private set; }
@@ -12,7 +8,7 @@ public partial class BasePlayer
 	[Property, ReadOnly, Feature( "PickUp" )] public Angles PropRelativeRot { get; private set; }
 
 	private PhysicsJoint Joint;
-	private bool UseSuccess { get; set; }
+	private bool UseSuccess { get; set; } = false;
 
 	private Vector3 predictedPosition;
 	private Rotation predictedRotation;
@@ -22,7 +18,6 @@ public partial class BasePlayer
 
 	[ConVar( "debug_nomass", ConVarFlags.Cheat )]
 	public static bool DebugNoMass { get; set; }
-
 
 	public void PickUpObject( GameObject obj )
 	{
@@ -59,6 +54,8 @@ public partial class BasePlayer
 		if ( PickUpOwner == null || !Input.Pressed( "use" ) )
 			return;
 
+		UseSuccess = false;
+
 		if ( HeldProp != null && HeldProp.IsValid() )
 		{
 			if ( Networking.IsHost || !Networking.IsActive )
@@ -78,10 +75,10 @@ public partial class BasePlayer
 		{
 			PickUpObject( tr.GameObject );
 		}
-		else
-		{
-			Sound.Play( "usedeny" ).ListenLocal = true;
-		}
+
+		if ( UseSuccess ) Sound.Play( "usesuccess" ).ListenLocal = true;
+		else Sound.Play( "usedeny" ).ListenLocal = true;
+
 	}
 
 
@@ -90,8 +87,13 @@ public partial class BasePlayer
 		if ( PickUpOwner == null || PickUpOwner.LifeState != LifeState.Alive )
 			return;
 
-		if ( !obj.Components.TryGet<Rigidbody>( out var rigidbody ) )
+		// no rigid body (static) or motion disabled
+		if ( obj.Components.TryGet<Rigidbody>( out var rigidbody ) ) { if ( !rigidbody.MotionEnabled ) return; }
+		else
 			return;
+
+		if ( obj.Components.TryGet<BaseUsable>( out var usable ) )
+			if ( !usable.CanBeHeld ) return;
 
 		if ( !DebugNoMass && rigidbody.Mass > 35 )
 			return;
@@ -111,8 +113,6 @@ public partial class BasePlayer
 			Joint.Collisions = false;
 		}
 
-		UseSuccess = true;
-
 		predictedPosition = HeldProp.WorldPosition;
 		predictedRotation = HeldProp.WorldRotation;
 		targetPosition = predictedPosition;
@@ -122,6 +122,8 @@ public partial class BasePlayer
 
 		if ( Networking.IsActive )
 			OnPickupConfirmedRpc( HeldProp );
+
+		UseSuccess = true;
 	}
 
 	private void PredictPickup( GameObject obj )
@@ -136,7 +138,6 @@ public partial class BasePlayer
 		targetRotation = predictedRotation;
 
 		HeldProp.Tags.Add( "HELD_PROP" ); // ensure client knows it's held
-		Sound.Play( "usesuccess" ).ListenLocal = true;
 	}
 
 	private void ApplyDropPhysics( bool punt )
