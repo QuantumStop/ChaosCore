@@ -1,12 +1,12 @@
 using Core;
-using SDK;
+namespace SDK;
 public class GameInit : GameObjectSystem<GameInit>
 {
 	public GameInit( Scene scene ) : base( scene )
 	{
 		Listen( Stage.SceneLoaded, 5000, delegate
 		{
-			if ( !Application.IsStandalone ) CreateEditorStuff( false ); // we dont need to create anything in standalone because everything should already have it and if it doesnt we fucked up
+			if ( !Application.IsEditor ) CreateEditorStuff( false ); // we dont need to create anything in standalone because everything should already have it and if it doesnt we fucked up
 			foreach ( var entity in Scene.GetAll<BaseEntity>() ) { entity.OnStartOnceInternal(); }
 		}, "CreateEngineShit" );
 	}
