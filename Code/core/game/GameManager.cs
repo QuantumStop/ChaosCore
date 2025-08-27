@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 /// The GameObjectSystem to automatically create everything is made per-game, check chaoscore for example
 
-[Title( "Game Manager" )]
+[Hide]
 public partial class GameManager : BaseEntity, Component.ExecuteInEditor, ISceneStartup
 {
 	/// <summary>
