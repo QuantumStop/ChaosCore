@@ -51,7 +51,7 @@ public partial class GameProp
 
 	public List<GameGib> CreateGibs()
 	{
-		List<GameGib> list = new List<GameGib>();
+		List<GameGib> list = [];
 
 		if ( !Model.IsValid() )
 			return list;
@@ -65,16 +65,19 @@ public partial class GameProp
 
 		foreach ( var model in breaklist )
 		{
-			var gib = new GameObject( true, $"{GameObject.Name} (gib)" );
-
-			gib.WorldPosition = WorldTransform.PointToWorld( model.Offset );
-			gib.WorldRotation = WorldRotation;
-			gib.WorldScale = WorldScale;
+			var gib = new GameObject( true, $"{GameObject.Name} (gib)" )
+			{
+				WorldPosition = WorldTransform.PointToWorld( model.Offset ),
+				WorldRotation = WorldRotation,
+				WorldScale = WorldScale
+			};
 
 			foreach ( var tag in model.CollisionTags.Split( ' ', StringSplitOptions.RemoveEmptyEntries ) )
 			{
 				gib.Tags.Add( tag );
 			}
+
+			if ( GameManager.Rules.IsOnline ) gib.NetworkSpawn();
 
 			var c = gib.Components.Create<GameGib>( false );
 			c.FadeTime = model.FadeTime;

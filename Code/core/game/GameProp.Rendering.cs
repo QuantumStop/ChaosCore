@@ -4,7 +4,7 @@ partial class GameProp
 {
 	private ulong _bodyGroups = ulong.MaxValue;
 
-	[Property, Order( 12 ), Header( "Rendering" )]
+	[Property, Order( 12 ), Header( "Rendering" ), Sync]
 	[Model.BodyGroupMask]
 	[ShowIf( "HasBodyGroups", true )]
 	public ulong BodyGroups
@@ -24,7 +24,7 @@ partial class GameProp
 
 	private string _materialGroup;
 
-	[Property, Order( 11 ), Header( "Rendering" ), Title( "Skin" )]
+	[Property, Order( 11 ), Header( "Rendering" ), Title( "Skin" ), Sync]
 	[Model.MaterialGroup]
 	[ShowIf( "HasMaterialGroups", true )]
 	public string MaterialGroup
