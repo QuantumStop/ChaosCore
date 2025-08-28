@@ -3,14 +3,14 @@
 /// <summary>
 /// A script file for all chapters
 /// </summary>
-[AssetType( Name = "Chapters Definition", Extension = "chptdef" ), Icon( "flag_circle", "#399bc2ff", "#1a2c17" )]
+[AssetType( Name = "Chapters Definition", Extension = "chptdef" )]
 public class GameChaptersDefinition : GameResource
 {
 	[Header( "All of the chapters" )]
 
 	[InfoBox( "These are all the levels that the main menu processes and lets you go-to on per chapter basis. Order is set inside each entry" )]
 	[ConfigButton, Property, Title( "Entries" )] public List<GameChapter> GameChapterList { get; set; }
-
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "flag_circle", width, height, "#399bc2ff", "#1a2c17" ); }
 }
 
 public partial class GameChapter

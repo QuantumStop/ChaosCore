@@ -30,11 +30,9 @@ namespace Editor;
 /// <summary>
 /// Resource to generate Animgraphs from template
 /// </summary>
-[AssetType( Name = "Animation Graph Template", Extension = "agtmp", Category = "Animation" ), Icon( "directions_run", "#674426", "#674426" )]
+[AssetType( Name = "Animation Graph Template", Extension = "agtmp", Category = "Animation" )]
 public class AG_Template : GameResource
 {
-
-
 	[Header( "Animgraph Options" )]
 
 	// Anigmgraphs Paramaters 
@@ -1022,6 +1020,5 @@ public class AG_Template : GameResource
 		}
 
 	}
-
-
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "directions_run", width, height, "#674426", "#674426" ); }
 }

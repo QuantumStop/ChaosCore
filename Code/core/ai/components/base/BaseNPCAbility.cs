@@ -6,9 +6,10 @@ namespace Core;
 /// <summary>
 /// NPC Ability
 /// </summary>
-[AssetType( Name = "NPC Ability", Extension = "npcabl" ), Icon( "bolt" )]
+[AssetType( Name = "NPC Ability", Extension = "npcabl" )]
 public class NpcAbilityResource : GameResource
 {
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "bolt", width, height ); }
 	public string AnimEventPrefix { get; set; }
 	[Category( "Implementation" ), HideIf( "HasAction", true )] public string AbilityClassname { get; set; }
 	[JsonIgnore, Hide] public bool HasClass => AbilityClassname != "";

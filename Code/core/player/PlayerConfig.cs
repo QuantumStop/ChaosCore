@@ -2,13 +2,15 @@
 /// <summary>
 /// Config for A player
 /// </summary>
-[AssetType( Name = "Player Config", Extension = "plr" ), Icon( "accesibility_new" )]
+[AssetType( Name = "Player Config", Extension = "plr" )]
 public class PlayerConfig : GameResource
 {
 	public Model ViewmodelHands { get; set; }
 	public Model BodyModel { get; set; }
 	public List<HudRazorClass> HudEntries { get; set; }
 	public string Faction { get; set; }
+
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "accesibility_new", width, height ); }
 }
 
 public class HudRazorClass

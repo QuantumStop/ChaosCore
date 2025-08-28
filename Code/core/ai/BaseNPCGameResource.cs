@@ -6,9 +6,10 @@ namespace Core;
 /// <summary>
 /// A script file for an NPC
 /// </summary>
-[AssetType( Name = "NPC Definition", Extension = "npc" ), Icon( "emoji_people" )]
+[AssetType( Name = "NPC Definition", Extension = "npc" )]
 public class NpcDefinition : GameResource
 {
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "emoji_people", width, height ); }
 	[Category( "Model Config" )] public List<Model> Models { get; set; }
 	[Category( "Model Config" )] public SharedNpcModelInfo ModelInfo { get; set; }
 
@@ -38,6 +39,7 @@ public class NpcDefinition : GameResource
 [AssetType( Name = "NPC Shared Model Information", Extension = "npcsmi" ), Icon( "groups_3" )]
 public class SharedNpcModelInfo : GameResource
 {
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "groups_3", width, height ); }
 	[Category( "Weaponry" )] public string PrimaryWeaponAttachmentEquipped { get; set; }
 	[Category( "Weaponry" )] public string SidearmWeaponAttachmentEquipped { get; set; }
 	[Category( "Weaponry" )] public string MeleeWeaponAttachmentEquipped { get; set; }
@@ -47,9 +49,6 @@ public class SharedNpcModelInfo : GameResource
 	[Category( "Weaponry" )] public string PrimaryWeaponAttachmentHolstered { get; set; }
 	[Category( "Weaponry" )] public string SidearmWeaponAttachmentHolstered { get; set; }
 	[Category( "Weaponry" )] public string MeleeWeaponAttachmentHolstered { get; set; }
-
-
-
 	[Category( "Animation" )] public string AnimgraphControllerClass { get; set; }
 	[Category( "Animation" )] public AnimationGraph Animgraph { get; set; }
 

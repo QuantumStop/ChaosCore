@@ -553,8 +553,9 @@ public class DebrisManager : BaseEntity
 /// <summary>
 /// Unshitting the surface
 /// </summary>
-[AssetType( Name = "Surface Extension", Extension = "extsurf", Category = "Physics" ), Icon( "iron" )]
+[AssetType( Name = "Surface Extension", Extension = "extsurf", Category = "Physics" )]
 public class SurfaceExtension : ResourceExtension<Surface, SurfaceExtension>
 {
 	public List<DecalDefinition> DecalList { get; set; }
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "iron", width, height ); }
 }

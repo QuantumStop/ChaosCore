@@ -4,7 +4,7 @@ namespace Core;
 /// <summary>
 /// Crosshair configuration for weapons
 /// </summary>
-[AssetType( Name = "Crosshair Data", Extension = "crs" ), Icon( "center_focus_strong", "#007acc", "#ffffff" )]
+[AssetType( Name = "Crosshair Data", Extension = "crs" )]
 public class CrosshairData : GameResource
 {
 	[Order( 0 )] public WeaponCrosshairType WeaponCrosshairType { get; set; }
@@ -36,10 +36,9 @@ public class CrosshairData : GameResource
 
 
 	[Hide] private bool CrosshairGeneric => WeaponCrosshairType == WeaponCrosshairType.CROSSHAIR_CROSS_A;
-
 	[Hide] private bool CrosshairCircleDot => WeaponCrosshairType == WeaponCrosshairType.CROSSHAIR_DOT;
-
 	[Hide] private bool CrosshairCircle => WeaponCrosshairType == WeaponCrosshairType.CROSSHAIR_CIRCLE;
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "center_focus_strong", width, height, "#007acc", "#FFFFFF" ); }
 }
 
 public class CrosshairCircleSegment // In the future want to handle a complex dynamic crosshair like this and just store all this there

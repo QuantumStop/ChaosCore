@@ -6,7 +6,7 @@ namespace Core;
 /// <summary>
 /// A weapon script, like scripts/weapons/weapon_glock.txt
 /// </summary>
-[AssetType( Name = "Weapon Script", Extension = "wpn" ), Icon( "plumbing", "#2b2b17", "#acac5c" )]
+[AssetType( Name = "Weapon Script", Extension = "wpn" )]
 public class WeaponParse : GameResource
 {
 	[Order( 0 )] public Model WeaponViewmodel { get; set; }
@@ -75,7 +75,7 @@ public class WeaponParse : GameResource
 	[Category( "Primary" ), Order( 3 ), Range( 0, 20 ), Step( 0.1f ), Description( "In Degrees. Used in sin( X / 2 ) calculation" ), Title( "Primary Spread (degrees)" )] public float SpreadDegreesPrimary { get; set; } = 1f;
 	[Header( "Sound" )]
 	[HideIf( nameof( HasPrimaryAmmoType ), false )]
-	[Category( "Primary" ), Order( 3 )] public List<SoundEvent> AttackSoundsPrimary { get; set; } = new();
+	[Category( "Primary" ), Order( 3 )] public List<SoundEvent> AttackSoundsPrimary { get; set; } = [];
 
 	[Header( "Ammo" )]
 	[Category( "Secondary" ), Order( 4 ), ShowIf( nameof( HasBullets ), true )] public AmmoInfo SecondaryAmmoType { get; set; }
@@ -94,7 +94,7 @@ public class WeaponParse : GameResource
 	[Category( "Secondary" ), Order( 4 ), Range( 0, 20 ), Step( 0.1f ), Description( "In Degrees. Used in sin( X / 2 ) calculation" ), Title( "Secondary Spread (degrees)" )] public float SpreadDegreesSecondary { get; set; } = 1f;
 	[Header( "Sound" )]
 	[HideIf( nameof( HasSecondaryAmmoType ), false )]
-	[Category( "Secondary" ), Order( 4 )] public List<SoundEvent> AttackSoundsSecondary { get; set; } = new();
+	[Category( "Secondary" ), Order( 4 )] public List<SoundEvent> AttackSoundsSecondary { get; set; } = [];
 
 	[Category( "Inventory" ), Order( 5 ), Title( "Bucket (X)" )] public int Bucket { get; set; }
 	[Category( "Inventory" ), Order( 5 ), Title( "Bucket Position (Y)" )] public int BucketPosition { get; set; }
@@ -110,14 +110,12 @@ public class WeaponParse : GameResource
 	[Hide] private bool CanStageReload => (WeaponType != WeaponType.WEAPON_MELEE) && (WeaponType != WeaponType.WEAPON_SHOTGUN);
 
 
-	public static WeaponParse GetWeaponData( string weaponname )
-	{
-		return ResourceLibrary.Get<WeaponParse>( "scripts/weapons/" + weaponname + ".wpn" );
-	}
+	public static WeaponParse GetWeaponData( string weaponname ) { return ResourceLibrary.Get<WeaponParse>( "scripts/weapons/" + weaponname + ".wpn" ); }
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "plumbing", width, height, "#acac5c", "#2b2b17" ); }
 }
 
 //[GameResource( "Ammo Data", "amn", "Ammunition file\r\n", Icon = "create", IconFgColor = "#2b2b17", IconBgColor = "#acac5c" )]
-[AssetType( Name = "Ammo Data", Extension = "amn" ), Icon( "create", "#acac5c", "#2b2b17" )]
+[AssetType( Name = "Ammo Data", Extension = "amn" )]
 public class AmmoInfo : GameResource
 {
 	[Hide, JsonIgnore] new public bool IsValid { get; set; } = false;
@@ -141,6 +139,9 @@ public class AmmoInfo : GameResource
 	[Category( "Physics" ), Order( 5 )] public int Grains { get; set; } = 171;
 	/// <summary> Speed of the bullet in 12 hammer units/s, used in push force calculation</summary>
 	[Category( "Physics" ), Order( 5 ), Title( "Ft Per Second" )] public int FtPerSec { get; set; } = 1000;
+
+	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "create", width, height, "#acac5c", "#2b2b17" ); }
+
 	public static AmmoInfo GetAmmoData( string type )
 	{
 		var info = ResourceLibrary.Get<AmmoInfo>( "scripts/ammo/" + type + ".amn" );

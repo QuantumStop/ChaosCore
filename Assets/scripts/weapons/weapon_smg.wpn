@@ -1,7 +1,7 @@
 {
-  "WeaponViewmodel": "models/weapons/v_smg2.vmdl",
-  "WeaponWorldmodel": "models/weapons/w_smg.vmdl",
-  "BulletCasingModel": "models/weapons/w_glock_casing.vmdl",
+  "WeaponViewmodel": null,
+  "WeaponWorldmodel": null,
+  "BulletCasingModel": null,
   "BulletCasingParticle": "prefabs/weapons/shells/9mm_casing.prefab",
   "WeaponType": "WEAPON_GENERIC",
   "WeaponCrosshair": "scripts/weapons/crosshairs/crosshair_dot.crs",
@@ -47,6 +47,7 @@
   },
   "MuzzleLightTime": 0.02,
   "MuzzleLightFOV": 60,
+  "MuzzleFlashEffect": null,
   "TracerEffect": "prefabs/game/particles/weapons/weapon_tracer.prefab",
   "RecoilStrengthCurve": {
     "rangey": "0,0.75",
