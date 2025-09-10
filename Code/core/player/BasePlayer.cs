@@ -16,6 +16,11 @@ public partial class BasePlayer : BaseEntity, Component.IDamageable
 
 	[Property, Feature( "Defines" )] public PlayerConfig PlayerCfg { get; set; }
 
+    /// <summary>
+	/// The connection of this player
+	/// </summary>
+	public Connection Connection => Network.Owner;
+
 	protected override string GetEditorVis() { return null; }
 
 	protected virtual Model GetViewmodelHands() { return PlayerCfg.ViewmodelHands; }
