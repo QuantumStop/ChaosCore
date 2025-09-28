@@ -28,33 +28,33 @@ public enum MessageSeverity { Low, Minor, Major, Critical }
 public record ChatProximity( MessageProximityType type, float Distance = 0f, string tags = null );
 
 public record Entry(
-    ulong steamid,
-    string author,
-    string message,
-    RealTimeSince timeSinceAdded,
-    MessageType type,
-    Color color,
-    ChatProximity proximity,
-    string tags = null,
-    bool temporary = true,
-    string location = null,
-    MessageSeverity? Severity = null
+	ulong steamid,
+	string author,
+	string message,
+	RealTimeSince timeSinceAdded,
+	MessageType type,
+	Color color,
+	ChatProximity proximity,
+	string tags = null,
+	bool temporary = true,
+	string location = null,
+	MessageSeverity? Severity = null
 )
 {
-    public string AnimationClass { get; set; } = "intro"; // mutable
+	public string AnimationClass { get; set; } = "intro"; // mutable
 
-    /// <summary>
-    /// Creates a shallow clone of chat entries for HUD-only rendering
-    /// </summary>
-    public Entry ToHud()
-    {
-        return this with
-        {
-            // keep everything else the same, but reset animation state
-            AnimationClass = "intro",
-            temporary = true
-        };
-    }
+	/// <summary>
+	/// Creates a shallow clone of chat entries for HUD-only rendering
+	/// </summary>
+	public Entry ToHud()
+	{
+		return this with
+		{
+			// keep everything else the same, but reset animation state
+			AnimationClass = "intro",
+			temporary = true
+		};
+	}
 }
 
 public partial class GameManager
@@ -177,13 +177,13 @@ public partial class GameManager
 			BuildEntry( builder, ref seq, e, allowAnimations: true );
 	};
 
-/// <summary>
-/// Builds all the entries the chat uses
-/// </summary>
-/// <param name="b"></param>
-/// <param name="seq"></param>
-/// <param name="e"></param>
-/// <param name="allowAnimations"></param>
+	/// <summary>
+	/// Builds all the entries the chat uses
+	/// </summary>
+	/// <param name="b"></param>
+	/// <param name="seq"></param>
+	/// <param name="e"></param>
+	/// <param name="allowAnimations"></param>
 	private void BuildEntry( RenderTreeBuilder b, ref int seq, Entry e, bool allowAnimations )
 	{
 		var cls =
