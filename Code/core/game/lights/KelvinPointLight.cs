@@ -40,7 +40,7 @@ public class KelvinPointLight : PointLight
 		OnDirty();
 	}
 
-	
+
 	private float energy_omni() { return 4 * MathF.PI; }
 	private float ResultBrightness => Brightness / energy_omni();
 #else

@@ -5,6 +5,7 @@ using Sandbox;
 
 static class SceneOpenerMenu
 {
+	[Menu( "Editor", "SDK/Scenes/Networking Test" ), Order( 1 )] static void NetworkingTest() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/networking_debug.scene" ) ); }
 	[Menu( "Editor", "SDK/Scenes/New Testbench" ), Order( 1 )] static void Testbench_New() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/testbench.scene" ) ); }
 	[Menu( "Editor", "SDK/Scenes/Asset Preview" ), Order( 1 )] static void Asset_Preview() { EditorScene.OpenScene( ResourceLibrary.Get<SceneFile>( "scenes/asset_preview.scene" ) ); }
 

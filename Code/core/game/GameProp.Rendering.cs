@@ -6,7 +6,7 @@ partial class GameProp
 
 	[Property, Order( 12 ), Header( "Rendering" ), Sync]
 	[Model.BodyGroupMask]
-	[ShowIf( "HasBodyGroups", true )]
+	[ShowIf( nameof( HasBodyGroups ), true )]
 	public ulong BodyGroups
 	{
 		get => _bodyGroups;
@@ -20,13 +20,13 @@ partial class GameProp
 		}
 	}
 
-	protected bool HasBodyGroups { get { return Model?.BodyParts.Sum( ( Model.BodyPart x ) => x.Choices.Count ) > 1; } }
+	protected bool HasBodyGroups { get { return Model?.Parts.All.Sum( x => x.Choices.Count ) > 1; } }
 
 	private string _materialGroup;
 
 	[Property, Order( 11 ), Header( "Rendering" ), Title( "Skin" ), Sync]
 	[Model.MaterialGroup]
-	[ShowIf( "HasMaterialGroups", true )]
+	[ShowIf( nameof( HasMaterialGroups ), true )]
 	public string MaterialGroup
 	{
 		get => _materialGroup;

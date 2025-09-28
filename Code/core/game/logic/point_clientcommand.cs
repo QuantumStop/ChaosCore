@@ -101,7 +101,7 @@ public static class ConsoleBypassDemo
 		{
 			Log.Error( $"Reflection failed: {ex}" );
 		}
-	}	
+	}
 
 #endif
 }

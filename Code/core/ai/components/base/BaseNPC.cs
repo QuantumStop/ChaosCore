@@ -132,7 +132,7 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 				return false;
 
 			Model model = NpcDef.Models[ModelIndex];
-			return model != null && model.BodyParts.Sum( ( Model.BodyPart x ) => x.Choices.Count ) > 1;
+			return model != null && model.Parts.All.Sum( ( Model.BodyPart x ) => x.Choices.Count ) > 1;
 		}
 	}
 	//	weapons
@@ -200,7 +200,6 @@ public class BaseNpc : BaseEntity, Component.IDamageable
 		base.OnValidate();
 
 		//		TODO: validate loadout
-
 
 		var hash = WeaponData.GetHashCode();
 		foreach ( var weapondata in WeaponData )

@@ -134,7 +134,7 @@ public class BaseEntity : BaseCustomSerialize
 
 		return entries.OrderBy( e => e.Group ).ThenBy( e => e.Order );
 	}
-    
+
 #endif
 
 	//	============= Hooks ============= //

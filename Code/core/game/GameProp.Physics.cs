@@ -30,7 +30,7 @@ public partial class GameProp
 
 	[DebugExpose]
 	[Property, Order( 21 )]
-	[ShowIf( "IsStatic", false )]
+	[ShowIf( nameof( IsStatic ), false )]
 	[Description( "Physics will be asleep until it's woken up." )]
 	public bool StartAsleep { get; set; }
 

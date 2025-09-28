@@ -44,11 +44,9 @@ PS
     Texture2D LookupTexture < Attribute( "LookupTexture" ); >;	
 	SamplerState LookupTexture_sampler < Filter( POINT ); AddressU( CLAMP ); AddressV( CLAMP );   >;
 
-	// still calling this ACESEXPO you cant stop me
-	float ACESEXPO		< Attribute( "TonemapBias" ); >;
+	float ExpoBias		< Attribute( "TonemapBias" ); >;
 	float GammaIn		< Attribute( "GammaIn" ); >;
 	float GammaOut		< Attribute( "GammaOut" ); >;
-	float Vibrance		< Attribute( "Vibrance" ); Default(0); >;
       
 	Texture2D g_tColorBuffer   < Attribute( "ColorBuffer" );  	SrgbRead( true ); >;
 	SamplerState Sampler < Filter(POINT); AddressU(WRAP); AddressV(WRAP); >;
@@ -129,8 +127,8 @@ PS
 	float3 accurateSRGBToLinear (float3 sRGBCol )
 	{
 		float3 linearRGBLo = sRGBCol / 12.92;
-		float3 linearRGBHi = pow (( sRGBCol + 0.055) / 1.055 , 2.4) ;
-		float3 linearRGB = ( sRGBCol <= 0.04045) ? linearRGBLo : linearRGBHi ;
+		float3 linearRGBHi = pow (( sRGBCol + 0.055) / 1.055 , 2.4);
+		float3 linearRGB = ( sRGBCol <= 0.04045) ? linearRGBLo : linearRGBHi;
 		return linearRGB;
 	}
 
@@ -143,27 +141,33 @@ PS
 	RenderState( DepthWriteEnable, false );
 	RenderState( DepthEnable, false );	
 
-	DynamicCombo( D_ARRI, 0..1, Sys( PC ) );
+	DynamicCombo( D_ARRI, 0..2, Sys( PC ) );
 
+	float3 TestColor(float2 position)
+	{
+		return pow(sin(position.x * 4.0 + float3(0.0, 1.0, 2.0) * 3.1415 * 2.0 / 3.0) * 0.5 + 0.5, float3(2.0, 2.0, 2.0)) * (exp(abs(position.y) * 4.0) - 1.0);
+	}
 	
     float4 MainPs( PixelInput i ) : SV_Target0
     {
         float4 initcolor = g_tColorBuffer.Sample( Sampler, i.vTexCoord ).rgba;
-		float3 intermediateColor = initcolor.rgb * 1.333333f;
+		float3 intermediateColor = initcolor.rgb;
+		intermediateColor *= ExpoBias;
 
 		intermediateColor = LinearToLogC(intermediateColor);			// convert to LogC
-
-#if D_ARRI == 1	
-        intermediateColor.rgb = vibrance(intermediateColor.rgb, Vibrance);
-#endif
-
 		apply_chart(intermediateColor, intermediateColor);				// apply LUT, sRGB baked in
+
+		// incredibly cursed
+
+#if D_ARRI != 2
 		intermediateColor = pow(intermediateColor, GammaIn);			// bullshit the gamma from 2.4 to no gamma
+#endif
 #if D_ARRI == 0
 		intermediateColor = pow(intermediateColor, GammaOut);			// bullshit the gamma from none to 2.2 (cant precompute SRGB yet + not all tonemaps need bullshitting)
-#else
+#elif D_ARRI == 1
 		intermediateColor = accurateSRGBToLinear(intermediateColor);
 #endif
+
 		intermediateColor.xyz += ScreenSpaceOrderedDither( i.vPositionSs.xy ); // i dont think it actually solves anything but it is funny to have it + i had to zoom in in photoshop to actually see it		
 		return float4(intermediateColor, initcolor.w);
     }
