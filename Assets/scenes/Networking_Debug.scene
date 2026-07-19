@@ -31,7 +31,7 @@
           "IsTrigger": false,
           "Mesh": {
             "Data": {
-              "$blob": "0887b941-5bca-4990-ab73-e73f3cb8cb3d"
+              "$blob": "9ee8c1cc-4fd8-4528-bbfc-81ac41c1ce11"
             },
             "Materials": [
               "materials/dev/reflectivity_30.vmat"
@@ -426,25 +426,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "e0e82263-4463-42df-9e4b-ba53728ed202",
+              "component_id": "6ae70018-927c-4bd7-aa40-9cd0106d59fa",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "9e30bbd1-cec8-439d-9f4b-22a7fa055de2",
+              "component_id": "19a72f7c-e933-4417-9923-6ff5ee814afb",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "5c50e0bc-b125-4879-a6c0-c3724a00dde2",
+              "component_id": "d75fa36c-5f2c-4813-922c-233e93614e5c",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "2efcd032-979b-4175-8f67-54a4c31a06af",
+              "component_id": "8b0ab9b3-ff75-4542-b2ad-a27168957e0c",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "TintComponent"
             }
@@ -533,25 +533,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "8cfbd07e-8c25-4368-8ced-564ec4093d19",
+              "component_id": "082a0818-6dee-4700-9b04-cafaa9db6704",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "121b5327-a320-4bdd-b2c9-ece5fa8c117a",
+              "component_id": "f1e7d339-bb72-4bfc-8f8c-cf17b5b1a634",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "cb9825f8-c8d5-4780-b6b9-2335d2347f3c",
+              "component_id": "9c498977-6ce6-4533-83d8-013227412cf3",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "ffe3e8ff-ee3d-4bd3-98b0-e4fea653809d",
+              "component_id": "25b2f48b-c74b-4cd2-bb9b-62d9e60a9a18",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "TintComponent"
             }
@@ -640,25 +640,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "937a2805-39c5-4f03-a52e-68db8e56dd72",
+              "component_id": "3683b561-7d50-4301-90ae-92a5bb97d8cd",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "843410a3-1b73-4e26-91cd-29f0bab98fe7",
+              "component_id": "f07f7cef-0bb4-4064-9e3a-57bfd3b9ed92",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "d0223c12-3380-417f-977b-9adada8885eb",
+              "component_id": "cb5cc769-b6f4-4291-a05d-9fcd4a2e39cd",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "6a7c418e-8bff-4fac-9bcd-f91b2e321e1e",
+              "component_id": "b81d5d0c-64b6-4279-9e68-40702e12a448",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "TintComponent"
             }
@@ -747,25 +747,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "edf36eb9-f083-4a08-86a4-4f4287db4efc",
+              "component_id": "0aef8990-d06b-4870-9f82-b68bb42d9142",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "22bc2824-3fb4-4b08-8bb7-3bc432984b78",
+              "component_id": "fdfe5f43-9a07-4228-a9b6-38bc1c22d4a2",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "38b1d29a-c878-4b5e-ad11-e193850a7504",
+              "component_id": "ee882f45-f7fc-43b1-8870-37f1ca371e03",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "f5e64c16-5f91-443a-b4d7-f4be45ace78b",
+              "component_id": "4023dfea-2896-49a1-a506-a6bad312c8ec",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "TintComponent"
             }
@@ -854,19 +854,19 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "eaeca0e8-560b-4fc0-a391-3e0d5e80778b",
+              "component_id": "55e86f9e-6f79-4e86-9ec1-36727b361526",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "4af647dc-c2cb-4b8f-b09f-34af38a0a8f6",
+              "component_id": "3dce0434-68f1-4ba7-b8da-90e262c3f7bf",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "8b903152-8c90-4bd5-b98c-06fc71f90eb4",
+              "component_id": "00f21264-31da-4c94-bf90-d0c38f19f22a",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "TintComponent"
             }
@@ -955,25 +955,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "ad286c8e-31e8-4621-beb5-94f0b4966e5e",
+              "component_id": "e363a648-75ff-492e-922b-7f6f6abb1cb4",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "966678e2-fd28-4de4-bd3f-b7e854a2d7a1",
+              "component_id": "5a4ce38d-b051-416c-8670-7b757be84d07",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "0d1f6e5c-4672-4a47-a113-00610c7b5b92",
+              "component_id": "7fe6dff5-c79e-4ff5-8495-7555badb4b35",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "9ad4d872-923a-4e27-9de9-d7e285347ffe",
+              "component_id": "d4574556-ce51-4fb6-a82a-d240dda0d1d0",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "TintComponent"
             }
@@ -1062,19 +1062,19 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "30c8d037-339a-4c94-bd39-c81315da179c",
+              "component_id": "1c8d9574-e719-485b-9a86-05aec255c6c3",
               "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
               "component_type": "SkinnedModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "aa74d39a-5897-4e37-a8f2-d0ae7469afd6",
+              "component_id": "24428d2b-16e8-43e5-bf98-cb4ab31a11ce",
               "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
               "component_type": "ModelPhysics"
             },
             {
               "_type": "component",
-              "component_id": "9dd5d0f6-e42f-4a45-8f51-414ec9baa34e",
+              "component_id": "8cf33f50-6157-4254-b834-0a61a3044750",
               "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
               "component_type": "TintComponent"
             }
@@ -1316,9 +1316,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-159.761841,64.7287674,45.1102753",
+          "Position": "-206.843628,133.061005,68.1268158",
           "Scale": "1,1,1",
-          "Rotation": "0.0323857889,-0.0496796221,0.545141459,0.836243927"
+          "Rotation": "0.0134791872,0.109779164,-0.12112163,0.986456454"
         },
         "_prefab": {
           "_type": "gameobject",

@@ -371,7 +371,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 237.20267
+          "Relative": 529.34564
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -576,7 +576,7 @@
         "TargetName": "SDK.Player_VjZOf",
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 237.20267
+          "Relative": 529.34564
         },
         "ViewInertiaSmoothTime": 0.015,
         "ViewMaxInertia": 60,
@@ -923,21 +923,13 @@
                 "_oklabSaturation": 2,
                 "GammaIn": 2.4,
                 "GammaOut": 2.2,
-                "Mode": "Saturated",
+                "Mode": "NeutralAlt",
                 "OnComponentDestroy": null,
                 "OnComponentDisabled": null,
                 "OnComponentEnabled": null,
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null
-              },
-              {
-                "__type": "HL2K.Nightshift",
-                "__guid": "e162fcd8-d3de-4fcd-a661-e78ca07f8461",
-                "__enabled": true,
-                "Flags": 0,
-                "Boost": false,
-                "Strength": 0
               },
               {
                 "__type": "Core.Underwater",
@@ -950,13 +942,6 @@
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null
-              },
-              {
-                "__type": "HL2K.Colorblind",
-                "__guid": "5acffeaf-2ec1-4f41-baf8-9b903b565214",
-                "__enabled": true,
-                "Flags": 0,
-                "Mode": "Off"
               }
             ],
             "Children": []
