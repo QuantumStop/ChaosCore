@@ -31,7 +31,7 @@
           "IsTrigger": false,
           "Mesh": {
             "Data": {
-              "$blob": "9ee8c1cc-4fd8-4528-bbfc-81ac41c1ce11"
+              "$blob": "7207b940-f7cb-4a1d-a5e5-f518b82f9e92"
             },
             "Materials": [
               "materials/dev/reflectivity_30.vmat"
@@ -1316,9 +1316,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-206.843628,133.061005,68.1268158",
+          "Position": "-239.96907,277.208954,75.5383682",
           "Scale": "1,1,1",
-          "Rotation": "0.0134791872,0.109779164,-0.12112163,0.986456454"
+          "Rotation": "0.0129211955,0.234789044,-0.0534092896,0.970491946"
         },
         "_prefab": {
           "_type": "gameobject",
