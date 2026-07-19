@@ -1,11 +1,4 @@
-﻿using Editor;
-using Editor.TerrainEditor;
-using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Timers;
+﻿using System;
 
 [Dock( "Editor", "iSpy Profiler", "troubleshoot" )]
 public class iSpyProfilerWidget : Widget
@@ -66,7 +59,7 @@ public class iSpyProfilerWidget : Widget
 		bar.MinimumHeight = 32;
 		bar.MaximumHeight = 32;
 
-		
+
 		var clearBtn = new Button( "Clear", "delete", bar );
 		clearBtn.Clicked += OnClear;
 		bar.Layout.Add( clearBtn );

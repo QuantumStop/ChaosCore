@@ -264,7 +264,7 @@ public class Crosshair : Component
 					Color outlineColor = CrosshairHasOutline ? CrosshairOutlineColor : mainColor;
 
 					// Apply animation and angle adjustments
-					float timeOffsetRadians = Time.Now * segment.AnimationSpeed;
+					float timeOffsetRadians = WorldTime.Now * segment.AnimationSpeed;
 
 					// Convert start and end angles to radians
 					float startRad = segment.StartAngle * MathF.PI / 180f;

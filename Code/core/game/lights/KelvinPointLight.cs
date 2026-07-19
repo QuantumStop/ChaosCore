@@ -179,7 +179,7 @@ public class KelvinPointLight : PointLight
 
 			if ( Gizmo.IsHovered )
 			{
-				Gizmo.Draw.Color = Color.Orange/*.WithAlpha( (((float)Math.Sin( Time.Now * 20f )) * 0.3f) + 0.7f )*/;
+				Gizmo.Draw.Color = Color.Orange/*.WithAlpha( (((float)Math.Sin( WorldTime.Now * 20f )) * 0.3f) + 0.7f )*/;
 				Gizmo.Draw.LineBBox( vmdl.Bounds );
 			}
 			else if ( Gizmo.IsSelected )

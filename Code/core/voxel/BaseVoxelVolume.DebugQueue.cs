@@ -34,10 +34,10 @@ public static class VoxelDebugQueue
 	{
 		if ( voxels.Count == 0 ) return;
 
-		if ( Time.Now - lastLogTime >= 0.10f )
+		if ( WorldTime.Now - lastLogTime >= 0.10f )
 		{
 			Log.Info( $"[VoxelDebugQueue] Drawing {voxels.Count} voxels" );
-			lastLogTime = Time.Now;
+			lastLogTime = WorldTime.Now;
 		}
 
 		for ( int i = voxels.Count - 1; i >= 0; i-- )

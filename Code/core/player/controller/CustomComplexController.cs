@@ -1,4 +1,5 @@
 ﻿using System;
+using Core;
 using XMovement;
 
 public partial class PlayerController : PlayerWalkControllerComplex
@@ -12,26 +13,26 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		return speed;
 	}
 
-	private float timeSinceWishSprint = 0f;
-	private float wishSprint = 0f;
-	public bool canRun;
+	private float _timeSinceWishSprint = 0f;
+	private float _wishSprint = 0f;
+	public bool CanRun;
 
 	/// <summary>
 	/// Returns time since sprint was last requested
 	/// </summary>
 	public float TimeSinceWishSprint()
 	{
-		if ( IsSprintDown )
+		if ( _isSprintDown )
 		{
-			timeSinceWishSprint = 0f;
+			_timeSinceWishSprint = 0f;
 		}
 		else
 		{
-			timeSinceWishSprint += Time.Delta;
-			timeSinceWishSprint = MathF.Min( timeSinceWishSprint, 10f );
+			_timeSinceWishSprint += Time.Delta;
+			_timeSinceWishSprint = MathF.Min( _timeSinceWishSprint, 10f );
 		}
 
-		return timeSinceWishSprint;
+		return _timeSinceWishSprint;
 	}
 
 	/// <summary>
@@ -39,18 +40,18 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	/// </summary>
 	public float WishSprint()
 	{
-		if ( IsSprintDown )
+		if ( _isSprintDown )
 		{
-			wishSprint += Time.Delta / 2f;
-			wishSprint = MathF.Min( wishSprint, 1f );
+			_wishSprint += Time.Delta / 2f;
+			_wishSprint = MathF.Min( _wishSprint, 1f );
 		}
 		else
 		{
-			wishSprint -= Time.Delta * 2f;
-			wishSprint = MathF.Max( wishSprint, 0f );
+			_wishSprint -= Time.Delta * 2f;
+			_wishSprint = MathF.Max( _wishSprint, 0f );
 		}
 
-		return wishSprint;
+		return _wishSprint;
 	}
 
 	/// <summary>
@@ -87,9 +88,9 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		}
 	}
 
-	private bool IsSprintDown { get; set; }
+	private bool _isSprintDown { get; set; }
 
-	private bool IsCrouchDown { get; set; }
+	private bool _isCrouchDown { get; set; }
 
 	/// <summary>
 	/// Used to toggle the state correctly based on desired mode
@@ -100,24 +101,24 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		{
 			if ( Input.Pressed( RunAction ) )
 			{
-				if ( !IsSprintDown ) IsSprintDown = true;
-				else IsSprintDown = false;
+				if ( !_isSprintDown ) _isSprintDown = true;
+				else _isSprintDown = false;
 			}
 		}
-		else { IsSprintDown = Input.Down( RunAction ); } // otherwise do standard thing
+		else { _isSprintDown = Input.Down( RunAction ); } // otherwise do standard thing
 
 		if ( Input.UsingController ? GameSettings.CrouchMode.CrouchController : GameSettings.CrouchMode.CrouchKeyboard )   // same but for crouch
 		{
 			if ( Input.Pressed( CrouchAction ) )
 			{
-				if ( !IsCrouchDown ) IsCrouchDown = true;
-				else IsCrouchDown = false;
+				if ( !_isCrouchDown ) _isCrouchDown = true;
+				else _isCrouchDown = false;
 			}
 		}
-		else { IsCrouchDown = Input.Down( CrouchAction ); }
+		else { _isCrouchDown = Input.Down( CrouchAction ); }
 	}
 
-	private bool IsMoving => (Input.AnalogMove != Vector3.Zero) && Controller.Velocity.Length > Controller.StopSpeed; // up for debate, probably just analogmove check is fine
+	private bool _isMoving => (Input.AnalogMove != Vector3.Zero) && Controller.Velocity.Length > Controller.StopSpeed; // up for debate, probably just analogmove check is fine
 
 	/// <summary>
 	/// Crouching was forced through external means (a trigger or else)
@@ -128,19 +129,18 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	{
 		HandleModes();
 
-		var run = IsSprintDown;
+		var run = _isSprintDown;
 		var walk = false;
-		var crouch = IsCrouchDown || ForceCrouch;
+		var crouch = _isCrouchDown || ForceCrouch;
 
 		if ( RunByDefault )
-			IsRunning = !run && EnableRunning && canRun && IsMoving;
+			IsRunning = !run && EnableRunning && CanRun && _isMoving;
 		else
-			IsRunning = run && EnableRunning && canRun && IsMoving;
+			IsRunning = run && EnableRunning && CanRun && _isMoving;
 
 		IsWalking = walk && EnableWalking;
 		IsCrouching = crouch || !CanUncrouch();
 
-		if ( !IsMoving )
-			IsSprintDown = false;
+		if ( !_isMoving ) _isSprintDown = false;
 	}
 }

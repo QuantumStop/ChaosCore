@@ -128,7 +128,7 @@ public class BaseEntity : BaseCustomSerialize
 		// Texture sprite renderblock & fallback
 		Texture texture = Texture.Load( editorVis );
 		float spriteSize = Gizmo.IsHovered
-			? float.Lerp( EntityGizmoSize - 2, value2: EntityGizmoSize, 0.5f + MathF.Sin( Time.Now * 2f ) * 0.5f )
+			? float.Lerp( EntityGizmoSize - 2, value2: EntityGizmoSize, 0.5f + MathF.Sin( WorldTime.Now * 2f ) * 0.5f )
 			: EntityGizmoSize;
 
 		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, EntityGizmoSize - 3 );
@@ -171,7 +171,7 @@ public class BaseEntity : BaseCustomSerialize
 
 	private static float PulseAlpha()
 	{
-		return 0.7f + MathF.Sin( Time.Now * 20f ) * 0.3f;
+		return 0.7f + MathF.Sin( WorldTime.Now * 20f ) * 0.3f;
 	}
 
 	#endregion

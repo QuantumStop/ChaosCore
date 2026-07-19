@@ -228,6 +228,6 @@ public class GameGib : GameProp
 			}
 		}
 
-		if ( this.IsValid() )GameObject.Destroy();
+		if ( this.IsValid() ) GameObject.Destroy();
 	}
 }

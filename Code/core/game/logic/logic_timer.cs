@@ -100,7 +100,7 @@ public class logic_timer : BaseEntity
 		{
 			if ( isOscillator )
 			{
-				bool isEven = ((int)(OscillatorState++)) % 2 == 0;
+				bool isEven = ((int)OscillatorState++) % 2 == 0;
 				if ( isEven )
 					OnTimerHigh?.Invoke( this );
 				else

@@ -2,11 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application = Editor.Application;
 
-[DropObject( "NpcDefinition", "npc", "npc_c"
-#if IGNIS
-	, Priority = 100
-#endif
-)]
+[DropObject( "NpcDefinition", "npc", "npc_c", Priority = 100 )]
 class NpcDropObject : BaseDropObject
 {
 	Core.AI.NpcDefinition definition;
@@ -90,7 +86,7 @@ class NpcDropObject : BaseDropObject
 			};
 
 			var controller = GameObject.Components.Create<Core.AI.AIController>();
-			controller.Definition = definition;
+			controller.Definition = definition;			
 
 			EditorScene.Selection.Clear();
 			EditorScene.Selection.Add( GameObject );

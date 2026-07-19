@@ -36,7 +36,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	[Property, ReadOnly, Feature( "Debug" )] public float CookStartTime { get; private set; }
 
 	/// <summary> Seconds cooked off the fuse so far. </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public float CookedSeconds => IsCooking ? (Time.Now - CookStartTime) : 0f;
+	[Property, ReadOnly, Feature( "Debug" )] public float CookedSeconds => IsCooking ? (WorldTime.Now - CookStartTime) : 0f;
 	[Property, ReadOnly, Feature( "Debug" )] public float CurrentCookedFuse => IsCooking ? FuseTime - CookedSeconds : FuseTime;
 
 	private class ThrownGrenade
@@ -79,10 +79,10 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 			OnOvercooked();
 
 		// Secondary if it exists (edge cases)
-		if ( Input.Pressed( "attack2" ) && _nextSecondaryAttack <= Time.Now )
+		if ( Input.Pressed( "attack2" ) && _nextSecondaryAttack <= WorldTime.Now )
 		{
 			SecondaryAttack();
-			_nextSecondaryAttack = Time.Now + GetSecondaryFireRate();
+			_nextSecondaryAttack = WorldTime.Now + GetSecondaryFireRate();
 		}
 	}
 
@@ -121,7 +121,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 			return;
 
 		IsCooking = true;
-		CookStartTime = Time.Now;
+		CookStartTime = WorldTime.Now;
 
 		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
 		OnBeginCook();
@@ -460,7 +460,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 
 		// --- Timing ---
 		scope.Text += "Timing:\n";
-		scope.Text += $"   Time.Now:         {Time.Now:F2}\n";
+		scope.Text += $"   WorldTime.Now:         {WorldTime.Now:F2}\n";
 		scope.Text += $"   CookStartTime:    {CookStartTime:F2}\n";
 		scope.Text += $"   MaxCookTime:      {MaxCookTime:F2}\n";
 		scope.Text += "\n";

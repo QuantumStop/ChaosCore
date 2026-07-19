@@ -16,7 +16,7 @@ partial class AttackManager
 	/// </summary>
 	/// <param name="grains">The grains</param>
 	/// <returns>Mass in Pounds</returns>
-	public static float BulletMassGrainsToLbs( float grains ) => 0.002285f * (grains) / 16.0f;
+	public static float BulletMassGrainsToLbs( float grains ) => 0.002285f * grains / 16.0f;
 	/// <summary>
 	/// Straight HL2 port im sorry valve and Jay Stelly
 	/// </summary>
@@ -30,7 +30,7 @@ partial class AttackManager
 	/// <param name="ftpersec">Feet per second</param>
 	/// <param name="exaggerate">A force multiplier</param>
 	/// <returns></returns>
-	public static float BulletImpulse( float grains, float ftpersec, float exaggerate ) => (ftpersec) * 12 * BulletMassGrainsToKg( grains ) * exaggerate;
+	public static float BulletImpulse( float grains, float ftpersec, float exaggerate ) => ftpersec * 12 * BulletMassGrainsToKg( grains ) * exaggerate;
 
 	/// <summary>
 	/// Filter out the stuff we don't want from the Damage

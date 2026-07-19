@@ -114,7 +114,7 @@ public sealed partial class SaveSystem( Scene scene ) : GameObjectSystem<SaveSys
 		{
 			["Type"] = "chaos_save",
 			["Version"] = _currentSaveVersion,
-			["SavedTimeNow"] = Time.Now,
+			["SavedTimeNow"] = WorldTime.Now,
 			["WorldTime"] = WorldTime.Now,
 			["SceneId"] = Scene.Id.ToString(),
 			["SceneSources"] = sceneSources,

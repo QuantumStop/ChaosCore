@@ -1,5 +1,4 @@
 ﻿using System;
-using Sandbox.Diagnostics;
 namespace Core;
 
 public partial class BasePlayer
@@ -128,7 +127,7 @@ public partial class BasePlayer
 		if ( _fovRate <= 0 )
 			return fFOV;
 
-		float deltaTime = (Time.Now - _fovTime) / _fovRate;
+		float deltaTime = (WorldTime.Now - _fovTime) / _fovRate;
 
 		if ( deltaTime >= 1.0f )
 			_fovStart = fFOV;
@@ -164,7 +163,7 @@ public partial class BasePlayer
 		// Setup our FOV and our scaling time
 		_fovStart = zoomStart > 0 ? zoomStart : GetFOV();
 
-		_fovTime = Time.Now;
+		_fovTime = WorldTime.Now;
 		_fovTarget = targetFOV;
 
 		_fovRate = rate;

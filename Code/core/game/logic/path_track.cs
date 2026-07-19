@@ -734,7 +734,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 		float totalLength = originalLengths[^1]; // Last value = total length
 		float scaleMultiplier = 100f; // tweak as needed
-		float along = (trueLength / totalLength) * (TextureScale * scaleMultiplier) + TextureOffsetAlong;
+		float along = trueLength / totalLength * (TextureScale * scaleMultiplier) + TextureOffsetAlong;
 
 		// Around (circumferential)
 		float around = sideIndex / (float)(sidesForLOD - 1);

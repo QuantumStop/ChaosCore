@@ -175,7 +175,7 @@ public static class CameraEffects
 
 	private static bool UpdateRampEffect( CameraComponent camera, ref ActiveEffect e, float lastTriggerTime )
 	{
-		bool isActive = (Time.Now - lastTriggerTime) <= e.Data.ResetThreshold;
+		bool isActive = (WorldTime.Now - lastTriggerTime) <= e.Data.ResetThreshold;
 		bool newPulse = lastTriggerTime > e.LastProcessedAttackTime;
 
 		if ( isActive )
@@ -288,7 +288,7 @@ public static class CameraEffects
 			break;
 		}
 
-		bool isActive = ramp.HasValue && (Time.Now - lastTriggerTime) <= ramp.Value.Data.ResetThreshold;
+		bool isActive = ramp.HasValue && (WorldTime.Now - lastTriggerTime) <= ramp.Value.Data.ResetThreshold;
 		bool newPulse = ramp.HasValue && lastTriggerTime > ramp.Value.LastProcessedAttackTime;
 
 		float rampT = 0f;

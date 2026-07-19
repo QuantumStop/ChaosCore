@@ -169,9 +169,9 @@ public class trigger_hurt : BaseTrigger
 
 		if ( _DamageModel == DamageModel.DoublingWithForgiveness )
 		{
-			var expectedTime = Time.Now + ForgivenessDelay;
+			var expectedTime = WorldTime.Now + ForgivenessDelay;
 
-			while ( Time.Now < expectedTime )
+			while ( WorldTime.Now < expectedTime )
 			{
 				await Task.Delay( 50 );
 
@@ -229,7 +229,7 @@ public class trigger_hurt : BaseTrigger
 			return;
 
 		var processedObjects = new HashSet<GameObject>();
-		var now = Time.Now;
+		var now = WorldTime.Now;
 
 		foreach ( var target in _tryHurtList.Take( 15 ) )
 		{
@@ -321,7 +321,7 @@ public class trigger_hurt : BaseTrigger
 
 	private void CleanupExpiredEntries()
 	{
-		var now = Time.Now;
+		var now = WorldTime.Now;
 		var expired = lastDamageTime
 			.Where( kvp => now - kvp.Value > ForgivenessDelay + 1 )
 			.Select( kvp => kvp.Key )

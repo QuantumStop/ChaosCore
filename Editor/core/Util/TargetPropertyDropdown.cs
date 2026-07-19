@@ -1,4 +1,3 @@
-#if IGNIS
 namespace Editor;
 
 using System;
@@ -208,4 +207,3 @@ public class MenuOption<T> : Widget
 		}
 	}
 }
-#endif

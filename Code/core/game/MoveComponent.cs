@@ -1,4 +1,5 @@
 using System;
+using Core;
 
 public sealed class SpinComponent : Component
 {
@@ -18,20 +19,20 @@ public sealed class MoveComponent : Component
 	[Property] public Vector3 Distance { get; set; }
 	[Property] public float Speed { get; set; } = 10.0f;
 
-	Transform startPos;
+	Transform _startPos;
 
 	protected override void OnEnabled()
 	{
 		base.OnEnabled();
 
-		startPos = LocalTransform;
+		_startPos = LocalTransform;
 	}
 
 	protected override void OnFixedUpdate()
 	{
 		if ( IsProxy ) return;
 
-		LocalPosition = startPos.Position + (Distance * (MathF.Sin( Time.Now * Speed ).Remap( -1, 1 )));
+		LocalPosition = _startPos.Position + (Distance * MathF.Sin( WorldTime.Now * Speed ).Remap( -1, 1 ));
 	}
 }
 
@@ -43,13 +44,13 @@ public sealed class MoveSinComponent : Component
 	[Property] public float Offset { get; set; } = 0.0f;
 	[Property] public float Height { get; set; } = 32.0f;
 
-	Transform startPos;
+	Transform _startPos;
 
 	protected override void OnEnabled()
 	{
 		base.OnEnabled();
 
-		startPos = LocalTransform;
+		_startPos = LocalTransform;
 	}
 
 	protected override void DrawGizmos()
@@ -78,7 +79,7 @@ public sealed class MoveSinComponent : Component
 
 	Vector3 GetPositionAt( float t )
 	{
-		var p = startPos.Position;
+		var p = _startPos.Position;
 
 		p += MathF.Sin( t * MathF.PI * 2.0f + (Offset * MathF.PI * 2.0f) ) * Scale.x * Vector3.Left;
 		p += MathF.Cos( t * MathF.PI * 2.0f + (Offset * MathF.PI * 2.0f) ) * Scale.y * Vector3.Forward;
@@ -92,9 +93,9 @@ public sealed class MoveSinComponent : Component
 	{
 		if ( IsProxy ) return;
 
-		var prev = GetPositionAt( (Time.Now * Speed) - 0.01f );
+		var prev = GetPositionAt( (WorldTime.Now * Speed) - 0.01f );
 
-		LocalPosition = GetPositionAt( Time.Now * Speed );
+		LocalPosition = GetPositionAt( WorldTime.Now * Speed );
 		LocalRotation = Rotation.LookAt( prev - LocalPosition );
 	}
 }
@@ -105,13 +106,13 @@ public sealed class MoveBrownianComponent : Component
 	[Property] public float Speed { get; set; } = 1.0f;
 	[Property] public float Noise { get; set; } = 0.0f;
 
-	Transform startPos;
+	Transform _startPos;
 
 	protected override void OnEnabled()
 	{
 		base.OnEnabled();
 
-		startPos = LocalTransform;
+		_startPos = LocalTransform;
 	}
 
 	protected override void DrawGizmos()
@@ -138,7 +139,7 @@ public sealed class MoveBrownianComponent : Component
 
 	Vector3 GetPositionAt( float t )
 	{
-		var p = startPos.Position;
+		var p = _startPos.Position;
 
 		var noise = Sandbox.Utility.Noise.FbmVector( 1, 0, t * 512 );
 
@@ -153,9 +154,9 @@ public sealed class MoveBrownianComponent : Component
 	{
 		if ( IsProxy ) return;
 
-		var prev = GetPositionAt( (Time.Now * Speed) - 0.03f );
+		var prev = GetPositionAt( (WorldTime.Now * Speed) - 0.03f );
 
-		LocalPosition = GetPositionAt( Time.Now * Speed );
+		LocalPosition = GetPositionAt( WorldTime.Now * Speed );
 		//	LocalRotation = Rotation.LookAt( prev - LocalPosition );
 	}
 }

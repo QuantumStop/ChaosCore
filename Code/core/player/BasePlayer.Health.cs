@@ -164,7 +164,7 @@ public partial class BasePlayer
 			if ( flArmour > Armour )
 			{
 				flArmour = Armour;
-				flArmour *= (1 / bonus);
+				flArmour *= 1 / bonus;
 				flNew = dmginfo.Damage - flArmour;
 				Armour = 0;
 			}

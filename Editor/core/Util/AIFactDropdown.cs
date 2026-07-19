@@ -37,17 +37,13 @@ public sealed class AIFactDropdown : ControlWidget
 	protected override void OnMouseClick( MouseEvent e )
 	{
 		if ( IsControlDisabled || !e.LeftMouseButton || _menu.IsValid() ) return;
-#if IGNIS || STANDALONE
 		OpenMenu();
-#endif
 	}
 
 	public override void StartEditing()
 	{
 		if ( IsControlDisabled || _menu.IsValid() ) return;
-#if IGNIS || STANDALONE
 		OpenMenu();
-#endif
 	}
 
 	private string GetCurrentLabel()
@@ -56,7 +52,7 @@ public sealed class AIFactDropdown : ControlWidget
 		var value = SerializedProperty.GetValue<string>( string.Empty ) ?? string.Empty;
 		return string.IsNullOrWhiteSpace( value ) ? "None" : value;
 	}
-#if IGNIS || STANDALONE
+
 	private void OpenMenu()
 	{
 		PropertyStartEdit();
@@ -120,7 +116,6 @@ public sealed class AIFactDropdown : ControlWidget
 		if ( scroller.VerticalScrollbar.Minimum != scroller.VerticalScrollbar.Maximum )
 			scroller.Canvas.MaximumWidth -= 8;
 	}
-#endif
 
 	private bool PaintMenuBackground()
 	{

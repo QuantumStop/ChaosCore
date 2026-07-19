@@ -36,7 +36,7 @@ partial class BasePlayer
 			{
 				var wpn = displayBucket[i];
 				var marker = (i == PositionInSelectedBucket) ? " <== SELECTED" : "";
-				Log.Info( $"  [{i}] {(wpn?.WeaponData?.Name ?? "null")}{marker}" );
+				Log.Info( $"  [{i}] {wpn?.WeaponData?.Name ?? "null"}{marker}" );
 			}
 		}
 		else

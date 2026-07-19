@@ -369,11 +369,11 @@ public class ParticleDecalRenderer : ParticleController, Component.ExecuteInEdit
 			{
 				cameraPos = localPlayerCamera.WorldPosition;
 				_lastCullingCameraPosition = cameraPos;
-				_lastCullingCameraSampleTime = Time.Now;
+				_lastCullingCameraSampleTime = WorldTime.Now;
 				return true;
 			}
 
-			if ( _lastCullingCameraSampleTime >= 0.0f && (Time.Now - _lastCullingCameraSampleTime) <= 0.5f )
+			if ( _lastCullingCameraSampleTime >= 0.0f && (WorldTime.Now - _lastCullingCameraSampleTime) <= 0.5f )
 			{
 				cameraPos = _lastCullingCameraPosition;
 				return true;
@@ -460,7 +460,7 @@ public class ParticleDecalRenderer : ParticleController, Component.ExecuteInEdit
 		if ( sceneObject is null || !sceneObject.IsValid() )
 			return;
 
-		var now = Time.Now;
+		var now = WorldTime.Now;
 		var expireAt = lifeTime > 0.0f ? now + lifeTime : float.PositiveInfinity;
 		var resolvedSeed = seed != 0 ? seed : (uint)(now * 1000.0f);
 
@@ -512,7 +512,7 @@ public class ParticleDecalRenderer : ParticleController, Component.ExecuteInEdit
 		{
 			_debugStates[debugKey] = new DebugState
 			{
-				LastUpdateTime = Time.Now,
+				LastUpdateTime = WorldTime.Now,
 				ParticlePos = p.Position,
 				HitPos = p.HitPos,
 				HitNormal = p.HitNormal,
@@ -563,7 +563,7 @@ public class ParticleDecalRenderer : ParticleController, Component.ExecuteInEdit
 	{
 		base.OnUpdate();
 
-		var now = Time.Now;
+		var now = WorldTime.Now;
 		PruneDebugStates( now );
 
 		lock ( _persistentSync )
@@ -681,7 +681,7 @@ public class ParticleDecalRenderer : ParticleController, Component.ExecuteInEdit
 		_trackedDecals.Add( new TrackedDecal
 		{
 			SceneObject = sceneObject,
-			SpawnAt = Time.Now
+			SpawnAt = WorldTime.Now
 		} );
 	}
 
@@ -720,7 +720,7 @@ public class ParticleDecalRenderer : ParticleController, Component.ExecuteInEdit
 		if ( !DebugDrawGizmos || !ShouldCollectDebugState() )
 			return;
 
-		float now = Time.Now;
+		float now = WorldTime.Now;
 		PruneDebugStates( now );
 		int maxDraw = Math.Max( MaxDebugDrawCount, 1 );
 		float maxDrawDist = MathF.Max( DebugMaxDrawDistance, 0.0f );
