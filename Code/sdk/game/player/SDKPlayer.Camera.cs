@@ -1,58 +1,66 @@
-﻿using Sandbox.Utility;
-using System;
+﻿namespace SDK;
 
-namespace SDK;
+using Core;
 
 partial class Player
 {
-	[ReadOnly, Property, Range( 0, 1 ), Feature( "Debug" )] public float fSuitZoom { get; set; } = 0.0f;
-	[ReadOnly, Property, Feature( "Debug" ), Change( nameof( zoomChange ) )] protected bool isZoomedFully { get; set; }
-	private void zoomChange() { if ( isZoomedFully ) CurrentWeapon?.Holster(); else CurrentWeapon?.Draw(); }
-	[Property, Feature( "Defines" )] public Sandbox.UI.WorldInput worldInput { get; set; }
+	[ReadOnly, Property, Feature( "Debug" )]
+	protected bool _isSuitZooming
+	{
+		get;
+		set
+		{
+			if ( field == value ) return;
+			field = value;
 
-	private Vector3 TraceEnd = Vector3.Zero;
+			if ( value is true )
+			{
+				CurrentWeapon?.Holster();
+				Controller.AimSensitivityScale = (float)SuitZoomFOV / CurrentFOV; // for some reason this is backwards, i have no idea but it works
+			}
+			else
+			{
+				CurrentWeapon?.Draw();
+				Controller.AimSensitivityScale = 1f;
+			}
+		}
+	}
+
+	public const int SuitZoomFOV = 27;
+
+	private void HandleSuitZoom()
+	{
+		if ( HasSuit && LifeState == LifeState.Alive )
+		{
+			if ( Input.Pressed( "zoom" ) )
+			{
+				if ( SetFOV( this, SuitZoomFOV, 0.4f ) ) _isSuitZooming = true;
+			}
+			else if ( Input.Released( "zoom" ) )
+			{
+				if ( SetFOV( this, 0, 0.2f ) ) _isSuitZooming = false;
+			}
+		}
+	}
+
+	[Property, Feature( "Defines" )] public WorldInput WorldInput { get; set; }
 
 	[ConVar( "access_halo" )]
 	static public bool Halo2Crosshair { get; set; } = false;
 
-	/// <summary>
-	/// Do PCV Zoom related stuff in the FixedUpdate of main file
-	/// </summary>
-	private void CalculateFOV()
-	{
-		var camera = Local.Controller.Camera;
-
-		float targetZoom = Input.Down( "zoom" ) ? 1.0f : 0.0f;
-		float zoomLerpSpeed = Input.Down( "zoom" ) ? 6f : 5f; // Separate speeds for in/out
-
-		fSuitZoom = MathX.Lerp( fSuitZoom, targetZoom, Time.Delta * zoomLerpSpeed );
-
-		float easedZoom = Easing.QuadraticInOut( fSuitZoom );
-
-		// Field of view adjustment
-		float zoomFov = 27.0f;
-		camera.FieldOfView = DefaultFOV * (1.0f - easedZoom) + zoomFov * easedZoom;
-
-		// Aim sensitivity
-		(Controller as PlayerController).AimSensitivity = MathX.Lerp( 1f, 0.25f, easedZoom );
-
-		// Handle weapon visibility.
-		if ( fSuitZoom >= 0.3f )
-			isZoomedFully = true;
-		else
-			isZoomedFully = false;
-	}
-
 	private void CalculateBob()
 	{
-		var camPos = Local.Controller.Camera.WorldPosition;
-		var camRot = Local.Controller.Camera.WorldRotation;
+		var camera = Local.Controller?.Camera;
+		if ( !camera.IsValid() )
+			return;
+
+		var camRot = camera.WorldRotation;
 
 		ViewmodelWeaponObject.WorldPosition =
-			camPos
-			+ camRot.Forward * ViewmodelOffsetForward
-			+ camRot.Right * ViewmodelOffsetRight
-			+ camRot.Up * ViewmodelOffsetUp;
+			camera.WorldPosition
+			+ camRot.Forward * GetViewmodelOffsetForward()
+			+ camRot.Right * GetViewmodelOffsetRight()
+			+ camRot.Up * GetViewmodelOffsetUp();
 
 		ViewmodelWeaponObject.WorldRotation = camRot;
 
@@ -62,4 +70,9 @@ partial class Player
 			ViewmodelWeaponObject.LocalRotation *= new Angles( 6, 0, 0 );
 		}
 	}
+
+	protected override void CalculateFOV() => Controller.Camera.FieldOfView = CurrentFOV = Screen.CreateVerticalFieldOfView( GetFOV(), Screen.Aspect * 0.75f );
+	// some kind of bug with the fov zoom makes this useless. inserting vert FOV directly is fine???????
+	// protected override void GetFOV() => Screen.CreateVerticalFieldOfView( base.GetFOV(), Screen.Aspect * 0.75f );
+	protected override float GetViewmodelFOV() => Screen.CreateVerticalFieldOfView( base.GetViewmodelFOV(), Screen.Aspect * 0.75f );
 }

@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters;
-using Sandbox.VR;
+﻿using System;
 using XMovement;
 
 public partial class PlayerController : PlayerWalkControllerComplex
@@ -13,19 +12,51 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		return speed;
 	}
 
+	private float timeSinceWishSprint = 0f;
+	private float wishSprint = 0f;
+	public bool canRun;
+
 	/// <summary>
-	/// Main sensitivity
+	/// Returns time since sprint was last requested
 	/// </summary>
-	public float AimSensitivity
+	public float TimeSinceWishSprint()
 	{
-		get => Input.UsingController ? GameSettings.Sensitivity.Controller * 0.5f : GameSettings.Sensitivity.Mouse;
-		set => _sense = value;
+		if ( IsSprintDown )
+		{
+			timeSinceWishSprint = 0f;
+		}
+		else
+		{
+			timeSinceWishSprint += Time.Delta;
+			timeSinceWishSprint = MathF.Min( timeSinceWishSprint, 10f );
+		}
+
+		return timeSinceWishSprint;
 	}
 
 	/// <summary>
-	/// This just has to exist, does nothing really
+	/// Returns a value from 0-1 representing how much sprint is being wished for
 	/// </summary>
-	private float _sense { get; set; }
+	public float WishSprint()
+	{
+		if ( IsSprintDown )
+		{
+			wishSprint += Time.Delta / 2f;
+			wishSprint = MathF.Min( wishSprint, 1f );
+		}
+		else
+		{
+			wishSprint -= Time.Delta * 2f;
+			wishSprint = MathF.Max( wishSprint, 0f );
+		}
+
+		return wishSprint;
+	}
+
+	/// <summary>
+	/// Main sensitivity, only a getter, if you want to modify this through game code use the Scale one
+	/// </summary>
+	public static float AimSensitivity => Input.UsingController ? GameSettings.Sensitivity.Controller * 0.5f : GameSettings.Sensitivity.Mouse;
 
 	private Angles HandleInvert( Angles look )
 	{
@@ -43,7 +74,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	{
 		if ( !IsProxy )
 		{
-			LocalEyeAngles += HandleInvert( Input.AnalogLook ) * AimSensitivity;
+			LocalEyeAngles += HandleInvert( Input.AnalogLook ) * AimSensitivity * AimSensitivityScale;
 
 			LocalEyeAngles = LocalEyeAngles.WithPitch( LocalEyeAngles.pitch.Clamp( -89f, 89f ) );
 
@@ -57,6 +88,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	}
 
 	private bool IsSprintDown { get; set; }
+
 	private bool IsCrouchDown { get; set; }
 
 	/// <summary>
@@ -87,18 +119,23 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	private bool IsMoving => (Input.AnalogMove != Vector3.Zero) && Controller.Velocity.Length > Controller.StopSpeed; // up for debate, probably just analogmove check is fine
 
-	public override void BuildInput()
+	/// <summary>
+	/// Crouching was forced through external means (a trigger or else)
+	/// </summary>
+	[Property, Feature( "Crouching" )] public bool ForceCrouch { get; set; } = false;
+
+	protected override void BuildInput()
 	{
 		HandleModes();
 
 		var run = IsSprintDown;
 		var walk = false;
-		var crouch = IsCrouchDown;
+		var crouch = IsCrouchDown || ForceCrouch;
 
 		if ( RunByDefault )
-			IsRunning = !run && EnableRunning;
+			IsRunning = !run && EnableRunning && canRun && IsMoving;
 		else
-			IsRunning = run && EnableRunning;
+			IsRunning = run && EnableRunning && canRun && IsMoving;
 
 		IsWalking = walk && EnableWalking;
 		IsCrouching = crouch || !CanUncrouch();

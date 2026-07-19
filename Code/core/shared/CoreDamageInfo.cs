@@ -6,6 +6,11 @@ public class CoreDamageInfo : DamageInfo
 	/// Physical force of the damage, usually applied as a push
 	/// </summary>
 	public Vector3 Force { get; set; }
+	/// <summary>
+	/// Angular hysical force of the damage, usually applied when something is
+	/// powerful enough to also rotate it.
+	/// </summary>
+	public Vector3 AngularForce { get; set; } = Vector3.Zero;
 	public Vector3 ReportedPosition { get; set; }
 	/// <summary>
 	/// The damage amount before difficulty level adjustments are made, used to get uniform damage forces
@@ -21,7 +26,6 @@ public class CoreDamageInfo : DamageInfo
 	/// What ammo was used to damage
 	/// </summary>
 	public AmmoInfo Ammo { get; set; }
-
 	/// <summary>
 	/// The actual weapon class
 	/// </summary>
@@ -39,24 +43,11 @@ public class CoreDamageInfo : DamageInfo
 	}
 
 	public CoreDamageInfo( GameObject inflictor, GameObject attacker, float damage )
-	{
-		Force = Vector3.Zero;
-		Position = Vector3.Zero;
-		ReportedPosition = Vector3.Zero;
-		Inflictor = inflictor;
-		Attacker = attacker;
-		Damage = damage;
-	}
+		: this( inflictor, attacker, Vector3.Zero, Vector3.Zero, damage ) { }
+
 	public CoreDamageInfo( GameObject inflictor, GameObject attacker, GameObject weapon, float damage )
-	{
-		Force = Vector3.Zero;
-		Position = Vector3.Zero;
-		ReportedPosition = Vector3.Zero;
-		Inflictor = inflictor;
-		Attacker = attacker;
-		Weapon = weapon;
-		Damage = damage;
-	}
+		: this( inflictor, attacker, Vector3.Zero, Vector3.Zero, damage ) { Weapon = weapon; }
+
 	public CoreDamageInfo( GameObject inflictor, GameObject attacker, Vector3 damageForce, Vector3 damagePosition, float damage, Vector3 reportedPosition = new Vector3() )
 	{
 		Force = damageForce;

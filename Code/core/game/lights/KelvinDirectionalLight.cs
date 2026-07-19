@@ -7,43 +7,160 @@ namespace Core;
 
 public class KelvinDirectionalLight : DirectionalLight
 {
-	[Property, MakeDirty, Header( "Mode" )] public LightUnits.ColorMode ColorMode { get; set; } = LightUnits.ColorMode.Color;
+	[Property, Header( "Mode" )]
+	public LightUnits.ColorMode ColorMode
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = LightUnits.ColorMode.Color;
 
 	[Space]
 
-	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.Color ), MakeDirty, Header( "Color" ), ColorUsage( false, false )] public Color RGB_Color { get; set; } = Color.White.WithAlpha( 1 );
+	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.Color ), Header( "Color" ), ColorUsage( false, false )]
+	public Color RGB_Color
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = Color.White.WithAlpha( 1 );
 
 	[Space]
 	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.ColorTemperature )] public LightUnits.TemperatureMode TemperatureMode { get; set; } = LightUnits.TemperatureMode.Kelvin;
-	[Property, ShowIf( nameof( IsKelvin ), true ), Range( 1000, 20000 ), Step( 50 ), MakeDirty, Header( "Temperature" )] public float KelvinTemperature { get; set; } = 6500f;
+	[Property, ShowIf( nameof( IsKelvin ), true ), Range( 1000, 20000 ), Step( 50 ), Header( "Temperature" )]
+	public float KelvinTemperature
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 6500f;
 	[Property, ShowIf( nameof( IsKelvin ), true )] LightUnits.ColorPresets ColorPreset { get; set; } = LightUnits.ColorPresets.NeutralWhite;
 	[Button, ShowIf( nameof( IsKelvin ), true )]
 	void ApplyPreset()
 	{
 		KelvinTemperature = (float)ColorPreset;
-		OnDirty();
+		Dirty();
 	}
 
-	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), MakeDirty, Header( "Temperature" )] public float MiredTemperature { get; set; } = 154f;
+	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), Header( "Temperature" )]
+	public float MiredTemperature
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 154f;
 
 #if PLU
-	[Property, Range( 1, 110000 ), Step( 1 ), MakeDirty, Title( "Lux" ), Header( "Brightness" )] public float Brightness { get; set; } = 100000f;
+	[Property, Range( 1, 110000 ), Step( 1 ), Title( "Lux" ), Header( "Brightness" )]
+	public float Brightness
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 100000f;
 	[Property] public LightUnits.SunBrightnessPresets SunBrightnessPreset { get; set; } = LightUnits.SunBrightnessPresets.Noon;
 	[Button]
 	void ApplyBrightnessPreset()
 	{
 		Brightness = (float)SunBrightnessPreset;
-		OnDirty();
+		Dirty();
 	}
+
+	private float ResultBrightness => Brightness;
 #else
-	[Property, Range( 0, 15 ), MakeDirty, Title( "Brightness" ), Header( "Brightness" )] public float Brightness { get; set; } = 1;
+	[Property, Range( 0, 15 ), Title( "Brightness" ), Header( "Brightness" )]
+	public float Brightness
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 1;
+	/// <summary>
+	/// Due to how stuff is supossed to be rendered, the diffuse is intended to be darker by a factor of PI, which may not be desirable if WYSIWYG color values are expected. 
+	/// This compensates the brightness automatically, if desired. 
+	/// Hammer lights don't have that, so they would have to be manually adjusted if needed.
+	/// </summary>
+	[Property, Title( "PI Compensation" )]
+	public bool PI
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = true;
+	/// <summary>
+	/// Does the brightness of the sun affect brightness of the sky?
+	/// </summary>
+	[Property]
+	public bool AffectsSky
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = true;
+
+#if PI
+	private float ResultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
+#else
+	private float ResultBrightness => Brightness;
+#endif
 #endif
 	[Property, Hide, Space] new Color SkyColor { get; set; } = Color.Black.WithAlpha( 0 );
 
-	protected override void OnDirty()
-	{
-		base.OnDirty();
+	/// <summary>
+	/// Force refresh the light
+	/// </summary>
+	public void Refresh() => Dirty();
 
+	private void Dirty()
+	{
 		if ( IsKelvin )
 		{
 			RGB_Color = LightUnits.CorrelatedColorTemperatureToRGB( KelvinTemperature );
@@ -55,8 +172,11 @@ public class KelvinDirectionalLight : DirectionalLight
 			KelvinTemperature = LightUnits.MiredToKelvin( MiredTemperature );
 		}
 
-		LightColor = RGB_Color * Brightness;
-		Scene.RenderAttributes.Set( "SunLux", Brightness );
+		LightColor = RGB_Color * ResultBrightness;
+
+#if !PLU
+		Scene.RenderAttributes.Set( "SunLux", AffectsSky ? Brightness : 1.0f );
+#endif
 	}
 
 	protected override void DrawGizmos()

@@ -1,33 +1,51 @@
-﻿namespace Core;
+﻿#if FMOD
+using FMODSbox;
+#endif
+namespace Core;
+
 
 [Hide]
 public class BaseItem : BaseUsable
 {
 	[Property, Group( "Outputs" ), Order( 100 ), Title( "On Pickup" )] public ChaosOutput OnPickupOutput { get; set; }
-	[DebugExpose( group: "BaseItem", DisplayMember = "Model.ResourcePath" ), Property, ReadOnly, Feature( "Debug" )] protected ModelRenderer Mesh;
-	[DebugExpose( group: "BaseItem", DisplayMember = "Model.ResourcePath" ), Property, ReadOnly, Feature( "Debug" )] protected ModelCollider Collider;
-	[Property, ReadOnly, Feature( "Debug" )] protected Rigidbody Physics;
+#if IGNIS
+	[DebugExpose( group: "BaseItem", DisplayMember = "Model.ResourcePath" )]
+#endif
+	[Property, ReadOnly, Feature( "Debug" )] public ModelRenderer Mesh { get; protected set; }
+#if IGNIS
+	[DebugExpose( group: "BaseItem", DisplayMember = "Model.ResourcePath" )]
+#endif
+	[Property, ReadOnly, Feature( "Debug" )] public ModelCollider Collider { get; protected set; }
+	[Property, ReadOnly, Feature( "Debug" )] public Rigidbody Physics { get; protected set; }
 	[Property, Hide] public bool PickUp;
-	protected virtual string GetModel() { return "models/weapons/w_glock.vmdl"; }
+	protected virtual string GetModel() => "models/dev/error.vmdl";
 	/// <summary>
 	/// Enable physics and movement for this object?
 	/// </summary>
-	[DebugExpose( group: "BaseItem" ), Property, Order( 10 )]
+#if IGNIS
+	[DebugExpose( group: "BaseItem" )]
+#endif
+	[Property, Order( 45 ), Group( "Physics Properties" )]
 	public bool MotionEnabled
 	{
-		get => _motionEnabled;
+		get;
 		set
 		{
-			_motionEnabled = value;
+			field = value;
 			CanBeHeldAccessor = value;
 		}
-	}
+	} = true;
 
-	private bool _motionEnabled = true;
-	protected virtual bool IsStatic() { return !MotionEnabled; }
-	public virtual bool AllowTouchPickup() { return true; }
-	protected override string GetEditorVis() { return GetModel(); }
-	protected virtual string GetPickupSound() { return "ammo_pickup"; }
+	protected virtual bool IsStatic() => !MotionEnabled;
+	public virtual bool AllowTouchPickup() => true;
+	protected override string GetEditorVis() => GetModel();
+#if FMOD
+	protected virtual string GetPickupSound() => "event:/Common/AmmoPickup";
+#else
+	protected virtual string GetPickupSound() => "ammo_pickup";
+	protected virtual int SoundStealChannel() => 0;
+#endif
+
 	protected override void OnEnabled()
 	{
 		base.OnEnabled();
@@ -46,13 +64,26 @@ public class BaseItem : BaseUsable
 
 		if ( IsStatic() )
 			Physics.MotionEnabled = false;
+
+		AddEffects();
 	}
+
+	/// <summary>
+	/// Used to add additional effects so we don't need to use prefabs for it
+	/// </summary>
+	protected virtual void AddEffects() { }
+
+	/// <summary>
+	/// Who was the last one to touch it
+	/// </summary>
+	public BasePlayer LastOwner { get; set; }
+
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
 
-		if ( PickUp )
-			OnPickup();
+		if ( PickUp && LastOwner.IsValid() )
+			OnPickup( LastOwner );
 	}
 
 	//	public override bool Press( IPressable.Event e ) { base.Press( e ); OnPickup(); return true; }
@@ -60,32 +91,48 @@ public class BaseItem : BaseUsable
 	/// When picked up (succefully)
 	/// </summary>
 	/// <param name="Activator">The player who picked it up</param>
-	public virtual void OnPickup( BasePlayer Activator = null ) { PickUp = false; if ( !PickupCheck() ) return; OnPickupOutput?.Invoke( Activator ); Sound.Play( GetPickupSound() ).ListenLocal = true; }
+	public virtual void OnPickup( BasePlayer Activator = null )
+	{
+		PickUp = false;
+
+		if ( !PickupCheck() ) return;
+
+		if ( Activator.IsValid() ) OnPickupOutput?.Invoke( Activator );
+#if FMOD
+		FMODSound.Play( GetPickupSound() );
+#else
+		BasePlayer.Local.PlayPickupSteal( GetPickupSound(), SoundStealChannel(), WorldPosition );
+#endif
+	}
 	/// <summary>
 	/// Used to know if OnPickup() should even be fired, per entity
 	/// </summary>
 	/// <returns></returns>
-	protected virtual bool PickupCheck() { return true; }
+	protected virtual bool PickupCheck() => true;
 	/// <summary>
 	/// When item is forcefully removed (not when killed or spent)
 	/// </summary>
-	public virtual void OnRemove() { }
+	public virtual void OnRemove( BasePlayer Activator = null ) { }
 	/// <summary>
 	/// Properly destroy the item with extra stuff we want (instead of just calling GameObject.Destroy())
 	/// </summary>
 	public void DestroyItem()
 	{
-		// i am not sure why would you do this besides having an item on a gameobject with something else, which never happens or should happen
-		/*
-			Mesh?.Destroy();
-			Collider?.Destroy();
-			Physics?.Destroy();
-			Destroy();
-		*/
+		if ( GameObject.IsValid() ) Kill();
+	}
 
-		if ( !GameObject.IsValid() )
-			return;
+	/// <summary>
+	/// We started the pickup FixedUpdate, because we cant just trigger it once, it has to be occasionally checked
+	/// </summary>
+	/// <param name="Activator"></param>
+	public void StartPickingUp( BasePlayer Activator )
+	{
+		LastOwner = Activator;
+		PickUp = true;
+	}
 
-		Kill();
+	public void StopPickingUp( BasePlayer Activator )
+	{
+		if ( Activator == LastOwner ) PickUp = false;
 	}
 }

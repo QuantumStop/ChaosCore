@@ -30,11 +30,12 @@ public partial class PlayerWalkControllerComplex : Component
 				var sidem = (Math.Abs( Head.WorldRotation.Forward.Abs().z - 1 ) * 3).Clamp( 0, 1 );
 				var upm = Head.WorldRotation.Forward.z;
 
-				var Eject = new Vector3();
-
-				Eject.x = LadderNormal.x * sidem;
-				Eject.y = LadderNormal.y * sidem;
-				Eject.z = (3 * upm).Clamp( 0, 1 );
+				var Eject = new Vector3
+				{
+					x = LadderNormal.x * sidem,
+					y = LadderNormal.y * sidem,
+					z = (3 * upm).Clamp( 0, 1 )
+				};
 
 				Controller.Velocity += (Eject * 180.0f) * WorldScale;
 
@@ -43,7 +44,7 @@ public partial class PlayerWalkControllerComplex : Component
 				return;
 
 			}
-			else if ( Controller.GroundObject != null && LadderNormal.Dot( wishvel ) > 0 )
+			else if ( Controller.GroundObject.IsValid() && LadderNormal.Dot( wishvel ) > 0 )
 			{
 				IsTouchingLadder = false;
 
@@ -110,7 +111,7 @@ public partial class PlayerWalkControllerComplex : Component
 			TryLatchNextTickCounter--;
 		}
 
-		if ( Controller.GroundObject != null ) return;
+		if ( Controller.GroundObject.IsValid() ) return;
 		if ( Controller.PreviousGroundObject == null ) return;
 
 		// Trace downwards and behind the way we are or was walking

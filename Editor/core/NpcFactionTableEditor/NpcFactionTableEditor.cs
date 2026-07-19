@@ -1,10 +1,7 @@
-﻿using Editor;
-using Sandbox;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Text.Json.Nodes;
-using Core;
+using Core.AI;
 
 [CanEdit( "fac" )]
 [EditorApp( "Npc Faction Relations Editor", "manage_accounts", "With which to edit faction tables" )]
@@ -67,7 +64,7 @@ public class NpcFactionTableEditor : BaseWindow
 
 			var factionname = new LineEdit();
 			factionname.Text = FactionNames[faction.Key];
-			factionname.EditingFinished += delegate { FactionNames[faction.Key] = factionname.Text.ToUpper(); DrawUI(); };
+			factionname.EditingFinished += delegate { FactionNames[faction.Key] = factionname.Text.ToUpperInvariant(); DrawUI(); };
 			factionline.Add( factionname );
 
 			var factionremove = new IconButton( "close" );
@@ -138,18 +135,18 @@ public class NpcFactionTableEditor : BaseWindow
 	public void Load()
 	{
 		var loadPath = Editor.FileSystem.Content.GetFullPath( "scripts\\ai_faction_relations.fac" );
-		if ( loadPath == null )
+		if ( loadPath is null )
 			return;
 
-		FactionNames = new();
-		Relations = new();
+		FactionNames = [];
+		Relations = [];
 		var file = JsonNode.Parse( File.ReadAllText( loadPath ) ).AsObject();
-		Dictionary<string, Guid> guids = new();
+		Dictionary<string, Guid> guids = [];
 		foreach ( var faction in file )
 			guids.Add( faction.Key, Guid.NewGuid() );
 		foreach ( var faction in file )
 		{
-			Dictionary<Guid, NpcRelations.Relation> relationset = new();
+			Dictionary<Guid, NpcRelations.Relation> relationset = [];
 			foreach ( var relation in faction.Value.AsObject() )
 				relationset.Add( guids[relation.Key], (NpcRelations.Relation)Enum.Parse( typeof( NpcRelations.Relation ), relation.Value.ToString() ) );
 			Relations.Add( guids[faction.Key], relationset );
@@ -163,7 +160,7 @@ public class NpcFactionTableEditor : BaseWindow
 	public void Save()
 	{
 		var savePath = Editor.FileSystem.Content.GetFullPath( "/scripts/ai_faction_relations.fac" );
-		if ( savePath == null )
+		if ( savePath is null )
 		{
 			Log.Error( "Couldn't find .fac!" );
 			return;

@@ -1,5 +1,6 @@
 namespace Core;
+
 public class MultiplayerRules : GameRules
 {
-	public override bool IsMultiPlayer { get => true; }
+	public override bool IsMultiPlayer => true;
 }

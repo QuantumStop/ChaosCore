@@ -22,7 +22,7 @@ public partial class PlayerWalkControllerComplex : Component
 	/// <summary>
 	/// Constructs a ray using the camera's GameObject
 	/// </summary>
-	public virtual Ray AimRay => new( Head.WorldPosition + Camera.WorldRotation.Forward, Camera.WorldRotation.Forward );
+	public virtual Ray AimRay => new( Head.WorldPosition + EyeAngles.Forward, EyeAngles.Forward );
 
 	protected void SetupHead()
 	{
@@ -55,8 +55,8 @@ public partial class PlayerWalkControllerComplex : Component
 			{
 				EyeAngles = Input.VR.Head.Rotation.Angles();
 			}
-
-			PositionHead();
 		}
+
+		PositionHead();
 	}
 }

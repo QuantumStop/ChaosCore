@@ -1,19 +1,21 @@
-
-# This file describes files and paths that should not be tracked by Git version control
-# https://git-scm.com/docs/gitignore
-
 # Auto-generated code editor files
 .vs/*
 .vscode/*
 *.csproj
-obj
-bin
+obj/*
 Properties/*
 code/obj/*
 code/Properties/*
+*.sln
+
+# Editor Projects
+Editor/obj/*
+Editor/Properties/*
+Editor/*.sln
+Editor/.vs/*
+Editor/.vscode/*
 
 # Auto-generated asset related files
-.sbox/*
 *.generated.*
 *.*_c
 !*.shader_c
@@ -22,9 +24,46 @@ code/Properties/*
 *launchSettings.json
 *.sln
 
-*idea
+# Export Folders
+Exports/*
 
-# Exported / standalone games
-Exports/
+# Cache (cloud shit?)
+.sbox/*
+
+Libraries/xenthio.xmovement/.bin/*
+Libraries/xenthio.xmovement/UnitTests/obj/*
+Libraries/xenthio.xmovement/Editor/obj/*
+Libraries/xenthio.xmovement/Code/obj/*
+Libraries/xenthio.xgui/.bin/*
+Libraries/xenthio.xgui/Code/obj/*
+Libraries/xenthio.xgui/Editor/obj/*
+Libraries/xenthio.xgui/UnitTests/obj/*
+Libraries/xenthio.xgui-3/Code/obj/*
+Libraries/xenthio.xgui-3/Editor/obj/*
+Libraries/xenthio.xgui-3/UnitTests/obj/*
+Libraries/gkaf.envmaptool/Editor/obj/*
+Libraries/gkaf.envmaptool/Editor/obj/*
+Libraries/gkaf.envmaptool/Editor/obj/*
+Libraries/gkaf.envmaptool/Code/obj/*
+Libraries/facepunch.moviemaker/Code/obj/*
+Libraries/facepunch.moviemaker/Editor/obj/*
+Libraries/facepunch.moviemaker/UnitTests/obj/*
+Libraries/gkaf.envmaptool/Code/obj
+Libraries/gkaf.envmaptool/Editor/obj
+Libraries/facepunch.moviemaker/UnitTests/obj
+Libraries/facepunch.moviemaker/Editor/obj
+Libraries/facepunch.moviemaker/Code/obj
+Libraries/katewoz.editorthemes/Code/obj
+Libraries/katewoz.editorthemes/Editor/obj
+Libraries/katewoz.editorthemes/UnitTests/obj
 *.slnx
 Libraries/xenthio.xgui-3/.bin
+*.asd
+Libraries/thedimin.typeselect/Code/obj
+Libraries/thedimin.typeselect/Editor/obj
+Libraries/umblestudio.umble_iconify/Code/obj
+Libraries/umblestudio.umble_iconify/UnitTests/obj
+assets/_fmod_project
+*.lscache
+ProjectSettings/Directory.metadata
+editor/Properties/launchSettings.json

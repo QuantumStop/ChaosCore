@@ -1,5 +1,10 @@
 ﻿namespace Core;
+
+#if FMOD
+#endif
+
 using System;
+using Core.AI;
 
 // move this out this is more npc related
 public enum WeaponEquipSlot
@@ -10,65 +15,77 @@ public enum WeaponEquipSlot
 	NONE
 }
 
-// probably dont namespace this
-
 [Hide]
 public partial class BaseCombatWeapon : BaseEntity
 {
-	protected override string GetEditorVis() { return null; }
-
+	protected override string GetEditorVis() => null;
+	/// <summary>
+	/// Who has this weapon? We use the funny WeaponOwner struct which has the casts built in, so you don't have to if (Owner is BasePlayer) every time
+	/// </summary>
+	[Property, ReadOnly, Feature( "Debug" )] public WeaponOwner Owner { get; set; }
 	[Property, ReadOnly, Feature( "Debug" )] public WeaponParse WeaponData { get; set; }
-
-	public TimeSince TimeSinceAttacked { get; set; } = 1000;
-	public BaseCombatWeapon()
-	{
-		WeaponData = WeaponParse.GetWeaponData( GetType().Name );
-	}
+	public BaseCombatWeapon() => WeaponData = WeaponParse.GetWeaponData( GetType().Name );
 
 	/// <summary>
 	/// Primary amount WITH chambered bullet
 	/// </summary>
-	[Property, ReadOnly, Header( "Primary" ), Feature( "Debug" ), Change( nameof( ChangePrimaryAmmo ) ), HideIf( nameof( UsesPrimary ), false )] public int PrimaryAmmoLoaded { get; set; }
+	[Property, Header( "Primary" ), Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )]
+	public int PrimaryAmmoLoaded
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				ChangePrimaryAmmo();
+			}
+		}
+	}
 	/// <summary>
 	/// Primary amount of chambered bullets
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" ), HideIf( nameof( UsesPrimary ), false )] public int PrimaryAmmoInChamber { get; set; }
+	[Property, Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )] public int PrimaryAmmoInChamber { get; set; }
 	/// <summary>
 	/// Secondary amount WITH chambered bullet
 	/// </summary>
-	[Property, ReadOnly, Header( "Secondary" ), Feature( "Debug" ), HideIf( nameof( UsesSecondary ), false )] public int SecondaryAmmoLoaded { get; set; }
+	[Property, ReadOnly, Header( "Secondary" ), Feature( "Debug" ), ShowIf( nameof( UsesSecondary ), true )] public int SecondaryAmmoLoaded { get; set; }
 
 	/// <summary>
-	/// Is the weapon equipped or down
+	/// Is the weapon ready to fire? (most likely in idle animation)
 	/// </summary>
-	[Property, ReadOnly, Header( "Stats" ), Feature( "Debug" )] public bool Equipped { get; set; } = false;
+	[Property, ReadOnly, Header( "Stats" ), Feature( "Debug" )] public bool ReadyToFire { get; protected set; } = false;
 	[Property, ReadOnly, Feature( "Debug" )] public bool FirstEquip { get; set; } = true;
 	[Property, ReadOnly, Feature( "Debug" )] public bool MagOut { get; set; } = false;
 	/// <summary>
 	/// Reload one by one, instead of by mag (shotguns, rifles)
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected virtual bool ReloadsSingly { get; set; }
+	[Property, ReadOnly, Feature( "Debug" )] protected virtual bool ReloadsSingly => WeaponData.ReloadsSingly;
 	/// <summary>
 	/// This should've been OnStart
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected bool _DoFirstSetup { get; set; } = true;
-
+	[Property, ReadOnly, Feature( "Debug" )] protected bool _doFirstSetup { get; set; } = true;
+	[Property, ReadOnly, Feature( "Debug" )] public bool WasOnTheGround { get; set; } = false;
+	/// <summary>
+	/// How many shots were fired in quick succession (consequitive shots)
+	/// </summary>
+	[Property, ReadOnly, Feature( "Debug" )] protected int _shotsFired { get; set; }
+	/// <summary>
+	/// When was the last time we did any kind of attack
+	/// </summary>	
+	[Property, ReadOnly, Feature( "Debug" )] public float LastAttackTime { get; set; }
 	/// <summary>
 	/// When is the next primary shot
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" ), HideIf( nameof( UsesPrimary ), false )] protected float _nextPrimaryAttack { get; set; }
+	[Property, ReadOnly, Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )] protected float _nextPrimaryAttack { get; set; }
 	/// <summary>
 	/// When is the next secondary shot
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" ), HideIf( nameof( UsesSecondary ), false )] protected float _nextSecondaryAttack { get; set; }
+	[Property, ReadOnly, Feature( "Debug" ), ShowIf( nameof( UsesSecondary ), true )] protected float _nextSecondaryAttack { get; set; }
 	/// <summary>
 	/// When is the next dry fire click
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" ), HideIf( nameof( UsesPrimary ), false )] protected float _nextEmptyAttack { get; set; }
-	/// <summary>
-	/// Do i ignore next shot? (For alt tabbing, or else)
-	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public bool _ingoreNextAttack { get; set; } = false;
+	[Property, ReadOnly, Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )] protected float _nextEmptyAttack { get; set; }
 	/// <summary>
 	/// How much time has this spent being empty
 	/// </summary>
@@ -76,56 +93,88 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// <summary>
 	/// Delay between being empty and start of reload
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] private float _autoReloadDelay { get; set; } = 0.1f;
+	private const float _autoReloadDelay = 0.1f;
 	/// <summary>
-	/// I don't remeber
+	/// Is the gun currently SPECIFICALLY holstered (and not just unavailable to shoot)
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected bool _stealEquip { get; set; }
+	[Property, ReadOnly, Feature( "Debug" )] public bool IsHolstered { get; protected set; }
 	/// <summary>
 	/// Is attack blocked (mid reload, mid draw)
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected bool _disallowAttack { get; set; }
+	[Property, ReadOnly, Feature( "Debug" )] protected bool _disallowAttack { get; set; } = false;
 	/// <summary>
 	/// Non-empty reload has one less stage - no bolt pull/slide release
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] private int _ReloadStageAmount => WeaponData.StageAmount - (PrimaryAmmoLoaded > 0 ? 1 : 0);
+	[Property, ReadOnly, Feature( "Debug" )] private int _reloadStageAmount => WeaponData.StageAmount - (PrimaryAmmoLoaded > 0 ? 1 : 0);
 	/// <summary>
 	/// Is current stage last? Technically a useless check due to instantly resetting to 0 after reaching last
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] private bool _isLastStage => _currentReloadStage >= _ReloadStageAmount;
+	[Property, ReadOnly, Feature( "Debug" )] private bool _isLastStage => _currentReloadStage >= _reloadStageAmount;
 	/// <summary>
 	/// Is the gun empty
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" ), Change( nameof( ChangeEmpty ) )] private bool _gunEmpty { get; set; } = false;
+	[Property, ReadOnly, Feature( "Debug" )]
+	private bool _gunEmpty
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				ChangeEmpty(); // methods instead of inline so the methods can be virtual now and then overriden if needed
+			}
+		}
+	} = false;
 	/// <summary>
 	/// Used to track whether we are storing a staged reloading state
 	/// </summary>
 	[Property, ReadOnly, Feature( "Debug" )] protected bool _inStagedReload => _currentReloadStage > 0;
 	/// <summary>
+	/// Is this weapon currently reloading (stage agnostic, some don't care)
+	/// </summary>
+	[Property, ReadOnly, Feature( "Debug" )] public bool IsReloading { get; protected set; }
+	/// <summary>
 	/// What stage of reloading I'm on
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" ), Change( nameof( ChangeReloadStage ) )] protected int _currentReloadStage { get; set; }
+	[Property, ReadOnly, Feature( "Debug" )]
+	protected int _currentReloadStage
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				ChangeReloadStage(); // methods instead of inline so the methods can be virtual now and then overriden if needed
+			}
+		}
+	}
 	protected virtual void ChangeReloadStage()
 	{
-		BasePlayer.Local?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
+		Owner.Player?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
 		if ( DebugReloadStage ) Log.Info( WeaponData.Name + "'s stage has changed to " + _currentReloadStage );
 		if ( _isLastStage ) FinishReload();
 	}
 
-	protected virtual void ChangePrimaryAmmo() { BasePlayer.Local?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded ); }
-	protected virtual void ChangeEmpty() { BasePlayer.Local?.SetAllAnimgraphParams( "b_empty", _gunEmpty ); }
+	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
+	protected virtual void ChangeEmpty() => Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
 
 	[ConVar( "debug_reloadstage" )] static bool DebugReloadStage { get; set; }
+	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat )] static protected bool DebugNoRecoil { get; set; }
 
-
-	private void InitSetup()
+	/// <summary>
+	/// Syncs all animgraph parameters on Player to reflect current weapon state.
+	/// </summary>
+	private void SyncAnimgraphState()
 	{
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_first_equip", FirstEquip );
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_steal_equip", _stealEquip );
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_mag_out", MagOut );
-		BasePlayer.Local?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
-		BasePlayer.Local?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
+		FirstEquip = FirstEquip && _doFirstSetup;
+
+		Owner.Player?.SetAllAnimgraphParams( "b_first_equip", FirstEquip );
+		Owner.Player?.SetAllAnimgraphParams( "b_mag_out", MagOut );
+		Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
+		Owner.Player?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
+		Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
 	}
 
 	protected override void OnEnabled()
@@ -135,22 +184,11 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( IsProxy )
 			return;
 
-		if ( BasePlayer.Local.CurrentWeapon != this )
-			return;
+		if ( UsesPrimary() ) _nextPrimaryAttack = WorldTime.Now;
+		if ( UsesSecondary() ) _nextSecondaryAttack = WorldTime.Now;
 
-		if ( UsesPrimary() ) _nextPrimaryAttack = Time.Now;
-		if ( UsesSecondary() ) _nextSecondaryAttack = Time.Now;
-
-
-		//		Log.Info( "OnEnabled: " + WeaponData.Name );
-
-		// setup animgraph state
-		InitSetup();
-
-		Equipped = true;
-
-		if ( _inStagedReload )
-			StartReload();
+		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = true;
+		if ( !WeaponData.WeaponViewmodel.IsValid() ) IsHolstered = false;
 	}
 
 	protected override void OnStart()
@@ -160,30 +198,46 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( IsProxy )
 			return;
 
-		if ( BasePlayer.Local.CurrentWeapon != this )
-			return;
+		//		if ( BasePlayer.Local.CurrentWeapon != this )
+		//			return;
 
-		if ( _DoFirstSetup )
+		FirstSetup();
+
+		WasOnTheGround = false;
+	}
+
+	protected virtual void FirstSetup()
+	{
+		if ( _doFirstSetup )
 		{
-			PrimaryAmmoLoaded = WeaponData.PrimaryAmmoCapacity;
+			if ( !WasOnTheGround ) PrimaryAmmoLoaded = WeaponData.PrimaryAmmoCapacity;
 			PrimaryAmmoInChamber = 1;
 
 			_currentReloadStage = 0;
 
-			_DoFirstSetup = false;
-		}
+			IsHolstered = true;
 
-		// a copy of onenabled just in case, definitely needed for first equip
-		InitSetup();
+			_doFirstSetup = false;
+		}
 	}
+
+	/// <summary>
+	/// Use this to pre-warm a newly given weapon that's not enabled by default.
+	/// This also makes sure that if you picked up multiple weapons, first equip doesn't play on all of them when switched for the first time.
+	/// </summary>
+	public void ForceFirstSetup() => FirstSetup();
 
 	protected override void OnUpdate()
 	{
 		if ( IsProxy )
 			return;
 
+		// nobody owns this, prevent nre
+		if ( Owner.Player is null && Owner.NPC is null )
+			return;
+
 		// dont run the whole update if its not equipped
-		if ( !Equipped )
+		if ( !ReadyToFire )
 			return;
 
 		HandleWeaponInput();
@@ -195,34 +249,28 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	protected virtual void HandleWeaponInput()
 	{
-		if ( !Application.IsFocused )
-			_ingoreNextAttack = true;
-
-		// this now does it for two clicks, not one pls fix
-		if ( Input.Released( "attack1" ) || Input.Released( "attack2" ) )
-			_ingoreNextAttack = false;
-
 		// Secondary has priority
-		if ( Input.Down( "attack2" ) && _nextSecondaryAttack <= Time.Now )
+		if ( Input.Down( "attack2" ) && _nextSecondaryAttack <= WorldTime.Now )
 		{
 			if ( !IsMeleeWeapon() && UsesSecondary() && SecondaryAmmoLoaded <= 0 )
 			{
 				HandleFireOnEmpty();
 			}
-			else if ( /*UnderwaterLevel == 3 && */ WeaponData.FiresUnderwater && false ) // remove the false when water level is implemented
+			else if ( Owner.Player.IsUnderwater && !WeaponData.FiresUnderwater ) // remove the false when water level is implemented
 			{
 				if ( _nextSecondaryAttack < 0 )
 				{
 					BasePlayer.Local?.SetAllAnimgraphParams( "b_attack2", true );
-					_nextSecondaryAttack = Time.Now + 0.2f;
+					_nextSecondaryAttack = WorldTime.Now + 0.2f;
 				}
+				return;
 			}
 			else
 			{
 				// reverse of below
 				if ( Input.Pressed( "attack2" ) || Input.Released( "attack1" ) )
 				{
-					_nextSecondaryAttack = Time.Now;
+					_nextSecondaryAttack = WorldTime.Now;
 				}
 
 				SecondaryAttack();
@@ -230,26 +278,27 @@ public partial class BaseCombatWeapon : BaseEntity
 
 
 		}
-		if ( Input.Down( "attack1" ) && _nextPrimaryAttack <= Time.Now )
+		if ( Input.Down( "attack1" ) && _nextPrimaryAttack <= WorldTime.Now )
 		{
 			if ( !IsMeleeWeapon() && UsesPrimary() && PrimaryAmmoLoaded <= 0 )
 			{
 				HandleFireOnEmpty();
 			}
-			else if ( /*UnderwaterLevel == 3 && */ WeaponData.FiresUnderwater && false ) // remove the false when water level is implemented
+			else if ( Owner.Player.IsUnderwater && !WeaponData.FiresUnderwater ) // remove the false when water level is implemented
 			{
 				if ( _nextPrimaryAttack < 0 )
 				{
-					BasePlayer.Local?.SetAllAnimgraphParams( "b_attack1", true );
-					_nextPrimaryAttack = Time.Now + 0.2f;
+					Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+					_nextPrimaryAttack = WorldTime.Now + 0.2f;
 				}
+				return;
 			}
 			else
 			{
 				// If the firing button was just pressed, or the alt-fire just released, reset the firing time
 				if ( Input.Pressed( "attack1" ) || Input.Released( "attack2" ) )
 				{
-					_nextPrimaryAttack = Time.Now;
+					_nextPrimaryAttack = WorldTime.Now;
 				}
 
 				PrimaryAttack();
@@ -266,17 +315,27 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	protected virtual void HandleWeaponStates()
 	{
-		//	auto reload even if you are already in one
-		if ( PrimaryAmmoLoaded <= 0 && Equipped )
+		//	auto reload even if you are already in one, but only if you have ammo
+		if ( PrimaryAmmoLoaded <= 0 && ReadyToFire && HasUsableAmmo() )
 		{
 			_gunEmpty = true;
-			if ( _gunEmptyTime + _autoReloadDelay < Time.Now )
+			if ( _gunEmptyTime + _autoReloadDelay < WorldTime.Now )
 				StartReload();
+		}
+		else if ( (PrimaryAmmoLoaded > 0) && _inStagedReload )
+		{
+			StartReload();
+		}
+		else if ( PrimaryAmmoLoaded <= 0 && ReadyToFire && !HasUsableAmmo() ) // super empty
+		{
+			_gunEmpty = true;
+			if ( _gunEmptyTime + (_autoReloadDelay * 5) < WorldTime.Now )
+				Owner.Player?.SwitchToWeapon( BasePlayer.BestNextWeapon( this ) );
 		}
 		else
 		{
 			_gunEmpty = false;
-			_gunEmptyTime = Time.Now;
+			_gunEmptyTime = WorldTime.Now;
 		}
 	}
 	/// <summary>
@@ -285,12 +344,11 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	public virtual void Draw()
 	{
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_equipped", true );
-
-		_stealEquip = false;
+		SyncAnimgraphState();
+		Owner.Player?.SetAllAnimgraphParams( "b_equipped", true );
 
 		Enabled = true;
-		Equipped = true;
+		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = true;
 	}
 	/// <summary>
 	/// Holster the weapon.
@@ -298,9 +356,9 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	public virtual void Holster()
 	{
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_equipped", false );
+		Owner.Player?.SetAllAnimgraphParams( "b_equipped", false );
 
-		Equipped = false;
+		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = false;
 		Enabled = false;    // very important to disable the holstered gun component
 	}
 
@@ -315,8 +373,10 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( IsProxy )
 			return false;
 
-		// ignoring next attack (alt tabbed)
-		if ( _ingoreNextAttack )
+		if ( Owner.Player?.LifeState == LifeState.Dead )
+			return false;
+
+		if ( Owner.Player.SelectionOpen )
 			return false;
 
 		// blocked by an animtag
@@ -325,6 +385,8 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		return true;
 	}
+
+	protected SoundHandle shootHandle;
 
 	/// <summary>
 	/// The main weapon shot, usually left mouse click.
@@ -337,12 +399,16 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( !UsesPrimary() )
 			return;
 
-		BasePlayer.Local?.SetAllAnimgraphParams( "b_attack1", true );
+		if ( (WorldTime.Now - LastAttackTime) > (GetPrimaryFireRate() + 0.1f) )
+			_shotsFired = 0;
 
-		foreach ( var sound in WeaponData.AttackSoundsPrimary )
-			Sound.Play( sound ).ListenLocal = true;
+		++_shotsFired;
 
-		EnvironmentManager.Instance.PlayEnviromentGunfire();
+		LastAttackTime = WorldTime.Now;
+
+		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+
+		AttackSound();
 
 		if ( !BasePlayer.NoReload )
 		{
@@ -350,76 +416,55 @@ public partial class BaseCombatWeapon : BaseEntity
 			PrimaryAmmoInChamber = Math.Min( 1, PrimaryAmmoLoaded );
 		}
 
-		_nextPrimaryAttack = Time.Now + GetPrimaryFireRate();
+		_nextPrimaryAttack = WorldTime.Now + GetPrimaryFireRate();
 
-		if ( WeaponData?.WeaponCrosshair?.WeaponCrosshairType != WeaponCrosshairType.None ) TimeSinceAttacked = 0;
-
-		BasePlayer.Local.CurrentWeapon.TimeSinceAttacked = 0;
-
-		CreateMuzzleLight();
+		CreateMuzzleFlash();
 		EjectShells();
 		FireBullet();
 
-		BasePlayer.Local?.StartVisualRecoil();
-		BasePlayer.Local?.ApplyPhysRecoil();
-	}
-
-	/// <summary>
-	/// Spawn a shell effect on a shell_eject attachment. Need Bone Objects!
-	/// </summary>
-	protected virtual void EjectShells()
-	{
-		SkinnedModelRenderer viewmodel = BasePlayer.Local?.ViewmodelWeapon;
-
-		if ( WeaponData?.WeaponViewmodel?.Attachments.Get( "shell_eject" ) != null )
+		if ( !DebugNoRecoil )
 		{
-			var ejectattachment = viewmodel.GetAttachmentObject( "shell_eject" );
-			var velocity = BasePlayer.Local.Movement.Velocity;
-			PrefabFile shellPrefab = WeaponData?.BulletCasingParticle;
-
-			if ( ejectattachment.IsValid() && shellPrefab.IsValid() )
-			{
-				// Obsoloting, but keeping for reference, for now
-				//	DebrisManager.StaticRef.CreateDebris( WeaponData?.BulletCasingModel?.ResourcePath,
-				//	ejectattachment.WorldPosition + velocity * Time.Delta,
-				//	ejectattachment.WorldRotation,
-				//	ejectattachment.WorldRotation.Up * 70f + ejectattachment.WorldRotation.Right * 150f + velocity * 0.7f );
-
-				DebrisManager.StaticRef.CreateShellCasing(
-					shellPrefab.ResourcePath,
-					ejectattachment.WorldPosition,
-					ejectattachment.WorldRotation,
-					ejectattachment.WorldRotation.Up * 100f +
-					ejectattachment.WorldRotation.Right * 300f +
-					velocity * 0.7f
-				);
-			}
+			CameraEffects.StartRecoil( WeaponData, LastAttackTime );
+			Owner.Player?.ApplyPhysRecoil();
 		}
 	}
+
+	protected virtual int AmountPerShot => WeaponData.BulletsPerShot;
+	protected virtual bool IsProjectile => false;
 
 	/// <summary>
 	/// Actually fire the AttackResult bullets	
 	/// </summary>
-	/// <param name="amountPerShot">How much bullet per bullet</param>
 	/// <param name="isPlayer">Is the damage dealt by player?</param>
 	/// <param name="isPrimary">Is this PrimaryAttack()?</param>
-	public virtual void FireBullet( int amountPerShot = 1, bool isPlayer = true, bool isPrimary = true )
+	public virtual void FireBullet( bool isPlayer = true, bool isPrimary = true )
 	{
-		var whatammo = isPrimary ? AmmoInfo.GetAmmoData( GetPrimaryAmmoType() ) : AmmoInfo.GetAmmoData( GetSecondaryAmmoType() );
-		var whodmg = isPlayer ? whatammo.DamagePlayer : whatammo.DamageNPC;
-		var whatshot = isPrimary ? WeaponData.SpreadDegreesPrimary : WeaponData.SpreadDegreesSecondary;
+		var damageInfo = GetDamageInfo( isPrimary, isPlayer );
 
-		for ( int i = 0; i < amountPerShot; i++ )
+		if ( WeaponData.SpreadType == SpreadType.SPREAD_DYNAMIC
+			&& WeaponData.DynamicSpreadType == DynamicSpreadType.PER_CONSECUTIVE_SHOT )
 		{
-			var tr = AttackManager.FireBullet( BasePlayer.Local.GetEyeTransform(),
-			new CoreDamageInfo()
+			for ( int i = 0; i < AmountPerShot; i++ )
 			{
-				Attacker = GameObject.Root,
-				Damage = whodmg,
-				Tags = { "bullet" },
-				Ammo = whatammo,
-				BaseCombatWeapon = this
-			}, whatshot );
+				float spread = GetSpreadForBullet( isPrimary, _shotsFired, i, AmountPerShot );
+
+				if ( IsProjectile )
+					AttackManager.FireProjectile( Owner.Player.GetEyeTransform(), damageInfo, spread );
+				else
+					AttackManager.FireHitscan( Owner.Player.GetEyeTransform(), damageInfo, spread );
+			}
+		}
+		else
+		{
+			for ( int i = 0; i < AmountPerShot; i++ )
+			{
+				float spread = GetSpreadForBullet( isPrimary, _shotsFired + i );
+
+				if ( IsProjectile )
+					AttackManager.FireProjectile( Owner.Player.GetEyeTransform(), damageInfo, spread );
+				else
+					AttackManager.FireHitscan( Owner.Player.GetEyeTransform(), damageInfo, spread );
+			}
 		}
 	}
 
@@ -428,10 +473,10 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	protected virtual void HandleFireOnEmpty( float delay = 0.5f )
 	{
-		if ( _nextEmptyAttack < 0 )
+		if ( _nextEmptyAttack <= WorldTime.Now && !IsReloading )
 		{
-			BasePlayer.Local?.SetAllAnimgraphParams( "b_attack1", true );
-			_nextEmptyAttack = Time.Now + delay;
+			Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+			_nextEmptyAttack = WorldTime.Now + delay;
 		}
 	}
 	/// <summary>
@@ -444,6 +489,8 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		if ( !UsesSecondary() )
 			return;
+
+		LastAttackTime = WorldTime.Now;
 
 		// unimplemented by default	
 	}
@@ -466,15 +513,20 @@ public partial class BaseCombatWeapon : BaseEntity
 
 				if ( !BasePlayer.InfiniteAmmo )
 				{
-					if ( PrimaryAmmoLoaded >= GetPrimaryCapacity() + 1 )
+					if ( PrimaryAmmoLoaded >= GetPrimaryCapacity() + 1 ) // dont reload if the magazine is already full (and we are not mid reloading)
 						return;
 
-					if ( BasePlayer.Local.GetReserveAmmo( GetPrimaryAmmoType() ) <= 0 )
+					if ( Owner.Player?.GetReserveAmmo( GetPrimaryAmmoType() ) <= 0 ) // dont reload if we dont have ammo
 						return;
 				}
 
 				if ( !_isLastStage )
-					BasePlayer.Local?.SetAllAnimgraphParams( "b_reload", true );
+					Owner.Player?.SetAllAnimgraphParams( "b_reload", true );
+
+				IsReloading = true;
+
+				if ( !WeaponData.WeaponViewmodel.IsValid() )
+					FinishReload();
 			}
 		}
 		else
@@ -487,7 +539,7 @@ public partial class BaseCombatWeapon : BaseEntity
 				if ( SecondaryAmmoLoaded >= GetSecondaryCapacity() + 1 )
 					return;
 
-				if ( BasePlayer.Local.GetReserveAmmo( GetSecondaryAmmoType() ) <= 0 )
+				if ( Owner.Player?.GetReserveAmmo( GetSecondaryAmmoType() ) <= 0 )
 					return;
 			}
 		}
@@ -503,19 +555,43 @@ public partial class BaseCombatWeapon : BaseEntity
 
 			// since its looking for the smallest value, when having no reserve and trying to reload, it will be the smallest, and will try to add nothing
 			// in that case just pretend the reserve is always bigger than current ammo
-			var minHack = !BasePlayer.InfiniteAmmo ? BasePlayer.Local.GetReserveAmmo( WeaponData.PrimaryAmmoType.ResourceName ) : GetPrimaryCapacity() + 5;
+			var minHack = !BasePlayer.InfiniteAmmo ? Owner.Player.GetReserveAmmo( WeaponData.PrimaryAmmoType.ResourceName ) : GetPrimaryCapacity() + 5;
 			var primary = Math.Min( GetPrimaryCapacity() + (PrimaryAmmoInChamber > 0 ? 1 : 0) - PrimaryAmmoLoaded, minHack );
 			// Log.Info( primary );
 
 			if ( !BasePlayer.InfiniteAmmo )
-				BasePlayer.Local.RemoveReserveAmmo( WeaponData.PrimaryAmmoType.ResourceName, primary );
+				Owner.Player?.RemoveReserveAmmo( WeaponData.PrimaryAmmoType.ResourceName, primary );
 
 			PrimaryAmmoLoaded += primary;
 			PrimaryAmmoInChamber = Math.Min( 1, PrimaryAmmoLoaded );
 
-			BasePlayer.Local?.SetAllAnimgraphParams( "b_reload", false );
+			Owner.Player?.SetAllAnimgraphParams( "b_reload", false );
+
+			IsReloading = false;
+
 			_currentReloadStage = 0;
 		}
 
+	}
+
+	/// <summary>
+	/// We need to know what kind of owner this gun has, because we don't have BaseCombatCharacter
+	/// </summary>
+	public readonly struct WeaponOwner
+	{
+		/// <summary>
+		/// If the owner is a Player, this has it
+		/// </summary>
+		public readonly BasePlayer Player;
+		/// <summary>
+		/// If the owner is an NPC, this has it
+		/// </summary>
+		public readonly AIController NPC;
+
+		public WeaponOwner( BaseEntity owner )
+		{
+			if ( owner is BasePlayer player ) Player = player;
+			if ( owner is AIController controller ) NPC = controller;
+		}
 	}
 }

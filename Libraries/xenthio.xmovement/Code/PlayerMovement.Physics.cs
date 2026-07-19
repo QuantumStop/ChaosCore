@@ -34,7 +34,7 @@ public partial class PlayerMovement : Component
 	[Property, Group( "Collision" ), HideIf( nameof( UseCollisionRules ), true )]
 	public TagSet IgnoreLayers { get; set; } = new();
 
-	public BBox BoundingBox => new BBox( new Vector3( -Radius, -Radius, 0 ), new Vector3( Radius, Radius, Height ) );
+	public BBox BoundingBox => new( new Vector3( -Radius, -Radius, 0 ), new Vector3( Radius, Radius, Height ) );
 
 	[ReadOnly, Property, Sync]
 	public Vector3 Velocity { get; set; }
@@ -56,7 +56,13 @@ public partial class PlayerMovement : Component
 	/// <summary>
 	/// Use a physics body for the shape of the player's movement trace, uses bbox if unset.
 	/// </summary> 
-	[Property] public ModelCollider PlayerColliderModel { get; set; }
+	[Property] HullCollider PlayerColliderCyllinder { get; set; }
+
+	/// <summary>
+	/// Preserves wall sliding when a trace starts exactly on a wall contact.
+	/// </summary>
+	[Property, Group( "Collision" ), Title( "Clip Immediate Wall Contact" )]
+	public bool ClipImmediateWallContactEnabled { get; set; } = true;
 
 	protected override void DrawGizmos()
 	{
@@ -116,6 +122,37 @@ public partial class PlayerMovement : Component
 	}
 
 	/// <summary>
+	/// Source-correct air acceleration. Equivalent to CGameMovement::AirAccelerate.
+	/// 
+	/// The key difference from ground Accelerate: wishspeed is capped to AirSpeedCap
+	/// (equivalent to GetAirSpeedCap() = 30 in HL2/CS) for the dot-product and addspeed
+	/// check, but the FULL uncapped wishspeed is used in the accelspeed formula.
+	/// This is what produces proper strafing feel — you can keep gaining speed because
+	/// the 30-unit cap means currentspeed almost never exceeds wishspd at large velocities.
+	/// </summary>
+	public virtual void AirAccelerate( Vector3 wishVelocity, float acceleration )
+	{
+		var wishdir = wishVelocity.Normal;
+		var wishspeed = wishVelocity.Length;        // full speed, used for accelspeed formula
+		var wishspd = MathF.Min( wishspeed, AirSpeedCap ); // capped speed, used for dot check
+
+		// How much of our current velocity is already in the wish direction?
+		var currentspeed = Velocity.Dot( wishdir );
+
+		// How much more can we add before exceeding the cap?
+		var addspeed = wishspd - currentspeed;
+		if ( addspeed <= 0 )
+			return;
+
+		// Note: uses full wishspeed (not capped wishspd) — this is correct and intentional.
+		var accelspeed = acceleration * wishspeed * Time.Delta * SurfaceFriction;
+		if ( accelspeed > addspeed )
+			accelspeed = addspeed;
+
+		Velocity += wishdir * accelspeed;
+	}
+
+	/// <summary>
 	/// Apply an amount of friction to the current velocity.
 	/// No need to scale by time delta - it will be done inside.
 	/// </summary>
@@ -153,19 +190,59 @@ public partial class PlayerMovement : Component
 		box.Maxs *= WorldScale;
 
 		var source = Scene.Trace.Ray( from, to ).Size( box );
-		if ( PlayerColliderModel.IsValid() )
+
+		if ( PlayerColliderCyllinder.IsValid() && PlayerColliderCyllinder.Enabled ) // noclipping disables it and produces NRE if we check
 		{
-			var scale = Height / PlayerColliderModel.Model.PhysicsBounds.Maxs.z;
-			PlayerColliderModel.GameObject.WorldScale = new Vector3( 1, 1, scale );
-			source = Scene.Trace.Body( PlayerColliderModel.Rigidbody.PhysicsBody, new Transform( from ), to );
+			SyncPlayerHullCollider( PlayerColliderCyllinder );
+
+			source = Scene.Trace.Body( PlayerColliderCyllinder.Rigidbody.PhysicsBody, new Transform( from ), to );
 		}
 		var trace = source.IgnoreGameObjectHierarchy( GameObject );
 
 		return UseCollisionRules ? trace.WithCollisionRules( Tags ) : trace.WithoutTags( IgnoreLayers );
 	}
 
+	void SyncPlayerHullCollider( HullCollider collider )
+	{
+		if ( !collider.IsValid() ) return;
+
+		collider.Type = HullCollider.PrimitiveType.Cylinder;
+
+		// John: This was the old method of scaling the collider, but doing that on a gameobject level might cause problems I feel like!
+		//	collider.GameObject.WorldScale = new Vector3( 1, 1, Height / collider.LocalBounds.Maxs.z );
+
+		collider.Radius = Radius;
+		collider.Height = Height;
+		collider.Center = new Vector3( 0, 0, Height * 0.5f );
+	}
+
 	/// <summary>
-	/// Trace the controller's current position to the specified delta	
+	/// If using a physics body for the player's movement trace, 
+	/// we need to reset its transform every tick to ensure it stays in sync 
+	/// with the player's position and rotation. Locking the rigid body unfortunately yields 
+	/// no results, so we have to do it manually. TODO: Delete if one day locking works again properly.
+	/// </summary>
+	void ResetPlayerColliderTransform()
+	{
+		if ( !PlayerColliderCyllinder.IsValid() ) return;
+
+		SyncPlayerHullCollider( PlayerColliderCyllinder );
+
+		var rigidbody = PlayerColliderCyllinder.Rigidbody;
+
+		if ( !rigidbody.IsValid() ) return;
+
+		PlayerColliderCyllinder.GameObject.LocalPosition = Vector3.Zero;
+		PlayerColliderCyllinder.GameObject.LocalRotation = Rotation.Identity;
+
+		rigidbody.LocalPosition = Vector3.Zero;
+		rigidbody.LocalRotation = Rotation.Identity;
+		rigidbody.Velocity = Vector3.Zero;
+		rigidbody.AngularVelocity = Vector3.Zero;
+	}
+
+	/// <summary>
+	/// Trace the controller's current position to the specified delta
 	/// </summary>
 	public SceneTraceResult TraceDirection( Vector3 direction )
 	{
@@ -212,9 +289,17 @@ public partial class PlayerMovement : Component
 
 		Velocity += PhysicsBodyVelocity;
 
-		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, Velocity );
-		mover.Bounce = Bounciness;
-		mover.MaxStandableAngle = GroundAngle;
+		// Speculative fix to solve #81
+		// When moving directly towards a wall (-Y, +X directions), we can end up with a velocity that is pointing directly into the wall. 
+		// This causes player to get stuck on the wall and not be able to move along it. To fix this, we can clip the velocity 
+		// against the wall normal if we detect an immediate contact with a wall in the direction we're moving.
+		Velocity = ClipImmediateWallContact( pos, Velocity );
+
+		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, Velocity )
+		{
+			Bounce = Bounciness,
+			MaxStandableAngle = GroundAngle
+		};
 
 		if ( step && IsOnGround )
 		{
@@ -233,6 +318,27 @@ public partial class PlayerMovement : Component
 		Velocity /= WorldScale;
 	}
 
+	Vector3 ClipImmediateWallContact( Vector3 pos, Vector3 velocity )
+	{
+		if ( !ClipImmediateWallContactEnabled ) return velocity;
+
+		var horizontalVelocity = velocity.WithZ( 0 );
+		if ( horizontalVelocity.Length < 0.001f ) return velocity;
+
+		var tr = BuildTrace( pos, pos + velocity * Time.Delta ).Run();
+		if ( !tr.Hit || tr.Fraction > 0.001f ) return velocity;
+		if ( Vector3.GetAngle( Vector3.Up, tr.Normal ) <= GroundAngle ) return velocity;
+
+		var horizontalNormal = tr.Normal.WithZ( 0 );
+		if ( horizontalNormal.Length < 0.001f ) return velocity;
+
+		horizontalNormal = horizontalNormal.Normal;
+		var inwardSpeed = horizontalVelocity.Dot( horizontalNormal );
+		if ( inwardSpeed >= 0.0f ) return velocity;
+
+		return velocity - horizontalNormal * inwardSpeed;
+	}
+
 	void CategorizePosition()
 	{
 		SurfaceFriction = 1.0f;
@@ -247,7 +353,7 @@ public partial class PlayerMovement : Component
 			return;
 		}
 
-		//point.z -= (IsOnGround && PreviousGroundObject != null ? StepHeight : 0.1f) / 32f;
+		//point.z -= (IsOnGround && PreviousGroundObject.IsValid() ? StepHeight : 0.1f) / 32f;
 
 		var pm = BuildTrace( vBumpOrigin, point, 0.0f ).Run();
 
@@ -311,6 +417,14 @@ public partial class PlayerMovement : Component
 	}
 
 	/// <summary>
+	/// <summary>
+	/// Fired when the player lands on the ground after being airborne.
+	/// Parameters: fall distance, impact velocity.
+	/// </summary>
+	public event Action<float, Vector3, Surface> OnLanded;
+
+	private Vector3 _preLandVelocity;
+
 	/// We're no longer on the ground, remove it
 	/// </summary>
 	public virtual void ClearGround()
@@ -322,6 +436,7 @@ public partial class PlayerMovement : Component
 			PhysicsBodyRigidbody.Velocity = Vector3.Zero;
 		}
 
+		_preLandVelocity = Velocity;
 		PreviousGroundObject = GroundObject;
 		IsOnGround = false;
 		GroundObject = default;
@@ -335,6 +450,7 @@ public partial class PlayerMovement : Component
 	/// </summary>
 	public virtual void ChangeGround( SceneTraceResult pm )
 	{
+		bool wasOnGround = IsOnGround;
 		PreviousGroundObject = GroundObject;
 		IsOnGround = pm.Hit;
 		GroundObject = pm.GameObject;
@@ -346,6 +462,13 @@ public partial class PlayerMovement : Component
 		if ( pm.Hit )
 		{
 			CatergorizeGroundSurface( pm );
+
+			// Just landed
+			if ( !wasOnGround )
+			{
+				var fallDistance = -_preLandVelocity.z;
+				OnLanded?.Invoke( fallDistance, _preLandVelocity, pm.Surface );
+			}
 		}
 	}
 
@@ -392,7 +515,7 @@ public partial class PlayerMovement : Component
 	bool IsStuck()
 	{
 		var result = BuildTrace( WorldPosition, WorldPosition ).Run();
-		return result.StartedSolid;
+		return result.StartedSolid || IsOutOfBounds( WorldPosition );
 	}
 	[ConVar] public static bool debug_playermovement_unstick { get; set; } = false;
 	Transform _previousTransform;
@@ -402,12 +525,14 @@ public partial class PlayerMovement : Component
 		var result = BuildTrace( WorldPosition, WorldPosition ).Run();
 
 		// Not stuck, we cool
-		if ( !result.StartedSolid )
+		if ( !result.StartedSolid && !IsOutOfBounds( WorldPosition ) )
 		{
 			_stuckTries = 0;
 			_previousTransform = Transform.World;
 			return false;
 		}
+
+		var wasOutOfBounds = IsOutOfBounds( WorldPosition );
 
 		/*using ( Gizmo.Scope( "unstuck", Transform.World ) )
 		{
@@ -431,13 +556,13 @@ public partial class PlayerMovement : Component
 			}*/
 
 			// this can solve so many issues super quickly so do this first.
-			if ( i <= 2 )
+			if ( i <= 2 && !wasOutOfBounds )
 			{
 				pos = WorldPosition + Vector3.Up * ((i) * 0.2f);
 				if ( debug_playermovement_unstick ) DebugOverlay.Box( BoundingBox, Color.Cyan, 2, Transform.World.WithRotation( Rotation.Identity ) );
 			}
 			// Try base velocity 
-			if ( (PhysicsBodyVelocity.Length > 0 || (PhysicsBodyRigidbody.IsValid() && PhysicsBodyRigidbody.WorldPosition != WorldPosition)) && i < 80 )
+			if ( (PhysicsBodyVelocity.Length > 0 || (PhysicsBodyRigidbody.IsValid() && PhysicsBodyRigidbody.WorldPosition != WorldPosition)) && i < 80 && !wasOutOfBounds )
 			{
 				normal = PhysicsBodyVelocity.Normal * Time.Delta;
 				normal.z = Math.Max( 0, normal.z );
@@ -470,14 +595,17 @@ public partial class PlayerMovement : Component
 				}*/
 			}
 			// Second try the up direction for moving platforms
-			else if ( i < 4 )
+			else if ( i < 4 && !wasOutOfBounds )
 			{
 				pos = WorldPosition + Vector3.Up * ((i) * 3f);
 				if ( debug_playermovement_unstick ) DebugOverlay.Box( BoundingBox, Color.Yellow, 2, Transform.World.WithRotation( Rotation.Identity ) );
 			}
 			else
 			{
-				normal = Vector3.Random.Normal * (((float)_stuckTries) * 1.25f);
+				var pushscale = 1.25f;
+				if ( wasOutOfBounds ) pushscale = 3f;
+				normal = Vector3.Random.Normal * (((float)_stuckTries) * pushscale);
+
 				if ( debug_playermovement_unstick ) DebugOverlay.Line( WorldPosition, pos, Color.Blue, 2 );
 				pos = WorldPosition + normal;
 				normal *= 0.25f;
@@ -491,10 +619,10 @@ public partial class PlayerMovement : Component
 			}*/
 			result = BuildTrace( pos, pos ).Run();
 
-			if ( !result.StartedSolid )
+			if ( !result.StartedSolid && !IsOutOfBoundsForUnstick( pos ) )
 			{
 				//Log.Info( $"unstuck after {_stuckTries} tries ({_stuckTries * AttemptsPerTick} tests)" );
-				Velocity += normal / Time.Delta;
+				if ( !wasOutOfBounds ) Velocity += normal / Time.Delta;
 				WorldPosition = pos;
 				_previousTransform = Transform.World;
 				return false;

@@ -1,4 +1,3 @@
-using Sandbox;
 using System;
 using System.Reflection;
 
@@ -26,8 +25,7 @@ public class point_clientcommand : BaseEntity
 	/// <returns></returns>
 	public BaseEntity Command( BaseEntity activator = null, string command = null )
 	{
-		if ( activator == null )
-			activator = this;
+		activator ??= this;
 
 		RunCMD( command );
 
@@ -64,7 +62,7 @@ public static class ConsoleBypassDemo
 		var consoleSystemType = typeof( ConsoleSystem );
 		var consoleCommandType = consoleSystemType.GetNestedType( "ConsoleCommand", BindingFlags.NonPublic );
 
-		if ( consoleCommandType == null )
+		if ( consoleCommandType is null )
 		{
 			Log.Warning( "Could not find ConsoleCommand type." );
 			return;
@@ -72,7 +70,7 @@ public static class ConsoleBypassDemo
 
 		// Create an instance of ConsoleCommand using Activator
 		var constructor = consoleCommandType.GetConstructor( BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof( string ), typeof( string[] ) }, null );
-		if ( constructor == null )
+		if ( constructor is null )
 		{
 			Log.Warning( "Could not get ConsoleCommand constructor." );
 			return;
@@ -82,7 +80,7 @@ public static class ConsoleBypassDemo
 
 		// Get RunInternal method
 		var runInternal = consoleSystemType.GetMethod( "RunInternal", BindingFlags.NonPublic | BindingFlags.Static );
-		if ( runInternal == null )
+		if ( runInternal is null )
 		{
 			Log.Warning( "Could not find RunInternal method." );
 			return;
@@ -90,7 +88,7 @@ public static class ConsoleBypassDemo
 
 		try
 		{
-			runInternal.Invoke( null, new object[] { consoleCommand } );
+			runInternal.Invoke( null, [consoleCommand] );
 			Log.Info( $"Tried to run: {commandName} {string.Join( " ", args )}" );
 		}
 		catch ( TargetInvocationException ex )

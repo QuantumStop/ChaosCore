@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Core;
+﻿namespace Core;
 
 [Description( "A trigger that changes level to a defined scene." )]
 [Icon( "multiple_stop" )]
@@ -11,7 +9,7 @@ public class trigger_changelevel : BaseTrigger
 	[Property] public bool destroyPlayer { get; set; }
 
 
-	[HideIf( "isDebug", false )][Feature( "Debug" ), Property, ReadOnly] public SceneFile currentScene;
+	[ShowIf( nameof( isDebug ), true )][Feature( "Debug" ), Property, ReadOnly] public SceneFile currentScene;
 
 	protected override void OnFixedUpdate()
 	{
@@ -27,7 +25,7 @@ public class trigger_changelevel : BaseTrigger
 
 		var item = trackedItems.Keys.FirstOrDefault( i => i.Tags.Has( "player" ) && isEnabled );
 
-		if ( item is not null )
+		if ( item.IsValid() )
 		{
 			if ( destroyPlayer )
 			{
@@ -59,8 +57,7 @@ public class trigger_changelevel : BaseTrigger
 			return;
 		}
 
-
-		GameManager.Instance.EnterLevelTransition( nextScene.ResourcePath );
+		GameManagerSystem.Current.EnterLevelTransition( nextScene.ResourcePath );
 
 		//var load = new SceneLoadOptions();
 		//

@@ -4,7 +4,7 @@ namespace Core;
 /// <summary>
 /// Crosshair configuration for weapons
 /// </summary>
-[AssetType( Name = "Crosshair Data", Extension = "crs" )]
+[AssetType( Name = "Crosshair Data", Extension = "crs", IconColor = "#007acc" )]
 public class CrosshairData : GameResource
 {
 	[Order( 0 )] public WeaponCrosshairType WeaponCrosshairType { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using System.Linq;
+using System;
 
 namespace XGUI;
 
@@ -26,7 +27,18 @@ public class XGUISystem : GameObjectSystem
 		}
 	}
 	public XGUIRootComponent Component { get; internal set; }
-	public XGUIRootPanel Panel { get; internal set; }
+	private XGUIRootPanel _panel;
+	public XGUIRootPanel Panel
+	{
+		get => _panel;
+		internal set
+		{
+			_panel = value;
+			if ( _panel != null )
+				OnPanelReady?.Invoke( _panel );
+		}
+	}
+	public event Action<XGUIRootPanel> OnPanelReady;
 	public static XGUISystem Instance => Game.ActiveScene.GetSystem<XGUISystem>();
 	public XGUISystem( Scene scene ) : base( scene )
 	{

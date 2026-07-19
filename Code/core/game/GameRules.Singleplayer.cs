@@ -4,7 +4,7 @@ namespace Core;
 /// </summary>
 public class SingleplayerRules : GameRules
 {
-	public override bool IsSinglePlayer { get => true; }
-	public virtual bool CanSaveLoad { get => true; }
-	public override bool CanTransition { get => true; }
+	public override bool IsSinglePlayer => true;
+	public virtual bool CanSaveLoad => true;
+	public override bool CanTransition => true;
 }

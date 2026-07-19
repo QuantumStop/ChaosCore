@@ -3,16 +3,11 @@ using Core;
 namespace Editor.Assets;
 
 [AssetPreview( "wpn" )]
-class PreviewWeapon : AssetPreview
+class PreviewWeapon( Asset asset ) : AssetPreview( asset )
 {
 	public override float PreviewWidgetCycleSpeed => 0.2f;
 
 	ModelRenderer modelRenderer;
-
-	public PreviewWeapon( Asset asset ) : base( asset )
-	{
-
-	}
 
 	/// <summary>
 	/// Create the model or whatever needs to be viewed
@@ -21,8 +16,8 @@ class PreviewWeapon : AssetPreview
 	{
 		using ( EditorUtility.DisableTextureStreaming() )
 		{
-			var model = await Model.LoadAsync( Asset.LoadResource<WeaponParse>().WeaponWorldmodel.ResourcePath );
-			if ( model is null ) return;
+			var model = await Model.LoadAsync( Asset.LoadResource<WeaponParse>().WeaponWorldmodel?.ResourcePath );
+			if ( !model.IsValid() ) return;
 
 			using ( Scene.Push() )
 			{
@@ -32,10 +27,12 @@ class PreviewWeapon : AssetPreview
 				if ( model.MeshCount == 0 )
 					return;
 
-				PrimaryObject = new GameObject( true, "preview weapon" );
-				PrimaryObject.WorldTransform = Transform.Zero;
+				PrimaryObject = new GameObject( true, "preview weapon" )
+				{
+					WorldTransform = Transform.Zero
+				};
 
-				var tonemap = Camera.AddComponent<Tonemapper>();
+				var tonemap = Camera.AddComponent<Tonemapper>().Mode = Tonemapper.TonemappingMode.Saturated;
 
 				modelRenderer = PrimaryObject.AddComponent<ModelRenderer>();
 				modelRenderer.Model = model;

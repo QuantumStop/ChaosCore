@@ -1,9 +1,10 @@
-using Sandbox.Rendering;
 using System;
 namespace Core;
 
-[Icon( "format_align_justify" )]
-[Description( "An entity that displays text on player's screens." )]
+/// <summary>
+/// An entity that displays text on player's screens.
+/// </summary>
+[Icon( "format_align_justify" ), Category( "Logic" ), Title( "game_text" )]
 public class ui_text : BaseEntity
 {
 	public enum TextEffects
@@ -41,7 +42,7 @@ public class ui_text : BaseEntity
 
 
 	[Property] public TextEffects CurrentEFfect { get; set; } = TextEffects.TEXTEFFECT_FADEINOUT;
-	[Property, MakeDirty] public TextAlignmentFlag TextAlignment { get; set; }
+	[Property] public TextAlignmentFlag TextAlignment { get; set; }
 
 
 	/// <summary>

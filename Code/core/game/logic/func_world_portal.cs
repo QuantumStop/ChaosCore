@@ -1,7 +1,3 @@
-
-using System;
-using System.Numerics;
-
 namespace Core;
 
 [Description( "A in-world portal that connects two parts of the world togher in a seamless way" )]
@@ -190,8 +186,8 @@ public class func_world_portal : BaseEntity
 	//     ProtectScreenFromClipping (playerCam.WorldPosition);
 	// }
 	// void CreateViewTexture () {
-	//     if (viewTexture == null || viewTexture.Width != Screen.Width || viewTexture.Height != Screen.Height) {
-	//         if (viewTexture != null) {
+	//     if (viewTexture is null || viewTexture.Width != Screen.Width || viewTexture.Height != Screen.Height) {
+	//         if (viewTexture.IsValid()) {
 	//             viewTexture.Release ();
 	//         }
 	//         viewTexture = new RenderTexture (Screen.width, Screen.height, 0);
@@ -320,7 +316,7 @@ public class func_world_portal : BaseEntity
 	// }
 
 	// public void OnValidate () {
-	//     if (linkedPortal != null) {
+	//     if (linkedPortal.IsValid()) {
 	//         linkedPortal.linkedPortal = this;
 	//     }
 	// }

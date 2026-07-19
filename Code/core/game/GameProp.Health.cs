@@ -7,133 +7,227 @@ namespace Core;
 
 public partial class GameProp
 {
+#if IGNIS
 	[DebugExpose]
-	[Sync, Property, Order( 1 ), Feature( "Debug" ), ReadOnly] public float Health { get; set; }
+#endif
+	[Sync, Property, Group( "Breakable Properties" ), Order( 11 ), ReadOnly] public float Health { get; set; }
 
-	[Property, Header( "Health" ), Order( 30 ), MakeDirty] bool OverrideHealth { get; set; } = false;
-	[Property, Order( 31 ), MakeDirty, Range( 0, 1024, true, false ), Step( 1 ), Title( "New Health" ), ShowIf( "OverrideHealth", true )] public int NewHealth { get; set; }  // health is better as an integer
+	[Property, Group( "Breakable Properties" ), Order( 12 )]
+	public bool OverrideHealth
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				OnHealthChange();
+			}
+		}
+	} = false;
+
+	[Property, Group( "Breakable Properties" ), Order( 11 ), ShowIf( nameof( OverrideHealth ), true )]
+	public int NewHealth
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				OnHealthChange();
+			}
+		}
+	}  // health is better as an integer
+
+	[Sync] public GameObject LastAttacker { get; set; }
+
+	private void OnHealthChange()
+	{
+		if ( Model.IsValid() )
+		{
+			if ( OverrideHealth )
+				Health = NewHealth;
+			else if ( Model.TryGetData<ModelPropData>( out var data ) )
+				Health = data.Health > 0f ? data.Health : Health;
+		}
+	}
 
 	[Property, Group( "Outputs" )] public Action<DamageInfo> OnPropTakeDamage { get; set; }
 
 	[Property, Group( "Outputs" )] public ChaosOutput OnPropBreak { get; set; }
+	[Property, Group( "Outputs" )] public ChaosOutput OnPropIgnite { get; set; }
+	[Property, Group( "Outputs" )] public ChaosOutput OnPropExplode { get; set; }
 
-	void IDamageable.OnDamage( in DamageInfo damage )
-	{
-		OnDamage( in damage );
-	}
+	void IDamageable.OnDamage( in DamageInfo damage ) => OnDamage( in damage );
 
 	public void OnDamage( in DamageInfo damage )
 	{
-		if ( !(Health <= 0f) )
+		LastAttacker = damage.Attacker;
+
+		if ( IsProxy ) return;
+
+		// The dead feel nothing
+		if ( Health <= 0.0f )
+			return;
+
+		// Explosive props detonate immediately on any physics impact
+		if ( ShouldDetonateFromDamage( damage ) )
 		{
-			OnPropTakeDamage?.Invoke( damage );
-			Health -= damage.Damage;
-			if ( Health <= 0f )
+			Health = 0;
+			Break( damage );
+			return;
+		}
+
+		if ( CanIgniteFromDamage( damage ) )
+		{
+			// when first ignited, randomize the health a bit, so eventual breaks and explosions
+			// don't happen in complete unison
+			if ( Model?.Data is not null )
 			{
-				Kill();
-				Health = 0f;
+				Health = Model.Data.Health * Random.Shared.Float( 0.8f, 1.2f );
 			}
+
+			Ignite();
+			return;
+		}
+
+		if ( damage.Tags.Contains( "impact" ) )
+		{
+			if ( !IsStrongImpact( damage ) )
+				return;
+
+			damage.Damage = ResolvedImpactDamage;
+		}
+
+		// John: This is where we could apply physics impulses based on the damage type, if we wanted to. 
+		// For example, explosions might apply a strong impulse, while bullets might apply a smaller one. 
+		// For now not sure if we need this explicitly, TODO: Evaluate.
+
+		// if ( !IsStatic )
+		// {
+		// 	switch ( damage )
+		// 	{
+		// 		case CoreDamageInfo coreDamageInfo when coreDamageInfo.Tags.Has( "explosion" ):
+		// 			PassImpulse( coreDamageInfo.Force, coreDamageInfo.AngularForce, true );
+		// 			break;
+
+		// 		case DamageInfo coreDamageInfo when coreDamageInfo.Tags.Has( "acid" ):
+		// 			break;
+
+		// 		case DamageInfo coreDamageInfo when coreDamageInfo.Tags.Has( "bullet" ):
+		// 			break;
+
+		// 		default:
+		// 			// Unknown damage type
+		// 			//	Log.Warning( $"Unhandled damage type: {damage?.GetType().Name}" );
+		// 			break;
+		// 	}
+		// }
+
+		OnPropTakeDamage?.Invoke( damage );
+
+		// Take the damage
+		Health -= damage.Damage;
+
+		if ( Health <= 0 )
+		{
+			Break( damage );
+			Health = 0;
 		}
 	}
 
-	public void Kill()
+	public void Break( DamageInfo damage = null )
 	{
-		OnBreak();
-		base.Kill( this );
+		OnBreak( damage );
+		Kill( this );
 	}
 
-	void OnBreak()
+	void OnBreak( DamageInfo damage = null )
 	{
 		OnPropBreak?.Invoke( null );
 
-		CreateGibs();
-	}
+		PlayBreakSound();
 
-	public List<GameGib> CreateGibs()
-	{
-		List<GameGib> list = [];
+		var wasImpact = damage?.Tags.Contains( "impact" ) ?? false;
+		var createsExplosion = ShouldCreateExplosionOnBreak();
+		var damageOrigin = default( Vector3 );
+		var scatterForceScale = 0f;
 
-		if ( !Model.IsValid() )
-			return list;
-
-		var rb = Components.Get<Rigidbody>();
-		var breaklist = Model.GetData<ModelBreakPiece[]>();
-
-		if ( breaklist == null || breaklist.Length <= 0 ) return list;
-
-		list.EnsureCapacity( breaklist.Length );
-
-		foreach ( var model in breaklist )
+		if ( createsExplosion )
 		{
-			var gib = new GameObject( true, $"{GameObject.Name} (gib)" )
-			{
-				WorldPosition = WorldTransform.PointToWorld( model.Offset ),
-				WorldRotation = WorldRotation,
-				WorldScale = WorldScale
-			};
+			damageOrigin = damage?.Origin ?? default;
 
-			foreach ( var tag in model.CollisionTags.Split( ' ', StringSplitOptions.RemoveEmptyEntries ) )
-			{
-				gib.Tags.Add( tag );
-			}
+			if ( damageOrigin == default )
+				damageOrigin = WorldPosition;
 
-			if ( GameManager.Rules.IsOnline ) gib.NetworkSpawn();
-
-			var c = gib.Components.Create<GameGib>( false );
-			c.FadeTime = model.FadeTime;
-			c.Model = Model.Load( model.Model );
-			c.Enabled = true;
-			c.Tint = ModelRenderer.Tint;
-
-			var phys = gib.Components.Get<Rigidbody>( true );
-
-			if ( phys != null )
-			{
-				phys.Velocity = rb.Velocity;
-				phys.AngularVelocity = rb.AngularVelocity;
-			}
-
-
+			scatterForceScale = ResolvedExplosionForce;
+			CreateExplosion();
 		}
-		return list;
-	}
 
+		NetworkCreateGibs( wasImpact, damageOrigin, scatterForceScale );
+	}
 
 }
 
 public class GameGib : GameProp
 {
+#if IGNIS
 	[DebugExpose]
-	public float FadeTime { get; set; }
+#endif
+	[Property] public float FadeTime { get; set; }
+	[Property, ReadOnly] private float DestroyAtTime { get; set; }
+	private bool _isFadingOut;
 
 	protected override void OnEnabled()
 	{
 		base.OnEnabled();
 
-		if ( FadeTime > 0 && !Scene.IsEditor )
-		{
-			_ = RunGib();
-		}
+		_isFadingOut = false;
+
+		if ( FadeTime > 0 && !Scene.IsEditor && DestroyAtTime <= 0 )
+			DestroyAtTime = WorldTime.Now + FadeTime + Random.Shared.Float( 0, 2.0f );
 	}
 
-	async Task RunGib()
+	protected override void OnUpdate()
 	{
-		await Task.DelaySeconds( FadeTime + Random.Shared.Float( 0, 2.0f ) );
+		base.OnUpdate();
 
-		if ( !IsValid )
+		if ( FadeTime <= 0 ||
+			 Scene.IsEditor ||
+			 _isFadingOut ||
+			 DestroyAtTime <= 0 )
+		{
+			return;
+		}
+
+		if ( WorldTime.Now < DestroyAtTime )
+			return;
+
+		_isFadingOut = true;
+		_ = RunGib();
+	}
+
+	private async Task RunGib()
+	{
+		if ( !this.IsValid() )
 			return;
 
 		var modelComponent = Components.Get<ModelRenderer>();
 
-		if ( modelComponent != null )
+		if ( modelComponent.IsValid() )
 		{
-			for ( float f = modelComponent.Tint.a; f > 0.0f; f -= Time.Delta )
+			for ( var alpha = modelComponent.Tint.a;
+				  alpha > 0.0f && this.IsValid();
+				  alpha -= Time.Delta )
 			{
-				modelComponent.Tint = modelComponent.Tint.WithAlpha( f );
+				modelComponent.Tint =
+					modelComponent.Tint.WithAlpha( MathF.Max( 0.0f, alpha ) );
+
 				await Task.Frame();
 			}
 		}
 
-		GameObject.Destroy();
+		if ( this.IsValid() )GameObject.Destroy();
 	}
 }

@@ -1,9 +1,13 @@
 ﻿using Sandbox;
 namespace XMovement;
 
-public partial class PlayerWalkControllerComplex : Component, Component.ExecuteInEditor
+public partial class PlayerWalkControllerComplex : Component
 {
 	[RequireComponent] public PlayerMovement Controller { get; set; }
+	/// <summary>
+	/// Disabling the component ruins EyeAngles, so we have to block it manually
+	/// </summary>
+	[Property, Hide] public bool AllowMovement { get; set; } = true;
 	protected override void OnStart()
 	{
 		base.OnStart();
@@ -12,41 +16,54 @@ public partial class PlayerWalkControllerComplex : Component, Component.ExecuteI
 			SetupBody();
 			SetupHead();
 			SetupCamera();
-			SetupVR();
 		}
 	}
 
 	protected override void OnUpdate()
 	{
 		base.OnUpdate();
-		if ( !Game.IsPlaying ) return;
+		if ( Scene.IsEditor ) return;
 
-		Camera.Enabled = !IsProxy;
-
-		if ( !IsProxy )
+		if ( AllowMovement )
 		{
-			UpdateCamera();
+			Camera.Enabled = !IsProxy;
+
+			if ( !IsProxy )
+				UpdateCamera();
+
 			DoEyeLook();
-			BuildFrameInput();
-			DoUsing();
-			if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerUpdate ) DoMovement();
+
+			if ( !IsProxy )
+			{
+				BuildFrameInput();
+				DoUsing();
+				if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerUpdate ) DoMovement();
+			}
+			Animate();
 		}
-		Animate();
+		else
+		{
+			PositionHead();
+		}
 	}
 
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
-		if ( !Game.IsPlaying ) return;
+		if ( Scene.IsEditor ) return;
 
-		if ( !IsProxy )
+		if ( AllowMovement )
 		{
-			UpdateCrouching();
-			if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerFixedUpdate ) DoMovement();
-		}
-		Animate();
+			if ( !IsProxy )
+			{
+				UpdateCrouching();
+				if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerFixedUpdate ) DoMovement();
+			}
+			Animate();
 
-		// HACK: For shitty networking purposes do this per FixedUpdate, we cant do this on start because new players wont ever fucking run that on join, nor any other function.
-		UpdateBodyVisibility();
+			// HACK: For shitty networking purposes do this per FixedUpdate, we cant do this on start because new players wont ever fucking run that on join, nor any other function.
+			UpdateBodyVisibility();
+		}
+		WorldRotation = Rotation.Identity; // external forces can rotate the root gameobject which fuck up all sorts of worldrotation based tracing
 	}
 }

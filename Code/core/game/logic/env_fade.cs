@@ -1,8 +1,9 @@
 namespace Core;
 
-[Icon( "format_align_justify" )]
-
-[Description( "An entity that fades out/in player's view." )]
+/// <summary>
+/// An entity that fades out/in player's view.
+/// </summary>
+[Icon( "format_align_justify" ), Category( "Logic" ), Title( "env_fade" )]
 public class ui_fade : BaseEntity
 {
 	public new delegate void ChaosOutput( ui_fade activator );

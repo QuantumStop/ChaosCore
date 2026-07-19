@@ -10,12 +10,21 @@ public class BaseAmmoItem : BaseItem
 	/// <summary>
 	/// Amount of ammo to give
 	/// </summary>
-	[Property, Range( 1, 1000, true, false ), Step( 1 )] public int Amount { get; set; } = 1;
+	[Property, Space, Range( 1, 1000, true, false ), Step( 1 ), ShowIf( nameof( FillMax ), false )] public int Amount { get; set; } = 1;
+	/// <summary>
+	/// We don't have that many weapons using the same ammo, which is why its probably ok to have a default value, and this helps set it for this ammo item
+	/// </summary>
+	[Button, ShowIf( nameof( FillMax ), false )]
+	private void SetToDefaultAmount()
+	{
+		if ( AmmoData.IsValid() )
+			Amount = AmmoData.DefaultAmmo;
+	}
+
 	/// <summary>
 	/// Use AmmoData.AmmoModelLarge instead, for big ammo pickups
 	/// </summary>
-	[Property] public bool UseLargeModel { get; set; } = false;
-
+	[Property, Space] public bool UseLargeModel { get; set; } = false;
 	/// <summary>
 	/// Fill the whole reserve for this
 	/// </summary>
@@ -27,27 +36,13 @@ public class BaseAmmoItem : BaseItem
 
 	protected override void OnValidate()
 	{
-		if ( GetType().Name != "BaseAmmoItem" && (AmmoData == null || GetType().Name != AmmoData.ResourceName) )
+		if ( GetType().Name != "BaseAmmoItem" && (!AmmoData.IsValid() || GetType().Name != AmmoData.ResourceName) )
 			AmmoData = AmmoInfo.GetAmmoData( GetType().Name );
 
 		base.OnValidate();
 	}
 
-	protected override string GetModel()
-	{
-		if ( AmmoData != null )
-		{
-			if ( AmmoData.AmmoModel == null )
-				return "models/dev/error.vmdl";
-
-			if ( UseLargeModel )
-				return AmmoData.AmmoModelLarge.ResourcePath;
-
-			return AmmoData.AmmoModel.ResourcePath;
-		}
-
-		return base.GetModel();
-	}
+	protected override string GetModel() => (UseLargeModel ? AmmoData?.AmmoModelLarge.ResourcePath : AmmoData?.AmmoModel.ResourcePath) ?? base.GetModel();
 
 	protected override void OnStart()
 	{
@@ -58,7 +53,7 @@ public class BaseAmmoItem : BaseItem
 
 	protected override bool PickupCheck()
 	{
-		return BasePlayer.Local.AddReserveAmmo( AmmoData.ResourceName, FillMax ? 10000 : Amount, true ) > 0 ? false : true;
+		return BasePlayer.Local.AddReserveAmmo( AmmoData.ResourceName, FillMax ? 10000 : Amount, true ) <= 0;
 	}
 
 	public override void OnPickup( BasePlayer Activator = null )
@@ -66,7 +61,7 @@ public class BaseAmmoItem : BaseItem
 		if ( !AmmoData.IsValid() )
 			return;
 
-		if ( AmmoData.AmmoModel == null )
+		if ( !AmmoData.AmmoModel.IsValid() )
 			return;
 
 		base.OnPickup( Activator );

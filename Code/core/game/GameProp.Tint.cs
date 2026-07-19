@@ -2,10 +2,6 @@
 
 public partial class GameProp
 {
-	private Color _tintA = new Color( 1f, 1f, 1f, 1f );
-	private Color _tintB = new Color( 1f, 1f, 1f, 1f );
-	private Color _tintC = new Color( 1f, 1f, 1f, 1f );
-
 	[Property, Order( 70 ), Feature( "Debug" ), ReadOnly, Title( "Is Prop Batchable?" )] public bool PropBatchableDebug { get; set; }
 
 	public enum PropTintCount
@@ -18,23 +14,25 @@ public partial class GameProp
 		ThreeTints
 	}
 
-	[Property, Order( 13 ), Title( "Tint Mode" )]
+	[Property, Order( 10 ), Title( "Tint Mode" ), Group( "Render Properties" )]
 	public PropTintCount WhichTints;
+#if IGNIS
 	[DebugExpose]
+#endif
 
-	[Property, Order( 14 )]
+	[Property, Order( 10 ), Group( "Render Properties" )]
 	public Color Tint
 	{
-		get => _tintA;
+		get;
 		set
 		{
-			if ( (_tintA != value) )
+			if ( field != value )
 			{
-				_tintA = value;
+				field = value;
 
-				if ( tintComponent.mdlrender.IsValid() )
+				if ( tintComponent.IsValid() && tintComponent.ModelRenderer.IsValid() ) // check specifically if the tint component has a reference, so theres no pant shitting
 				{
-					tintComponent.TintA = _tintA;
+					tintComponent.TintA = field;
 
 					if ( WhichTints == PropTintCount.OneTint )
 					{
@@ -44,20 +42,22 @@ public partial class GameProp
 				}
 			}
 		}
-	}
+	} = Color.White.WithAlpha( 1 );
 
-	[Property, Order( 15 ), ShowIf( "WhichTints", PropTintCount.TwoTints ), ShowIf( "WhichTints", PropTintCount.ThreeTints )]
+	[Property, Group( "Render Properties" ), Order( 10 ), ShowIf( "WhichTints", PropTintCount.TwoTints ),
+	ShowIf( "WhichTints", PropTintCount.ThreeTints )]
 	public Color TintB
 	{
-		get => _tintB;
+		get;
 		set
 		{
-			if ( (_tintB != value) )
+			if ( field != value )
 			{
-				_tintB = value;
-				if ( tintComponent.mdlrender.IsValid() )
+				field = value;
+
+				if ( tintComponent.IsValid() && tintComponent.ModelRenderer.IsValid() )
 				{
-					tintComponent.TintB = _tintB;
+					tintComponent.TintB = value;
 
 					if ( WhichTints == PropTintCount.TwoTints )
 					{
@@ -67,22 +67,23 @@ public partial class GameProp
 
 			}
 		}
-	}
+	} = Color.White.WithAlpha( 1 );
 
-	[Property, Order( 16 ), ShowIf( "WhichTints", PropTintCount.ThreeTints )]
+	[Property, Group( "Render Properties" ), Order( 10 ), ShowIf( "WhichTints", PropTintCount.ThreeTints )]
 	public Color TintC
 	{
-		get => _tintC;
+		get;
 		set
 		{
-			if ( (_tintC != value) )
+			if ( field != value )
 			{
-				_tintC = value;
-				if ( tintComponent.mdlrender.IsValid() )
-					tintComponent.TintC = _tintC;
+				field = value;
+
+				if ( tintComponent.IsValid() && tintComponent.ModelRenderer.IsValid() )
+					tintComponent.TintC = value;
 			}
 		}
-	}
+	} = Color.White.WithAlpha( 1 );
 
 	private TintComponent tintComponent;
 
@@ -92,9 +93,9 @@ public partial class GameProp
 
 		tintComponent.IsOnProp = true;
 
-		tintComponent.TintA = _tintA;
-		tintComponent.TintB = _tintB;
-		tintComponent.TintC = _tintC;
+		tintComponent.TintA = Tint;
+		tintComponent.TintB = TintB;
+		tintComponent.TintC = TintC;
 
 		AddProcedural( tintComponent );
 	}

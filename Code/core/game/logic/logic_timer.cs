@@ -1,4 +1,5 @@
 namespace Core;
+
 using System;
 
 [Icon( "timer" )]
@@ -50,11 +51,13 @@ public class logic_timer : BaseEntity
 	/// Alternates between OnTimerHigh and OnTimerLow outputs
 	/// </summary>
 	[Group( "SpawnFlags" ), Property, Title( "Oscillator" ), Order( 2 )] public bool isOscillator { get; set; } = false;
-
+#if IGNIS
 	[DebugExpose( "firing in", order: 2, Format = "0.00 sec" )]
+#endif
 	[Property, Feature( "Debug" ), ReadOnly, ActionGraphIgnore] public float CurrentTime { get; set; }
-
+#if IGNIS
 	[DebugExpose( "refire interval", order: 1, Format = "0.00 sec" )]
+#endif
 	[Property, Feature( "Debug" ), ReadOnly, ActionGraphIgnore] public float CurrentRefireInterval;
 
 	private float CurrentMaxInterval;

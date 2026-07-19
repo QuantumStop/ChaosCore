@@ -1,7 +1,8 @@
+#if FMOD
+using FMODSbox;
+#endif
 using Sandbox.UI;
 using System;
-using System.Threading.Tasks;
-using WorldPanel = Sandbox.UI.WorldPanel;
 
 namespace Core;
 
@@ -12,9 +13,9 @@ namespace Core;
 public class InteractPanel : PanelComponent
 {
 	[Property, ReadOnly] public Dictionary<string, Action> ActiveButtons = new();
-	IEnumerable<Panel> GetAllChildren( Panel root )
+	static IEnumerable<Panel> GetAllChildren( Panel root )
 	{
-		if ( root == null )
+		if ( !root.IsValid() )
 			yield break;
 
 		yield return root;
@@ -25,9 +26,9 @@ public class InteractPanel : PanelComponent
 				yield return descendant;
 		}
 	}
-	Sandbox.UI.WorldPanel GetWorldPanel( Panel worldpanel )
+	static Sandbox.UI.WorldPanel GetWorldPanel( Panel worldpanel )
 	{
-		while ( worldpanel != null )
+		while ( worldpanel.IsValid() )
 		{
 			if ( worldpanel is Sandbox.UI.WorldPanel wp )
 				return wp;
@@ -38,7 +39,19 @@ public class InteractPanel : PanelComponent
 		return null;
 	}
 
-	[Property, MakeDirty, ReadOnly] public bool IsInteracting { get; set; } = false;
+	[Property, ReadOnly]
+	public bool IsInteracting
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				if ( Panel.IsValid() && CursorPanel.IsValid() ) HandleInteraction( value );
+			}
+		}
+	} = false;
 
 	private Panel CursorPanel;
 	private Panel ParentPanel;
@@ -47,7 +60,7 @@ public class InteractPanel : PanelComponent
 
 	protected override void OnTreeFirstBuilt()
 	{
-		if ( Panel == null )
+		if ( !Panel.IsValid() )
 			return;
 
 		ParentPanel = Panel.FindRootPanel();
@@ -57,23 +70,13 @@ public class InteractPanel : PanelComponent
 		CursorPanel.AddClass( "cursor" );
 
 		// All the styling and stuff, so everything is correcto mundo
-		CursorPanel.StyleSheet.Load( "ui/SDK/interactive/cursor.scss" );
+		CursorPanel.StyleSheet.Load( "ui/Core/interactive/cursor.scss" );
 		CursorPanel.Style.Position = PositionMode.Absolute;
 		CursorPanel.Style.PointerEvents = PointerEvents.None;
 
 		Panel.AddChild( CursorPanel ); // We could actually add/remove it at run time during an event, but i thought lets just keep it at all times
 
 		SetEventListeners();
-	}
-
-	protected override void OnDirty()
-	{
-		base.OnDirty();
-
-		if ( Panel == null || CursorPanel == null )
-			return;
-
-		HandleInteraction( IsInteracting );
 	}
 
 	protected void SetEventListeners()
@@ -122,36 +125,38 @@ public class InteractPanel : PanelComponent
 
 	protected override void OnMouseOver( MousePanelEvent e )
 	{
-		if ( e.Target is Sandbox.UI.Button button && IsInteracting )
+		if ( e.Target is Button button && IsInteracting )
 		{
 			var action = ProcessPanel( button );
-			if ( action != null )
+			if ( action is not null )
 			{
-				Sound.Play( "ui_hover" ); // TODO: Need to not hardcode this
+#if FMOD
+				FMODSound.Play( "event:/UI/ui_click" ); // TODO: Need to not hardcode this
+#else
+				Sound.Play( "ui_click" ); // TODO: Need to not hardcode this
+#endif
 			}
 		}
 	}
 
 	protected override void OnMouseMove( MousePanelEvent e )
 	{
-		if ( CursorPanel == null || Panel == null || !IsInteracting )
+		if ( !CursorPanel.IsValid() || !Panel.IsValid() || !IsInteracting )
 			return;
 
-		if ( BasePlayer.Local == null || BasePlayer.Local.Scene == null )
+		if ( !BasePlayer.Local.IsValid() || !Scene.IsValid() )
 			return;
 
 		var aimRay = BasePlayer.Local.Controller.AimRay;
 
-		Vector2 localPos;
-		float distance;
 		float smoothFactor = 60.0f;
 
 		// To make sure we even have worldpanel, we'll need it!
 		var worldpanel = GetWorldPanel( Panel );
-		if ( worldpanel == null )
+		if ( !worldpanel.IsValid() )
 			return;
 
-		if ( !worldpanel.RayToLocalPosition( aimRay, out localPos, out distance ) )
+		if ( !worldpanel.RayToLocalPosition( aimRay, out Vector2 localPos, out float distance ) )
 			return;
 
 		Vector2 panelSize = Panel.Box.Rect.Size;
@@ -179,9 +184,13 @@ public class InteractPanel : PanelComponent
 		base.OnMouseDown( e );
 
 		// This is exact time when we start pressing the button.
-		if ( e.Target is Sandbox.UI.Button button && IsInteracting )
+		if ( e.Target is Button button && IsInteracting )
 		{
-			Sound.Play( "ui_click.sound" ); // TODO: Need to not hardcode this
+#if FMOD
+			FMODSound.Play( "event:/UI/ui_click" ); // TODO: Need to not hardcode this
+#else
+			Sound.Play( "ui_click" ); // TODO: Need to not hardcode this
+#endif
 			var action = ProcessPanel( button );
 		}
 	}
@@ -204,7 +213,7 @@ public class InteractPanel : PanelComponent
 	// ActiveButtons will just contain all buttons with their IDs and actions. 
 	private Action ProcessPanel( Sandbox.UI.Button button )
 	{
-		if ( button == null || ActiveButtons == null || !IsInteracting )
+		if ( button is null || ActiveButtons is null || !IsInteracting )
 			return null;
 
 		var id = button.GetAttribute( "data-id" );

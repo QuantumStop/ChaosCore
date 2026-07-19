@@ -1,8 +1,10 @@
 using System;
 using System.Text.Json.Nodes;
+
 public class BaseCustomSerialize : Component
 {
 	[Property, Feature( "Debug" ), Order( 10000 ), ReadOnly] public string SerializedGuid { get; set; }
+
 	protected override void OnEnabled()
 	{
 		base.OnEnabled();

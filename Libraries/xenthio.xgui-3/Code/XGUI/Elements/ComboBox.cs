@@ -32,7 +32,7 @@ public class ComboBox : Button
 	/// <summary>
 	/// The options to show on click. You can edit these directly via this property.
 	/// </summary>
-	public List<Option> Options { get; set; } = new();
+	public List<Option> Options { get; set; } = [];
 
 	Option selected;
 
@@ -42,7 +42,7 @@ public class ComboBox : Button
 	/// <summary>
 	/// The current string value. This is useful to have if Selected is null.
 	/// </summary>
-	public object Value
+	public override object Value
 	{
 		get => _value;
 		set

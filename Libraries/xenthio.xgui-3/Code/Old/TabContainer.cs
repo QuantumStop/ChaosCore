@@ -16,6 +16,9 @@ namespace Sandbox.UI
 		/// A control housing the tabs
 		/// </summary>
 		public Panel TabsContainer { get; protected set; }
+		public Panel TabBaseline { get; protected set; }
+		public Panel TabBaselineLeft { get; protected set; }
+		public Panel TabBaselineRight { get; protected set; }
 
 		/// <summary>
 		/// A control housing the sheets
@@ -44,6 +47,12 @@ namespace Sandbox.UI
 		}
 
 		string _activeTab;
+		Tab _baselineActiveTab;
+		float _baselineTabsLeft = float.NaN;
+		float _baselineTabsWidth = float.NaN;
+		float _baselineActiveLeft = float.NaN;
+		float _baselineActiveRight = float.NaN;
+		
 		/// <summary>
 		/// The tab that is active
 		/// </summary>
@@ -65,7 +74,59 @@ namespace Sandbox.UI
 			AddClass( "tabcontainer" );
 
 			TabsContainer = Add.Panel( "tabs" );
+			TabBaseline = TabsContainer.Add.Panel( "tab-baseline" );
+			TabBaselineLeft = TabBaseline.Add.Panel( "tab-baseline-left" );
+			TabBaselineRight = TabBaseline.Add.Panel( "tab-baseline-right" );
 			SheetContainer = Add.Panel( "sheets" );
+		}
+
+		public override void Tick()
+		{
+			base.Tick();
+			UpdateTabBaseline();
+		}
+
+		private void UpdateTabBaseline()
+		{
+			if ( !TabsContainer.IsValid() || !TabBaselineLeft.IsValid() || !TabBaselineRight.IsValid() )
+				return;
+
+			var active = Tabs.FirstOrDefault( x => x.Active && x.Button.IsValid() );
+			var tabsWidth = TabsContainer.Box.Rect.Width;
+			var tabsLeft = TabsContainer.Box.Rect.Left;
+			var activeLeft = float.NaN;
+			var activeRight = float.NaN;
+
+			if ( active is not null )
+			{
+				var activeRect = active.Button.Box.Rect;
+				activeLeft = activeRect.Left - tabsLeft;
+				activeRight = activeRect.Right - tabsLeft;
+			}
+
+			if ( _baselineActiveTab == active &&
+				_baselineTabsLeft == tabsLeft &&
+				_baselineTabsWidth == tabsWidth &&
+				_baselineActiveLeft == activeLeft &&
+				_baselineActiveRight == activeRight )
+			{
+				return;
+			}
+
+			_baselineActiveTab = active;
+			_baselineTabsLeft = tabsLeft;
+			_baselineTabsWidth = tabsWidth;
+			_baselineActiveLeft = activeLeft;
+			_baselineActiveRight = activeRight;
+
+			var leftWidth = active is null ? tabsWidth : System.MathF.Max( activeLeft, 0f );
+			var rightLeft = active is null ? tabsWidth : System.MathF.Min( activeRight, tabsWidth );
+			var rightWidth = active is null ? 0f : System.MathF.Max( tabsWidth - rightLeft, 0f );
+
+			TabBaselineLeft.Style.Left = 0f;
+			TabBaselineLeft.Style.Width = leftWidth;
+			TabBaselineRight.Style.Left = rightLeft;
+			TabBaselineRight.Style.Width = rightWidth;
 		}
 
 		public override void SetProperty( string name, string value )
@@ -153,6 +214,7 @@ namespace Sandbox.UI
 
 				Button = new Button( title, icon, () => Parent?.SwitchTab( this, true ) );
 				Button.Parent = tabControl.TabsContainer;
+				tabControl.TabsContainer.SetChildIndex( tabControl.TabBaseline, tabControl.TabsContainer.ChildrenCount - 1 );
 			}
 
 			bool active;

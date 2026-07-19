@@ -9,11 +9,6 @@ public class trigger_look : BaseTrigger
 	[ActionGraphIgnore]
 	[Property] public bool FireOnce { get; set; } = false;
 
-	[Hide, Title( "Only player ally NPCs" )] public new bool b_PhysicsObjects { get; set; } = false;
-	[Hide, Title( "Only player ally NPCs" )] public new bool b_Pushables { get; set; } = false;
-	[Hide, Title( "Only player ally NPCs" )] public new bool b_PhysicsDebris { get; set; } = false;
-	[Hide, Title( "Only player ally NPCs" )] public new bool b_Everything { get; set; } = false;
-
 
 	/// <summary>
 	/// The GameObject to be looked at.
@@ -110,7 +105,7 @@ public class trigger_look : BaseTrigger
 
 	public bool PlayerSawTarget()
 	{
-		if ( LookTarget == null || !containsBasePlayer || TriggerFired )
+		if ( !LookTarget.IsValid() || !containsBasePlayer || TriggerFired )
 			return false;
 
 		bool isLooking = IsPlayerLookingAtTarget( LookTarget );
@@ -152,7 +147,6 @@ public class trigger_look : BaseTrigger
 			.WithAnyTags( "solid" )
 			.UseHitboxes( false )
 			.UsePhysicsWorld( true )
-			.UseRenderMeshes( true )
 			.WithoutTags( "player" )
 			.WithoutTags( "trigger" )
 			.Run();
@@ -171,7 +165,7 @@ public class trigger_look : BaseTrigger
 	{
 		lock ( trackedItems )
 		{
-			containsBasePlayer = trackedItems.Keys.Any( go => go.GetComponentInParent<BasePlayer>() != null );
+			containsBasePlayer = trackedItems.Keys.Any( go => go.GetComponentInParent<BasePlayer>().IsValid() );
 		}
 
 		if ( containsBasePlayer != hasBasePlayer )

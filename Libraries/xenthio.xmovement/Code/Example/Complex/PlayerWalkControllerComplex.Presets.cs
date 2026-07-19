@@ -8,7 +8,19 @@ public partial class PlayerWalkControllerComplex : Component
 	/// <summary>
 	/// Values from popular games.
 	/// </summary>
-	[Property, Group( "Quick Presets" ), Change( "SetupFromPreset" )] public MovementPresets MovementPreset { get; set; }
+	[Property, Group( "Quick Presets" )]
+	public MovementPresets MovementPreset
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				SetupFromPreset();
+			}
+		}
+	}
 
 	private void SetupFromPreset()
 	{
@@ -18,11 +30,11 @@ public partial class PlayerWalkControllerComplex : Component
 			case MovementPresets.None:
 				break;
 			case MovementPresets.HalfLife:
-				Controller.Gravity = new Vector3( 0, 0, 800 );
-				Controller.BaseFriction = 4f;
-				Controller.StopSpeed = 100f;
-				Controller.BaseAcceleration = 10f;
-				Controller.AirAcceleration = 10f;
+				Controller?.Gravity = new Vector3( 0, 0, 800 );
+				Controller?.BaseFriction = 4f;
+				Controller?.StopSpeed = 100f;
+				Controller?.BaseAcceleration = 10f;
+				Controller?.AirAcceleration = 10f;
 
 				EnableWalking = false;
 
@@ -36,11 +48,11 @@ public partial class PlayerWalkControllerComplex : Component
 				JumpPower = 268.3281572999747f;
 				break;
 			case MovementPresets.HalfLife2:
-				Controller.Gravity = new Vector3( 0, 0, 600 );
-				Controller.BaseFriction = 4f;
-				Controller.StopSpeed = 100f;
-				Controller.BaseAcceleration = 10f;
-				Controller.AirAcceleration = 10f;
+				Controller?.Gravity = new Vector3( 0, 0, 600 );
+				Controller?.BaseFriction = 4f;
+				Controller?.StopSpeed = 100f;
+				Controller?.BaseAcceleration = 10f;
+				Controller?.AirAcceleration = 10f;
 
 				EnableWalking = true;
 				WalkSpeed = 150f;
@@ -55,11 +67,11 @@ public partial class PlayerWalkControllerComplex : Component
 				JumpPower = 160f;
 				break;
 			case MovementPresets.CounterStrikeSource:
-				Controller.Gravity = new Vector3( 0, 0, 800 );
-				Controller.BaseFriction = 4f;
-				Controller.StopSpeed = 100f;
-				Controller.BaseAcceleration = 10f;
-				Controller.AirAcceleration = 10f;
+				Controller?.Gravity = new Vector3( 0, 0, 800 );
+				Controller?.BaseFriction = 4f;
+				Controller?.StopSpeed = 100f;
+				Controller?.BaseAcceleration = 10f;
+				Controller?.AirAcceleration = 10f;
 
 				EnableWalking = false;
 
@@ -73,11 +85,11 @@ public partial class PlayerWalkControllerComplex : Component
 				JumpPower = 268.3281572999747f;
 				break;
 			case MovementPresets.TroubleInTerroristTown:
-				Controller.Gravity = new Vector3( 0, 0, 600 );
-				Controller.BaseFriction = 8f;
-				Controller.StopSpeed = 10f;
-				Controller.BaseAcceleration = 10f;
-				Controller.AirAcceleration = 50f;
+				Controller?.Gravity = new Vector3( 0, 0, 600 );
+				Controller?.BaseFriction = 8f;
+				Controller?.StopSpeed = 10f;
+				Controller?.BaseAcceleration = 10f;
+				Controller?.AirAcceleration = 50f;
 
 				EnableWalking = false;
 
@@ -91,11 +103,11 @@ public partial class PlayerWalkControllerComplex : Component
 				JumpPower = 160;
 				break;
 			case MovementPresets.ThreeThievesTroubleInTerroristTown:
-				Controller.Gravity = new Vector3( 0, 0, 800 );
-				Controller.BaseFriction = 8f;
-				Controller.StopSpeed = 10f;
-				Controller.BaseAcceleration = 10f;
-				Controller.AirAcceleration = 50f;
+				Controller?.Gravity = new Vector3( 0, 0, 800 );
+				Controller?.BaseFriction = 8f;
+				Controller?.StopSpeed = 10f;
+				Controller?.BaseAcceleration = 10f;
+				Controller?.AirAcceleration = 50f;
 
 				EnableWalking = false;
 

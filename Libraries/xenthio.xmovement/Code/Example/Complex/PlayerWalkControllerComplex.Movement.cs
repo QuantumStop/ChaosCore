@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using System;
 namespace XMovement;
 
 public partial class PlayerWalkControllerComplex : Component
@@ -21,7 +22,19 @@ public partial class PlayerWalkControllerComplex : Component
 	/// The speed the player moves at while in the alternate speed mode.
 	/// </summary>
 	[Property, Feature( "Running" )] public float RunSpeed { get; set; } = 320.0f;
-	[Sync] public bool IsRunning { get; set; }
+	[Sync]
+	public bool IsRunning
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				if ( IsRunning ) WantSound = true;
+			}
+		}
+	}
 
 	[Property, FeatureEnabled( "Walking" )] public bool EnableWalking { get; set; } = true;
 	/// <summary>
@@ -103,6 +116,8 @@ public partial class PlayerWalkControllerComplex : Component
 		Animate();
 	}
 
+	public bool WantSound { get; set; }
+
 	public void Jump()
 	{
 		Controller.LaunchUpwards( JumpPower );
@@ -127,7 +142,8 @@ public partial class PlayerWalkControllerComplex : Component
 	{
 		WantsJump = false;
 	}
-	public virtual void BuildInput()
+
+	protected virtual void BuildInput()
 	{
 		var run = Input.Down( RunAction ) || (IsInVR && Input.VR.LeftHand.ButtonA);
 		var walk = Input.Down( WalkAction );

@@ -1,62 +1,56 @@
-﻿namespace Core;
+namespace Core;
 
 partial class GameProp
 {
-	private ulong _bodyGroups = ulong.MaxValue;
-
 	[Property, Order( 12 ), Header( "Rendering" ), Sync]
 	[Model.BodyGroupMask]
 	[ShowIf( nameof( HasBodyGroups ), true )]
 	public ulong BodyGroups
 	{
-		get => _bodyGroups;
+		get;
 		set
 		{
-			if ( _bodyGroups != value )
+			if ( field != value )
 			{
-				_bodyGroups = value;
-				if ( ModelRenderer.IsValid() ) ModelRenderer.BodyGroups = BodyGroups;
+				field = value;
+				if ( _modelRenderer.IsValid() ) _modelRenderer.BodyGroups = value;
 			}
 		}
-	}
+	} = ulong.MaxValue;
 
-	protected bool HasBodyGroups { get { return Model?.Parts.All.Sum( x => x.Choices.Count ) > 1; } }
-
-	private string _materialGroup;
+	protected bool HasBodyGroups => Model?.Parts.All.Sum( x => x.Choices.Count ) > 1;
 
 	[Property, Order( 11 ), Header( "Rendering" ), Title( "Skin" ), Sync]
 	[Model.MaterialGroup]
 	[ShowIf( nameof( HasMaterialGroups ), true )]
 	public string MaterialGroup
 	{
-		get => _materialGroup;
+		get;
 		set
 		{
-			if ( (_materialGroup != value) )
+			if ( field != value )
 			{
-				_materialGroup = value;
-				if ( ModelRenderer.IsValid() ) ModelRenderer.MaterialGroup = MaterialGroup;
+				field = value;
+				if ( _modelRenderer.IsValid() ) _modelRenderer.MaterialGroup = value;
 			}
 		}
 	}
 
-	protected bool HasMaterialGroups { get { return Model?.MaterialGroupCount > 0; } }
+	protected bool HasMaterialGroups => Model?.MaterialGroupCount > 0;
 
-	[Property, Order( 17 ), Title( "Cast Shadows?" )]
-	public ModelRenderer.ShadowRenderType shadowRenderType
+	[Property, Order( 11 ), Title( "Cast Shadows?" ), Group( "Render Properties" )]
+	public ModelRenderer.ShadowRenderType ShadowRenderType
 	{
-		get => _shadowRenderType;
+		get;
 		set
 		{
-			if ( (_shadowRenderType != value) )
+			if ( field != value )
 			{
-				_shadowRenderType = value;
+				field = value;
 
-				if ( ModelRenderer.IsValid() )
-					ModelRenderer.RenderType = _shadowRenderType;
+				if ( _modelRenderer.IsValid() )
+					_modelRenderer.RenderType = value;
 			}
 		}
 	}
-
-	private ModelRenderer.ShadowRenderType _shadowRenderType;
 }

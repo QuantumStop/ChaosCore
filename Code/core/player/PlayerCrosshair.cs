@@ -1,6 +1,5 @@
 using System;
 using Sandbox.Rendering;
-using Sandbox.UI;
 namespace Core;
 
 public class Crosshair : Component
@@ -25,8 +24,7 @@ public class Crosshair : Component
 
 	private float smoothedSpeed = 0f;
 
-	private bool b_HideCrosshair => BasePlayer.Local.IsHUDElementHidden( BasePlayer.HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD |
-	BasePlayer.HIDEHUD_FLAGS.HIDEHUD_ALL | BasePlayer.HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR );
+	private bool _hideCrosshair => BasePlayer.Local.IsHUDElementHidden( BasePlayer.HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR | BasePlayer.HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD );
 
 	protected override void OnStart()
 	{
@@ -40,13 +38,13 @@ public class Crosshair : Component
 
 	protected override void OnUpdate()
 	{
-		Vector2 center = CalculateCenter( Screen.Size );
-
 		if ( !BasePlayer.Local.IsValid() )
 			return;
 
-		if ( b_HideCrosshair )
+		if ( _hideCrosshair )
 			return;
+
+		Vector2 center = CalculateCenter( Screen.Size );
 
 		float alphaTarget = 1f;
 		float linesTarget = 1f;
@@ -56,7 +54,7 @@ public class Crosshair : Component
 		BasePlayer player = BasePlayer.Local;
 		BaseCombatWeapon weapon = player?.CurrentWeapon;
 
-		if ( !weapon.IsValid() || weapon?.WeaponData?.WeaponCrosshair == null )
+		if ( !weapon.IsValid() || weapon?.WeaponData?.WeaponCrosshair is null )
 		{
 			DrawSimpleCrosshair(); // Meant for times when you don't have a weapon/setup crosshair (fallback)
 			return;
@@ -90,10 +88,7 @@ public class Crosshair : Component
 
 			//-- end block --//
 
-			if ( WeaponCrosshair == null ) return;
-
-
-
+			if ( !WeaponCrosshair.IsValid() ) return;
 
 			// --- Reference baseline ( Doing 16:9 here as a base )
 			const float ReferenceWidth = 1920f;
@@ -149,13 +144,12 @@ public class Crosshair : Component
 
 			// --- Customization appliance
 			float length = CrosshairLength * finalScale * 0.5f;
-			float width = CrosshairWidth * finalScale;
-			width = MathF.Max( WeaponCrosshair.CrosshairWidth * finalScale, 1f );
+			float width = MathF.Max( WeaponCrosshair.CrosshairWidth * finalScale, 1f );
 			float outlineThickness = MathF.Max( CrosshairOutlineThickness * finalScale, 1f );
 
 
 			// --- Recoil modifier
-			float recoilOffset = GetRecoilOffset( BasePlayer.Local.CurrentWeapon.TimeSinceAttacked, WeaponCrosshair.CrosshairRecoilScale, finalScale );
+			float recoilOffset = GetRecoilOffset( WorldTime.Now - BasePlayer.Local.CurrentWeapon.LastAttackTime, WeaponCrosshair.CrosshairRecoilScale, finalScale );
 
 			scaledGapX += recoilOffset;
 			scaledGapY += recoilOffset;
@@ -247,11 +241,11 @@ public class Crosshair : Component
 					MathF.Floor( center.y ) + 0.5f
 				);
 
-				var RecoilScale = MathF.Exp( -BasePlayer.Local.CurrentWeapon.TimeSinceAttacked * WeaponCrosshair.CrosshairRecoilScale );
+				var RecoilScale = MathF.Exp( -(WorldTime.Now - BasePlayer.Local.CurrentWeapon.LastAttackTime) * WeaponCrosshair.CrosshairRecoilScale );
 				var ringSize = WeaponCrosshair.CrosshairRecoilScale * finalScale / 2 + RecoilScale * 12f * finalScale;
 
-				float sineBounce = MathF.Sin( BasePlayer.Local.CurrentWeapon.TimeSinceAttacked * MathF.PI * 4f );
-				float decay = MathF.Exp( -BasePlayer.Local.CurrentWeapon.TimeSinceAttacked * 8f );
+				float sineBounce = MathF.Sin( (WorldTime.Now - BasePlayer.Local.CurrentWeapon.LastAttackTime) * MathF.PI * 4f );
+				float decay = MathF.Exp( -(WorldTime.Now - BasePlayer.Local.CurrentWeapon.LastAttackTime) * 8f );
 				float bounce = MathF.Max( 0f, sineBounce * decay );
 
 				float baseRadius = (30f * gapX / 10f) + recoilOffset * (1f + 0.4f * bounce);
@@ -316,7 +310,7 @@ public class Crosshair : Component
 					MathF.Floor( center.y ) + 0.5f
 				);
 
-				var RecoilScale = MathF.Exp( -BasePlayer.Local.CurrentWeapon.TimeSinceAttacked * WeaponCrosshair.CrosshairRecoilScale );
+				var RecoilScale = MathF.Exp( -(WorldTime.Now - BasePlayer.Local.CurrentWeapon.LastAttackTime) * WeaponCrosshair.CrosshairRecoilScale );
 				var ringSize = WeaponCrosshair.CrosshairRecoilScale * finalScale / 2 + RecoilScale * 12f * finalScale;
 
 				DrawDotWithOutline(

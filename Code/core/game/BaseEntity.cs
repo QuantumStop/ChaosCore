@@ -1,42 +1,18 @@
-using System;
-using System.Reflection;
-using System.Globalization;
-
 namespace Core;
 
-[AttributeUsage( AttributeTargets.Property | AttributeTargets.Field )]
-public class DebugExposeAttribute : Attribute
-{
-	public string Label { get; }
-	public int Order { get; }
-	public string Group { get; }
-	public string Condition { get; }
-	public string DisplayMember { get; set; }
-	public string Format { get; set; } = null;
-	public DebugExposeAttribute() { }
-	public DebugExposeAttribute( string label = null, int order = 0, string group = null, string condition = null, string displaynumber = null )
-	{
-		Label = label;
-		Order = order;
-		Group = group;
-		Condition = condition;
-		DisplayMember = displaynumber;
-	}
-}
-
-public class DebugEntry
-{
-	public string Group;
-	public int Order;
-	public string Label;
-	public object Value;
-}
+using System;
+using System.Numerics;
 
 [Hide]
 [Icon( "Lightbulb" )]
 [Category( "Core" )]
 public class BaseEntity : BaseCustomSerialize
 {
+	public BaseEntity()
+	{
+		InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
+		if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
+	}
 	// Base delegate
 	public delegate void ChaosOutput( BaseEntity activator );
 	/// <summary>
@@ -50,99 +26,9 @@ public class BaseEntity : BaseCustomSerialize
 
 	[Property, Feature( "Debug" ), ReadOnly, Order( 9999 )] protected bool Initialized = false;
 
-	// Handle Data for Ent_Text purposes
-#if STANDALONE
-
-	public virtual IEnumerable<DebugEntry> GetDebugProperties()
-	{
-		var entries = new List<DebugEntry>();
-		var type = GetType();
-
-		bool EvaluateCondition( string conditionName )
-		{
-			if ( string.IsNullOrWhiteSpace( conditionName ) ) return true;
-
-			var prop = type.GetProperty( conditionName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
-			if ( prop != null && prop.PropertyType == typeof( bool ) )
-				return (bool)(prop.GetValue( this ) ?? false);
-
-			var field = type.GetField( conditionName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
-			if ( field != null && field.FieldType == typeof( bool ) )
-				return (bool)(field.GetValue( this ) ?? false);
-
-			return false;
-		}
-
-		void Collect( MemberInfo member, Func<object> getValue )
-		{
-			var attr = member.GetCustomAttribute<DebugExposeAttribute>();
-			if ( attr == null || !EvaluateCondition( attr.Condition ) )
-				return;
-
-			object rawValue = getValue();
-
-			// Handle nested DisplayMember (e.g. "Model.ResourcePath")
-			if ( rawValue != null && !string.IsNullOrWhiteSpace( attr.DisplayMember ) )
-			{
-				var pathParts = attr.DisplayMember.Split( '.' );
-				foreach ( var part in pathParts )
-				{
-					if ( rawValue == null )
-						break;
-
-					var type = rawValue.GetType();
-					var prop = type.GetProperty( part, BindingFlags.Public | BindingFlags.Instance );
-					if ( prop == null )
-					{
-						rawValue = null;
-						break;
-					}
-
-					rawValue = prop.GetValue( rawValue );
-				}
-			}
-
-			string formattedValue;
-
-			if ( rawValue == null )
-			{
-				formattedValue = "null";
-			}
-			else if ( !string.IsNullOrEmpty( attr.Format ) && rawValue is IFormattable formattable )
-			{
-				formattedValue = formattable.ToString( attr.Format, CultureInfo.InvariantCulture );
-			}
-			else
-			{
-				formattedValue = rawValue.ToString() ?? "null";
-			}
-
-			entries.Add( new DebugEntry
-			{
-				Group = attr.Group ?? "General",
-				Order = attr.Order,
-				Label = attr.Label ?? member.Name,
-				Value = formattedValue
-			} );
-		}
-
-		foreach ( var prop in type.GetProperties( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic ) )
-			Collect( prop, () => prop.GetValue( this ) );
-
-		foreach ( var field in type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic ) )
-			Collect( field, () => field.GetValue( this ) );
-
-		return entries.OrderBy( e => e.Group ).ThenBy( e => e.Order );
-	}
-
-#endif
-
 	//	============= Hooks ============= //
 	protected override void OnEnabled()
 	{
-		InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
-		if ( TargetName is null || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
-
 		Initialized = true;
 	}
 
@@ -153,7 +39,7 @@ public class BaseEntity : BaseCustomSerialize
 	/// </summary>
 	protected virtual void OnStartOnce() { }
 
-	[Property, ReadOnly, Hide] private bool _hasOnceStarted { get; set; } = true;
+	[Property, Hide] private bool _hasOnceStarted { get; set; } = true;
 
 	/// <summary>
 	/// Needed so I can call onstartonce from a gameobjectsystem
@@ -174,9 +60,14 @@ public class BaseEntity : BaseCustomSerialize
 	public string EditorVis => GetEditorVis(); // Extension so we can get the VIS in other places
 	protected virtual string GetEditorVis()
 	{
-		string className = GetType().Name.ToLower();
+		string className = GetType().Name.ToLowerInvariant();
 		return $"resource/editor/{className}.vtex";
 	}
+
+	/// <summary>
+	/// Size of the entity gizmo (icon)
+	/// </summary>
+	protected virtual float EntityGizmoSize => 18f;
 
 	protected override void DrawGizmos()
 	{
@@ -187,24 +78,40 @@ public class BaseEntity : BaseCustomSerialize
 		if ( string.IsNullOrEmpty( editorVis ) || !ShouldDrawGizmo( isModel ) )
 			return;
 
-		if ( TryGetGameManager( out var gamemanager ) )
-			gamemanager.EntityDefaultGizmo( editorVis, isModel );
-		else
-			EntityDefaultGizmo( editorVis, isModel );
+		EntityDefaultGizmo( editorVis, isModel );
 	}
 
 	// ===== Helper methods ===== //
+	private Transform _lastGizmoTransform;
+
 	protected virtual void EntityDefaultGizmo( string editorVis, bool isModel )
 	{
 		Gizmo.Draw.Color = Color.White;
 		if ( isModel )
 		{
-			if ( !Game.IsEditor && Initialized )
+			if ( !Scene.IsEditor && GetComponent<ModelRenderer>().IsValid() && Initialized )
 				return;
 
 			Model model = Model.Load( editorVis );
 			Gizmo.Hitbox.Model( model );
-			Gizmo.Draw.Model( model ).Flags.CastShadows = true;
+
+			SceneModel gizmoModel = Gizmo.Draw.Model( model );
+
+			if ( model.BoneCount > 0 )
+			{
+				Transform current = new( WorldPosition, WorldRotation, WorldScale );
+
+				bool moved = !current.Position.AlmostEqual( _lastGizmoTransform.Position );
+				bool rotated = current.Rotation.Distance( _lastGizmoTransform.Rotation ) > 0.05f;
+
+				if ( moved || rotated )
+				{
+					gizmoModel.UpdateToBindPose();
+					_lastGizmoTransform = current;
+				}
+			}
+
+			gizmoModel.Flags.CastShadows = true;
 
 			Gizmo.Draw.Color = Gizmo.IsSelected
 				? Color.Yellow
@@ -221,10 +128,10 @@ public class BaseEntity : BaseCustomSerialize
 		// Texture sprite renderblock & fallback
 		Texture texture = Texture.Load( editorVis );
 		float spriteSize = Gizmo.IsHovered
-			? float.Lerp( 17f, value2: 19f, 0.5f + MathF.Sin( Time.Now * 2f ) * 0.5f )
-			: 19f;
+			? float.Lerp( EntityGizmoSize - 2, value2: EntityGizmoSize, 0.5f + MathF.Sin( Time.Now * 2f ) * 0.5f )
+			: EntityGizmoSize;
 
-		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, 15f );
+		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, EntityGizmoSize - 3 );
 		Gizmo.Hitbox.BBox( bbox );
 		Gizmo.Draw.Sprite( Vector3.Zero, spriteSize, texture );
 
@@ -260,14 +167,6 @@ public class BaseEntity : BaseCustomSerialize
 
 		bool isModel = path.EndsWith( ".vmdl" );
 		return (path, isModel);
-	}
-
-	private bool TryGetGameManager( out GameManager gm )
-	{
-		return GameObject.Components.TryGet(
-			out gm,
-			FindMode.Enabled | FindMode.Disabled | FindMode.InSelf
-		);
 	}
 
 	private static float PulseAlpha()

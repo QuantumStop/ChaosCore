@@ -1,7 +1,7 @@
 {
   "RootObject": {
     "__guid": "dc3a85eb-e954-484e-b272-f04cd1d8c331",
-    "__version": 1,
+    "__version": 2,
     "Flags": 0,
     "Name": "weapon_tracer",
     "Position": "0,0,0",
@@ -9,15 +9,17 @@
     "Scale": "1,1,1",
     "Tags": "particles",
     "Enabled": true,
-    "NetworkMode": 1,
-    "NetworkInterpolation": true,
+    "NetworkMode": 2,
+    "NetworkFlags": 0,
     "NetworkOrphaned": 0,
+    "NetworkTransmit": true,
     "OwnerTransfer": 1,
     "Components": [
       {
         "__type": "Sandbox.BeamEffect",
         "__guid": "8d6c6241-4ca8-44f7-aec1-53727604668b",
         "__enabled": true,
+        "Flags": 0,
         "Additive": true,
         "Alpha": {
           "Type": "Curve",
@@ -102,14 +104,12 @@
               }
             ],
             "alpha": []
-          },
-          "ConstantA": "1,1,1,0.8",
-          "ConstantB": "1,1,1,1"
+          }
         },
         "BeamLifetime": {
           "Type": "Range",
           "Evaluation": "Frame",
-          "Constants": "0.15,0.2,0,0"
+          "Constants": "0.5,0.8,0,0"
         },
         "BeamsPerSecond": 0,
         "Brightness": {
@@ -159,7 +159,8 @@
           ]
         },
         "DepthFeather": 0,
-        "FollowPoints": false,
+        "FilterMode": "Trilinear",
+        "FollowPoints": true,
         "InitialBurst": 1,
         "Lighting": true,
         "Looped": false,
@@ -220,7 +221,7 @@
         "TextureOffset": 0,
         "TextureScale": 32,
         "TextureScroll": 0,
-        "TextureScrollSpeed": 32.600002,
+        "TextureScrollSpeed": 32,
         "TravelBetweenPoints": true,
         "TravelLerp": {
           "Type": "Range",
@@ -239,13 +240,14 @@
         "Enabled": false,
         "IncludeStaticBodies": true,
         "IncludeKeyframedBodies": true,
-        "EditorAutoUpdate": true,
+        "EditorAutoUpdate": false,
         "AgentHeight": 64,
         "AgentRadius": 16,
         "AgentStepSize": 18,
         "AgentMaxSlope": 40,
         "ExcludedBodies": "",
-        "IncludedBodies": ""
+        "IncludedBodies": "",
+        "CustomBounds": false
       }
     },
     "__variables": []

@@ -42,6 +42,11 @@
       ],
       "DistinctAssemblyReferences": []
     },
-    "StartupScene": "scenes/networking_debug.scene"
+    "StartupScene": "scenes/networking_debug.scene",
+    "ControlModes": {
+      "Keyboard": true,
+      "VR": false,
+      "Gamepad": false
+    }
   }
 }

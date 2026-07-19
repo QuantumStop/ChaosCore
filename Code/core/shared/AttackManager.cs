@@ -1,8 +1,10 @@
 namespace Core;
+
+using AI;
 using Sandbox.Utility;
 using System;
 
-public class AttackManager
+public static partial class AttackManager
 {
 	[ConVar( "debug_damage_events" )] public static bool DebugDamageEvents { get; set; }
 
@@ -18,116 +20,114 @@ public class AttackManager
 		/// </summary>
 		public bool Hit { get; set; }
 		/// <summary>
-		/// The entire trace, including the last hit object
+		/// Whatever we hit
 		/// </summary>
 		public SceneTraceResult Last { get; set; }
 	}
 
+	public struct AttackProjectile
+	{
+		/// <summary>
+		/// Has this projectile hit anything ever so far
+		/// </summary>
+		public AttackResult Result { get; set; }
+		/// <summary>
+		/// Doesn't allow to call it "projectile" but it is it
+		/// </summary>
+		public BaseProjectile Object { get; set; }
+	}
+
 	/// <summary>
-	/// Main bullet function with all the additional effects
+	/// Main projectile function to start the projectile
+	/// </summary>
+	/// <param name="transform"></param>
+	/// <param name="damageinfo"></param>
+	/// <param name="spreadFromWeaponData"></param>
+	/// <returns></returns>
+	public static AttackResult FireProjectile( Transform transform, DamageInfo damageinfo, float spreadFromWeaponData = 0f )
+	{
+		Vector3 spread = CalculateSpread( transform, spreadFromWeaponData );
+
+		AttackProjectile attack = new();
+
+		if ( damageinfo is CoreDamageInfo coreDamageInfo )
+		{
+			NpcSoundManager.AddSound( NpcSoundManager.SoundType.SOUND_GUNFIRE, transform.Position, coreDamageInfo.Inflictor );
+
+			transform.Rotation = (transform.Forward + spread).EulerAngles;
+
+			DebrisManager.CreateProjectileObject( coreDamageInfo, transform, out var bullet, spread );
+			attack.Object = bullet;
+			attack.Result = bullet.Result;
+
+			// TODO: make this not BasePlayer.Local
+			Transform muzzleTrans = BaseCombatWeapon.GetPlayerAttachObject( BasePlayer.Local, "muzzle", out var attachmentObj );
+
+			if ( attachmentObj.IsValid() )
+			{
+				DebrisManager.Instance.CreateBulletTracer( coreDamageInfo?.Attacker,
+								coreDamageInfo?.BaseCombatWeapon.WeaponData,
+								muzzleTrans.Position,
+								muzzleTrans.Forward + spread );
+			}
+		}
+
+		return attack.Result;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	// 
+	//	RunSceneTrace() -> TraceGenericAttack() -> FireHitscan() / FireProjectile()
+	//
+	/////////////////////////////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// Main hitscan bullet function with all the additional effects
 	/// </summary>
 	/// <param name="transform">Where</param>
 	/// <param name="damageinfo">Damage information</param>
 	/// <param name="spreadFromWeaponData">Optional spread</param>
 	/// <returns>The fired bullet</returns>
-	public static AttackResult FireBullet( Transform transform, DamageInfo damageinfo, float spreadFromWeaponData = 0f )
+	public static AttackResult FireHitscan( Transform transform, DamageInfo damageinfo, float spreadFromWeaponData = 0f )
 	{
-		// calculate spread modifier
-		var spread = transform.Forward;
-		spread += Vector3.Random * MathF.Round( MathF.Sin( MathX.DegreeToRadian( spreadFromWeaponData / 2 ) ), 5 );
-		spread = spread.Normal;
-
-		var attack = TraceGenericAttack( new Ray( transform.Position + spread, transform.Forward + spread ), 4096f, damageinfo );
+		Vector3 spread = CalculateSpread( transform, spreadFromWeaponData );
+		AttackResult attack = TraceGenericAttack( new Ray( transform.Position, transform.Forward + spread ), 4096f, damageinfo );
 
 		// cast regular DamageInfo to our expanded DamageInfo, otherwise we can't pass it to engine stuff that expects the base class (even if its inherited)
 		if ( damageinfo is CoreDamageInfo coreDamageInfo )
 		{
 			NpcSoundManager.AddSound( NpcSoundManager.SoundType.SOUND_GUNFIRE, transform.Position, coreDamageInfo.Inflictor );
-			coreDamageInfo.Position = attack.Last.HitPosition;
-			coreDamageInfo.Force = -attack.Last.Normal.LerpTo( transform.Backward, 0.5f ).Normal * 50f;
-			coreDamageInfo.Hitbox = attack.Last.Hitbox;
 
 			if ( attack.Hit )
 			{
-				Material mat = null;
+				HandleHitBullet( attack, coreDamageInfo, transform );
 
-				if ( attack.Last.Component is MeshComponent mesh ) mat = mesh.GetMaterial( 1 );
-				else if ( attack.Last.Component is ModelRenderer model ) mat = model.GetMaterial();
+				DebrisManager.Instance.CreateBulletTracer( coreDamageInfo?.Attacker,
+											coreDamageInfo?.BaseCombatWeapon.WeaponData,
+											attack.Last.EndPosition,
+											(-transform.Forward).LerpTo( -attack.Last.Normal, 0.8f ).Normal );
 
-				GameObject bone = null;
-				bool isSkinned = false;
-
-				// if hit a skinned renderer, apply decal to the bone object, instead of anything else
-				if ( attack.Last.Component.GameObject.Components.TryGet<SkinnedModelRenderer>( out var skinned, FindMode.EverythingInSelfAndAncestors ) )
-				{
-					if ( attack.Last.Component.GameObject.Tags.HasAny( "npc", "skinned_collider", "ragdoll" ) )
-					{
-						var boneobj = skinned.GetBoneObject( attack.Last.Hitbox.Bone ); // a slight mess but triple layer anti-NRE is better than none
-						if ( boneobj != null )
-						{
-							isSkinned = true;
-							bone = boneobj;
-						}
-						else
-						{
-							Log.Warning( "whatever SkinnedModelRenderer you tried to hit didn't have a hitbox or a bone object" );
-						}
-					}
-				}
-
-				//	Log.Info( isSkinned );
-				//	Log.Info( bone );
-
-				var ammo = coreDamageInfo.Ammo;
-
-				// apply force to all rigidbodies in the object that was hit
-				var rigid = attack.Last.GameObject.GetComponents<Rigidbody>();
-				foreach ( var physics in rigid )
-					physics.ApplyForceAt( coreDamageInfo.Position, coreDamageInfo.Force * BulletImpulse( ammo.Grains, ammo.FtPerSec, 1.25f ) * physics.PhysicsBody.Mass );  // the value feels wrong and is not consistent between props at all
-
-				//	Log.Info( attack.Last.Surface );
-
-				// Create all the effects
-
-				DebrisManager.StaticRef.CreateBulletTracer( coreDamageInfo?.Attacker,
-															coreDamageInfo?.BaseCombatWeapon.WeaponData,
-															attack.Last.EndPosition,
-															(-transform.Forward).LerpTo( -attack.Last.Normal, 0.8f ).Normal );
-
-				DebrisManager.StaticRef.CreateMuzzleflash( coreDamageInfo?.BaseCombatWeapon.WeaponData,
-															attack.Last.EndPosition );
-
-				DebrisManager.StaticRef.CreateBulletDecal( attack.Last.EndPosition,
-															transform.Forward.LerpTo( -attack.Last.Normal, 0.75f ).Normal,
-															attack.Last.Surface,
-															isSkinned ? bone : attack.Last.Component.GameObject, ammo.HoleSize );
-
-				DebrisManager.StaticRef.CreateBulletImpact( attack.Last.EndPosition,
-															(-transform.Forward).LerpTo( -attack.Last.Normal, 0.8f ).Normal,
-															attack.Last.Surface, mat );
-
-				DebrisManager.StaticRef.CreateHitSound( attack.Last.EndPosition,
-														attack.Last.Surface, attack.Last.GameObject );
-
-
-				NpcSoundManager.AddSound( NpcSoundManager.SoundType.SOUND_BULLET_IMPACT, attack.Last.EndPosition, coreDamageInfo.Inflictor );
+				//	DebrisManager.Instance.CreateMuzzleflash( coreDamageInfo?.BaseCombatWeapon.WeaponData,
+				//												attack.Last.EndPosition ); // why is MUZZLE flash created at bullet hit position 🤨
 			}
 
 			// second trace for near misses (sounds or some other effects)
-			List<GameObject> npcs = new();
+			List<GameObject> npcs = [];
 			foreach ( var tr2 in Game.ActiveScene.Trace.Ray( transform.Position, transform.Position + transform.Forward * 5000f ).Radius( 40f ).UseHitboxes().IgnoreGameObjectHierarchy( coreDamageInfo.Attacker ).RunAll() )
 			{
-				if ( tr2.Hit && !npcs.Contains( tr2.GameObject ) && tr2.GameObject.Components.Get<NpcTargeting>() != null )
+				if ( tr2.Hit && !npcs.Contains( tr2.GameObject ) && tr2.GameObject.Components.Get<AIController>().IsValid() )
 				{
-					NpcTargeting.NpcSoundMemory sndmem = new();
-					sndmem.SoundType = NpcSoundManager.SoundType.ALERT_BULLET_NEAR_MISS;
-					sndmem.Position = tr2.StartPosition;
-					sndmem.Owner = coreDamageInfo.Inflictor;
-					sndmem.TimeToRegister = 0f;
-					sndmem.TimeToForget = 6f;
+					NpcTargetingSensor.AISoundMemory sndmem = new()
+					{
+						SoundType = NpcSoundManager.SoundType.ALERT_BULLET_NEAR_MISS,
+						Position = tr2.StartPosition,
+						Owner = coreDamageInfo.Inflictor,
+						//	TimeToRegister = 0f,
+						TimeToForget = 6f
+					};
 
 					npcs.Add( tr2.GameObject );
-					tr2.GameObject.Components.Get<NpcTargeting>().KnownSounds.Add( Guid.NewGuid(), sndmem );
+					tr2.GameObject.Components.Get<NpcTargetingSensor>().KnownSounds.Add( Guid.NewGuid(), sndmem );
 				}
 			}
 			return attack;
@@ -141,60 +141,6 @@ public class AttackManager
 			return attack;
 		}
 	}
-	/// <summary>
-	/// Filter out the stuff we don't want from the Damage
-	/// </summary>
-	/// <param name="tr">Trace</param>
-	/// <param name="damage">Damage information</param>
-	/// <returns>Is the damage good (didn't filter anything) or not</returns>
-	public static bool IsDamageValid( SceneTraceResult tr, DamageInfo damage )
-	{
-		if ( damage.Attacker.IsDescendant( tr.GameObject ) ) // dont hit yourself
-			return false;
-
-		var collider = tr.Component as Collider;
-		if ( collider != null && collider.IsTrigger && !BasePlayer.Local.GameObject.IsDescendant( tr.GameObject ) ) // if its a trigger it has to be the player
-			return false;
-
-		return true;
-	}
-	/// <summary>
-	/// The main tracing function
-	/// </summary>
-	/// <param name="trace">The trace</param>
-	/// <param name="damage">Damage information</param>
-	/// <returns>AttackResult struct</returns>
-	protected static AttackResult RunSceneTrace( SceneTrace trace, DamageInfo damage )
-	{
-		AttackResult ret = new();
-
-		if ( damage is CoreDamageInfo coreDamageInfo )
-		{
-			foreach ( var tr in trace
-			.UseHitboxes()
-			.HitTriggers()
-			.WithoutTags( "trigger", "skinned_collider" )
-			.IgnoreGameObjectHierarchy( damage.Attacker )
-			.RunAll() )
-			{
-				if ( !IsDamageValid( tr, damage ) )
-					continue;
-
-				damage.Position = tr.HitPosition;
-
-				// this damage loop is in every step of a trace including this but im not sure which one to leave in
-				var alldmg = tr.GameObject.GetComponents<Component.IDamageable>();
-				foreach ( var candamage in alldmg )
-					candamage.OnDamage( coreDamageInfo );
-
-				ret.Hit = true;
-				ret.Last = tr;
-				break;
-			}
-			return ret;
-		}
-		return ret;
-	}
 
 	/// <summary>
 	/// A wrapper for SceneTrace to add debug and simplify input
@@ -205,12 +151,6 @@ public class AttackManager
 	/// <returns>The trace</returns>
 	public static AttackResult TraceGenericAttack( Ray ray, float distance, DamageInfo damage )
 	{
-		if ( DebugDamageEvents )
-		{
-			Gizmo.Draw.IgnoreDepth = true;
-			Gizmo.Draw.Color = Color.Red;
-			Gizmo.Draw.Line( ray.Position, ray.Project( distance ) );
-		}
 		return RunSceneTrace( Game.ActiveScene.Trace.Ray( ray, distance ), damage );
 	}
 	/// <summary>
@@ -223,12 +163,72 @@ public class AttackManager
 	{
 		if ( DebugDamageEvents )
 		{
-			Gizmo.Draw.IgnoreDepth = true;
-			Gizmo.Draw.Color = Color.Red;
-			Gizmo.Draw.LineCapsule( capsule );
+			DebugOverlaySystem.Current.Capsule( capsule, Color.Green, 10, default, true );
 		}
 		return RunSceneTrace( Game.ActiveScene.Trace.Capsule( capsule ), damage );
 	}
+
+	/// <summary>
+	/// The main tracing function
+	/// </summary>
+	/// <param name="trace">The trace</param>
+	/// <param name="damage">Damage information</param>
+	/// <returns>AttackResult struct</returns>
+	private static AttackResult RunSceneTrace( SceneTrace trace, DamageInfo damage )
+	{
+		AttackResult result = new() // make an empty default one
+		{
+			Hit = false,
+			Last = new() { Scene = Game.ActiveScene }
+		};
+
+		var tr = trace // do the trace
+		.UseHitboxes()
+		.HitTriggers()
+		.WithoutTags( "trigger", "skinned_collider", "passbullets" )
+		.IgnoreGameObjectHierarchy( damage.Attacker )
+		.UseHitPosition()
+		.RunAll();
+
+		if ( tr.Any() )
+		{
+			//			tr = tr.OrderByDescending( x => x.Hitbox is not null );
+			var list = tr.ToList();
+			list.Sort( ( yesnull, nonull ) => (nonull.Hitbox is not null).CompareTo( yesnull.Hitbox is not null ) ); // better than linq?
+
+			foreach ( var traceHit in list )
+			{
+				if ( !IsDamageValid( traceHit, damage ) ) // filter the bad first
+					continue;
+
+				//	Log.Info( $"{traceHit} / {traceHit.Component} / {traceHit.Hitbox}" );
+				//	Log.Info( " " );
+
+				result.Hit = true; // because of RunAll, if we are here then its true anyway
+				result.Last = traceHit;
+
+				if ( traceHit.Hitbox is not null || traceHit.Component is Collider || traceHit.Component is Rigidbody )
+					break;
+			}
+		}
+
+		if ( result.Hit ) // we hit, fill us with data and do the things
+		{
+			if ( DebugDamageEvents ) DebrisManager.Instance.DebugOverlay.Trace( result.Last, 15, false );
+
+			damage.Position = result.Last.HitPosition;
+
+			if ( damage is CoreDamageInfo coreDamageInfo )
+			{
+				var alldmg = result.Last.GameObject.GetComponents<Component.IDamageable>();
+				foreach ( var candamage in alldmg )
+					candamage.OnDamage( coreDamageInfo );
+			}
+		}
+
+		return result;
+	}
+
 	/// <summary>
 	/// Trace an explosion instead of a ray, apply damage and force to all objects
 	/// </summary>
@@ -247,10 +247,13 @@ public class AttackManager
 
 		var maxdamage = damage.Damage;
 
-
 		if ( damage is CoreDamageInfo coreDamageInfo )
 		{
-			foreach ( var tr in Game.ActiveScene.Trace.Sphere( range, position, position ).HitTriggers().UseHitboxes().RunAll() )
+			foreach ( var tr in Game.ActiveScene.Trace.Sphere( range, position, position )
+			.HitTriggers()
+			.WithoutTags( "trigger", "skinned_collider" )
+			.UseHitboxes()
+			.RunAll() )
 			{
 				if ( !IsDamageValid( tr, damage ) )
 					continue;
@@ -265,44 +268,5 @@ public class AttackManager
 					candamage.OnDamage( coreDamageInfo );
 			}
 		}
-	}
-
-	/// <summary>
-	/// Convert pounds to kilos
-	/// </summary>
-	/// <param name="LBS">Pounds</param>
-	/// <returns>Kilos</returns>
-	public static float LBStoKG( float LBS )
-	{
-		return LBS * 0.453f;
-	}
-	/// <summary>
-	/// Straight HL2 port im sorry valve and Jay Stelly
-	/// </summary>
-	/// <param name="grains">The grains</param>
-	/// <returns>Mass in Pounds</returns>
-	public static float BulletMassGrainsToLbs( float grains )
-	{
-		return 0.002285f * (grains) / 16.0f;
-	}
-	/// <summary>
-	/// Straight HL2 port im sorry valve and Jay Stelly
-	/// </summary>
-	/// <param name="grains">The grains</param>
-	/// <returns>Mass in KG</returns>
-	public static float BulletMassGrainsToKg( float grains )
-	{
-		return LBStoKG( BulletMassGrainsToLbs( grains ) );
-	}
-	/// <summary>
-	/// Convert a velocity in ft/sec and a mass in grains to an impulse in kg in/s
-	/// </summary>
-	/// <param name="grains">Grain amount</param>
-	/// <param name="ftpersec">Feet per second</param>
-	/// <param name="exaggerate">A force multiplier</param>
-	/// <returns></returns>
-	public static float BulletImpulse( float grains, float ftpersec, float exaggerate )
-	{
-		return (ftpersec) * 12 * BulletMassGrainsToKg( grains ) * exaggerate;
 	}
 }

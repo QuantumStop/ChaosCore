@@ -29,6 +29,9 @@ public class XGUIPanel : Panel
 	{
 		var parent = this.Parent;
 
+		// Store the current child index to restore it after re-adding
+		var childIndex = parent.GetChildIndex( this );
+
 		// Remove existing style sheets (except .razor.scss ones) 
 		foreach ( var style in AllStyleSheets.ToList() )
 		{
@@ -52,6 +55,7 @@ public class XGUIPanel : Panel
 		// This is more aggressive but guarantees a full refresh
 		Parent = null;
 		Parent = parent;
+		parent.SetChildIndex( this, childIndex );
 
 		// Force layout recalculation - traverse child hierarchy
 		ForceStyleUpdateRecursive( this );

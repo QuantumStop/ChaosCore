@@ -294,8 +294,8 @@ public class FileBrowserView : Panel
 		if ( isDirectory )
 			return "File Folder";
 
-		string extension = System.IO.Path.GetExtension( name ).ToLower();
-		return !string.IsNullOrEmpty( extension ) ? extension.Substring( 1 ).ToUpper() + " File" : "File";
+		string extension = System.IO.Path.GetExtension( name ).ToLowerInvariant();
+		return !string.IsNullOrEmpty( extension ) ? extension[1..].ToUpperInvariant() + " File" : "File";
 	}
 
 	private string GetFileSize( bool isDirectory )

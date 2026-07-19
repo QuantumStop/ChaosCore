@@ -1,5 +1,4 @@
 using System;
-using Sandbox.Diagnostics;
 
 namespace Core;
 
@@ -45,43 +44,63 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool isDebug = false;
 
-	[HideIf( "isDebug", false )][Property, Feature( "Debug" ), Title( "Show Trigger Items List" )] public bool b_ShowTriggerItems { get; set; } = false;
-	[DebugExpose][HideIf( "b_ShowTriggerItems", false )][ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems;
+	[ShowIf( nameof( isDebug ), true ), Property, Feature( "Debug" ), Title( "Show Trigger Items List" )] public bool b_ShowTriggerItems { get; set; } = false;
+#if IGNIS
+	[DebugExpose]
+#endif
+	[ShowIf( nameof( b_ShowTriggerItems ), true ), ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems;
 
 	/// <summary>
 	/// The entity specifying the point to which entities should be teleported. Usually either a info_teleport_destination or info_target.
 	/// </summary>
-	[DebugExpose( DisplayMember = "TargetName" )][Property] public BaseEntity RemoteDestination { get; set; }
+#if IGNIS
+	[DebugExpose( DisplayMember = "TargetName" )]
+#endif
+	[Property] public BaseEntity RemoteDestination { get; set; }
 
 	/// <summary>
 	/// If specified, then teleported entities are offset from the target by their initial offset from the landmark.
 	/// </summary>
-	[DebugExpose( DisplayMember = "TargetName" )][Property] public BaseEntity LocalDestinationLandmark { get; set; }
+#if IGNIS
+	[DebugExpose( DisplayMember = "TargetName" )]
+#endif
+	[Property] public BaseEntity LocalDestinationLandmark { get; set; }
 
 	/// <summary>
 	/// If selected will rotate the teleported entities to match the rotation of the target.
 	/// </summary>
-	[DebugExpose, Title( "Rotation Offset" )][Property] public bool b_RotationOffset { get; set; }
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Title( "Rotation Offset" ), Property] public bool b_RotationOffset { get; set; }
 
-	[Property, MakeDirty] private bool isEnabled { get; set; }
+	[Property]
+	private bool _isEnabled
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+
+				if ( _isEnabled && inTriggerItems.Count > 0 )
+					HandleTeleport();
+			}
+		}
+	}
 
 
 	protected override void OnStart()
 	{
-		isEnabled = !b_StartDisabled;
-	}
-
-	protected override void OnDirty()
-	{
-		if ( isEnabled && inTriggerItems.Count > 0 )
-			HandleTeleport();
+		_isEnabled = !b_StartDisabled;
 	}
 
 	public void OnTriggerEnter( Collider activator )
 	{
 		TryAddToTriggerList( activator );
 
-		if ( isEnabled )
+		if ( _isEnabled )
 			HandleTeleport();
 		else if ( isDebug )
 			Log.Warning( "trigger_teleport: Trigger is disabled, not teleporting entities." );
@@ -89,7 +108,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 	public void HandleTeleport()
 	{
-		if ( RemoteDestination == null )
+		if ( !RemoteDestination.IsValid() )
 		{
 			if ( isDebug )
 				Log.Warning( "trigger_teleport: No RemoteDestination set!" );
@@ -97,7 +116,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 			return;
 		}
 
-		if ( inTriggerItems == null && isDebug || inTriggerItems.Count == 0 && isDebug )
+		if ( inTriggerItems is null && isDebug || inTriggerItems.Count == 0 && isDebug )
 		{
 			Log.Warning( "trigger_teleport: No items in trigger to teleport!" );
 			return;
@@ -105,7 +124,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 		foreach ( var item in inTriggerItems )
 		{
-			if ( item == null ) continue;
+			if ( !item.IsValid() ) continue;
 
 			item.WorldPosition = RemoteDestination.WorldPosition;
 
@@ -133,7 +152,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 		if ( b_Clients )
 		{
 			var player = go.GetComponentInParent<BasePlayer>();
-			if ( player != null && !inTriggerItems.Contains( player.GameObject ) )
+			if ( player.IsValid() && !inTriggerItems.Contains( player.GameObject ) )
 			{
 				inTriggerItems.Add( player.GameObject );
 				return;
@@ -143,7 +162,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 		// Handle physics props (excluding debris)
 		if ( b_PhysicsObjects && !go.Tags.Has( "debris" ) )
 		{
-			if ( go.GetComponent<Prop>() != null || go.GetComponent<Core.GameProp>() != null )
+			if ( go.GetComponent<Prop>().IsValid() || go.GetComponent<GameProp>().IsValid() )
 			{
 				inTriggerItems.Add( go );
 				return;
@@ -166,7 +185,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 	private void RemoveItemFromTrigger( object item )
 	{
-		if ( inTriggerItems != null && inTriggerItems.Contains( item ) )
+		if ( inTriggerItems is not null && inTriggerItems.Contains( item ) )
 		{
 			inTriggerItems.Remove( item as GameObject );
 			//	CheckTriggerItemsEmpty();

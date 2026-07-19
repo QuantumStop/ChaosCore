@@ -3,8 +3,19 @@ namespace XMovement;
 
 public partial class PlayerWalkControllerComplex : Component
 {
-	[Property, Group( "Camera" ), Change( "SetupCamera" )]
-	public CameraModes CameraMode { get; set; } = CameraModes.ThirdPerson;
+	[Property, Group( "Camera" )]
+	public CameraModes CameraMode
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				SetupCamera();
+			}
+		}
+	} = CameraModes.ThirdPerson;
 	public enum CameraModes
 	{
 		FirstPerson,
@@ -12,20 +23,53 @@ public partial class PlayerWalkControllerComplex : Component
 		Manual,
 	}
 
-	[Property, Group( "Camera" ), ShowIf( "CameraMode", CameraModes.Manual )]
+	[Property, Group( "Camera" ), ShowIf( nameof( CameraMode ), CameraModes.Manual )]
 	public CameraComponent Camera { get; set; }
 
 
-	[Property, Group( "Camera" ), ShowIf( "CameraMode", CameraModes.FirstPerson ), Change( "SetupCamera" )]
-	public bool PlayerShadowsOnly { get; set; } = true;
+	[Property, Group( "Camera" ), ShowIf( nameof( CameraMode ), CameraModes.FirstPerson )]
+	public bool PlayerShadowsOnly
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				SetupCamera();
+			}
+		}
+	} = true;
 
 
-	[Property, Group( "Camera" ), ShowIf( "CameraMode", CameraModes.FirstPerson ), Change( "SetupCamera" )]
-	public Vector3 FirstPersonOffset { get; set; } = new Vector3( 0, 0, 0 );
+	[Property, Group( "Camera" ), ShowIf( nameof( CameraMode ), CameraModes.FirstPerson )]
+	public Vector3 FirstPersonOffset
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				SetupCamera();
+			}
+		}
+	} = new Vector3( 0, 0, 0 );
 
 
-	[Property, Group( "Camera" ), ShowIf( "CameraMode", CameraModes.ThirdPerson ), Change( "SetupCamera" )]
-	public Vector3 ThirdPersonOffset { get; set; } = new Vector3( -180, 0, 0 );
+	[Property, Group( "Camera" ), ShowIf( nameof( CameraMode ), CameraModes.ThirdPerson )]
+	public Vector3 ThirdPersonOffset
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				SetupCamera();
+			}
+		}
+	} = new Vector3( -180, 0, 0 );
 
 	[Property, InputAction, Group( "Camera" )]
 	public string CameraToggleAction { get; set; } = "View";
@@ -51,7 +95,7 @@ public partial class PlayerWalkControllerComplex : Component
 		{
 			Camera.LocalPosition = ThirdPersonOffset;
 		}
-		if ( !IsProxy && Game.IsPlaying )
+		if ( !IsProxy && !Scene.IsEditor )
 		{
 			Camera.Enabled = true;
 		}

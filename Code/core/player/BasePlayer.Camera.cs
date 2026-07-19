@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices.Marshalling;
-using Sandbox.Engine.Settings;
+using Sandbox.Diagnostics;
 namespace Core;
 
 public partial class BasePlayer
@@ -9,48 +8,67 @@ public partial class BasePlayer
 	// it still exists to this day, which can be found here in sbox, not letting me override it :(
 	public virtual float DefaultFOV => GameSettings.FieldOfView;
 
-	[ConVar( "cl_showpos" ), Description( "Show player position and rotation debug." )] public static bool ShowPos { get; set; } = false;
-	[ConVar( "cl_showcrouch" ), Description( "Show player crouch debug." )] public static bool ShowCrouchDebug { get; set; } = false;
-	[ConVar( "cl_drawhud" ), Description( "Show HUD (health, armor, ammo, all of that). Doesn't affect crosshair." )] public static bool ShowHud { get; set; } = true;
-	[ConVar( "cl_drawcrosshair" ), Description( "Show (any) crosshair." )] public static bool ShowCrosshair { get; set; } = true;
+	[ConVar( "cl_drawhud", Saved = true ), Description( "Show HUD (health, armor, ammo, all of that). Doesn't affect crosshair." )] public static bool ShowHud { get; set; } = true;
+	[ConVar( "cl_drawcrosshair", Saved = true ), Description( "Show (any) crosshair." )] public static bool ShowCrosshair { get; set; } = true;
 	[Property, Title( "HUD GameObject" ), Feature( "Defines" )] public GameObject HUDGameObject { get; set; }
 
 	[ConVar( "cl_showexpo" ), Description( "Show exposure metering debug" )] public static bool ShowExpo { get; set; } = false;
 
 	// helper shit cus good luck remembering fuckin' "Local.Controller.Head.LocalPosition"
-	public Angles GetEyeAngles() { return Local.Controller.EyeAngles; }
-	public Vector3 GetEyePos() { return Local.Controller.Head.WorldPosition; }
-	public Vector3 GetEyeForward() { return Local.Controller.Head.WorldRotation.Forward; }
-	public Transform GetEyeTransform() { return Local.Controller.Head.Transform.World; }
+	public Angles GetEyeAngles() => Controller.EyeAngles;
+	public Vector3 GetEyePos() => Controller.Head.WorldPosition;
+	public Vector3 GetEyeForward() => Controller.Head.WorldRotation.Forward;
+	public Transform GetEyeTransform() => Controller.Head.Transform.World;
+	public Vector3 GetPos() => WorldPosition;
 
 	[Flags]
 	public enum HIDEHUD_FLAGS
 	{
 		HIDEHUD_NONE = 0,
-		[Description( "Hide ammocount & weapon selection" )]
-		HIDEHUD_WEAPONSELECTION = 1,
-		[Description( "Hide flashlight icon" )]
-		HIDEHUD_FLASHLIGHT = 2,
-		[Description( "Hide everything" )]
-		HIDEHUD_ALL = 3,
-		[Description( "Hide when local player's dead" )]
-		HIDEHUD_PLAYERDEAD = 4,
-		[Description( "Hide when the local player doesn't have the PCV suit" )]
-		HIDEHUD_NEEDSUIT = 5,
-		[Description( "Hide miscellaneous status elements (trains, pickup history, death notices, etc)" )]
-		HIDEHUD_MISCSTATUS = 6,
-		[Description( "Hide all communication elements (saytext, voice icon, etc)" )]
-		HIDEHUD_CHAT = 7,
-		[Description( "Hide crosshairs" )]
-		HIDEHUD_CROSSHAIR = 8,
-		[Description( "Hide vehicle crosshair" )]
-		HIDEHUD_VEHICLE_CROSSHAIR = 9,
-		[Description( "Hide vehicle HUD" )]
-		HIDEHUD_INVEHICLE = 10
+		/// <summary>
+		/// Hide everything
+		/// </summary>
+		HIDEHUD_ALL = 1 << 0,
+		/// <summary>
+		/// Hide weapon selection inventory ui
+		/// </summary>
+		HIDEHUD_WEAPONSELECTION = 1 << 1,
+		/// <summary>
+		/// Hide flashlight icon
+		/// </summary>
+		HIDEHUD_FLASHLIGHT = 1 << 2,
+		/// <summary>
+		/// Hide when local player is dead
+		/// </summary>
+		HIDEHUD_PLAYERDEAD = 1 << 3,
+		/// <summary>
+		/// Hide when the local player doesn't have the PCV suit
+		/// </summary>
+		HIDEHUD_NEEDSUIT = 1 << 4,
+		/// <summary>
+		/// Hide miscellaneous status elements (trains, pickup history, death notices, etc)
+		/// </summary>
+		HIDEHUD_MISCSTATUS = 1 << 5,
+		/// <summary>
+		/// Hide all communication elements (saytext, voice icon, etc)
+		/// </summary>
+		HIDEHUD_CHAT = 1 << 6,
+		/// <summary>
+		/// Hide crosshairs
+		/// </summary>
+		HIDEHUD_CROSSHAIR = 1 << 7,
+		/// <summary>
+		/// Hide vehicle crosshair
+		/// </summary>
+		HIDEHUD_VEHICLE_CROSSHAIR = 1 << 8,
+		/// <summary>
+		/// Hide vehicle HUD
+		/// </summary>
+		HIDEHUD_INVEHICLE = 1 << 9,
 	}
 
 	/// <summary>
-	/// Marks current hidden hud
+	/// Add additional flags passed into our ui
 	/// </summary>
 	public HIDEHUD_FLAGS CurrentHiddenHUDFlags { get; set; } = HIDEHUD_FLAGS.HIDEHUD_NONE;
 
@@ -61,38 +79,96 @@ public partial class BasePlayer
 	/// <returns></returns>
 	public bool IsHUDElementHidden( HIDEHUD_FLAGS flag )
 	{
-		// Not in game?
-		if ( !Game.InGame )
-			return true;
-
 		// No local player yet?
 		if ( !Local.IsValid() && !IsProxy )
 			return true;
 
+		bool check = false;
+
 		// Check active hidden flags
 		if ( (CurrentHiddenHUDFlags & flag) != 0 )
+			return true; // force early out
+
+		if ( (flag & HIDEHUD_FLAGS.HIDEHUD_ALL) != 0 )
 			return true;
 
-		// Everything hidden?
-		if ( flag == HIDEHUD_FLAGS.HIDEHUD_ALL )
-			return true;
+		if ( (flag & HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD) != 0 )
+			check = Local.Health <= 0 && Local.LifeState == LifeState.Dead;
+		if ( (flag & HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR) != 0 && !check ) // only check if the check before didn't pass
+			check = !ShowCrosshair;
+		if ( (flag & HIDEHUD_FLAGS.HIDEHUD_NEEDSUIT) != 0 && !check )
+			check = !Local.HasSuit;
 
-		// Local player dead?
-		if ( (flag == HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD) && Local.Health <= 0 && LifeState == LifeState.Dead )
-		{
-			/*Log.Info( "Definitely dead" );*/
-			return true;
-		}
+		return check;
+	}
 
-		// Hide crosshair?
-		if ( flag == HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR )
-			return true;
+	/// <summary>
+	/// The absolute current modified FOV the player is seeing, as opposed to default inteded FOV you expect to return to
+	/// </summary>
+	[Property, Feature( "Debug" ), ReadOnly] public float CurrentFOV { get; protected set; }
+	/// <summary>
+	/// What speed are we lerping to new FOV with
+	/// </summary>
+	[Property, Feature( "Debug" ), ReadOnly] protected float _fovRate { get; set; }
+	/// <summary>
+	/// If we are lerping FOV, what are we lerping to
+	/// </summary>
+	[Property, Feature( "Debug" ), ReadOnly] protected float _fovTarget { get; set; }
+	/// <summary>
+	/// What the start FOV for our lerping is
+	/// </summary>
+	[Property, Feature( "Debug" ), ReadOnly] protected float _fovStart { get; set; }
+	[Property, Feature( "Debug" ), ReadOnly] protected float _fovTime { get; set; }
 
-		// Need the suit
-		if ( (flag == HIDEHUD_FLAGS.HIDEHUD_NEEDSUIT) && (!Local.HasSuit) )
-			return true;
+	protected virtual float GetFOV()
+	{
+		float fFOV = (_fovTarget <= 0) ? DefaultFOV : _fovTarget;
 
-		// not hidden otherwise
-		return false;
+		// If it's immediate, just do it
+		if ( _fovRate <= 0 )
+			return fFOV;
+
+		float deltaTime = (Time.Now - _fovTime) / _fovRate;
+
+		if ( deltaTime >= 1.0f )
+			_fovStart = fFOV;
+		else
+			fFOV = EasingPlus.SimpleSplineRemapValClamped( deltaTime, 0.0f, 1.0f, _fovStart, fFOV );
+
+		return fFOV;
+	}
+
+	/// <summary>
+	/// Handles FOV appliaction, virtual so we can also override this too for whatever reason
+	/// </summary>
+	protected virtual void CalculateFOV() => Controller.Camera.FieldOfView = CurrentFOV = GetFOV();
+
+	[Property, Feature( "Debug" ), ReadOnly] protected BaseEntity _zoomOwner { get; set; }
+
+	/// <summary>
+	/// Smoothly blend the FOV to this
+	/// </summary>
+	/// <param name="Requester">Who requested this, if we don't have an owner (no zoom happening), this becomes the new owner</param>
+	/// <param name="targetFOV">What FOV do we blend to</param>
+	/// <param name="rate">Speed of the blend (in seconds)</param>
+	/// <param name="zoomStart">What FOV do we start from (0 if current)</param>
+	/// <param name="overrideowner">Do we force the zoom and override the owner</param>
+	/// <returns>Did we succeed or the checks failed</returns>
+	public virtual bool SetFOV( BaseEntity Requester, int targetFOV, float rate = 0, int zoomStart = 0, bool overrideowner = false )
+	{
+		if ( !Requester.IsValid() ) return false;
+
+		if ( !overrideowner && _zoomOwner.IsValid() && _zoomOwner != Requester ) return false;
+		else _zoomOwner = targetFOV <= 0 ? null : Requester;
+
+		// Setup our FOV and our scaling time
+		_fovStart = zoomStart > 0 ? zoomStart : GetFOV();
+
+		_fovTime = Time.Now;
+		_fovTarget = targetFOV;
+
+		_fovRate = rate;
+
+		return true;
 	}
 }

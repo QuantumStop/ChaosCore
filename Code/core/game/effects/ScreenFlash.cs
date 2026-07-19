@@ -5,28 +5,27 @@ namespace Core;
 
 [Category( "Post Processing" )]
 [Icon( "flash_on" )]
-public sealed class ScreenFlash : PostProcess, Component.ExecuteInEditor
+public sealed class ScreenFlash : BasePostProcess<ScreenFlash>, Component.ExecuteInEditor
 {
-	public static ScreenFlash StaticRef { get; set; }
-	[MakeDirty] private float Strength { get; set; } = 0f;
-	[MakeDirty] private Color FlashColor { get; set; }
-	[MakeDirty] private float FadeOutSpeed { get; set; }
+	public static ScreenFlash Instance { get; set; }
+	public ScreenFlash() => Instance = this;
 
-	public ScreenFlash()
-	{
-		StaticRef = this;
-	}
+	private float Strength { get; set; } = 0f;
+	private Color FlashColor { get; set; }
+	private float FadeOutSpeed { get; set; }
 
+	[ConVar( "r_screenflash", ConVarFlags.Saved, Help = "Screen flash when there is damage or other momentary event in the need of pazazz", Saved = true )]
+	public static bool EffectEnabled { get; set; } = true;
 	[Button, Tint( EditorTint.Red )]
 	void TestFlashRed()
 	{
-		Set( Color.Red, 1.25f );
+		Set( Color.Red, 5.25f );
 	}
 
 	[Button, Tint( EditorTint.Blue )]
 	void TestFlashBlue()
 	{
-		Set( Color.Blue, 1.25f );
+		Set( Color.Blue, 5.25f );
 	}
 
 	[Button]
@@ -35,48 +34,32 @@ public sealed class ScreenFlash : PostProcess, Component.ExecuteInEditor
 		Set( Color.White, 1f );
 	}
 
-	// TODO: check for nightvision and force the color to be very visible
 	public static void Set( Color color, float FadeOutSpeed )
 	{
-		StaticRef.Strength = 1f;
-		StaticRef.FlashColor = color;
-		StaticRef.FadeOutSpeed = FadeOutSpeed;
+		if ( EffectEnabled )
+		{
+			Instance.Strength = 1f;
+			Instance.FlashColor = color;
+			Instance.FadeOutSpeed = FadeOutSpeed;
+		}
 	}
 
-	Sandbox.Rendering.CommandList Commands;
-	protected override void OnEnabled()
-	{
-		Commands = new Sandbox.Rendering.CommandList( "ColorFlash" );
-		Camera.AddCommandList( Commands, Sandbox.Rendering.Stage.BeforePostProcess, 5000 );
-		OnDirty();
-	}
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
-		Strength = Math.Max( Strength - Time.Delta / FadeOutSpeed, 0f );
+		if ( EffectEnabled ) Strength = Math.Max( Strength - Time.Delta / FadeOutSpeed, 0f );
 	}
-	protected override void OnDisabled()
+
+	public override void Render()
 	{
-		Camera.RemoveCommandList( Commands );
-		Commands = null;
+		if ( Strength.AlmostEqual( 0 ) ) return;
+
+		Attributes.Set( "screen_flash_strength", Easing.QuadraticInOut( Strength ) );
+		Attributes.Set( "screen_flash_color", FlashColor );
+
+		var blit = BlitMode.WithBackbuffer( Shader, Sandbox.Rendering.Stage.BeforePostProcess, 5000, false );
+		Blit( blit, "Colorflash Overlay" );
 	}
 
-	protected override void OnDirty()
-	{
-		Rebuild();
-	}
-
-	public void Rebuild()
-	{
-		if ( Commands is null )
-			return;
-
-		Commands.Reset();
-
-		Commands.Attributes.GrabFrameTexture( "ColorBuffer", false );
-		Commands.Attributes.Set( "screen_flash_strength", Easing.QuadraticInOut( Strength ) );
-		Commands.Attributes.Set( "screen_flash_color", FlashColor );
-
-		Commands.Blit( Material.FromShader( "postprocess_colorflash" ) );
-	}
+	private static Material Shader = Material.FromShader( "postprocess_colorflash.shader" );
 }

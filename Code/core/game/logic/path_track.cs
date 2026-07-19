@@ -1,7 +1,4 @@
 using System;
-using System.Dynamic;
-using System.Numerics;
-using System.Collections.Generic;
 
 namespace Core;
 
@@ -16,51 +13,191 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 {
 	protected override string GetEditorVis() { return null; }
 
-	[Property, MakeDirty] public PathType CurrentPathType { get; set; } = PathType.Generic;
-	[Property, MakeDirty] public InterpolationMode CurrentInterpolation { get; set; } = InterpolationMode.Linear;
+	[Property]
+	public PathType CurrentPathType
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = PathType.Generic;
 
-	[Property, Feature( "Debug" )] public List<GameObject> pathPoints = new(); // Store GameObjects as path points
-	private Dictionary<GameObject, Vector3> lastKnownPositions = new();
-	private HashSet<GameObject> knownPathPoints = new();
+	[Property]
+	public InterpolationMode CurrentInterpolation
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = InterpolationMode.Linear;
 
-	private SceneObject cableObject;
+	[Property, Feature( "Debug" )] public List<GameObject> pathPoints = []; // Store GameObjects as path points
+	private Dictionary<GameObject, Vector3> _lastKnownPositions = [];
+	private HashSet<GameObject> _knownPathPoints = [];
+
+	private SceneObject _cableObject;
 
 	[Space( 12 )]
 	//-- Everything texture related --//
 	[Header( "Cable Texture options:" )]
-	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty] public Material CableMaterial { get; set; }
+	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable )]
+	public Material CableMaterial
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	}
 
 
-	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Title( "Texture Orientation" )]
-	public TextureOrientation TexOrientation { get; set; } = TextureOrientation.Horizontal;
+	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Title( "Texture Orientation" )]
+	public TextureOrientation TexOrientation
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = TextureOrientation.Horizontal;
 
 
-	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( 0.03125f, 4f ), Title( "Texture Scale" )]
-	public float TextureScale { get; set; } = 1f;
+	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( 0.03125f, 4f ), Title( "Texture Scale" )]
+	public float TextureScale
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 1f;
 
 
-	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( 0.03125f, 32f ), Title( "Texture Repeat Around" )]
-	public float TextureRepeatCircumference { get; set; } = 1f;
+	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( 0.03125f, 32f ), Title( "Texture Repeat Around" )]
+	public float TextureRepeatCircumference
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 1f;
 
 
-	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( -1f, 1f ), Title( "Texture Offset Along" )]
-	public float TextureOffsetAlong { get; set; } = 0f;
+	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( -1f, 1f ), Title( "Texture Offset Along" )]
+	public float TextureOffsetAlong
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 0f;
 
 
-	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( -1f, 1f ), Title( "Texture Offset Around" )]
-	public float TextureOffsetAround { get; set; } = 0f;
+	[Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( -1f, 1f ), Title( "Texture Offset Around" )]
+	public float TextureOffsetAround
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 0f;
 
 	[Space( 12 )]
 	//-- Everything cable visuals related --//
 	[Header( "3D Spline options:" )]
-	[Order( 1 )][Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( 3, 64 ), Step( 1 ), Title( "Number of slides" )] public int Sides { get; set; } = 12;
-	[Order( 1 )][Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( 10, 512 ), Step( 1 )] public float Spacing { get; set; } = 10;
-	[Order( 1 )][Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), MakeDirty, Range( 1, 256 ), Step( 1 )] public float Radius { get; set; } = 6.0f;
+	[Order( 1 ), Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( 3, 64 ), Step( 1 ), Title( "Number of slides" )]
+	public int Sides
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 12;
+	[Order( 1 ), Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( 10, 512 ), Step( 1 )]
+	public float Spacing
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 10;
+	[Order( 1 ), Property, ShowIf( nameof( CurrentPathType ), PathType.StaticCable ), Range( 1, 256 ), Step( 1 )]
+	public float Radius
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				Dirty();
+			}
+		}
+	} = 6.0f;
 
 
-	[Property, MakeDirty] public bool ShowObjects { get; set; } = true;
+	[Property]
+	public bool ShowObjects
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				ToggleObjVis( value );
+			}
+		}
+	} = true;
 	bool isDirty = true;
-	List<Vector3> splinePoints = new();
+	private List<Vector3> _splinePoints = [];
 
 	public SceneCamera EditorCamera;
 
@@ -69,28 +206,25 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 	{
 		base.OnEnabled();
 
-		if ( cableObject != null )
-			cableObject.RenderingEnabled = true;
+		_cableObject?.RenderingEnabled = true;
 	}
 
 	protected override void OnDisabled()
 	{
 		base.OnDisabled();
 
-		if ( cableObject != null )
-			cableObject.RenderingEnabled = false;
+		_cableObject?.RenderingEnabled = false;
 	}
 
 	protected override void OnDestroy()
 	{
 		base.OnDestroy();
-		cableObject?.Delete();
-		cableObject = null;
+		_cableObject?.Delete();
+		_cableObject = null;
 	}
 
-	protected override void OnDirty()
+	private void Dirty()
 	{
-		base.OnDirty();
 		isDirty = true;
 
 		switch ( CurrentInterpolation )
@@ -102,17 +236,6 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				UpdatePath();
 				break;
 		}
-
-		switch ( ShowObjects )
-		{
-			case true:
-				ToggleObjVis( true );
-				break;
-			case false:
-				ToggleObjVis( false );
-				break;
-		}
-
 	}
 
 	public void ToggleObjVis( bool condition )
@@ -134,7 +257,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 	{
 		if ( !isDirty ) return;
 
-		splinePoints.Clear();
+		_splinePoints.Clear();
 
 		if ( pathPoints.Count < 2 )
 			return;
@@ -144,7 +267,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		if ( CurrentInterpolation == InterpolationMode.Linear )
 		{
 			foreach ( var point in pathPoints )
-				splinePoints.Add( point.WorldPosition );
+				_splinePoints.Add( point.WorldPosition );
 		}
 		else if ( CurrentInterpolation == InterpolationMode.Spline )
 		{
@@ -165,18 +288,18 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				for ( float t = 0; t <= 1.0f; t += scaledSpacing )
 				{
 					var point = CatmullRom( p0, p1, p2, p3, t );
-					splinePoints.Add( point );
+					_splinePoints.Add( point );
 				}
 			}
 
 			// Ensure last point is included
-			splinePoints.Add( extendedPoints[^2] );
+			_splinePoints.Add( extendedPoints[^2] );
 		}
 
 		// Generate cable mesh if type is StaticCable or Rope
 		if ( CurrentPathType == PathType.StaticCable || CurrentPathType == PathType.Rope )
 		{
-			if ( Game.IsEditor && splinePoints.Count >= 2 && lodCheckTimer > 0.2f )
+			if ( Game.IsEditor && _splinePoints.Count >= 2 && lodCheckTimer > 0.2f )
 			{
 				var cameraPosition = Scene.Camera.WorldPosition;
 				GenerateCableMesh( cameraPosition );
@@ -189,8 +312,8 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		}
 		else
 		{
-			cableObject?.Delete();
-			cableObject = null;
+			_cableObject?.Delete();
+			_cableObject = null;
 		}
 
 		isDirty = false;
@@ -205,15 +328,15 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		var currentSet = currentPoints.ToHashSet();
 
 		// Detect if any points were added or removed
-		if ( !currentSet.SetEquals( knownPathPoints ) )
+		if ( !currentSet.SetEquals( _knownPathPoints ) )
 		{
 			pathPoints = currentPoints;
-			knownPathPoints = currentSet;
+			_knownPathPoints = currentSet;
 
 			// Track last known positions
-			lastKnownPositions.Clear();
+			_lastKnownPositions.Clear();
 			foreach ( var point in pathPoints )
-				lastKnownPositions[point] = point.WorldPosition;
+				_lastKnownPositions[point] = point.WorldPosition;
 
 			isDirty = true;
 		}
@@ -227,9 +350,9 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		{
 			var current = point.WorldPosition;
 
-			if ( !lastKnownPositions.TryGetValue( point, out var last ) || current != last )
+			if ( !_lastKnownPositions.TryGetValue( point, out var last ) || current != last )
 			{
-				lastKnownPositions[point] = current;
+				_lastKnownPositions[point] = current;
 				anyMoved = true;
 			}
 		}
@@ -287,7 +410,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 
 		// Draw Path and it's information
-		if ( splinePoints.Count >= 2 )
+		if ( _splinePoints.Count >= 2 )
 		{
 			Gizmo.Draw.LineThickness = 2.5f;
 
@@ -295,7 +418,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				.Where( p =>
 				{
 					var ps = p.Components.Get<PathSingle>();
-					return ps != null && ps.IsSelected;
+					return ps.IsValid() && ps.IsSelected;
 				} )
 				.ToList();
 
@@ -308,10 +431,10 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				(firstSelectedIndex, lastSelectedIndex) = (lastSelectedIndex, firstSelectedIndex);
 			}
 
-			for ( int i = 0; i < splinePoints.Count - 1; i++ )
+			for ( int i = 0; i < _splinePoints.Count - 1; i++ )
 			{
-				var a = splinePoints[i];
-				var b = splinePoints[i + 1];
+				var a = _splinePoints[i];
+				var b = _splinePoints[i + 1];
 				Color lineColor = Color.White;
 
 				bool shouldDrawText = timeSinceLastTextDraw > textDrawInterval;
@@ -368,10 +491,10 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				Gizmo.Draw.Line( a, b );
 			}
 
-			if ( Game.IsEditor && splinePoints.Count >= 2 && lodCheckTimer > 0.2f )
+			if ( Game.IsEditor && _splinePoints.Count >= 2 && lodCheckTimer > 0.2f )
 			{
 				Vector3 cameraPos = Gizmo.Camera.Position;
-				float distance = splinePoints.Min( p => Vector3.DistanceBetween( p, cameraPos ) );
+				float distance = _splinePoints.Min( p => Vector3.DistanceBetween( p, cameraPos ) );
 				int lodLevel = GetLODLevel( distance );
 
 				if ( lodLevel != previousLODLevel )
@@ -395,11 +518,11 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		lodCheckTimer = 0f;
 
 		Vector3 cameraPos =
-			!Game.IsPlaying && EditorCamera != null ? EditorCamera.Position :
-			Game.IsPlaying && Scene.Camera != null ? Scene.Camera.WorldPosition :
+			Scene.IsEditor && EditorCamera is not null ? EditorCamera.Position :
+			!Scene.IsEditor && Scene.Camera.IsValid() ? Scene.Camera.WorldPosition :
 			Vector3.Zero;
 
-		float distance = splinePoints.Min( p => Vector3.DistanceBetween( p, cameraPos ) );
+		float distance = _splinePoints.Min( p => Vector3.DistanceBetween( p, cameraPos ) );
 		int lodLevel = GetLODLevel( distance );
 
 		if ( lodLevel != previousLODLevel )
@@ -425,7 +548,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 			foreach ( var point in pathPoints )
 			{
-				if ( point == null ) continue;
+				if ( !point.IsValid() ) continue;
 
 				Vector3 pos = point.WorldPosition + Vector3.Up * 4f;
 				string label = point.Name?.Replace( "PathPoint_", "" ) ?? "";
@@ -472,16 +595,15 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 	private void GenerateCableMesh( Vector3 cameraPosition )
 	{
-		if ( splinePoints == null || splinePoints.Count < 2 )
+		if ( _splinePoints is null || _splinePoints.Count < 2 )
 			return;
 
-
-		List<float> originalLengths = ComputeCumulativeLengths( splinePoints );
+		List<float> originalLengths = ComputeCumulativeLengths( _splinePoints );
 
 
 		// Calculate camera distance to determine LOD level
 		var cameraPos = Scene.Camera?.WorldPosition ?? Gizmo.Camera.Position;
-		float distance = Vector3.DistanceBetween( splinePoints[0], cameraPos );
+		float distance = Vector3.DistanceBetween( _splinePoints[0], cameraPos );
 		int lodLevel = GetLODLevel( distance );
 		var (curvatureThreshold, straightSpacing) = GetLODSettings( lodLevel );
 
@@ -491,7 +613,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 			return;
 
 		// Init material and mesh buffers
-		var material = CableMaterial != null ? Material.Load( CableMaterial.ResourcePath ) : Material.Load( "materials/dev/dev_texture_surface_concrete1_tinted.vmat" );
+		var material = CableMaterial.IsValid() ? Material.Load( CableMaterial.ResourcePath ) : Material.Load( "materials/dev/dev_texture_surface_concrete1_tinted.vmat" );
 		var mesh = new Mesh( material );
 		var vb = new VertexBuffer();
 		vb.Init( true );
@@ -542,7 +664,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				Vector4 _tangent = new Vector4( _tangentVec, -1.0f );
 
 				// UV Mapping
-				Vector2 uv = GetUVMapping( i, j, lodSplinePoints, sidesForLOD, splinePoints, originalLengths );
+				Vector2 uv = GetUVMapping( i, j, lodSplinePoints, sidesForLOD, _splinePoints, originalLengths );
 
 				Vertex vertex = new Vertex
 				{
@@ -590,14 +712,14 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 		var model = new ModelBuilder().AddMesh( mesh ).Create();
 
-		if ( cableObject == null )
+		if ( !_cableObject.IsValid() )
 		{
 			var transform = new Transform( Vector3.Zero, Rotation.Identity );
-			cableObject = new SceneObject( Scene.SceneWorld, model, transform );
+			_cableObject = new SceneObject( Scene.SceneWorld, model, transform );
 		}
 		else
 		{
-			cableObject.Model = model;
+			_cableObject.Model = model;
 		}
 	}
 
@@ -677,17 +799,17 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 	private List<Vector3> GenerateCurvatureLODPoints( float curvatureThreshold, int straightSpacing )
 	{
-		if ( splinePoints == null || splinePoints.Count < 3 )
-			return splinePoints;
+		if ( _splinePoints is null || _splinePoints.Count < 3 )
+			return _splinePoints;
 
 		List<Vector3> lodPoints = new();
-		lodPoints.Add( splinePoints[0] );
+		lodPoints.Add( _splinePoints[0] );
 
-		for ( int i = 1; i < splinePoints.Count - 1; i++ )
+		for ( int i = 1; i < _splinePoints.Count - 1; i++ )
 		{
-			Vector3 prev = splinePoints[i - 1];
-			Vector3 curr = splinePoints[i];
-			Vector3 next = splinePoints[i + 1];
+			Vector3 prev = _splinePoints[i - 1];
+			Vector3 curr = _splinePoints[i];
+			Vector3 next = _splinePoints[i + 1];
 
 			Vector3 dir1 = (curr - prev).Normal;
 			Vector3 dir2 = (next - curr).Normal;
@@ -698,7 +820,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				lodPoints.Add( curr );
 		}
 
-		lodPoints.Add( splinePoints[^1] );
+		lodPoints.Add( _splinePoints[^1] );
 		return lodPoints;
 	}
 

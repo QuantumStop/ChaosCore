@@ -4,9 +4,9 @@ namespace XMovement;
 public partial class PlayerWalkControllerComplex : Component
 {
 	public float EyeHeightOffset;
-	float LastEyeHeightOffset = 0;
+	protected float LastEyeHeightOffset = 0;
 
-	public void UpdateCrouching()
+	public virtual void UpdateCrouching()
 	{
 		DoCrouching();
 		Controller.Height = Height + EyeHeightOffset;

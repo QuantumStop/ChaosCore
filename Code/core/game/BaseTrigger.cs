@@ -1,3 +1,5 @@
+using System;
+
 namespace Core;
 
 [Hide]
@@ -5,58 +7,70 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 {
 	public new delegate void ChaosOutput( BaseEntity activator );
 
+	/// <summary>
+	/// Used to hold the reference to the collider of this trigger
+	/// </summary>
+	protected Collider EntityCollider { get; set; }
+
 	#region SpawnFlags
 
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Clients" )] public bool b_Clients { get; set; } = true;
+	[Flags]
+	public enum SpawnFlags
+	{
+		/// <summary>
+		/// Clients
+		/// </summary>
+		Clients = 1 << 0,
+		/// <summary>
+		/// NPCs
+		/// </summary>
+		Npcs = 1 << 1,
+		/// <summary>
+		/// Pushables
+		/// </summary>
+		Pushables = 1 << 2,
+		/// <summary>
+		/// Physics Objects
+		/// </summary>
+		PhysicsObjects = 1 << 3,
+		/// <summary>
+		/// Only player ally NPCs
+		/// </summary>
+		PlayerAllyNPCs = 1 << 4,
+		/// <summary>
+		/// Only clients in vehicles
+		/// </summary>
+		ClientsInVehicles = 1 << 5,
+		/// <summary>
+		/// Only clients not in vehicles
+		/// </summary>
+		ClientsNotInVehicles = 1 << 6,
+		/// <summary>
+		/// Physics Debris
+		/// </summary>
+		PhysicsDebris = 1 << 7,
+		/// <summary>
+		/// Only NPCs in vehicles, respects player ally flag
+		/// </summary>
+		NPCsInVehicles = 1 << 8,
+		/// <summary>
+		/// Everything, EXCLUDING physics debris
+		/// </summary>
+		Everything = Clients | Npcs | Pushables | PhysicsObjects | PlayerAllyNPCs | ClientsInVehicles | ClientsNotInVehicles | NPCsInVehicles
+	}
 
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "NPCs" )] public bool b_Npcs { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Pushables" )] public bool b_Pushables { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Physics Objects" )] public bool b_PhysicsObjects { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Only player ally NPCs" )] public bool b_PlayerAllyNPCs { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Only clients only in vehicles" )] public bool b_ClientsInVehicles { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Only clients *not* in vehicles" )] public bool b_ClientsNotInVehicles { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Physics Debris" )] public bool b_PhysicsDebris { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Only NPCs in vehicles (respects player ally flag)" )] public bool b_NPCsInVehicles { get; set; } = false;
-
-	[Group( "SpawnFlags" )]
-	[ActionGraphIgnore]
-	[Property, Title( "Everything (not including physics debris)" )] public bool b_Everything { get; set; } = false;
-
+	[Group( "SpawnFlags" ), ActionGraphIgnore, Property]
+	public SpawnFlags spawnFlags { get; set; } = SpawnFlags.Clients;
 	#endregion
 
-	[Property, Title( "Start Disabled" )] public bool b_StartDisabled { get; set; } = false;
+	[Property, Title( "Start Disabled" )] public bool StartDisabled { get; set; } = false;
 
 	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool isDebug = false;
 
-	[Feature( "Debug" ), ShowIf( "isDebug", true ), ReadOnly][Property, Title( "Tracked Objects Count" )] public int TrackedCount => trackedItems.Count;
+	[Feature( "Debug" ), ShowIf( "isDebug", true ), ReadOnly, Property, Title( "Tracked Objects Count" )] public int TrackedCount => trackedItems.Count;
 
 	[ShowIf( "isDebug", true ), ReadOnly]
-	[ActionGraphIgnore][Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public Dictionary<GameObject, int> trackedItems = new();
+	[ActionGraphIgnore, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public Dictionary<GameObject, int> trackedItems = [];
 
 
 	/// <summary>
@@ -75,17 +89,17 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	/// <summary>
 	/// When used the entity. Could be a player or an NPC.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsPressable", true )] public ChaosOutput OnUse { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsPressable ), true )] public ChaosOutput OnUse { get; set; }
 
 	/// <summary>
 	/// When actively using the entity. Could be a player or an NPC.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsPressable", true )] public ChaosOutput OnUsing { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsPressable ), true )] public ChaosOutput OnUsing { get; set; }
 
 	/// <summary>
 	/// When just stopped using the entity. Could be a player or an NPC.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsPressable", true )] public ChaosOutput OnRelease { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsPressable ), true )] public ChaosOutput OnRelease { get; set; }
 
 	#endregion
 
@@ -94,33 +108,33 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	/// <summary>
 	/// Fired when a valid entity starts touching this trigger.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsTouchable", true )] public ChaosOutput OnStartTouch { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsTouchable ), true )] public ChaosOutput OnStartTouch { get; set; }
 
 	/// <summary>
 	/// Fired when a valid entity starts touching this trigger, and no other entities are touching it. 
 	/// If there are any other entities touching the trigger when a new one begins to touch, only OnStartTouch will fire.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsTouchable", true )] public ChaosOutput OnStartTouchAll { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsTouchable ), true )] public ChaosOutput OnStartTouchAll { get; set; }
 
 	/// <summary>
 	/// Fired when a valid entity stops touching this trigger.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsTouchable", true )] public ChaosOutput OnEndTouch { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsTouchable ), true )] public ChaosOutput OnEndTouch { get; set; }
 
 	/// <summary>
 	/// Fired when all valid entities stop touching this trigger.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsTouchable", true )] public ChaosOutput OnEndTouchAll { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsTouchable ), true )] public ChaosOutput OnEndTouchAll { get; set; }
 
 	/// <summary>
 	/// Fired if something is currently touching this trigger.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsTouchable", true )] public ChaosOutput OnTouching { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsTouchable ), true )] public ChaosOutput OnTouching { get; set; }
 
 	/// <summary>
 	/// Fired if something is currently touching this trigger.
 	/// </summary>
-	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( "IsTouchable", true )] public ChaosOutput OnNotTouching { get; set; }
+	[Property, Group( "Outputs" ), Order( 100 ), ShowIf( nameof( IsTouchable ), true )] public ChaosOutput OnNotTouching { get; set; }
 
 	#endregion
 
@@ -143,7 +157,9 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 
 	protected override void OnStart()
 	{
-		isEnabled = !b_StartDisabled;
+		isEnabled = !StartDisabled;
+
+		EntityCollider ??= GameObject.GetComponent<Collider>();
 
 		RegisterOutputEvents();
 	}
@@ -178,7 +194,7 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	public void OnTriggerExit( Collider activator )
 	{
 		var go = GetTrackedObject( activator );
-		if ( go == null ) return;
+		if ( !go.IsValid() ) return;
 
 		RemoveItemFromTrigger( go );
 		OnTriggerOut();
@@ -267,7 +283,7 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 		}
 	}
 
-	private bool TryGetEntity( Component source, out BaseEntity entity )
+	private static bool TryGetEntity( Component source, out BaseEntity entity )
 	{
 		entity = source?.Components?.Get<BaseEntity>();
 
@@ -280,13 +296,13 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 			return false;
 		}
 
-		return entity != null;
+		return entity.IsValid();
 	}
 
 	private void TryAddToTriggerList( Collider activator )
 	{
 		var go = GetTrackedObject( activator );
-		if ( go == null ) return;
+		if ( !go.IsValid() ) return;
 
 		lock ( triggerItemsLock )
 		{
@@ -303,18 +319,22 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 
 	private bool IsValidTriggerEntity( GameObject go )
 	{
-		if ( b_Clients && go.GetComponentInParent<BasePlayer>() != null )
-			return true;
-
 		bool isDebris = go.Tags.Has( "debris" );
+		var player = go.GetComponentInParent<BasePlayer>();
 
-		if ( b_PhysicsObjects && !isDebris && (go.GetComponent<Prop>() != null || go.GetComponent<Core.GameProp>() != null) )
+		// Everything: all non-debris flags, ignore debris
+		if ( spawnFlags == SpawnFlags.Everything && !isDebris )
 			return true;
 
-		if ( b_PhysicsDebris && isDebris )
+		if ( (spawnFlags & SpawnFlags.Clients) != 0 && player.IsValid() )
 			return true;
 
-		if ( b_Everything && !isDebris )
+		if ( (spawnFlags & SpawnFlags.PhysicsObjects) != 0 &&
+			!isDebris &&
+			(go.GetComponent<Prop>().IsValid() || go.GetComponent<GameProp>().IsValid()) )
+			return true;
+
+		if ( (spawnFlags & SpawnFlags.PhysicsDebris) != 0 && isDebris )
 			return true;
 
 		return false;
@@ -323,7 +343,7 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 
 	private void RemoveItemFromTrigger( GameObject go )
 	{
-		if ( go == null ) return;
+		if ( !go.IsValid() ) return;
 
 		lock ( triggerItemsLock )
 		{
@@ -350,7 +370,7 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	public IEnumerable<GameObject> GetTrackedItems()
 	{
 		// Simply return the keys (make a copy to avoid modification during iteration)
-		return trackedItems.Keys.ToList();
+		return [.. trackedItems.Keys];
 	}
 
 	private GameObject GetTrackedObject( Collider collider )

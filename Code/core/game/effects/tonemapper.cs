@@ -1,15 +1,19 @@
-﻿namespace Core;
+﻿using System;
+
+namespace Core;
 
 [Category( "Post Processing" )]
 [Icon( "exposure" )]
 
-public class Tonemapper : PostProcess, Component.ExecuteInEditor
+public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 {
 	public enum TonemappingMode
 	{
 		[Description( "AgX, LogC3" )]
 		Saturated,
-		[Description( value: "Arri Wide Gamut 4/LogC4 LUT, LogC3" )]
+		[Description( "Saturated LogC4, LogC3" )]
+		NeutralAlt,
+		[Description( value: "LogC4 LUT, LogC3" )]
 		Neutral,
 		[Description( "Regular Rec709 with nothing, LogC3" )]
 		Linear,
@@ -17,86 +21,96 @@ public class Tonemapper : PostProcess, Component.ExecuteInEditor
 		Custom
 	}
 
-	[MakeDirty, Property, Description( "Change this depending on the mini-game" )]
+	[Property, Description( "Change this depending on the mini-game" )]
 	public TonemappingMode Mode { get; set; } = TonemappingMode.Neutral;
 
-	float GammaPre { get; set; } = 2.4f;
-	float GammaPost { get; set; } = 2.2f;
-	float Bias { get; set; } = 1.333333f;
+	private float _gammaPre { get; set; } = 2.4f;
+	private float _gammaPost { get; set; } = 2.2f;
+	private float _bias { get; set; } = 1.333333f;
+	private float _oklab { get; set; } = 1.25f;
+	private float _satBlend { get; set; } = 0.6f;
 
-	[MakeDirty, Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] float GammaIn { get; set; } = 2.4f;
-	[MakeDirty, Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] float GammaOut { get; set; } = 2.2f;
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] float GammaIn { get; set; } = 2.4f;
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] float GammaOut { get; set; } = 2.2f;
 
-	Texture LookupTexture { get; set; } = Texture.White;
+	private Texture _lookupTexture { get; set; } = Texture.White;
 
-	[MakeDirty, Property, ShowIf( nameof( Mode ), TonemappingMode.Custom )]
-	Texture CustomLUT { get; set; } = Texture.White;
-	[MakeDirty, Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0.1f, 2 )]
-	float ExposureBias { get; set; } = 1.0f;
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom )]
+	private Texture _customLUT { get; set; } = Texture.White;
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0.1f, 2 )]
+	private float _exposureBias { get; set; } = 1.0f;
+	/// <summary>
+	/// How much to saturate using the oklab method (instead of HSV)
+	/// </summary>
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0.0f, 2 )]
+	private float _oklabSaturation { get; set; } = 2f;
+	/// <summary>
+	/// Instead of just applying saturation straight up, we blend based on OkLab brightness, which allows to saturate only certain parts of the image, instead of all of it, this adjusts contrast of the mask, with 0 meaning "just use the saturated image"
+	/// </summary>
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0f, 2 )]
+	private float _oklabLumaBlend { get; set; } = 0.8f;
 
+	private float _gammaResult => CalculateGamma( _gammaPre, _gammaPost );
 
-	Sandbox.Rendering.CommandList Commands;
-	protected override void OnEnabled()
+	public override void Render()
 	{
-		Commands = new Sandbox.Rendering.CommandList( "Tonemapper" );
-		Camera.AddCommandList( Commands, Sandbox.Rendering.Stage.Tonemapping, int.MaxValue ); // since there is now a separate stage for tonemapping it doesnt matter which order the comlist uses
-		Rebuild(); // doesnt matter if its calling OnDirty or straight Rebuild, as
-	}
-
-	protected override void OnDisabled()
-	{
-		Camera.RemoveCommandList( Commands );
-		Commands = null;
-	}
-
-	protected override void OnDirty()
-	{
-		Rebuild();
-	}
-
-	void Rebuild()
-	{
-		if ( Commands is null )
-			return;
-
-		Commands.Reset();
-
 		switch ( Mode )
 		{
+			case TonemappingMode.Linear:
+				return;
 			case TonemappingMode.Saturated:
-				Bias = 1.5f;
-				Commands.Attributes.SetCombo( "D_ARRI", 2 );
-				LookupTexture = Texture.Load( "materials/shaders/agx_logc3_rec709.vtex" );
+				_bias = 1.8f;
+				Attributes.SetCombo( "D_GAMMA", 0 );    // nothing
+				Attributes.SetCombo( "D_SAT", 0 );  // use the oklch saturation
+				_lookupTexture = Texture.Load( "materials/shaders/agx_logc3_rec709.vtex" );
+				_oklab = 1;
+				_satBlend = 0;
+				break;
+			case TonemappingMode.NeutralAlt:
+				_bias = 1f;
+				_oklab = 1.0f;
+				_satBlend = 0;
+				Attributes.SetCombo( "D_SAT", 0 );
+				Attributes.SetCombo( "D_GAMMA", 0 ); // adjust gamma AND true SRGB
+				_lookupTexture = Texture.Load( "materials/shaders/alt_logc4_rec709.vtex" );
 				break;
 			case TonemappingMode.Neutral:
-				Bias = 1.3333333f;
-				GammaPre = 1 / 2.4f;
-				Commands.Attributes.SetCombo( "D_ARRI", 1 );
-				LookupTexture = Texture.Load( "materials/shaders/arri_logc4_rec709.vtex" );
-				break;
-			case TonemappingMode.Linear:
-				Bias = 1.0f;
-				GammaPre = 1.0f;
-				GammaPost = 1.0f;
-				Commands.Attributes.SetCombo( "D_ARRI", 0 );
-				LookupTexture = Texture.Load( "materials/shaders/rec601_linear_clip_knee.vtex" );
+				_bias = 1.3333333f;
+				_oklab = 1.0f;
+				_satBlend = 0;
+				Attributes.SetCombo( "D_SAT", 0 );
+				Attributes.SetCombo( "D_GAMMA", 0 ); // adjust gamma AND true SRGB
+				_lookupTexture = Texture.Load( "materials/shaders/arri_logc4_rec709.vtex" );
 				break;
 			case TonemappingMode.Custom:
-				Bias = ExposureBias;
-				GammaPre = 1 / GammaIn;
-				GammaPost = GammaOut;
-				Commands.Attributes.SetCombo( "D_ARRI", 0 );
-				LookupTexture = CustomLUT;
+				_bias = _exposureBias;
+				_gammaPre = GammaIn;
+				_gammaPost = GammaOut;
+				_oklab = _oklabSaturation;
+				_satBlend = _oklabLumaBlend;
+				Attributes.SetCombo( "D_SAT", 1 );  // use the oklch saturation
+				Attributes.SetCombo( "D_GAMMA", 1 ); // in/out gamma
+				_lookupTexture = _customLUT;
 				break;
-
 		}
 
-		Commands.Attributes.Set( "TonemapBias", Bias );
-		Commands.Attributes.Set( "GammaIn", GammaPre );
-		Commands.Attributes.Set( "GammaOut", GammaPost );
-		Commands.Attributes.Set( "LookupTexture", LookupTexture );
+		Attributes.Set( "TonemapBias", GetWeighted( x => x._bias ) );
+		Attributes.Set( "GammaResult", GetWeighted( x => x._gammaResult ) );
+		Attributes.Set( "OklabSat", GetWeighted( x => x._oklab ) );
+		Attributes.Set( "SatBlend", GetWeighted( x => x._satBlend ) );
+		Attributes.Set( "LookupTexture", _lookupTexture );
 
-		Commands.Attributes.GrabFrameTexture( "ColorBuffer", false );
-		Commands.Blit( Material.FromShader( "tonemapping" ) );
+		var blit = BlitMode.WithBackbuffer( Shader, Sandbox.Rendering.Stage.Tonemapping, int.MaxValue, false );
+		Blit( blit, "Ignis Tonemapper" );
 	}
+
+	private static Material Shader = Material.FromShader( "tonemapping.shader" );
+
+	/// <summary>
+	/// Calculate resulting gamma bias, instead of using two separate gammas and calculating each
+	/// </summary>
+	/// <param name="In">Original gamma of the LUT (if its something stupid like 2.4 instead of sRGB)</param>
+	/// <param name="Out">The gamma we want to get</param>
+	/// <returns></returns>
+	private static float CalculateGamma( float In, float Out ) => Out / In;
 }

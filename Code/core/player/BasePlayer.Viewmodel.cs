@@ -4,6 +4,36 @@ namespace Core;
 
 public partial class BasePlayer
 {
+	[Property, ReadOnly, Feature( "Viewmodel" )]
+	public bool ViewmodelVisible
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+				ToggleViewmodel();
+			}
+		}
+	} = true;
+
+	/// <summary>
+	/// TODO: Revisit this when we'll do first person body
+	/// </summary>
+	public void ToggleViewmodel()
+	{
+		Local.ViewmodelWeapon.RenderOptions.Overlay = Local.ViewmodelVisible; // set the render layer to whatever we want, or the gun wont shoot
+		Local.ViewmodelHands.RenderOptions.Overlay = Local.ViewmodelVisible;
+	}
+
+	/// <summary>
+	/// There are certain moments when we don't want to calculate sway etc (mostly for code exception reasons),
+	/// this determines when we want that
+	/// </summary>
+	private bool _allowSway => ViewmodelVisible && WantSway;
+	public bool WantSway { get; set; } = true;
+
 	/// <summary>
 	/// Renderer for the gun
 	/// </summary>
@@ -29,12 +59,14 @@ public partial class BasePlayer
 	protected virtual Vector3 GetViewmodelFovMask() { return Vector3.Up; }
 
 
-	[ConVar( "viewmodel_fov" )]
-	private static float ViewmodelFOV { get; set; } = 85f;
+	[ConVar( "viewmodel_fov", Saved = true )]
+	public static float ViewmodelFOV { get; set; } = 55f;
+
+	[Property, Feature( "Viewmodel" ), Range( 1f, 179f )]
+	public float ViewmodelFOVOverride { get; set; } = 0f;
 
 	private float lastPitch;
 	private float lastYaw;
-
 	[ReadOnly, Property, Feature( "Viewmodel" )] public float YawInertia { get; set; }
 	[ReadOnly, Property, Feature( "Viewmodel" )] public float PitchInertia { get; set; }
 	private Vector3 lerpedWishMove;
@@ -63,8 +95,7 @@ public partial class BasePlayer
 	[Group( "Forward Leaning" ), Property, Range( 0f, 1f ), Step( 0.01f ), Feature( "Viewmodel" )] public float ProximityThreshold { get; set; } = 0.35f;
 
 
-	[Group( "Viewmodel Roll" ), Property, Range( 0f, 10f ), Feature( "Viewmodel" )] public float StrafeRollIntensity { get; set; } = 0.35f;
-	[Group( "Viewmodel Roll" ), Property, Range( 0f, 10f ), Feature( "Viewmodel" )] public float ForwardRollIntensity { get; set; } = 0.2f;
+	[Group( "Viewmodel Roll" ), Property, Range( -5f, 5f ), Feature( "Viewmodel" )] public float StrafeDirectionRoll { get; set; } = 0.35f;
 	[Group( "Viewmodel Roll" ), Property, Range( 0f, 10f ), Feature( "Viewmodel" )] public float InertiaRollIntensity { get; set; } = 0.1f;
 	[Group( "Viewmodel Roll" ), Property, Range( 0f, 10f ), Feature( "Viewmodel" )] public float RotationRollIntensity { get; set; } = 0.25f;
 	[Group( "Viewmodel Roll" ), Property, Range( 0f, 50f ), Feature( "Viewmodel" )] public float MaxTotalRoll { get; set; } = 15f;
@@ -74,10 +105,10 @@ public partial class BasePlayer
 
 
 	// Need to do this here, as it doesn't get initialized properly in the curve itself
-	private static float localCrouchSpeed => BasePlayer.Local?.Controller?.CrouchSpeed ?? 0f;
-	private static float localWalkSpeed => BasePlayer.Local?.Controller?.WalkSpeed ?? 0f;
-	private static float localDefaultSpeed => BasePlayer.Local?.Controller?.DefaultSpeed ?? 0f;
-	private static float localRunSpeed => BasePlayer.Local?.Controller?.RunSpeed ?? 0f;
+	private static float localCrouchSpeed => Local?.Controller?.CrouchSpeed ?? 0f;
+	private static float localWalkSpeed => Local?.Controller?.WalkSpeed ?? 0f;
+	private static float localDefaultSpeed => Local?.Controller?.DefaultSpeed ?? 0f;
+	private static float localRunSpeed => Local?.Controller?.RunSpeed ?? 0f;
 
 	[Group( "ViewBob" ), Property, Range( 0f, 50f ), Feature( "Viewmodel" )]
 	public Curve BobAmplitudeCurve { get; set; } = new Curve(
@@ -106,9 +137,20 @@ public partial class BasePlayer
 	[Group( "ViewRoll" ), Property, Range( 0f, 500f ), Feature( "Viewmodel" )] public float StrafeRollSpeed { get; set; } = 350f;
 	[Group( "ViewRoll" ), Property, Range( 0f, 20f ), Feature( "Viewmodel" )] public float StrafeRollLerpSpeed { get; set; } = 20f;
 
-	[Group( "Viewmodel Offset" ), Property, Feature( "Viewmodel" )] public float ViewmodelOffsetForward { get; set; } = 2;
-	[Group( "Viewmodel Offset" ), Property, Feature( "Viewmodel" )] public float ViewmodelOffsetRight { get; set; } = 0.2f;
+	[Group( "Viewmodel Offset" ), Property, Feature( "Viewmodel" )] public float ViewmodelOffsetForward { get; set; } = 0;
+	[Group( "Viewmodel Offset" ), Property, Feature( "Viewmodel" )] public float ViewmodelOffsetRight { get; set; } = 0f;
 	[Group( "Viewmodel Offset" ), Property, Feature( "Viewmodel" )] public float ViewmodelOffsetUp { get; set; } = 0f;
+
+	[ConVar( "viewmodel_offset_forward", Help = "Additive viewmodel forward offset (inches)" )]
+	private static float ViewmodelOffsetForwardConvar { get; set; } = 0f;
+	[ConVar( "viewmodel_offset_right", Help = "Additive viewmodel right offset (inches)" )]
+	private static float ViewmodelOffsetRightConvar { get; set; } = 0f;
+	[ConVar( "viewmodel_offset_up", Help = "Additive viewmodel up offset (inches)" )]
+	private static float ViewmodelOffsetUpConvar { get; set; } = 0f;
+
+	protected float GetViewmodelOffsetForward() => ViewmodelOffsetForward + ViewmodelOffsetForwardConvar;
+	protected float GetViewmodelOffsetRight() => ViewmodelOffsetRight + ViewmodelOffsetRightConvar;
+	protected float GetViewmodelOffsetUp() => ViewmodelOffsetUp + ViewmodelOffsetUpConvar;
 
 
 	/// <summary>
@@ -119,9 +161,14 @@ public partial class BasePlayer
 	protected virtual void ViewmodelFixedUpdate()
 	{
 		SetAllAnimgraphParams( "f_walking", Local.Movement.Velocity.Length / (Local.Controller.IsRunning ? 320 : 190) );
+		SetAllAnimgraphParams( "f_timesincewishsprint", (Local.Controller as PlayerController).TimeSinceWishSprint() );
+		SetAllAnimgraphParams( "f_wishsprint", (Local.Controller as PlayerController).WishSprint() );
 		SetAllAnimgraphParams( "b_sprint", Local.Controller.IsRunning );
 		SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
-
+		SetAllAnimgraphParams( "aim_pitch_inertia", -aimPitchLeanSmoothed + ViewPitchInertia * ViewmodelPitchInertiaScale );
+		SetAllAnimgraphParams( "aim_yaw_inertia", ViewYawInertia * ViewmodelYawInertiaScale + smoothedYawOffset );
+		SetAllAnimgraphParams( "aim_yaw", smoothedRoll );
+		SetAllAnimgraphParams( "aim_pitch", aimPitchLean );
 		ApplyInertia();
 		ApplyVelocity();
 
@@ -130,13 +177,8 @@ public partial class BasePlayer
 
 	protected virtual void ViewmodelUpdate()
 	{
-		SetAllAnimgraphParams( "aim_pitch_inertia", -aimPitchLeanSmoothed + ViewPitchInertia * ViewmodelPitchInertiaScale );
-		SetAllAnimgraphParams( "aim_yaw_inertia", ViewYawInertia * ViewmodelYawInertiaScale + smoothedYawOffset );
-		SetAllAnimgraphParams( "aim_yaw", smoothedRoll );
-		SetAllAnimgraphParams( "aim_pitch", aimPitchLean );
-
 		UpdateViewmodelOffset();
-		UpdateVisualRecoil();
+		CameraEffects.Update( Local.Controller.Camera, Local.CurrentWeapon?.LastAttackTime );
 	}
 
 	void ApplyInertia()
@@ -214,6 +256,13 @@ public partial class BasePlayer
 	/// </summary>
 	private float smoothedViewPitchInertia;
 
+	private const float ViewmodelReferenceFramerate = 60f;
+	private float ToReferenceFrameDelta( float angleDelta )
+	{
+		float dt = MathF.Max( Time.Delta, 0.0001f );
+		return angleDelta / dt * (1f / ViewmodelReferenceFramerate);
+	}
+
 	/// <summary>
 	/// Holds the last frame's camera rotation, used for delta calculation in determining view rotation changes.
 	/// </summary>
@@ -255,8 +304,11 @@ public partial class BasePlayer
 	{
 		float t = Time.Delta / (ViewInertiaSmoothTime + 0.0001f);
 
-		smoothedViewYawInertia = MathX.Lerp( smoothedViewYawInertia, deltaAngles.yaw, t );
-		smoothedViewPitchInertia = MathX.Lerp( smoothedViewPitchInertia, deltaAngles.pitch, t );
+		float yawDelta = ToReferenceFrameDelta( deltaAngles.yaw );
+		float pitchDelta = ToReferenceFrameDelta( deltaAngles.pitch );
+
+		smoothedViewYawInertia = MathX.Lerp( smoothedViewYawInertia, yawDelta, t );
+		smoothedViewPitchInertia = MathX.Lerp( smoothedViewPitchInertia, pitchDelta, t );
 
 		ViewYawInertia = smoothedViewYawInertia.Clamp( -ViewMaxInertia, ViewMaxInertia );
 		ViewPitchInertia = smoothedViewPitchInertia.Clamp( -ViewMaxInertia, ViewMaxInertia );
@@ -320,30 +372,54 @@ public partial class BasePlayer
 
 		proximity = MathX.Clamp( proximity, 0f, 1f );
 
-		float proximityInfluence = 1f - proximity;  // The closer you are, the smaller the value
+		float normalizedDistance = 1f - proximity; // The closer you are, the smaller the value
 
 		// Threshold for when to start applying wall proximity lean
 		float threshold = ProximityThreshold;
 
-		if ( proximityInfluence < threshold )
+		float targetWallLean = 0f;
+		if ( normalizedDistance < threshold )
 		{
-			float wallLean = -ProximityLeanFactor * proximityInfluence * 10f;
-
-			aimPitchLean = MathX.Lerp( aimPitchLean, wallLean, Time.Delta * 10f );
+			float invThreshold = 1f / MathF.Max( threshold, 0.0001f );
+			float intensity = 1f - (normalizedDistance * invThreshold); // 1 at wall, 0 at threshold distance
+			targetWallLean = -ProximityLeanFactor * threshold * 10f * intensity;
 		}
-		else
-			aimPitchLean = MathX.Lerp( aimPitchLean, 0f, Time.Delta * 6f );
+
+		// Forward/backward movement lean (based on momentum relative to view forward)
+		float targetMoveLean = 0f;
+		var flatVel = velocity.WithZ( 0f );
+		float speed = flatVel.Length;
+		if ( speed > 0.01f )
+		{
+			var flatForward = cameraForward.WithZ( 0f );
+			if ( flatForward.Length > 0.001f )
+				flatForward = flatForward.Normal;
+			else
+				flatForward = Vector3.Forward;
+
+			float forwardSpeed = flatVel.Dot( flatForward );
+			float direction = Math.Clamp( forwardSpeed / speed, -1f, 1f ); // direction only
+			float speedNorm = Math.Clamp( speed / MathF.Max( Controller?.RunSpeed ?? 320f, 1f ), 0f, 1f );
+			float signedAmount = direction >= 0f
+				? -ForwardLeanAmount * direction
+				: BackwardLeanAmount * -direction;
+
+			targetMoveLean = signedAmount * speedNorm;
+		}
+
+		float targetLean = targetWallLean + targetMoveLean;
+		float lerpSpeed = (MathF.Abs( targetLean ) > 0.0001f) ? 10f : 6f;
+		aimPitchLean = MathX.Lerp( aimPitchLean, targetLean, Time.Delta * lerpSpeed );
 
 	}
 
 	private void UpdateRollLean( Vector3 velocity, Vector3 cameraSide, Vector3 cameraForward, Angles deltaAngles )
 	{
-		float strafeRoll = velocity.Dot( cameraSide ) * StrafeRollIntensity;
-		float forwardRoll = velocity.Dot( cameraForward ) * ForwardRollIntensity;
+		float strafeRoll = velocity.Dot( cameraSide ) * StrafeDirectionRoll;
 		float inertiaRoll = -ViewYawInertia * InertiaRollIntensity;
-		float rotationRoll = deltaAngles.yaw * RotationRollIntensity;
+		float rotationRoll = ToReferenceFrameDelta( deltaAngles.yaw ) * RotationRollIntensity;
 
-		float targetRoll = strafeRoll + forwardRoll + inertiaRoll + rotationRoll;
+		float targetRoll = strafeRoll + inertiaRoll + rotationRoll;
 
 		smoothedRoll = MathX.Lerp( smoothedRoll, targetRoll, Time.Delta * RollLerpSpeed );
 		smoothedRoll = MathX.Clamp( smoothedRoll, -MaxTotalRoll, MaxTotalRoll );
@@ -351,9 +427,16 @@ public partial class BasePlayer
 
 	private float WallProximityFactor( float maxDistance = 60f )
 	{
-		var ray = BasePlayer.Local.Controller.AimRay;
-		var trace = Scene.Trace.Ray( ray.Position, ray.Position + ray.Forward * maxDistance )
+		var ray = Local.Controller.AimRay;
+		var forward = ray.Forward.WithZ( 0f );
+		if ( forward.Length < 0.001f )
+			forward = ray.Forward;
+		else
+			forward = forward.Normal;
+
+		var trace = Scene.Trace.Ray( ray.Position, ray.Position + forward * maxDistance )
 			.WithAnyTags( "solid" )
+			.WithoutTags( "player" )
 			.UseHitboxes( false )
 			.UsePhysicsWorld( true )
 			.Run();
@@ -365,7 +448,7 @@ public partial class BasePlayer
 		if ( MathF.Abs( trace.Normal.z ) > 0.5f )
 			return 0f;
 
-		// Calculate proximity value (returns between 0 and 1)
+		// Calculate proximity value
 		return Math.Clamp( 1f - (trace.Distance / maxDistance), 0f, 1f );
 	}
 
@@ -391,18 +474,17 @@ public partial class BasePlayer
 		if ( Local.LifeState == LifeState.Dead )
 			return;
 
-		var camera = BasePlayer.Local.Controller.Camera;
-		var player = BasePlayer.Local;
+		var camera = Local.Controller.Camera;
+		var player = Local;
 		var controller = player?.Controller;
 
-		if ( controller == null || camera == null )
+		if ( !controller.IsValid() || !camera.IsValid() )
 			return;
 
 		bool isOnGround = controller.Controller.IsOnGround;
 		Vector3 velocity = controller.Controller.Velocity;
 		Rotation eyeRot = controller.EyeAngles.ToRotation();
 		Vector3 headPos = controller.Head.WorldPosition;
-		Vector3 basePosition = player.WorldPosition + Vector3.Up * controller.HeadHeight;
 		Vector3 speed = player.Movement.Velocity;
 		float Velocity2D = speed.WithZ( 0 ).Length;
 
@@ -416,6 +498,9 @@ public partial class BasePlayer
 
 		float bobStrength = (Velocity2D < 50f) ? 0f : BobAmplitudeCurve.Evaluate( speedNorm );
 		float frequency = (Velocity2D < 50f) ? 0f : BobFrequencyCurve.Evaluate( speedNorm );
+
+		//	Log.Info( $"camera.WorldPos: {camera.WorldPosition}" );
+		//	Log.Info( $"headPos: {headPos}" );
 
 		// Sync camera and head position
 		camera.WorldPosition = headPos;
@@ -438,7 +523,7 @@ public partial class BasePlayer
 							 + camera.WorldRotation.Right * horizontalBob;
 
 			// Smoothly transition camera position based on bobbing
-			camera.WorldPosition = Vector3.Lerp( camera.WorldPosition, basePosition + offset, Time.Delta * 10f );
+			camera.WorldPosition = Vector3.Lerp( camera.WorldPosition, headPos + offset, Time.Delta * 10f );
 			camera.WorldRotation = controller.EyeAngles.ToRotation() * Rotation.From( 0, 0, rollBob );
 		}
 		else
@@ -448,7 +533,7 @@ public partial class BasePlayer
 			boblerpFactor = MathX.Lerp( boblerpFactor, 0f, Time.Delta * 8f );
 
 			// Smoothly return to default camera position (no bob effect)
-			camera.WorldPosition = Vector3.Lerp( camera.WorldPosition, basePosition, Time.Delta * 10f );
+			camera.WorldPosition = Vector3.Lerp( camera.WorldPosition, headPos, Time.Delta * 10f );
 			camera.WorldRotation = controller.EyeAngles.ToRotation();
 		}
 
@@ -458,171 +543,13 @@ public partial class BasePlayer
 
 	// ======== Recoil ======== //
 
-	// Recoil control fields //	
-	private TimeSince timeSinceVisualRecoilStarted;
-
-	/// <summary>
-	/// The speed at which the camera rolls to the target. 
-	/// Higher values result in faster roll transitions.
-	/// </summary>
-	private float rollSpeed = 100f;
-
-	/// <summary>
-	/// The maximum visual recoil roll in degrees. This defines how much the camera can tilt due to recoil.
-	/// </summary>
-	private float maxRollAngle = 10f;
-
-	/// <summary>
-	/// The actual roll applied to the camera during the current frame. This will be gradually adjusted to the target roll.
-	/// </summary>
-	private float currentRoll = 0f;
-
-	/// <summary>
-	/// The target roll value based on the most recent recoil event. The camera will roll towards this value.
-	/// </summary>
-	private float targetRoll = 0f;
-
-	/// <summary>
-	/// The direction of the roll. It can be either -1 (left) or 1 (right), based on the recoil's direction.
-	/// </summary>
-	private int rollDirection = 1;
-
-	/// <summary>
-	/// The current recoil strength. It determines the intensity of the recoil effect on the camera.
-	/// </summary>
-	private float currentRecoilStrength = 0f;
-
-	/// <summary>
-	/// The maximum strength the recoil curve can reach. This defines the peak of the recoil effect.
-	/// </summary>
-	private float maxCurveStrength = 1f;
-
-	/// <summary>
-	/// The total ramp-up time accumulated so far. This value is used to smoothly transition recoil effects over time.
-	/// </summary>
-	private float rampTime = 0f;
-
-	/// <summary>
-	/// The timer that tracks the time since the last recoil shot, used to determine the decay delay before the next recoil.
-	/// </summary>
-	private float recoilHoldTimer = 0f;
-
-	private bool isRecoiling;
-	private bool justStartedRecoil;
-
-	public void StartVisualRecoil()
-	{
-		timeSinceVisualRecoilStarted = 0f;
-		recoilHoldTimer = 0f;
-
-		isRecoiling = true;
-		justStartedRecoil = true;
-
-		// Alternate recoil roll direction each shot
-		rollDirection *= -1;
-
-		var player = BasePlayer.Local;
-		var weapon = player?.CurrentWeapon;
-		var weaponData = weapon?.WeaponData;
-
-		if ( weaponData == null || player.LifeState == LifeState.Dead )
-			return;
-
-		// Get the curve's max strength. TODO: Do this better, store as property maybe?
-		CacheMaxCurveStrength( weaponData );
-
-		rampTime += Time.Delta;
-		rampTime = Math.Clamp( rampTime, 0f, weaponData.RecoilRampSpeed );
-	}
-
-	public void UpdateVisualRecoil()
-	{
-		if ( BasePlayer.Local.LifeState == LifeState.Dead )
-			return;
-
-		var player = BasePlayer.Local;
-		var camera = player.Controller?.Camera;
-		var weapon = player?.CurrentWeapon;
-		var weaponData = weapon?.WeaponData;
-
-		if ( weaponData == null || camera == null )
-			return;
-
-		if ( justStartedRecoil )
-		{
-			timeSinceVisualRecoilStarted = 0f;
-			justStartedRecoil = false;
-		}
-		else
-		{
-			timeSinceVisualRecoilStarted += Time.Delta;
-		}
-
-		if ( isRecoiling )
-		{
-			rampTime += Time.Delta;
-			rampTime = Math.Clamp( rampTime, 0f, weaponData.RecoilRampSpeed );
-
-			recoilHoldTimer = 0f;
-		}
-		else
-		{
-			recoilHoldTimer += Time.Delta;
-
-			if ( recoilHoldTimer > weaponData.RecoilResetThreshold )
-			{
-				rampTime -= Time.Delta;
-				rampTime = Math.Max( rampTime, 0f ); // No negative ramp!
-			}
-		}
-
-		// Normalized the ramp
-		float rampT = Math.Clamp( rampTime / weaponData.RecoilRampSpeed, 0f, 1f );
-		float targetStrength = weaponData.RecoilStrengthCurve.Evaluate(
-			EasingPlus.EaseOutCubic( rampT )
-		);
-
-		// Clamp to curve's max strength
-		targetStrength = Math.Clamp( targetStrength, 0f, maxCurveStrength );
-
-		currentRecoilStrength = targetStrength * 0.1f;
-
-		if ( isDebug )
-			Log.Info( $"RecoilRamp Debug -> RampT: {rampT:F2}, Strength: {targetStrength:F2}, MaxCurve: {maxCurveStrength:F2}" );
-
-		if ( isRecoiling )
-		{
-			rollDirection *= -1;
-
-			float recoilImpulse = Game.Random.Float( 6f, 8f ) * currentRecoilStrength * rollDirection;
-
-			// Clamping to curve's max value
-			targetRoll = Math.Clamp( recoilImpulse, -maxRollAngle, maxRollAngle );
-			currentRoll = MoveTowards( currentRoll, targetRoll, rollSpeed * Time.Delta );
-
-			Angles clampedRecoil = new Angles( 0f, 0f, currentRoll );
-			camera.WorldRotation *= Rotation.From( clampedRecoil );
-
-			isRecoiling = false;
-		}
-
-		// Reset case/condition
-		if ( timeSinceVisualRecoilStarted > weaponData.RecoilResetThreshold && MathF.Abs( currentRoll ) < 0.01f )
-		{
-			currentRoll = 0f;
-			targetRoll = 0f;
-			isRecoiling = false;
-		}
-	}
-
-
 	public void ApplyPhysRecoil()
 	{
-		var player = BasePlayer.Local.Controller;
-		var weapon = BasePlayer.Local.CurrentWeapon;
+		var player = Local.Controller;
+		var weapon = Local.CurrentWeapon;
 		var weaponData = weapon?.WeaponData;
 
-		if ( weaponData == null || BasePlayer.Local.LifeState == LifeState.Dead )
+		if ( !weaponData.IsValid() || Local.LifeState == LifeState.Dead )
 			return;
 
 		float strength = Math.Clamp( weaponData.RecoilPushForce, 0f, 10f );
@@ -641,19 +568,18 @@ public partial class BasePlayer
 		if ( !ViewmodelWeapon.IsValid() )
 			return;
 
-		var moveLen = BasePlayer.Local.Movement.Velocity.Length;
-		var wishMove = BasePlayer.Local.Movement.WishVelocity.Normal * 1f;
+		var moveLen = Local.Movement.Velocity.Length;
+		var wishMove = Local.Movement.WishVelocity.Normal * 1f;
 
 		//	if ( Equipment.EquipmentFlags.HasFlag( EquipmentFlags.Aiming ) ) wishMove = 0;
 
-		if ( BasePlayer.Local.Controller.IsWalking || BasePlayer.Local.Controller.IsCrouching )
+		if ( Local.Controller.IsWalking || Local.Controller.IsCrouching )
 			moveLen *= 0.5f;
 
 		lerpedWishMove = lerpedWishMove.LerpTo( wishMove, Time.Delta * 7.0f );
 		YawInertia += lerpedWishMove.y * 10f;
 
 		//	ModelRenderer?.Set( "move_bob", moveLen.Remap( 0, 300, 0, 1, true ) );
-
 	}
 
 
@@ -671,7 +597,6 @@ public partial class BasePlayer
 	{
 		ViewmodelWeapon.Set( v, value );
 	}
-
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
@@ -696,40 +621,42 @@ public partial class BasePlayer
 		if ( tag.Status != SceneModel.AnimTagStatus.End ) switch ( tag.Name )
 			{
 				case "mag_out":
-					Local.CurrentWeapon?.EventMagOut();
+					CurrentWeapon?.EventMagOut();
 					break;
 				case "mag_in":
-					Local.CurrentWeapon?.EventMagIn();
+					CurrentWeapon?.EventMagIn();
 					break;
 				case "bolt_release":
-					Local.CurrentWeapon?.EventBoltRelease();
+					CurrentWeapon?.EventBoltRelease();
 					break;
 				case "primary_fire":
-					Local.CurrentWeapon?.EventPrimaryFire();
+					CurrentWeapon?.EventPrimaryFire();
 					break;
 				case "draw_finished":
-					Local.CurrentWeapon?.EventDrawFinished();
+					CurrentWeapon?.EventDrawFinished();
 					break;
 				case "reload_finished":
-					Local.CurrentWeapon?.EventReloadFinished();
+					CurrentWeapon?.EventReloadFinished();
 					break;
 				case "holster_finished":
-					Local.CurrentWeapon?.EventHolsterFinished();
+					CurrentWeapon?.EventHolsterFinished();
 					break;
 				//	case "swap_mag":
 				//	BasePlayer.Local.CurrentWeapon?.EventSwapMag();
 				//	break;
 				case "disallow_firing":
-					Local.CurrentWeapon?.EventDisallowFiring( true );
+					CurrentWeapon?.EventDisallowFiring( true );
 					break;
 			}
 		if ( tag.Status == SceneModel.AnimTagStatus.End ) switch ( tag.Name )
 			{
 				case "disallow_firing":
-					Local.CurrentWeapon?.EventDisallowFiring( false );
+					CurrentWeapon?.EventDisallowFiring( false );
 					break;
 			}
 	}
+
+	protected virtual float GetViewmodelFOV() => ViewmodelFOVOverride > 0f ? ViewmodelFOVOverride : ViewmodelFOV;
 
 	protected override void OnPreRender()
 	{
@@ -744,22 +671,28 @@ public partial class BasePlayer
 		if ( !ViewmodelWeaponObject.Active )    // because we toggle the viewmodel object, check if its active (enabled)
 			return;
 
+		var camera = Local.Controller?.Camera;
+		if ( !camera.IsValid() )
+			return;
+
 		//		set attributes for viewmodel fov
-		if ( ViewmodelWeapon.Model != null )
+		if ( ViewmodelWeapon.Model.IsValid() )
 		{
+			float vmFov = GetViewmodelFOV();
+
 			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
 			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_fov", Local.Controller.Camera.FieldOfView );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", GetEyePos() );
+			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
+			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
 
-			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_fov", ViewmodelFOV );
+			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_fov", vmFov );
 
 			ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
 			ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", Local.Controller.Camera.FieldOfView );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", GetEyePos() );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
 
-			ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", ViewmodelFOV );
+			ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", vmFov );
 		}
 	}
 
@@ -769,18 +702,6 @@ public partial class BasePlayer
 	{
 		if ( inMin == inMax ) return 0f;
 		return Math.Clamp( (value - inMin) / (inMax - inMin), 0f, 1f );
-	}
-
-	private void CacheMaxCurveStrength( WeaponParse weaponData )
-	{
-		maxCurveStrength = 0f;
-
-		for ( float t = 0f; t <= 1f; t += 0.01f )
-		{
-			float value = weaponData.RecoilStrengthCurve.Evaluate( t );
-			if ( value > maxCurveStrength )
-				maxCurveStrength = value;
-		}
 	}
 
 	private float CalculateStrafeRoll( Rotation viewRot, Vector3 velocity )
@@ -821,13 +742,6 @@ public partial class BasePlayer
 			// From default to run [0.66 -> 1.0]
 			return (2f / 3f) + RemapClamped( normal, run, speed ) * (1f / 3f);
 		}
-	}
-
-	private float MoveTowards( float current, float target, float maxDelta )
-	{
-		if ( MathF.Abs( target - current ) <= maxDelta )
-			return target;
-		return current + MathF.Sign( target - current ) * maxDelta;
 	}
 
 

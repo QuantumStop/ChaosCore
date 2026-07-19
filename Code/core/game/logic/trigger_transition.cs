@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
-
-namespace Core;
+﻿namespace Core;
 
 [Description( "A volume thats used to control which entities go through the level transition." )]
 [Icon( "multiple_stop" )]

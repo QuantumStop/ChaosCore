@@ -80,18 +80,20 @@ public class trigger_hurt : BaseTrigger
 	/// Normally triggers think every half second, in some cases you may need to request it to damage every frame. This is expensive!
 	/// </summary>
 	[Property, Order( 10 )] public bool AlwaysThinkEveryFrame { get; set; } = false;
-
+#if IGNIS
 	[DebugExpose]
-	[HideIf( "isDebug", false )][Feature( "Debug" ), Title( "RealTime has passed: " ), Property] public float f_RealTimer => isDebug ? RealTimer : 0;
+#endif
+	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Title( "RealTime has passed: " ), Property] public float f_RealTimer => isDebug ? RealTimer : 0;
 
-	[HideIf( "isDebug", false )][Feature( "Debug" ), Title( "TimeSince last damaged: " ), Property] public bool b_RealTimer => isDebug && isRealTimer;
-
+	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Title( "TimeSince last damaged: " ), Property] public bool b_RealTimer => isDebug && isRealTimer;
+#if IGNIS
 	[DebugExpose]
-	[HideIf( "isDebug", false )][Feature( "Debug" ), Title( "Last Damage Dealt:" ), Property, ReadOnly] public float lastDamageValue = 0f;
+#endif
+	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Title( "Last Damage Dealt:" ), Property, ReadOnly] public float lastDamageValue = 0f;
 
 
-	[HideIf( "isDebug", false )][Feature( "Debug" ), Property, ReadOnly] public int Mintime;
-	[HideIf( "isDebug", false )][Feature( "Debug" ), Property, ReadOnly] public int MaxTime;
+	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Property, ReadOnly] public int Mintime;
+	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Property, ReadOnly] public int MaxTime;
 
 	protected override void OnStart()
 	{
@@ -184,26 +186,55 @@ public class trigger_hurt : BaseTrigger
 		}
 	}
 
+	private List<IDamageable> _tryHurtList { get; set; } = [];
+
 	private void TryHurt()
 	{
-		var targets = GameObject.GetComponent<Collider>()?.Touching?
-			.SelectMany( x => x?.GetComponentsInParent<IDamageable>()?.Distinct() ?? Enumerable.Empty<IDamageable>() )
-			.Where( target =>
-			{
-				var targetObject = (target as Component)?.GameObject;
-				return targetObject != null && (!b_PhysicsDebris || !targetObject.Tags.Has( "debris" ));
-			} );
+		var collider = GameObject.GetComponent<Collider>();
+		if ( !collider.IsValid() || collider.Touching is null )
+			return;
 
-		if ( targets == null )
+		foreach ( var touching in collider.Touching )
+		{
+			if ( !touching.IsValid() )
+				continue;
+
+			var damageables = touching.GetComponentsInParent<IDamageable>();
+			if ( damageables is null )
+				continue;
+
+			foreach ( var target in damageables )
+			{
+				if ( target is null )
+					continue;
+
+				if ( _tryHurtList.Contains( target ) )
+					continue;
+
+				var targetObject = (target as Component)?.GameObject;
+				if ( !targetObject.IsValid() )
+					continue;
+
+				bool isDebris = targetObject.Tags.Has( "debris" );
+
+				// Exclude debris unless PhysicsDebris is enabled
+				if ( (spawnFlags & SpawnFlags.PhysicsDebris) == 0 && isDebris )
+					continue;
+
+				_tryHurtList.Add( target );
+			}
+		}
+
+		if ( _tryHurtList is null )
 			return;
 
 		var processedObjects = new HashSet<GameObject>();
 		var now = Time.Now;
 
-		foreach ( var target in targets.Take( 15 ) )
+		foreach ( var target in _tryHurtList.Take( 15 ) )
 		{
 			var targetObject = (target as Component)?.GameObject;
-			if ( targetObject == null || !processedObjects.Add( targetObject ) )
+			if ( !targetObject.IsValid() || !processedObjects.Add( targetObject ) )
 				continue;
 
 			// Rate limit per target
@@ -242,22 +273,15 @@ public class trigger_hurt : BaseTrigger
 
 	private bool ShouldDamageTarget( IDamageable target )
 	{
-		// Let's control what will get damage based on our spawnflag choices.
-		//		var targetObject = (target as Component)?.GameObject;
-
-		switch ( target )
+		return target switch
 		{
-			case BasePlayer _ when b_Clients:
-				return true;
-			case Core.GameProp _ when b_PhysicsObjects:
-				return true;
-			case Prop _ when b_PhysicsObjects:
-				return true;
-			case Gib _ when b_PhysicsDebris:
-				return true;
-			default:
-				return b_Everything;
-		}
+			BasePlayer _ when (spawnFlags & SpawnFlags.Clients) != 0 => true,
+			GameProp _ when (spawnFlags & SpawnFlags.PhysicsObjects) != 0 => true,
+			Prop _ when (spawnFlags & SpawnFlags.PhysicsObjects) != 0 => true,
+			Gib _ when (spawnFlags & SpawnFlags.PhysicsDebris) != 0 => true,
+			_ when spawnFlags == SpawnFlags.Everything => true,
+			_ => false,
+		};
 	}
 
 	private void TryCleanUp()
@@ -272,7 +296,7 @@ public class trigger_hurt : BaseTrigger
 			.Where( target =>
 			{
 				var targetObject = (target as Component)?.GameObject;
-				return targetObject != null;
+				return targetObject.IsValid();
 			} );
 
 		foreach ( var targetObject in CleanUp )

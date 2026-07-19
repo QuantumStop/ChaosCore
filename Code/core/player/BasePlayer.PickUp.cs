@@ -1,4 +1,8 @@
 namespace Core;
+
+#if FMOD
+using FMODSbox;
+#endif
 using Sandbox.Physics;
 public partial class BasePlayer
 {
@@ -34,7 +38,7 @@ public partial class BasePlayer
 
 	public void DropObject( bool punt = false )
 	{
-		if ( HeldProp == null || PropPhys == null || PickUpOwner == null )
+		if ( !HeldProp.IsValid() || !PropPhys.IsValid() || !PickUpOwner.IsValid() )
 			return;
 
 		if ( Networking.IsHost || !Networking.IsActive )
@@ -51,12 +55,12 @@ public partial class BasePlayer
 
 	public void UpdatePickup()
 	{
-		if ( PickUpOwner == null || !Input.Pressed( "use" ) )
+		if ( !PickUpOwner.IsValid() || !Input.Pressed( "use" ) || PickUpOwner.LifeState != LifeState.Alive )
 			return;
 
 		UseSuccess = false;
 
-		if ( HeldProp != null && HeldProp.IsValid() )
+		if ( HeldProp.IsValid() )
 		{
 			if ( Networking.IsHost || !Networking.IsActive )
 				DropObject();
@@ -67,7 +71,7 @@ public partial class BasePlayer
 
 		var tr = Scene.Trace.Ray( PickUpOwner.Controller?.AimRay ?? default, 100f )
 			.IgnoreGameObjectHierarchy( this.GameObject )
-			.WithoutTags( "trigger" )
+			.WithoutTags( "trigger", "water" )
 			.HitTriggers()
 			.Run();
 
@@ -76,21 +80,31 @@ public partial class BasePlayer
 			PickUpObject( tr.GameObject );
 		}
 
+#if FMOD
+		if ( UseSuccess ) FMODSound.Play( "event:/Player/HUD/UseSuccess" );
+		else FMODSound.Play( "event:/Player/HUD/UseDeny" );
+#else
 		if ( UseSuccess ) Sound.Play( "usesuccess" ).ListenLocal = true;
 		else Sound.Play( "usedeny" ).ListenLocal = true;
-
+#endif
 	}
 
 
 	private void TryPickup( GameObject obj )
 	{
-		if ( PickUpOwner == null || PickUpOwner.LifeState != LifeState.Alive )
+		if ( !PickUpOwner.IsValid() || PickUpOwner.LifeState != LifeState.Alive )
 			return;
 
 		// no rigid body (static) or motion disabled
 		if ( obj.Components.TryGet<Rigidbody>( out var rigidbody ) ) { if ( !rigidbody.MotionEnabled ) return; }
 		else
 			return;
+
+		if ( obj.Components.TryGet<BaseWeaponItem>( out var weapon ) )
+		{
+			UseSuccess = true; // for weapon holding we want successful sound, to know its actually happening
+			return;
+		}
 
 		if ( obj.Components.TryGet<BaseUsable>( out var usable ) )
 			if ( !usable.CanBeHeld ) return;
@@ -105,7 +119,7 @@ public partial class BasePlayer
 
 		PickUpOwner.CurrentWeapon?.Holster();
 
-		if ( PickUpOwner.Controller.Controller.PhysicsBodyRigidbody?.PhysicsBody != null )
+		if ( PickUpOwner.Controller.Controller.PhysicsBodyRigidbody?.PhysicsBody is not null )
 		{
 			var point1 = new PhysicsPoint( PropPhys.PhysicsBody );
 			var point2 = new PhysicsPoint( PickUpOwner.Controller.Controller.PhysicsBodyRigidbody.PhysicsBody );
@@ -189,13 +203,13 @@ public partial class BasePlayer
 	/// </summary>
 	public void UpdatePickupPhysics()
 	{
-		if ( PickUpOwner == null || PickUpOwner.Controller?.Controller == null )
+		if ( !PickUpOwner.IsValid() || !PickUpOwner.Controller.Controller.IsValid() )
 			return;
 
 		// Handle new pickups / drop requests first
 		UpdatePickup();
 
-		if ( HeldProp == null || PropPhys?.PhysicsBody == null )
+		if ( !HeldProp.IsValid() || !PropPhys.PhysicsBody.IsValid() )
 			return;
 
 		// Drop if dead or standing on held prop

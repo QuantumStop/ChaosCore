@@ -1,4 +1,7 @@
-﻿using Sandbox.Internal;
+﻿#if FMOD
+using FMODSbox;
+#endif
+using Sandbox.Internal;
 namespace Core;
 
 public partial class BasePlayer
@@ -19,18 +22,37 @@ public partial class BasePlayer
 			GameObject entcreate = Local.Scene.CreateObject();
 			entcreate.WorldPosition = tr.EndPosition;
 			entcreate.Components.Create( GlobalGameNamespace.TypeLibrary.GetType( entname ) );
+#if FMOD
+			FMODSound.Play( "event:/Player/HUD/LessonStart" );
+#endif
 		}
 		else
 		{
 			Log.Warning( "Can't spawn " + entname.ToString() + "! \n Too far, or bad position!" );
+#if FMOD
+			FMODSound.Play( "event:/Player/HUD/DenyWeaponSelection" );
+#endif
 		}
 	}
 
 	[ConCmd( "thirdperson", ConVarFlags.Cheat )]
-	public static void ToggleThirdPerson() { Local.Controller.CameraMode = XMovement.PlayerWalkControllerComplex.CameraModes.ThirdPerson; }
+	public static void ToggleThirdPerson()
+	{
+		Local.Controller.CameraMode = XMovement.PlayerWalkControllerComplex.CameraModes.ThirdPerson;
+		Local.ViewmodelVisible = false;
+		Local.Controller.Camera.RenderExcludeTags.Remove( "thirdperson" );
+	}
 
 	[ConCmd( "firstperson", ConVarFlags.Cheat )]
-	public static void ToggleFirstPerson() { Local.Controller.CameraMode = XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson; }
-	[ConVar( "ch_noreload", ConVarFlags.Cheat )] public static bool NoReload { get; set; } = false;
-	[ConVar( "ch_infiniteammo", ConVarFlags.Cheat )] public static bool InfiniteAmmo { get; set; } = false;
+	public static void ToggleFirstPerson()
+	{
+		Local.Controller.CameraMode = XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson;
+		Local.ViewmodelVisible = true;
+		Local.Controller.Camera.RenderExcludeTags.Add( "thirdperson" );
+
+	}
+	[ConVar( "ch_infinite_ammo", ConVarFlags.Cheat )] public static int InfiniteAmmoMode { get; set; } = 0;
+
+	public static bool InfiniteAmmo => InfiniteAmmoMode > 0;
+	public static bool NoReload => InfiniteAmmoMode > 1;
 }

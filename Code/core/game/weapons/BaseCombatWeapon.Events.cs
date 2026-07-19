@@ -1,5 +1,6 @@
 using System;
 namespace Core;
+
 public partial class BaseCombatWeapon
 {
 	[ConVar( "debug_animevents" )] static bool DebugAnimEvents { get; set; }
@@ -10,7 +11,7 @@ public partial class BaseCombatWeapon
 	[Obsolete]
 	public virtual void EventSwapMag()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
@@ -20,32 +21,35 @@ public partial class BaseCombatWeapon
 	/// <summary>
 	/// Cannot shoot
 	/// </summary>
-	/// <param name="should">Enabled/Disabled</param>
-	public virtual void EventDisallowFiring( bool should )
+	/// <param name="disallow">True = not allow; False = allow</param>
+	public virtual void EventDisallowFiring( bool disallow )
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
-			Log.Info( "AnimEvent: DisallowFiring (" + should + ")" );
+			Log.Info( "AnimEvent: DisallowFiring (" + disallow + ")" );
 
-		_disallowAttack = should;
+		_disallowAttack = disallow;
 	}
 	/// <summary>
 	/// Putting the gun back on the screen has finished
 	/// </summary>
 	public virtual void EventDrawFinished()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
 			Log.Info( "AnimEvent: DrawFinished" );
 
+		IsHolstered = false;
+		ReadyToFire = true;
+
 		if ( FirstEquip )
 			_currentReloadStage = 0;
 
-		BasePlayer.Local.SetAllAnimgraphParams( "b_first_equip", false );
+		Owner.Player.SetAllAnimgraphParams( "b_first_equip", false );
 		FirstEquip = false;
 	}
 	/// <summary>
@@ -53,11 +57,11 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventHolsterFinished()
 	{
-		if ( Equipped )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( BasePlayer.Local.CurrentWeapon != this )
-			return;
+		IsHolstered = true;
+		ReadyToFire = false;
 
 		if ( DebugAnimEvents )
 			Log.Info( "AnimEvent: HolsterFinished" );
@@ -68,7 +72,7 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventPrimaryFire()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
@@ -80,7 +84,7 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventMagOut()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
@@ -95,7 +99,7 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventMagIn()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
@@ -109,7 +113,7 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventBoltRelease()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
@@ -122,11 +126,14 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventReloadFinished()
 	{
-		if ( BasePlayer.Local.CurrentWeapon != this )
+		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
 		if ( DebugAnimEvents )
 			Log.Info( "AnimEvent: ReloadFinished" );
+
+		if ( _disallowAttack )
+			EventDisallowFiring( false ); // a slight hack to help with weapons that have fucked event tags in animgraph
 	}
 
 }

@@ -30,16 +30,16 @@ namespace Editor;
 /// <summary>
 /// Resource to generate Animgraphs from template
 /// </summary>
-[AssetType( Name = "Animation Graph Template", Extension = "agtmp", Category = "Animation" )]
+[AssetType( Name = "Animation Graph Template", Extension = "agtmp", Category = "Animation", IconColor = "#674426" )]
 public class AG_Template : GameResource
 {
 	[Header( "Animgraph Options" )]
 
 	// Anigmgraphs Paramaters 
-	[Property, WideMode] public List<AGParameter> Parameters { get; set; } = new();
+	[Property, WideMode] public List<AGParameter> Parameters { get; set; } = [];
 
 	// Anigmgraphs Tags 
-	[Property, WideMode] public List<AGTags> Tags { get; set; } = new();
+	[Property, WideMode] public List<AGTags> Tags { get; set; } = [];
 	[Property] public static List<AGParameter> NewList { get; set; }
 
 
@@ -56,7 +56,7 @@ public class AG_Template : GameResource
 	// Misc setup
 	[Header( "Setup" )]
 	[Property, Title( "Custom Name" )] public bool UseCustomOutputFileName { get; set; } = false;
-	[HideIf( "UseCustomOutputFileName", false ), Property] public string OutputFileName { get; set; } = "generated_animgraph";
+	[ShowIf( "UseCustomOutputFileName", true ), Property] public string OutputFileName { get; set; } = "generated_animgraph";
 
 
 	// Are we using an existing animgraph to get values from it?
@@ -68,8 +68,7 @@ public class AG_Template : GameResource
 	[ShowIf( "UseExisting", true ), Button, Title( $"Get Data From Animgraph" ), Tint( EditorTint.Blue )]
 	public void UseExisting_AG()
 	{
-
-		if ( ExistingAg == null || string.IsNullOrEmpty( ExistingAg.ResourcePath ) )
+		if ( !ExistingAg.IsValid() || string.IsNullOrEmpty( ExistingAg.ResourcePath ) )
 		{
 			Log.Error( "[Animgraph Template] ❌ No path provided or ExistingAg is null." );
 			return;
@@ -147,8 +146,8 @@ public class AG_Template : GameResource
 				}
 
 
-				if ( Tags == null )
-					Tags = new List<AGTags>();
+				if ( Tags is null )
+					Tags = [];
 				else
 					Tags.Clear();
 
@@ -273,7 +272,7 @@ public class AG_Template : GameResource
 					RegexOptions.Singleline
 				);
 
-				BoneMergeModels ??= new List<Model>();
+				BoneMergeModels ??= [];
 				BoneMergeModels.Clear();
 
 
@@ -288,7 +287,7 @@ public class AG_Template : GameResource
 
 					Model mdl = Model.Load( path );
 
-					if ( mdl != null )
+					if ( mdl.IsValid() )
 					{
 						BoneMergeModels.Add( mdl );
 						Log.Info( $"[BoneMergeModel] Registered: {path}" );
@@ -539,8 +538,8 @@ public class AG_Template : GameResource
 			}
 
 			// Update class property
-			if ( Parameters == null )
-				Parameters = new List<AGParameter>();
+			if ( Parameters is null )
+				Parameters = [];
 			else
 				Parameters.Clear();
 
@@ -675,8 +674,8 @@ public class AG_Template : GameResource
 			Append( $"m_name = \"{param.Name}\"" );
 			Append( $"m_id = {{ m_id = {param.Id} }}" );
 			Append( $"m_previewButton = \"{param.PreviewButton}\"" );
-			Append( $"m_bUseMostRecentValue = {param.UseMostRecent.ToString().ToLower()}" );
-			Append( $"m_bAutoReset = {param.AutoReset.ToString().ToLower()}" );
+			Append( $"m_bUseMostRecentValue = {param.UseMostRecent.ToString().ToLowerInvariant()}" );
+			Append( $"m_bAutoReset = {param.AutoReset.ToString().ToLowerInvariant()}" );
 
 			// Let's Log all of the information on Parameters, to know what we're about to write. Useful!
 			Log.Info( $"[ParamManager] Added Parameter: {param.Name} ({param})" );
@@ -686,7 +685,7 @@ public class AG_Template : GameResource
 			{
 
 				case AGParameter.ParameterType.Bool:
-					Append( $"m_bDefaultValue = {param.BoolDefaultValue.ToString().ToLower()}" );
+					Append( $"m_bDefaultValue = {param.BoolDefaultValue.ToString().ToLowerInvariant()}" );
 					break;
 
 				case AGParameter.ParameterType.Enum:
@@ -739,7 +738,7 @@ public class AG_Template : GameResource
 		Append( "}" );
 
 		// Tags
-		AppendTagManager( Tags ?? new List<AGTags>() );
+		AppendTagManager( Tags ?? [] );
 
 		// Movement Manager
 		Append( "m_pMovementManager = {" );
@@ -783,7 +782,7 @@ public class AG_Template : GameResource
 		// Preview Models
 		Append( "m_previewModels = [" );
 		Indent();
-		if ( PreviewModel != null ) Append( $"\"{PreviewModel.ResourcePath}\"," );
+		if ( PreviewModel.IsValid() ) Append( $"\"{PreviewModel.ResourcePath}\"," );
 		Unindent();
 		Append( "]" );
 
@@ -792,9 +791,9 @@ public class AG_Template : GameResource
 		Indent();
 
 		var seenPaths = new HashSet<string>();
-		foreach ( var model in BoneMergeModels ?? new List<Model>() )
+		foreach ( var model in BoneMergeModels ?? [] )
 		{
-			if ( model == null || string.IsNullOrEmpty( model.ResourcePath ) )
+			if ( !model.IsValid() || string.IsNullOrEmpty( model.ResourcePath ) )
 				continue;
 
 			if ( !seenPaths.Add( model.ResourcePath ) )
@@ -822,7 +821,7 @@ public class AG_Template : GameResource
 		Append( "m_flFov = 60.0" );
 		Append( $"m_sLockBoneName = \"{CameraBone}\"" );
 		Append( "m_bLockCamera = false" );
-		Append( $"m_bViewModelCamera = {ViewModelCamera.ToString().ToLower()}" );
+		Append( $"m_bViewModelCamera = {ViewModelCamera.ToString().ToLowerInvariant()}" );
 		Unindent();
 		Append( "}" );
 
@@ -860,7 +859,7 @@ public class AG_Template : GameResource
 		public int EnumDefaultValue { get; set; }
 
 		[ShowIf( "Type", ParameterType.Enum )]
-		public List<string> EnumOptions { get; set; } = new();
+		public List<string> EnumOptions { get; set; } = [];
 
 		// Float parameter fields
 		[ShowIf( "Type", ParameterType.Float )]
@@ -934,7 +933,7 @@ public class AG_Template : GameResource
 	[Button]
 	private void SyncIds()
 	{
-		if ( refAg == null || childAg == null || childAg.Count == 0 )
+		if ( !refAg.IsValid() || childAg is null || childAg.Count == 0 )
 		{
 			Log.Info( $"[Animgraph SyncManager] No valid Animgraph(s) provided!" );
 			return;
@@ -976,7 +975,7 @@ public class AG_Template : GameResource
 		{
 			string filePathToChild = Path.Combine( devPath, graph.ResourcePath );
 
-			if ( graph == null || string.IsNullOrEmpty( filePathToChild ) )
+			if ( !graph.IsValid() || string.IsNullOrEmpty( filePathToChild ) )
 				continue;
 
 

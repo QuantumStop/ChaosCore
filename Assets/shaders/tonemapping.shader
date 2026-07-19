@@ -1,6 +1,6 @@
 MODES
 {
-    VrForward();
+    Forward();
 }
 
 COMMON
@@ -41,12 +41,13 @@ VS
 
 PS
 {	
+	#include "oklab.hlsl"
     Texture2D LookupTexture < Attribute( "LookupTexture" ); >;	
 	SamplerState LookupTexture_sampler < Filter( POINT ); AddressU( CLAMP ); AddressV( CLAMP );   >;
 
 	float ExpoBias		< Attribute( "TonemapBias" ); >;
-	float GammaIn		< Attribute( "GammaIn" ); >;
-	float GammaOut		< Attribute( "GammaOut" ); >;
+	float Gamma			< Attribute( "GammaResult" ); >;
+	float SatBlend		< Attribute( "SatBlend" ); >;
       
 	Texture2D g_tColorBuffer   < Attribute( "ColorBuffer" );  	SrgbRead( true ); >;
 	SamplerState Sampler < Filter(POINT); AddressU(WRAP); AddressV(WRAP); >;
@@ -91,18 +92,18 @@ PS
 	 
 	static const ParamsLogC LogC =
 	{
-		0.011361, // cut
+		0.010591, // cut
 		5.555556, // a
-		0.047996, // b
-		0.244161, // c
-		0.386036, // d
-		5.301883, // e
-		0.092819  // f
+		0.052272, // b
+		0.247190, // c
+		0.385537, // d
+		5.367655, // e
+		0.092809  // f
 	};
 	
 	float3 LinearToLogC(float3 x)
 	{
-		return LogC.c * log10(LogC.a * x + LogC.b) + LogC.d;
+		return (x > LogC.cut) ? LogC.c * log10(LogC.a * x + LogC.b) + LogC.d : LogC.e * x + LogC.f;
 	}
 	
 	float3 LogCToLinear(float3 x)
@@ -123,6 +124,13 @@ PS
 		return ( vDither.rgb / 255.0 ) * 0.375;
 	}
 
+	float3 IGN(float2 vScreenPos)
+	{
+		float3 dither = frac(52.9829189f * frac(dot(vScreenPos, float2(0.06711056f, 0.00583715f))));
+		dither -= float3( 0.5, 0.5, 0.5 );
+		return ( dither.rgb / 255.0 ) * 0.375;
+	}
+
 // frostbite
 	float3 accurateSRGBToLinear (float3 sRGBCol )
 	{
@@ -141,34 +149,67 @@ PS
 	RenderState( DepthWriteEnable, false );
 	RenderState( DepthEnable, false );	
 
-	DynamicCombo( D_ARRI, 0..2, Sys( PC ) );
+	DynamicCombo( D_GAMMA, 0..2, Sys( PC ) );
+	DynamicCombo( D_SAT, 0..1, Sys( PC ) );
 
 	float3 TestColor(float2 position)
 	{
 		return pow(sin(position.x * 4.0 + float3(0.0, 1.0, 2.0) * 3.1415 * 2.0 / 3.0) * 0.5 + 0.5, float3(2.0, 2.0, 2.0)) * (exp(abs(position.y) * 4.0) - 1.0);
 	}
+
+	float3 TestColor2(float2 position)
+	{
+		float h = floor(1.0 + 18.0 * position.y) / 18.0 * 3.141592 * 2;
+		float L = floor(position.x * 24.0) / (24.0 ) - 0.4;
+		
+		
+		float3 color = cos(h + float3(0.0,1.0,2.0) * 3.141592 * 2.0 / 3.0);
+		float maxRGB = max(color.r, max(color.g, color.b));
+		float minRGB = min(color.r, min(color.g, color.b));
+		
+		color = exp(10.0 * L) * (color - minRGB) / (maxRGB - minRGB);
+
+		return color;
+	}
+
+	float MakeMask(float3 color)
+	{
+		return pow(LRGBtoOKLCH(color).x, 2.2f);
+	}
+
+	float OklabSat			< Attribute( "OklabSat" ); Default(1.0); >;
 	
     float4 MainPs( PixelInput i ) : SV_Target0
     {
         float4 initcolor = g_tColorBuffer.Sample( Sampler, i.vTexCoord ).rgba;
 		float3 intermediateColor = initcolor.rgb;
+		
+		intermediateColor *= g_flToneMapScalarLinear;
 		intermediateColor *= ExpoBias;
 
 		intermediateColor = LinearToLogC(intermediateColor);			// convert to LogC
+#if D_SAT
+		float3 BW = MakeMask(intermediateColor);
+		BW = pow(BW, SatBlend);
+
+		float3 saturated = LRGBtoOKLCH(intermediateColor);
+		saturated.y *= OklabSat;
+		saturated = OKLCHtoLRGB(saturated);
+	//	intermediateColor = BW;
+		intermediateColor = lerp(intermediateColor, saturated, BW);
+#endif
 		apply_chart(intermediateColor, intermediateColor);				// apply LUT, sRGB baked in
 
 		// incredibly cursed
 
-#if D_ARRI != 2
-		intermediateColor = pow(intermediateColor, GammaIn);			// bullshit the gamma from 2.4 to no gamma
-#endif
-#if D_ARRI == 0
-		intermediateColor = pow(intermediateColor, GammaOut);			// bullshit the gamma from none to 2.2 (cant precompute SRGB yet + not all tonemaps need bullshitting)
-#elif D_ARRI == 1
+#if D_GAMMA > 0
+		intermediateColor = pow(intermediateColor, Gamma);			// bullshit the gamma from 2.4 to no gamma
+#if D_GAMMA == 2
 		intermediateColor = accurateSRGBToLinear(intermediateColor);
 #endif
+#endif
 
-		intermediateColor.xyz += ScreenSpaceOrderedDither( i.vPositionSs.xy ); // i dont think it actually solves anything but it is funny to have it + i had to zoom in in photoshop to actually see it		
+		intermediateColor.xyz += IGN( i.vPositionSs.xy );
 		return float4(intermediateColor, initcolor.w);
     }
 }

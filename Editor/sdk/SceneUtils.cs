@@ -73,39 +73,14 @@ public class SceneUtils
 
 	public static void TogglePlayerStart( bool which )
 	{
-		var scene = GetScene();
-
-		if ( scene is null )
-			return;
-
 		// doesnt work when not a soundevent, or rather works only for on/true
 		SoundEvent sound = which ? ResourceLibrary.Get<SoundEvent>( "sound/ui/editor_player_start_on.sound" ) : ResourceLibrary.Get<SoundEvent>( "sound/ui/editor_player_start_off.sound" );
 		Sound.Play( sound );
 
-		var balls = scene.GetAllComponents<SDKGameManager>().FirstOrDefault();
-
-		if ( !scene.GetAllComponents<SDKGameManager>().Any() )
-			return;
-
 		// if there are no start entities, then the bool isnt changed, which may or may not be desired effect, which if its not, move this above the warning check
-		balls.UsePlayerStart = which;
+		GameManagerSystem.UsePlayerStart = which;
 
 		string ball = which ? "enabled!" : "disabled!";
 		Log.Info( "All info_player_start were " + ball );
-	}
-
-	public static bool GetPlayerStart()
-	{
-		var scene = GetScene();
-
-		if ( scene is null )
-			return false;
-
-		var balls = scene.GetAllComponents<SDKGameManager>().FirstOrDefault();
-
-		if ( !scene.GetAllComponents<SDKGameManager>().Any() )
-			return false;
-
-		return balls.UsePlayerStart;
 	}
 }

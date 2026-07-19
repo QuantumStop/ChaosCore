@@ -3,6 +3,7 @@ namespace Core;
 /// <summary>
 /// Intermediate class to specify which props can receive use input
 /// </summary>
+[Hide]
 public class BaseUsable : BaseEntity, Component.IPressable
 {
 	// we aim to get the player
@@ -11,7 +12,7 @@ public class BaseUsable : BaseEntity, Component.IPressable
 	/// <summary>
 	/// Can this entity be held
 	/// </summary>
-	[Property, Order( 23 ), ShowIf( nameof( CanBeHeldAccessor ), true )] public bool CanBeHeld { get; set; } = true;
+	[Property, Group( "Physics Properties" ), Order( 13 ), ShowIf( nameof( CanBeHeldAccessor ), true )] public virtual bool CanBeHeld { get; set; } = true;
 
 	/// <summary>
 	/// Since the property is needed everywhere but sometimes hidden based on other variables, change this to hide it
@@ -48,6 +49,14 @@ public class BaseUsable : BaseEntity, Component.IPressable
 
 		// Source of the Use should be a player, as this is specifically a player input press thing rather than general "anyone" (NPC) interaction
 		OnUse?.Invoke( basePlayer );
+
+		return true;
+	}
+
+	public virtual bool Pressing( IPressable.Event press )
+	{
+		if ( BasePlayer.Local.LifeState == LifeState.Dead )
+			return false;
 
 		return true;
 	}

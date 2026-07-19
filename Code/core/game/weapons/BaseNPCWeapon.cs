@@ -1,4 +1,5 @@
-﻿using Sandbox.Internal;
+﻿using Core.AI;
+using Sandbox.Internal;
 using Sandbox.Utility;
 using System;
 
@@ -13,11 +14,11 @@ public enum AIFiringStyle
 	SUPPRESSING,
 	COVERING,
 }
-
+[Hide]
 public class BaseNpcWeapon : BaseEntity
 {
 	[Property] public WeaponParse WeaponData { get; set; }
-	[Property, ReadOnly] public BaseNpc Owner { get; set; }
+	[Property, ReadOnly] public AIController Owner { get; set; }
 	[Property, ReadOnly] public int Slot { get; set; }
 	[Property, ReadOnly] public SkinnedModelRenderer WeaponModel { get; set; }
 	[Property, ReadOnly] public float DetatchTime { get; set; }
@@ -28,23 +29,10 @@ public class BaseNpcWeapon : BaseEntity
 
 	protected override string GetEditorVis()
 	{
-		if ( WeaponData != null )
+		if ( WeaponData.IsValid() )
 			return WeaponData.WeaponWorldmodel.ResourcePath;
 
 		return base.GetEditorVis();
-	}
-
-	public DebrisManager GetDebrisManager()
-	{
-		if ( DebrisManager.StaticRef == null || !DebrisManager.StaticRef.IsValid )
-		{
-			var manager = Scene.CreateObject().Components.Create<DebrisManager>();
-			manager.Tags.Add( "allow_to_transition" );
-			manager.GameObject.Name = "debris_manager";
-
-			return manager;
-		}
-		return DebrisManager.StaticRef;
 	}
 
 	protected override void OnEnabled()
@@ -70,7 +58,7 @@ public class BaseNpcWeapon : BaseEntity
 	protected override void OnPreRender()
 	{
 		//		update transforms
-		if ( WeaponBlendHands == 0f )
+		/*if ( WeaponBlendHands == 0f )
 		{
 			if ( Owner.EquippedWeaponSlot == Slot )
 				WeaponBlendOffhand = 0f;
@@ -87,27 +75,27 @@ public class BaseNpcWeapon : BaseEntity
 			WeaponBlendHands = Math.Clamp( WeaponBlendHands + Time.Delta / 0.4f, 0f, 1f );
 			WeaponBlendOffhand = Math.Clamp( WeaponBlendOffhand + Time.Delta / 0.2f, 0f, 1f );
 		}
-		else
-		{
+		else*/
+		/*{
 			WeaponBlendHands = Math.Clamp( WeaponBlendHands - Time.Delta / 0.4f, 0f, 1f );
 		}
 
 		if ( WeaponBlendHands != 1f )
 		{
-			var transform = Owner.BodyModel.GetAttachment( Owner.NpcDef.ModelInfo.GetHolsteredAttachment( this ) ).Value;
+			var transform = Owner.BodyModel.GetAttachment( Owner.Definition.ModelInfo.GetHolsteredAttachment( this ) ).Value;
 			Transform.LerpTo( transform, 1f );
 		}
 		if ( WeaponBlendHands != 0f )
 		{
-			var transform = Owner.BodyModel.GetAttachment( Owner.NpcDef.ModelInfo.GetEquippedAttachment( this ) ).Value;
+			var transform = Owner.BodyModel.GetAttachment( Owner.Definition.ModelInfo.GetEquippedAttachment( this ) ).Value;
 			Transform.LerpTo( transform, Easing.ExpoInOut( WeaponBlendHands ) );
 		}
 		if ( WeaponBlendOffhand != 0f )
 		{
-			var transform = Owner.BodyModel.GetAttachment( Owner.NpcDef.ModelInfo.GetOffhandAttachment( this ) ).Value;
+			var transform = Owner.BodyModel.GetAttachment( Owner.Definition.ModelInfo.GetOffhandAttachment( this ) ).Value;
 			Transform.LerpTo( transform, Easing.ExpoInOut( WeaponBlendOffhand * WeaponBlendHands ) );
 		}
-
+		*/
 		base.OnPreRender();
 	}
 
@@ -115,7 +103,7 @@ public class BaseNpcWeapon : BaseEntity
 	{
 		if ( DetatchTime != 0f )
 		{
-			if ( DetatchTime < Time.Now )
+			if ( DetatchTime < WorldTime.Now )
 				DropAsItem();
 		}
 		base.OnFixedUpdate();
@@ -140,20 +128,20 @@ public class BaseNpcWeapon : BaseEntity
 	public void OnPlayerGrab()
 	{
 		//		only works on weapons that are holstered
-		if ( Owner.EquippedWeaponSlot == Slot || Owner.OffhandWeaponSlot == Slot )
-			return;
+		/*	if ( Owner.EquippedWeaponSlot == Slot || Owner.OffhandWeaponSlot == Slot )
+				return;
 
-		//		and only on weapons that the player can actually use
-		if ( WeaponData.WeaponViewmodel == null )
-			return;
-		//		take it from the npc
-		Owner.Weapons.RemoveAt( Slot );
-		Owner.WeaponData.RemoveAt( Slot );
+			//		and only on weapons that the player can actually use
+			if ( !WeaponData.WeaponViewmodel.IsValid() )
+				return;
+			//		take it from the npc
+			Owner.Weapons.RemoveAt( Slot );
+			Owner.WeaponData.RemoveAt( Slot );*/
 
 		//		give it to the player
 		//		var weapon = PlayerInventory.StaticRef.GiveWeaponByName( WeaponData.ResourceName );
 		//		var weaponcomp = weapon.Components.GetAll<BaseCombatWeapon>( FindMode.EverythingInSelf ).FirstOrDefault();
-		//		if ( weaponcomp == null || !weaponcomp.IsValid )
+		//		if ( !weaponcomp.IsValid() )
 		//			return;
 
 		//		weaponcomp.StealEquip = true;
@@ -163,26 +151,20 @@ public class BaseNpcWeapon : BaseEntity
 
 	public void OnOwnerKilled()
 	{
-		if ( Owner.EquippedWeaponSlot != Slot && Owner.OffhandWeaponSlot != Slot )
-			return;
+		/*	if ( Owner.EquippedWeaponSlot != Slot && Owner.OffhandWeaponSlot != Slot )
+				return;*/
 
-		DetatchTime = Time.Now + new Random().Float( 0.1f, 1.0f );
+		DetatchTime = WorldTime.Now + new Random().Float( 0.1f, 1.0f );
 	}
 
 	public void DropAsItem()
 	{
 		var typedesc = GlobalGameNamespace.TypeLibrary.GetType( WeaponData.ResourceName );
-		BaseWeaponItem item;
-		if ( typedesc != null )
-		{
-			item = (BaseWeaponItem)Scene.CreateObject().Components.Create( typedesc, false );
-		}
-		else
-		{
-			item = Scene.CreateObject().Components.Create<BaseWeaponItem>( false );
-		}
+		BaseWeaponItem item = typedesc is not null
+			? (BaseWeaponItem)Scene.CreateObject().Components.Create( typedesc, false )
+			: Scene.CreateObject().Components.Create<BaseWeaponItem>( false );
 		item.GameObject.Name = WeaponData.ResourceName;
-		item.WeaponData = WeaponData;
+		item.Data = WeaponData;
 		item.SkipFirstEquipAnim = true;
 		item.PositionImpulse = (LastPosition - WorldPosition) / Time.Delta;
 		item.AngularImpulse = (LastAngles - WorldRotation.Angles().AsVector3()) / Time.Delta;
@@ -191,14 +173,14 @@ public class BaseNpcWeapon : BaseEntity
 		item.Enabled = true;
 		GameObject.Destroy();
 
-		//		notify owner that we dropped it
-		if ( Owner.AnimgraphController.LeftHandBonemergeSlot == Slot )
-			Owner.AnimgraphController.LeftHandBonemergeSlot = -1;
+		/*	//		notify owner that we dropped it
+			if ( Owner.AnimgraphController.LeftHandBonemergeSlot == Slot )
+				Owner.AnimgraphController.LeftHandBonemergeSlot = -1;
 
-		if ( Owner.AnimgraphController.RightHandBonemergeSlot == Slot )
-			Owner.AnimgraphController.RightHandBonemergeSlot = -1;
+			if ( Owner.AnimgraphController.RightHandBonemergeSlot == Slot )
+				Owner.AnimgraphController.RightHandBonemergeSlot = -1;
 
-		Owner.AnimgraphController.OnDropPrimaryWeaponInRagdoll();
+			Owner.AnimgraphController.OnDropPrimaryWeaponInRagdoll();*/
 	}
 
 	//	melee attacks
@@ -236,21 +218,22 @@ public class BaseNpcWeapon : BaseEntity
 	public float NextFiringTime { get; set; }
 	public void UpdateFiring()
 	{
-		if ( Time.Now > NextFiringTime )
+		if ( WorldTime.Now > NextFiringTime )
 		{
 			WeaponModel.Set( "b_primary_attack", true );
-			NextFiringTime = Time.Now + new Random().Float( 0.3f, 0.8f );
+			NextFiringTime = WorldTime.Now + new Random().Float( 0.3f, 0.8f );
 		}
 	}
 	public void PrimaryAttack()
 	{
+#if !FMOD
 		foreach ( var sound in WeaponData.AttackSoundsPrimary )
 		{
 			var evt = Sound.Play( sound );
 			evt.Position = WeaponModel.GetAttachment( "muzzle" ).Value.Position;
 			evt.Volume *= 1.2f;
 		}
-
+#endif
 		//		var attack = AttackManager.FireBullet( WeaponModel.GetAttachment( "muzzle" ).Value, new TakeDamageInfo( GameObject, Owner.GameObject, WeaponData.PrimaryAttackDamage, WeaponData.PrimaryAttackDamageType ) );
 		//		GetDebrisManager().CreateBulletTracer( WeaponModel.GetAttachment( "muzzle" ).Value.Position, (attack.Last.EndPosition - WeaponModel.GetAttachment( "muzzle" ).Value.Position).Normal, GameObject );
 	}

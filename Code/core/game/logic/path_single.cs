@@ -1,7 +1,6 @@
 namespace Core;
 
 using System;
-using System.Linq;
 
 [Description( "Node of a Path." )]
 [Icon( "polyline" )]

@@ -1,5 +1,4 @@
 using System;
-using Sandbox.UI;
 using WorldPanel = Sandbox.WorldPanel;
 
 namespace Core;
@@ -13,85 +12,100 @@ namespace Core;
 [Category( "UI" )]
 public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 {
-	protected override string GetEditorVis() { return null; }
+	protected override string GetEditorVis() => null;
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Property, Header( "Screen" )] public InteractPanel Screen { get; set; }
 
-	[DebugExpose, Property, Header( "Screen" ), MakeDirty] public InteractPanel Screen { get; set; }
-
-	private float _renderScale = 1f;
-	private Vector2 _screenSize = new Vector2( 1024, 768 );
-	private float _screenInteractionRange = 30f;
-	private bool _showCreatedComponents;
-
-	[Property, MakeDirty]
+	[Property]
 	public float RenderScale
 	{
-		get => _renderScale;
+		get;
 		set
 		{
-			if ( _renderScale != value )
+			if ( field != value )
 			{
-				_renderScale = value;
+				field = value;
 				HandleProcedural( null, Procedural.Update );
+				Screen ??= GameObject.GetComponent<InteractPanel>();
 			}
 		}
-	}
-
+	} = 1f;
+#if IGNIS
 	[DebugExpose]
-	[Property, MakeDirty]
+#endif
+	[Property]
 	public Vector2 ScreenSize
 	{
-		get => _screenSize;
+		get => field;
 		set
 		{
-			if ( _screenSize != value )
+			if ( field != value )
 			{
-				_screenSize = value;
+				field = value;
 				HandleProcedural( null, Procedural.Update );
+				Screen ??= GameObject.GetComponent<InteractPanel>();
 			}
 		}
-	}
-
+	} = new( 1024, 768 );
+#if IGNIS
 	[DebugExpose]
-	[Property, MakeDirty, Title( "Max Interaction Distance" )]
+#endif
+	[Property, Title( "Max Interaction Distance" )]
 	public float ScreenInteractionRange
 	{
-		get => _screenInteractionRange;
+		get;
 		set
 		{
-			if ( _screenInteractionRange != value )
+			if ( field != value )
 			{
-				_screenInteractionRange = value;
+				field = value;
 				HandleProcedural( null, Procedural.Update );
+				Screen ??= GameObject.GetComponent<InteractPanel>();
 			}
 		}
-	}
+	} = 30f;
 
-	[Property, MakeDirty, Feature( "Debug" ), Title( "Show WorldPanel" )]
+	[Property, Feature( "Debug" ), Title( "Show WorldPanel" )]
 	public bool ShowCreatedComponents
 	{
-		get => _showCreatedComponents;
+		get;
 		set
 		{
-			if ( _showCreatedComponents != value )
+			if ( field != value )
 			{
-				_showCreatedComponents = value;
+				field = value;
+				Screen ??= GameObject.GetComponent<InteractPanel>();
 				UpdateVisibilityTags();
 			}
 		}
 	}
 
-	[Property, MakeDirty, Feature( "Debug" ), ReadOnly] private List<Component> ProceduralComponents { get; set; } = new();
+	[Property, Feature( "Debug" ), ReadOnly] private List<Component> ProceduralComponents { get; set; } = [];
 
 	// Maximum number of buttons we can have, they appear only if they are set in Razor.
-	[DebugExpose][Group( "Outputs" ), SingleAction][Property, MakeDirty] public Action Button_1 { get; set; }
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Group( "Outputs" ), SingleAction, Property] public Action Button_1 { get; set; }
 
-	[DebugExpose][Group( "Outputs" ), SingleAction][Property, MakeDirty] public Action Button_2 { get; set; }
-
-	[DebugExpose][Group( "Outputs" ), SingleAction][Property, MakeDirty] public Action Button_3 { get; set; }
-
-	[DebugExpose][Group( "Outputs" ), SingleAction][Property, MakeDirty] public Action Button_4 { get; set; }
-
-	[DebugExpose][Group( "Outputs" ), SingleAction][Property, MakeDirty] public Action Button_5 { get; set; }
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Group( "Outputs" ), SingleAction, Property] public Action Button_2 { get; set; }
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Group( "Outputs" ), SingleAction, Property] public Action Button_3 { get; set; }
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Group( "Outputs" ), SingleAction, Property] public Action Button_4 { get; set; }
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Group( "Outputs" ), SingleAction, Property] public Action Button_5 { get; set; }
 
 	public enum Procedural
 	{
@@ -103,9 +117,7 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 
 	protected override void OnAwake()
 	{
-		var proceduralWorldPanel = ProceduralComponents.FirstOrDefault( x => x is WorldPanel ) as WorldPanel;
-
-		if ( proceduralWorldPanel == null )
+		if ( ProceduralComponents.FirstOrDefault( x => x is WorldPanel ) is not WorldPanel proceduralWorldPanel )
 		{
 			var newWorldPanel = GameObject.AddComponent<WorldPanel>();
 			HandleProcedural( newWorldPanel, Procedural.Add );
@@ -114,20 +126,12 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 			UpdateVisibilityTags();
 		}
 
-		if ( Screen == null ) Screen ??= this.GameObject?.GetComponent<InteractPanel>();
-	}
-
-	protected override void OnDirty()
-	{
-		// Let's add the worldpanel this way, we don't really need to see it in the editor.
-		base.OnDirty();
-
-		Screen ??= this.GameObject.GetComponent<InteractPanel>();
+		if ( !Screen.IsValid() ) Screen ??= GameObject?.GetComponent<InteractPanel>();
 	}
 
 	protected override void OnStart()
 	{
-		if ( Screen == null ) return;
+		if ( !Screen.IsValid() ) return;
 
 		// We need to refresh the button map to get the latest buttons from the interact panel.
 		MapActiveButtons();
@@ -142,8 +146,7 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 			c.Destroy();
 
 		ProceduralComponents?.Clear();
-		if ( Screen != null )
-			Screen.ActiveButtons.Clear();
+		Screen?.ActiveButtons.Clear();
 	}
 
 	public void HandleProcedural( Component component, Procedural action )
@@ -152,9 +155,7 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 		{
 			case Procedural.Add:
 
-				if ( !ProceduralComponents.Contains( component ) )
-					ProceduralComponents.Add( component );
-
+				if ( !ProceduralComponents.Contains( component ) ) ProceduralComponents.Add( component );
 				break;
 
 			case Procedural.Update:
@@ -168,17 +169,11 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 						c.RenderScale = RenderScale;
 					}
 				}
-
 				break;
 
 			case Procedural.Delete:
 
-				if ( ProceduralComponents.Contains( component ) )
-				{
-					ProceduralComponents.Remove( component );
-					component.Destroy();
-				}
-
+				if ( ProceduralComponents.Remove( component ) ) component.Destroy();
 				break;
 		}
 
@@ -212,22 +207,17 @@ public class InteractiveScreen : BaseEntity, Component.ExecuteInEditor
 		for ( int i = 1; i <= 5; i++ )
 		{
 			string key = $"button_{i}";
-			var action = GetType().GetProperty( $"Button_{i}" )?.GetValue( this ) as Action;
 
-			if ( action != null && Screen != null )
+			if ( GetType().GetProperty( $"Button_{i}" )?.GetValue( this ) is Action action && Screen.IsValid() )
 				Screen.ActiveButtons[key] = action;
 		}
 #else
 		// Reflection-free version (safe for s&box)
-		if ( Screen == null ) return;
+		if ( !Screen.IsValid() ) return;
 
 		for ( int i = 0; i < Buttons.Length; i++ )
 		{
-			var action = Buttons[i];
-			if ( action != null )
-			{
-				Screen.ActiveButtons[$"button_{i + 1}"] = action;
-			}
+			Screen.ActiveButtons[$"button_{i + 1}"] = Buttons[i];
 		}
 #endif
 	}

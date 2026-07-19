@@ -1,4 +1,5 @@
 namespace Core;
+
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -44,7 +45,7 @@ public class VanityChannel
 	public float VisibilityStartTime { get; set; } = -1f;
 
 	public bool IsTextual => !string.IsNullOrWhiteSpace( Text );
-	public bool IsVisualAsset => Texture != null;
+	public bool IsVisualAsset => Texture.IsValid();
 
 	public bool IsDrawPermanent { get; set; } = false;
 }
@@ -66,7 +67,7 @@ public class VanityUI : PanelComponent
 {
 	public static VanityUI Local;
 
-	[Property, ReadOnly, MakeDirty] public Dictionary<string, VanityChannel> ActiveChannels { get; set; } = new();
+	[Property, ReadOnly] public Dictionary<string, VanityChannel> ActiveChannels { get; set; } = new();
 
 	[Property] public float TimeElapsed { get; set; }
 
@@ -112,7 +113,7 @@ public class VanityUI : PanelComponent
 		}
 	}
 
-	public string GetRootStyle( VanityChannel channel )
+	public static string GetRootStyle( VanityChannel channel )
 	{
 		if ( channel is null )
 			return "";
@@ -143,7 +144,7 @@ public class VanityUI : PanelComponent
 
 	}
 
-	public string GetTextBlockStyle( VanityChannel ch )
+	public static string GetTextBlockStyle( VanityChannel ch )
 	{
 
 		return
@@ -157,7 +158,7 @@ public class VanityUI : PanelComponent
 			$"flex-direction: column;";
 	}
 
-	private Vector2 GetScreenPosition( float normalizedX, float normalizedY )
+	private static Vector2 GetScreenPosition( float normalizedX, float normalizedY )
 	{
 		float screenWidth = Screen.Width;
 		float screenHeight = Screen.Height;
@@ -174,7 +175,7 @@ public class VanityUI : PanelComponent
 
 	private static readonly Regex LocalizationTokenRegex = new( @"#([\w\.]+)", RegexOptions.Compiled );
 
-	public string GetResolvedText( string rawText )
+	public static string GetResolvedText( string rawText )
 	{
 		if ( string.IsNullOrWhiteSpace( rawText ) )
 			return string.Empty;

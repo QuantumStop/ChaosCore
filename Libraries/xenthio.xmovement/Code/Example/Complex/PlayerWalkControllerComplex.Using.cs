@@ -16,6 +16,7 @@ public partial class PlayerWalkControllerComplex : Component
 	public void DoUsing()
 	{
 		if ( !EnableUse ) return;
+		if ( IsProxy ) return;
 		var evnt = new IPressable.Event() { Ray = AimRay, Source = this };
 		UpdateHover( FindUsable() );
 
@@ -28,7 +29,7 @@ public partial class PlayerWalkControllerComplex : Component
 		{
 			if ( Using is IPressable pressable ) pressable.Pressing( evnt );
 		}
-		if ( Input.Released( UseAction ) || !CanUse( Hovering ) )
+		if ( Using.IsValid() && (Input.Released( UseAction ) || !CanUse( Using )) )
 		{
 			if ( Using is IPressable pressable ) pressable.Release( evnt );
 			Using = null;
@@ -65,7 +66,7 @@ public partial class PlayerWalkControllerComplex : Component
 
 	public bool CanUse( Component component )
 	{
-		if ( component == null ) return false;
+		if ( !component.IsValid() ) return false;
 		if ( component.WorldPosition.Distance( AimRay.Position ) > UseDistance ) return false;
 		return true;
 	}
@@ -80,9 +81,9 @@ public partial class PlayerWalkControllerComplex : Component
 		IPressable pressable = default;
 
 		if ( tr.GameObject.IsValid() )
-			tr.GameObject.Components.TryGet<Component.IPressable>( out pressable );
+			tr.GameObject.Components.TryGet<Component.IPressable>( out pressable, FindMode.EverythingInSelfAndParent );
 
-		if ( pressable != null && pressable.CanPress( new IPressable.Event() { Ray = AimRay, Source = this } ) )
+		if ( pressable is not null && pressable.CanPress( new IPressable.Event() { Ray = AimRay, Source = this } ) )
 			return pressable as Component;
 
 		return null;

@@ -1,21 +1,47 @@
 ﻿namespace Core;
+
+using AI;
+
+
+#if FMOD
+using FMODSbox;
+#endif
 using System;
-using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 
 public class DebrisManager : BaseEntity
 {
-	// public static bool IsSpawned { get; set; }
-	public static DebrisManager StaticRef { get; set; }
+	public static DebrisManager Instance { get; set; }
 	[Property, ReadOnly, Feature( "Debug" )] public int TrackedDebris { get; set; } = 0;
 
 	[ConVar( "debug_surfacedecal", ConVarFlags.Cheat )] public static bool ShowSurfaceDebug { get; set; } = false;
-	[Property, Feature( "Debug" ), MakeDirty, Title( "Show Debris Objects" )] public bool DisplayDebrisObj { get; set; } = false;
+	[Property, Feature( "Debug" ), Title( "Show Debris Objects" )]
+	public bool DisplayDebrisObj
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
 
-	[Property, Feature( "Debug" ), ShowIf( nameof( DisplayDebrisObj ), true )] private List<GameObject> DebrisObjects = [];
+				GameObjectFlags desiredFlag = value ? GameObjectFlags.None : GameObjectFlags.Hidden;
 
-	public DebrisManager() { StaticRef = this; }
+				if ( _debrisObjects.Count > 0 )
+				{
+					foreach ( var obj in _debrisObjects )
+					{
+						if ( obj.Flags != desiredFlag )
+							obj.Flags = desiredFlag;
+					}
+				}
+			}
+		}
+	} = false;
+
+	[Property, Feature( "Debug" ), ShowIf( nameof( DisplayDebrisObj ), true )] private List<GameObject> _debrisObjects = [];
+
+	public DebrisManager() { Instance = this; }
 
 	protected override void OnStart()
 	{
@@ -24,30 +50,30 @@ public class DebrisManager : BaseEntity
 		GameObject.Name = "Debris Manager";
 	}
 
-	protected override void OnDirty()
+	[ConCmd( "cleardecals" )]
+	static void ClearDecals()
 	{
-		base.OnDirty();
+		var damn = Instance._debrisObjects.ToList();
 
-		GameObjectFlags desiredFlag = DisplayDebrisObj ? GameObjectFlags.None : GameObjectFlags.Hidden;
-
-		if ( DebrisObjects.Count > 0 )
+		foreach ( var decal in damn )
 		{
-			foreach ( var obj in DebrisObjects )
+			if ( decal.Components.TryGet<Decal>( out var dcl ) )
 			{
-				if ( obj.Flags != desiredFlag )
-					obj.Flags = desiredFlag;
+				dcl?.GameObject.Destroy();
 			}
+
+			Instance._debrisObjects?.Remove( decal );
 		}
 	}
 
-	public GameObject CreateDebris( string modelname, Vector3 position, Rotation rotation, Vector3 posimpulse )
+	public static GameObject CreateDebris( string modelname, Vector3 position, Rotation rotation, Vector3 posimpulse )
 	{
 		var model = Model.Load( modelname );
 		//		new gameobject
-		var gameobject = Scene.CreateObject();
+		var gameobject = Instance.Scene.CreateObject();
 		gameobject.Tags.Add( "allow_to_transition" );
 		gameobject.Name = model.ResourceName + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
-		gameobject.SetParent( GameObject );
+		gameobject.SetParent( Instance.GameObject );
 		gameobject.WorldPosition = position;
 		gameobject.WorldRotation = rotation;
 		gameobject.Transform.ClearInterpolation();
@@ -68,46 +94,46 @@ public class DebrisManager : BaseEntity
 		return gameobject;
 	}
 
-	private void ProcessDecal( Decal decal, Surface decalSurface )
+	/// <summary>
+	/// I'm not sure if this is good but this is probably shipped with core in some form idk
+	/// </summary>
+	private readonly static Surface _defaultSurface = ResourceLibrary.Get<Surface>( "surfaces/2k_default.surface" );
+
+	private static void ProcessDecal( Decal decal, Surface decalSurface )
 	{
-		var decalSurf_default = ResourceLibrary.Get<DecalDefinition>( "scripts/decals/default.decal" );
-		var decalSurf = SurfaceExtension.FindForResourceOrDefault( decalSurface ) ?? SurfaceExtension.FindForResourceOrDefault( decalSurface.GetBaseSurface() );
-		//		var defaultSurf = SurfaceExtension.FindForResourceOrDefault( decalSurface.GetBaseSurface() );
-
-		// just to check if anything is in there, because actual path 
-		//		var decalPath = decalSurf?.DecalList.FirstOrDefault().ResourcePath
-		//			 ?? defaultSurf?.DecalList.FirstOrDefault().ResourcePath
-		//			 ?? default_decalPath?.ResourcePath;
-
-		// Make sure we are using our decals, and as a fall back for legacy override others as our default
-		// We could eventually override anything that just makes sense like metal, paper, concrete etc legacy wise
-		//		if ( Path.GetExtension( decalPath ) != Path.GetExtension( ".decal" ) )
-		//			decal.Decals.Add( ResourceLibrary.Get<DecalDefinition>( decalPath ) );
-
-		//	if we have anything on the surface - use that, or force default_decalPath otherwise
-		decal.Decals = decalSurf.IsValid() ? decalSurf.DecalList : [decalSurf_default];
-
+		decal.Decals = (SurfaceExtension.FindForResourceOrDefault( decalSurface ) ?? SurfaceExtension.FindForResourceOrDefault( _defaultSurface )).DecalList;
 		decal.Depth = 4;
 	}
 
-	public void CreateHitSound( Vector3 position, Surface surface, GameObject HitObject )
+	public static void CreateHitSound( Vector3 position, Surface surface, GameObject HitObject )
 	{
+#if FMOD
+		BasePlayer.SolveNullStringsInSurface( surface, out string surfstring );
+
+		var soundh = FMODSound.Play( "event:/Physics/BulletImpact", position );
+		if ( !string.IsNullOrEmpty( surfstring ) )
+			FMODSound.SetParameter( soundh, "parameter:/Physics/MaterialType", surfstring );
+
+		soundh.setVolume( 0.5f );
+
+		if ( HitObject.Components.TryGet<AIController>( out var npc ) ) FMODSound.Play( "event:/Player/HUD/Hitmarker" );
+#else
 		var sound = surface.SoundCollection.Bullet ?? surface.GetBaseSurface().SoundCollection.Bullet;
 
-		if ( sound == null )
+		if ( !sound.IsValid() )
 			return;
 
-		Sound.Play( sound, position );
-
-		if ( HitObject.Components.TryGet<BaseNpc>( out var npc ) ) Sound.Play( "hit_marker" );
+		var soundh = Sound.Play( sound, position );
+		soundh.Volume *= 0.5f;
+		if ( HitObject.Components.TryGet<AIController>( out var npc ) ) Sound.Play( "hit_marker" );
+#endif
 	}
 
-	public GameObject CreateBulletDecal( Vector3 position, Vector3 normal, Surface surface, GameObject parent, float scale = 0.25f )
+	public static GameObject CreateBulletDecal( Vector3 position, Vector3 normal, Surface surface, GameObject parent, float scale = 0.25f )
 	{
 		if ( surface.HasTag( "noimpactdecal" ) || surface.HasTag( "noimpact" ) )
 		{
-			if ( ShowSurfaceDebug )
-				Log.Info( $"[TEMP DEBUG] {surface} set to not have a decal" );
+			if ( ShowSurfaceDebug ) Log.Info( $"[TEMP DEBUG] {surface} set to not have a decal" );
 			return null;
 		}
 
@@ -128,9 +154,9 @@ public class DebrisManager : BaseEntity
 				}
 		*/
 
-		GameObject decalobject = Scene.CreateObject();
+		GameObject decalobject = Instance.Scene.CreateObject();
 
-		if ( GameManager.Rules.IsOnline ) decalobject.NetworkSpawn();
+		if ( GameManagerSystem.Rules.IsOnline ) decalobject.NetworkSpawn();
 
 		var decal = decalobject.Components.Create<Decal>();
 		decal.Transient = true; // abide by maxdecals command but doesnt seem to work
@@ -153,20 +179,15 @@ public class DebrisManager : BaseEntity
 		decalobject.Tags.Add( "decal" );
 		decalobject.Name = "bullet_hole_decal_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
 
-		//	TODO: add support for skinned meshes (parent to bone)
-		if ( parent != null )
-			decalobject.SetParent( parent );
-		else
-			decalobject.SetParent( GameObject );
+		decalobject.SetParent( parent.IsValid() ? parent : Instance.GameObject );
 
 		IncreaseAmount( decalobject );
 
 		return decalobject;
 	}
 
-	public void CreateBulletImpact( Vector3 position, Vector3 normal, Surface surface, Material material )
+	public static void CreateBulletImpact( Vector3 position, Vector3 normal, Surface surface, bool wantColor = false, Color color = default )
 	{
-
 		if ( surface.HasTag( "noimpactparticle" ) || surface.HasTag( "noimpact" ) )
 		{
 			if ( ShowSurfaceDebug )
@@ -180,37 +201,36 @@ public class DebrisManager : BaseEntity
 
 		string defaultPrefabPath = "prefabs/game/particles/impact_generic_smokepuff.prefab";
 
-		string prefabPath = bulletEffects?.PrefabInstanceSource
-					?? baseBulletEffects?.PrefabInstanceSource
-					?? defaultPrefabPath;
+		GameObject prefabPath = bulletEffects ?? baseBulletEffects ?? GameObject.GetPrefab( defaultPrefabPath );
 
 		if ( ShowSurfaceDebug )
 		{
 			// All the Log info for us to know what's going on, its otherwise ruled 
 			// by the string pefabPath with its hefty checks!
-			if ( bulletEffects == null )
+			if ( !bulletEffects.IsValid() )
 				Log.Warning( $"No particles defined for {surface}. Using Base Option override particles for this surface." );
 
-			if ( prefabPath == defaultPrefabPath && bulletEffects == null && baseBulletEffects == null )
+			if ( prefabPath.PrefabInstanceSource == defaultPrefabPath && !bulletEffects.IsValid() && !baseBulletEffects.IsValid() )
 				Log.Warning( $"No valid particles on this surface or {baseSurface}. Falling back to default particles for {surface}." );
 		}
 
-		GameObject prefabObject = PrefabScene.GetPrefab( prefabPath );
+		GameObject prefabObject = bulletEffects ?? baseBulletEffects;
 
-		// Now we can support overriding legacy particles! In the future we might not even need this
-		// TODO: In a year(!) check if this is even needed, but otherwise neat failsafe
-		if ( Path.GetExtension( prefabPath ) != Path.GetExtension( ".prefab" ) )
-		{
-			if ( ShowSurfaceDebug )
-				Log.Warning( $"Failed to load this particles: {prefabPath}. Not supported {Path.GetExtension( prefabPath )} format is being used! Replacing with override particle on {surface}!" );
+		/*
+				// Now we can support overriding legacy particles! In the future we might not even need this
+				// TODO: In a year(!) check if this is even needed, but otherwise neat failsafe
+				if ( Path.GetExtension( prefabPath ) != Path.GetExtension( ".prefab" ) )
+				{
+					if ( ShowSurfaceDebug )
+						Log.Warning( $"Failed to load this particles: {prefabPath}. Not supported {Path.GetExtension( prefabPath )} format is being used! Replacing with override particle on {surface}!" );
 
-			prefabObject = PrefabScene.GetPrefab( defaultPrefabPath );
-		}
-
+					prefabObject = PrefabScene.GetPrefab( defaultPrefabPath );
+				}
+		*/
 		// Texture texture          = null;
 		// g_tColor reliance is kind of annoying here :( Not that it works rn.
 		// TODO: This is trying to get a texture from the mat to apply to the particle. Not working, not bieng done. Need to evaluate if plausible
-		// if ( material != null && ( texture = material.GetTexture( "g_tColor" )) != null  && texture.IsValid() ) 
+		// if ( material .IsValid() && ( texture = material.GetTexture( "g_tColor" )) .IsValid()  && texture.IsValid() ) 
 		// { 
 		//	var prefabParticleRender     = prefabObject?.GetComponent<ParticleSpriteRenderer>();
 		// 	prefabParticleRender.Texture = texture;
@@ -219,9 +239,16 @@ public class DebrisManager : BaseEntity
 
 		Rotation rotation = (-normal).EulerAngles.ToRotation();
 		GameObject particleObject = prefabObject.Clone( position, rotation );
-		ParticleEffect effect = particleObject.Components.Get<ParticleEffect>();
 
-		if ( GameManager.Rules.IsOnline ) particleObject.NetworkSpawn();
+		if ( wantColor )
+		{
+			foreach ( var particle in particleObject.Components.GetAll<ParticleEffect>() )
+			{
+				particle.Tint = color;
+			}
+		}
+
+		if ( GameManagerSystem.Rules.IsOnline ) particleObject.NetworkSpawn();
 
 		IncreaseAmount( particleObject );
 
@@ -229,80 +256,48 @@ public class DebrisManager : BaseEntity
 		particleObject.Name = "bullet_impact_particle_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() )
 					.Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
 
-		particleObject.SetParent( GameObject );
+		particleObject.SetParent( Instance.GameObject );
 
-		GameObject particleGO = particleObject;
-
-		effect.OnComponentDestroy = () =>
+		if ( particleObject.Components.TryGet<ParticleEffect>( out var effect ) )
 		{
-			if ( particleGO.IsValid )
+			effect.OnComponentDestroy = () =>
 			{
-				particleGO.Destroy();
-				DecreaseAmount( particleGO );
-			}
-		};
+				if ( particleObject.IsValid )
+				{
+					particleObject.Destroy();
+					DecreaseAmount( particleObject );
+				}
+			};
+		}
 	}
 
 	public void CreateBulletTracer( GameObject attacker, WeaponParse weapon, Vector3 position, Vector3 normal )
 	{
-		var weaponMuzzle = BasePlayer.Local?.ViewmodelWeapon?.GetAttachmentObject( "muzzle" );
-
-		if ( weaponMuzzle == null )
-		{
-			if ( ShowSurfaceDebug )
-				Log.Warning( "[TEMP DEBUG] Weapon muzzle is null, nowhere to shoot the particle from!" );
-			return;
-		}
+		float minTracerDistance = 300f;
+		float tracerSpeed = 8000f;
+		float tracerStreakLength = 300f;
+		float fixedDuration = 0.3f;
 
 		// Default fall backs for tracer
 		string defaultTracerPath = "prefabs/game/particles/weapons/weapon_tracer.prefab";
 
 		// Default falllback 
-		Vector3 muzzleForward = weaponMuzzle.WorldRotation.Forward;
-		Vector3 muzzlePos = weaponMuzzle.WorldPosition;
-		Vector3 tracerEnd = muzzlePos + muzzleForward * 4096f;
+		Vector3 muzzleForward = normal;
 
-		if ( attacker.Components.TryGet<BasePlayer>( out var player ) )
-		{
-			float offsetDistance = -1.5f;
+		var traceDistance = 4096f;
 
-			muzzleForward = weaponMuzzle.WorldRotation.Forward;
-			muzzlePos = weaponMuzzle.WorldPosition + muzzleForward * offsetDistance;
+		var trace = Scene.Trace.Ray( position, position + muzzleForward * traceDistance )
+			.WithoutTags( "player" )
+			.Run();
 
-			var traceDistance = 4096f;
-
-			var trace = Scene.Trace.Ray( muzzlePos, muzzlePos + muzzleForward * traceDistance )
-				.WithoutTags( "player" )
-				.Run();
-
-			// Pick endpoint — hit point or max distance
-			tracerEnd = trace.Hit
-				? trace.EndPosition
-				: muzzlePos + muzzleForward * traceDistance;
-		}
-		else if ( attacker.Components.TryGet<BaseNpc>( out var npc ) )
-		{
-			float offsetDistance = -1.5f;
-
-			muzzleForward = weaponMuzzle.WorldRotation.Forward;
-			muzzlePos = weaponMuzzle.WorldPosition + muzzleForward * offsetDistance;
-
-			var traceDistance = 4096f;
-
-			var trace = Scene.Trace.Ray( muzzlePos, muzzlePos + muzzleForward * traceDistance )
-				.WithoutTags( "player" )
-				.Run();
-
-			// Pick endpoint — hit point or max distance
-			tracerEnd = trace.Hit
-				? trace.EndPosition
-				: muzzlePos + muzzleForward * traceDistance;
-		}
+		Vector3 tracerEnd = trace.Hit
+			? trace.EndPosition
+			: position + muzzleForward * traceDistance;
 
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultTracerPath );
-		GameObject tracer = prefabObject.Clone( weaponMuzzle.WorldPosition, weaponMuzzle.WorldRotation );
+		GameObject tracer = prefabObject.Clone( position, muzzleForward.EulerAngles );
 
-		if ( GameManager.Rules.IsOnline ) tracer.NetworkSpawn();
+		if ( GameManagerSystem.Rules.IsOnline ) tracer.NetworkSpawn();
 
 		tracer.SetParent( GameObject );
 		tracer.Tags.Add( "debris" );
@@ -317,15 +312,30 @@ public class DebrisManager : BaseEntity
 		if ( !beam.IsValid )
 			return;
 
-		beam.WorldPosition = muzzlePos;
-		beam.TargetPosition = tracerEnd;
+		float travelDistance = Vector3.DistanceBetween( position, tracerEnd );
+
+		if ( travelDistance < minTracerDistance )
+		{
+			tracer.Destroy();
+			return;
+		}
+
+		float travelDuration = travelDistance / tracerSpeed;
+		if ( travelDuration > fixedDuration ) travelDuration = fixedDuration;
+
+		// Streak is just a short length from muzzle forward, not all the way to endpoint
+		beam.WorldPosition = position;
+		beam.TargetPosition = position + muzzleForward * tracerStreakLength;
 
 		ParticleFloat travel = beam.TravelLerp;
-
 		travel.Evaluation = ParticleFloat.EvaluationType.Life;
 		travel.Type = ParticleFloat.ValueType.Range;
 		travel.ConstantA = 0f;
 		travel.ConstantB = 1f;
+
+		ParticleFloat lifetime = beam.BeamLifetime;
+		lifetime.ConstantA = travelDuration * 1.1f;
+		beam.BeamLifetime = lifetime;
 
 		beam.TravelBetweenPoints = true;
 		beam.TravelLerp = travel;
@@ -336,36 +346,94 @@ public class DebrisManager : BaseEntity
 		beam.SpawnBeam();
 	}
 
-	public void CreateMuzzleflash( WeaponParse weapon, Vector3 position )
+	public static GameObject CreateProjectileObject( CoreDamageInfo coreDamageInfo, Transform transform, out BulletProjectile bullet, Vector3 spread )
 	{
-		var weaponMuzzle = BasePlayer.Local?.ViewmodelWeapon?.GetAttachmentObject( "muzzle" );
+		// for some reason its really shitting itself when i spawn a prefab, it doesnt even break from prefab for some reason
+		//		string defaultTracerPath = "prefabs/game/particles/weapons/weapon_tracer.prefab";
+		//		GameObject prefabObject = GameObject.GetPrefab( defaultTracerPath );
 
-		if ( weaponMuzzle == null )
+		//		prefabObject.Clone( transform );
+		//		prefabObject.BreakFromPrefab(); // dont want the prefab, so we can add shit to it
+
+		GameObject prefabObject = new()
 		{
-			if ( ShowSurfaceDebug )
-				Log.Warning( "[TEMP DEBUG] Weapon muzzle is null, muzzleflash cannot be fired" );
-			return;
+			Name = "Projectile",
+		};
+		prefabObject.SetParent( Instance.GameObject );
+		prefabObject.LocalRotation = transform.Rotation;
+		prefabObject.LocalPosition = transform.Position;
+
+		bullet = prefabObject.AddComponent<BulletProjectile>(); // just a bullet for now but later we should decide which component
+		bullet.Ammo = coreDamageInfo.Ammo;
+		bullet.damageInfo = coreDamageInfo;
+		bullet.Spread = spread;
+
+		if ( prefabObject.Components.TryGet<BulletProjectile>( out var bulletref ) ) // we just created it, it will probably be not null but you will never know
+		{
+			bulletref.OnComponentDestroy = () =>
+			{
+				if ( bulletref.IsValid )
+				{
+					DecreaseAmount( prefabObject );
+					prefabObject.Destroy();
+				}
+			};
 		}
 
-		// Default fall backs for tracer
-		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
+		return prefabObject;
+	}
 
-		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultMuzzleflashPath );
+	public GameObject CreateMuzzleflashObject( WeaponParse weapon, GameObject muzzleObject )
+	{
+		// Default fall backs for muzzleflash
+		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
+		GameObject prefabObject = GameObject.GetPrefab( weapon?.MuzzleFlashEffect?.ResourcePath ?? defaultMuzzleflashPath );
 
 		if ( prefabObject is null )
-			return;
+			return null;
 
-		GameObject muzzleflash = prefabObject.Clone( position );
+		Vector3 spawnPos = muzzleObject.WorldPosition;
+		Rotation spawnRot = muzzleObject.WorldRotation;
 
-		if ( GameManager.Rules.IsOnline ) muzzleflash.NetworkSpawn();
+		GameObject muzzleflashObj = prefabObject.Clone( spawnPos, spawnRot );
 
-		muzzleflash.SetParent( GameObject );
-		muzzleflash.Tags.Add( "debris" );
-		muzzleflash.Name = "muzzleflash_particle_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() )
+		if ( GameManagerSystem.Rules.IsOnline ) muzzleflashObj.NetworkSpawn();
+
+		muzzleflashObj.WorldPosition = spawnPos;
+		muzzleflashObj.WorldRotation = spawnRot;
+		muzzleflashObj.Tags.Add( "debris" );
+		muzzleflashObj.Name = "muzzleflash_particle_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() )
 						.Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
 
-		IncreaseAmount( muzzleflash );
+		IncreaseAmount( muzzleflashObj );
 		GameObject.Name = "Debris Manager (" + TrackedDebris + ")";
+
+		return muzzleflashObj;
+	}
+
+	public static GameObject CreateViewMuzzleflashObject( WeaponParse weapon, Vector3 muzzlePos, Rotation muzzleRot, GameObject muzzleObject )
+	{
+		// Default fallback for muzzleflash
+		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
+		GameObject prefabObject = GameObject.GetPrefab( weapon?.MuzzleFlashEffect?.ResourcePath ?? defaultMuzzleflashPath );
+
+		if ( prefabObject is null )
+			return null;
+
+		GameObject muzzleflashObj = prefabObject.Clone( position: muzzlePos, rotation: muzzleRot, parent: muzzleObject, scale: 1f );
+
+		if ( GameManagerSystem.Rules.IsOnline ) muzzleflashObj.NetworkSpawn();
+
+		muzzleflashObj.WorldPosition = muzzlePos;
+		muzzleflashObj.WorldRotation = muzzleRot;
+		muzzleflashObj.Tags.Add( "debris" );
+		muzzleflashObj.Name = "muzzleflash_particle_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() )
+						.Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
+
+		IncreaseAmount( muzzleflashObj );
+		Instance.GameObject.Name = "Debris Manager (" + Instance.TrackedDebris + ")";
+
+		return muzzleflashObj;
 	}
 
 	public void CreateShellCasing( string prefabPath, Vector3 position, Rotation rotation, Vector3 velocity )
@@ -375,14 +443,14 @@ public class DebrisManager : BaseEntity
 			Log.Warning( "[DebrisManager] Invalid shell casing prefab path!" );
 		}
 
-		var prefabObject = PrefabScene.GetPrefab( prefabPath );
-		if ( prefabObject == null )
+		var prefabObject = GameObject.GetPrefab( prefabPath );
+		if ( !prefabObject.IsValid() )
 		{
 			Log.Warning( $"[DebrisManager] Failed to load prefab at path: {prefabPath}" );
 		}
 
 		GameObject casingObject = prefabObject.Clone( position, rotation );
-		if ( GameManager.Rules.IsOnline ) casingObject.NetworkSpawn();
+		if ( GameManagerSystem.Rules.IsOnline ) casingObject.NetworkSpawn();
 
 		casingObject.SetParent( GameObject );
 		casingObject.Tags.Add( "debris" );
@@ -395,7 +463,7 @@ public class DebrisManager : BaseEntity
 		ParticleEffect effect = casingObject.Components.Get<ParticleEffect>();
 		ParticleBoxEmitter emitter = casingObject.Components.Get<ParticleBoxEmitter>();
 
-		if ( effect != null && emitter != null )
+		if ( effect.IsValid() && emitter.IsValid() )
 		{
 			emitter.Loop = false;
 			effect.Lifetime = 10f;
@@ -414,14 +482,12 @@ public class DebrisManager : BaseEntity
 			handleWeaponCasings( effect, initialVelocity );
 		}
 
-		GameObject casingGO = casingObject;
-
 		emitter.OnComponentDestroy = () =>
 		{
-			if ( casingGO.IsValid() )
+			if ( casingObject.IsValid )
 			{
-				DecreaseAmount( casingGO );
-				casingGO.Destroy();
+				DecreaseAmount( casingObject );
+				casingObject.Destroy();
 			}
 		};
 	}
@@ -437,30 +503,29 @@ public class DebrisManager : BaseEntity
 		_ = AdjustShellForceAndRotation( effect, initialVelocity );
 	}
 
-	private void DecreaseAmount( GameObject debrisObj )
+	private static void DecreaseAmount( GameObject debrisObj )
 	{
-		if ( debrisObj == null || !debrisObj.IsValid() )
+		if ( !debrisObj.IsValid() )
 			return;
 
-		if ( DebrisObjects.Contains( debrisObj ) )
-			DebrisObjects.Remove( debrisObj );
+		Instance._debrisObjects.Remove( debrisObj );
 
-		int objCount = DebrisObjects.Count;
-		TrackedDebris = objCount;
+		int objCount = Instance._debrisObjects.Count;
+		Instance.TrackedDebris = objCount;
 
-		if ( GameObject.IsValid() )
-			GameObject.Name = $"Debris Manager ({objCount})";
+		if ( Instance.GameObject.IsValid() )
+			Instance.GameObject.Name = $"Debris Manager ({objCount})";
 	}
 
-	private void IncreaseAmount( GameObject debrisObj )
+	private static void IncreaseAmount( GameObject debrisObj )
 	{
-		debrisObj.Flags = DisplayDebrisObj ? GameObjectFlags.None : GameObjectFlags.Hidden;
-		DebrisObjects.Add( debrisObj );
+		debrisObj.Flags = Instance.DisplayDebrisObj ? GameObjectFlags.None : GameObjectFlags.Hidden;
+		Instance._debrisObjects.Add( debrisObj );
 
-		int objCount = DebrisObjects.Count();
+		int objCount = Instance._debrisObjects.Count;
 
-		TrackedDebris = objCount;
-		GameObject.Name = "Debris Manager (" + objCount + ")";
+		Instance.TrackedDebris = objCount;
+		Instance.GameObject.Name = "Debris Manager (" + objCount + ")";
 	}
 
 
@@ -471,7 +536,7 @@ public class DebrisManager : BaseEntity
 		float t = 0f;
 
 		Vector3 start = initialVelocity;
-		Vector3 end = new Vector3( initialVelocity.x, initialVelocity.y, -90f ); // drop on Z axis
+		Vector3 end = new( initialVelocity.x, initialVelocity.y, -90f ); // drop on Z axis
 
 
 		while ( t < duration && effect.IsValid() )
@@ -513,7 +578,7 @@ public class DebrisManager : BaseEntity
 		float t = 0f;
 
 		Vector3 startVelocity = initialVelocity;
-		Vector3 endVelocity = new Vector3( initialVelocity.x, initialVelocity.y, -120f );
+		Vector3 endVelocity = new( initialVelocity.x, initialVelocity.y, -120f );
 
 		// Store original effect rotation
 		float initialPitch = effect.Pitch.ToString().ToFloat();

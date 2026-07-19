@@ -3,26 +3,11 @@
   "BodyModel": null,
   "HudEntries": [
     {
-      "RazorPath": "..\\Code\\ui\\SDK\\HUD\\ChaosHUD.razor",
-      "RequireSuitToDraw": false
-    },
-    {
       "RazorPath": "..\\Code\\ui\\Core\\Vanity\\BaseVanity.razor",
-      "RequireSuitToDraw": false
-    },
-    {
-      "RazorPath": "..\\Code\\ui\\Core\\Debug\\ExpoMetering.razor",
-      "RequireSuitToDraw": false
-    },
-    {
-      "RazorPath": "..\\Code\\ui\\Core\\Debug\\StandaloneVersion.razor",
-      "RequireSuitToDraw": false
-    },
-    {
-      "RazorPath": "..\\Code\\ui\\Core\\Debug\\PlayerDebugInfo.razor",
       "RequireSuitToDraw": false
     }
   ],
+  "PlayerData": [],
   "Faction": "PLAYER",
   "__references": [],
   "__version": 0

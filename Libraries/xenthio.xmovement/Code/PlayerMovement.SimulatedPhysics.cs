@@ -2,6 +2,7 @@
 using Sandbox.Physics;
 using System;
 namespace XMovement;
+
 public partial class PlayerMovement : Component
 {
 	[Sync]
@@ -12,76 +13,68 @@ public partial class PlayerMovement : Component
 	[Property, Feature( "Physics Integration" )] public float Mass { get; set; } = 85;
 	[Property, Feature( "Physics Integration" )] public float PushScale { get; set; } = 0.7f;
 
-	[Property, Feature( "Physics Integration" )] public Rigidbody PhysicsShadowRigidbody;
-	[Property, Feature( "Physics Integration" )] public Collider PhysicsShadowCollider;
-	[Property, Feature( "Physics Integration" )] public Rigidbody PhysicsBodyRigidbody;
-	[Property, Feature( "Physics Integration" )] public Collider PhysicsBodyCollider;
+	[Property, Feature( "Physics Integration" ), Group( "Shadow" )] public GameObject PhysicsShadow { get; set; }
+	[Property, Feature( "Physics Integration" ), Group( "Shadow" )] public Rigidbody PhysicsShadowRigidbody;
+	[Property, Feature( "Physics Integration" ), Group( "Shadow" )] public HullCollider PhysicsShadowCollider;
+	[Property, Feature( "Physics Integration" ), Group( "Body" )] public GameObject PhysicsBody { get; set; }
+	[Property, Feature( "Physics Integration" ), Group( "Body" )] public Rigidbody PhysicsBodyRigidbody;
+	[Property, Feature( "Physics Integration" ), Group( "Body" )] public HullCollider PhysicsBodyCollider;
 	bool PreviouslyOnGround = false;
+
+	/// <summary>
+	/// You can pre-create the shadow objects if you want to do so, otherwise they will be created at runtime.
+	/// </summary>
+	//[InfoBox( "You can pre-create the shadow objects if you want to do so, otherwise they will be created at runtime.", tint: EditorTint. )]
+	[Button( "Pre Create Shadow Objects" ), Feature( "Physics Integration" )]
 
 	void CreateShadowObjects()
 	{
 		if ( !PhysicsIntegration ) return;
 		if ( IsProxy ) return;
 
-		if ( !PhysicsShadowRigidbody.IsValid() )
-		{
-			var shadow = Scene.CreateObject();
-			shadow.SetParent( GameObject );
-			shadow.Name = "PhysicsShadow";
-			shadow.Tags.Add( "movement" );
-			shadow.NetworkMode = NetworkMode.Object;
+		if ( PhysicsShadow.IsValid() ) return;
+		if ( PhysicsBody.IsValid() ) return;
 
-			PhysicsShadowRigidbody = shadow.Components.GetOrCreate<Rigidbody>();
-			PhysicsShadowRigidbody.MassOverride = Mass;
-			PhysicsShadowRigidbody.Locking = new PhysicsLock() { Pitch = true, Yaw = true, Roll = true };
-			PhysicsShadowRigidbody.RigidbodyFlags = RigidbodyFlags.DisableCollisionSounds;
-			PhysicsShadowCollider = shadow.Components.GetOrCreate<BoxCollider>();
-			if ( PhysicsShadowCollider is BoxCollider physShadowBoxCollider )
-			{
-				physShadowBoxCollider.Scale = BoundingBox.Maxs + BoundingBox.Mins.Abs();
-				physShadowBoxCollider.Center = BoundingBox.Center;
-			}
-		}
+		var pair = new CollisionRules.Pair( "movement", "movement" );
 
-		if ( !PhysicsBodyRigidbody.IsValid() )
-		{
-			var body = Scene.CreateObject();
-			body.SetParent( GameObject );
-			body.Name = "PhysicsBody";
-			body.Tags.Add( "movement" );
-			body.NetworkMode = NetworkMode.Object;
+		GameObject.Scene.PhysicsWorld.CollisionRules.Pairs.TryAdd( pair, CollisionRules.Result.Ignore );
+		PhysicsShadow = Scene.CreateObject();
+		PhysicsShadow.SetParent( GameObject );
+		PhysicsShadow.Name = "PhysicsShadow";
+		PhysicsShadow.Tags.Add( "movement" );
+		PhysicsShadow.NetworkMode = NetworkMode.Object;
 
-			PhysicsBodyRigidbody = body.Components.GetOrCreate<Rigidbody>();
-			PhysicsBodyRigidbody.MassOverride = Mass;
-			PhysicsBodyRigidbody.MassCenterOverride = Vector3.Zero;
-			PhysicsBodyRigidbody.OverrideMassCenter = true;
-			PhysicsBodyRigidbody.Gravity = false;
-			PhysicsBodyRigidbody.Locking = new PhysicsLock() { Pitch = true, Roll = true };
-			PhysicsBodyRigidbody.RigidbodyFlags = RigidbodyFlags.DisableCollisionSounds;
-			PhysicsBodyCollider = body.Components.GetOrCreate<BoxCollider>();
-			if ( PhysicsBodyCollider is BoxCollider physBodyBoxCollider )
-			{
-				physBodyBoxCollider.Scale = BoundingBox.Maxs + BoundingBox.Mins.Abs();
-				physBodyBoxCollider.Center = BoundingBox.Center;
-			}
-		}
+		PhysicsBody = Scene.CreateObject();
+		PhysicsBody.SetParent( GameObject );
+		PhysicsBody.Name = "PhysicsBody";
+		PhysicsBody.Tags.Add( "movement" );
+		PhysicsBody.NetworkMode = NetworkMode.Object;
+
+
+		PhysicsBodyRigidbody = PhysicsBody.Components.GetOrCreate<Rigidbody>();
+		PhysicsBodyRigidbody.MassOverride = Mass;
+		PhysicsBodyRigidbody.MassCenterOverride = Vector3.Zero;
+		PhysicsBodyRigidbody.OverrideMassCenter = true;
+		PhysicsBodyRigidbody.Gravity = false;
+		PhysicsBodyRigidbody.Locking = new PhysicsLock() { Pitch = true, Roll = true };
+		PhysicsBodyRigidbody.RigidbodyFlags = RigidbodyFlags.DisableCollisionSounds;
+		PhysicsBodyCollider = PhysicsBody.Components.GetOrCreate<HullCollider>();
+		SyncPlayerHullCollider( PhysicsBodyCollider );
+
+		PhysicsShadowRigidbody = PhysicsShadow.Components.GetOrCreate<Rigidbody>();
+		PhysicsShadowRigidbody.MassOverride = Mass;
+		PhysicsShadowRigidbody.Locking = new PhysicsLock() { Pitch = true, Yaw = true, Roll = true };
+		PhysicsShadowRigidbody.RigidbodyFlags = RigidbodyFlags.DisableCollisionSounds;
+		PhysicsShadowCollider = PhysicsShadow.Components.GetOrCreate<HullCollider>();
+		SyncPlayerHullCollider( PhysicsShadowCollider );
 
 		var surf = Surface.FindByName( "xmove_phys" );
 
 		PhysicsBodyCollider.Surface = surf;
 		PhysicsShadowCollider.Surface = surf;
-	}
-	void InitialiseShadowObjects()
-	{
-		if ( !PhysicsIntegration ) return;
-		if ( IsProxy ) return;
 
-		var pair = new CollisionRules.Pair( "movement", "movement" );
-
-		if ( !this.GameObject.Scene.PhysicsWorld.CollisionRules.Pairs.ContainsKey( pair ) )
-		{
-			this.GameObject.Scene.PhysicsWorld.CollisionRules.Pairs.Add( pair, CollisionRules.Result.Ignore );
-		}
+		PhysicsShadow.NetworkSpawn();
+		PhysicsBody.NetworkSpawn();
 	}
 	void ResetSimulatedShadow()
 	{
@@ -99,32 +92,8 @@ public partial class PlayerMovement : Component
 		shvel.z = MathF.MaxMagnitude( shvel.z, whvel.z );
 		PhysicsShadowRigidbody.Velocity = shvel;
 
-		if ( PhysicsShadowCollider is BoxCollider physShadowBoxCollider )
-		{
-			physShadowBoxCollider.Scale = BoundingBox.Maxs + BoundingBox.Mins.Abs();
-			physShadowBoxCollider.Center = BoundingBox.Center;
-		}
-		else
-		{
-			var xscale = Radius / PlayerColliderModel.Model.PhysicsBounds.Maxs.x;
-			var yscale = Radius / PlayerColliderModel.Model.PhysicsBounds.Maxs.y;
-			var zscale = Height / PlayerColliderModel.Model.PhysicsBounds.Maxs.z;
-			PhysicsShadowCollider.GameObject.WorldScale = new Vector3( 1, 1, zscale + 0.008f );
-		}
-
-		if ( PhysicsBodyCollider is BoxCollider physBodyBoxCollider )
-		{
-			physBodyBoxCollider.Scale = BoundingBox.Maxs + BoundingBox.Mins.Abs();
-			physBodyBoxCollider.Center = BoundingBox.Center;
-		}
-		else
-		{
-			var xscale = Radius / PlayerColliderModel.Model.PhysicsBounds.Maxs.x;
-			var yscale = Radius / PlayerColliderModel.Model.PhysicsBounds.Maxs.y;
-			var zscale = Height / PlayerColliderModel.Model.PhysicsBounds.Maxs.z;
-			PhysicsBodyCollider.GameObject.WorldScale = new Vector3( 1, 1, zscale );
-		}
-
+		SyncPlayerHullCollider( PhysicsShadowCollider );
+		SyncPlayerHullCollider( PhysicsBodyCollider );
 
 		if ( debug_playermovement ) DebugOverlay.Box( PhysicsShadowRigidbody.PhysicsBody.GetBounds(), Color.Blue, 1 );
 		if ( debug_playermovement ) DebugOverlay.Box( PhysicsBodyRigidbody.PhysicsBody.GetBounds(), Color.Green, 1 );
@@ -214,7 +183,7 @@ public partial class PlayerMovement : Component
 		locking.Yaw = IsOnGround && !OnDynamicGeometry;
 		PhysicsBodyRigidbody.Locking = locking;
 
-		PreviouslyOnGround = GroundObject != null;
+		PreviouslyOnGround = GroundObject.IsValid();
 		ResetPhysSimPosition();
 		ResetPhysSimVelocity();
 	}
