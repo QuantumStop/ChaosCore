@@ -11,7 +11,7 @@
     }
   ],
   "InputColorSpace": "Linear",
-  "OutputFormat": "RGBA32323232F",
+  "OutputFormat": "RGBA16161616F",
   "OutputColorSpace": "Linear",
   "OutputMipAlgorithm": "None",
   "OutputTypeString": "2D"

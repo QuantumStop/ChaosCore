@@ -5,7 +5,7 @@ using AI;
 
 public abstract partial class GameManagerSystem : GameObjectSystem
 {
-
+#if IGNIS
 	[ConVar( "mat_fullbright" )]
 	public static SceneCameraDebugMode Fullbright
 	{
@@ -17,7 +17,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			Current.Scene.Camera.DebugMode = value;
 		}
 	}
-#if IGNIS
+
 	private static readonly Model _entCameraPreviewModel = Model.Load( "models/editor/camera.vmdl" );
 
 	public static bool IsGameEjected
