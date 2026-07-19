@@ -84,8 +84,8 @@ public partial class BasePlayer
 		if ( UseSuccess ) FMODSound.Play( "event:/Player/HUD/UseSuccess" );
 		else FMODSound.Play( "event:/Player/HUD/UseDeny" );
 #else
-		if ( UseSuccess ) Sound.Play( "usesuccess" ).ListenLocal = true;
-		else Sound.Play( "usedeny" ).ListenLocal = true;
+		if ( UseSuccess ) Sound.Play( "usesuccess" ).Volume = 0.25f;
+		else Sound.Play( "usedeny" ).Volume = 0.25f;
 #endif
 	}
 
