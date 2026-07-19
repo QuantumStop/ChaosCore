@@ -91,9 +91,7 @@ public partial class GameProp : BaseUsable, Component.ExecuteInEditor, Component
 	/// </summary>
 	[Rpc.Broadcast( NetFlags.OwnerOnly )]
 	public void NetworkCreateGibs( bool wasImpact = false, Vector3 damageOrigin = default, float scatterForceScale = 1f )
-	{
-		CreateGibs( wasImpact, damageOrigin, scatterForceScale );
-	}
+	=> CreateGibs( wasImpact, damageOrigin, scatterForceScale );
 
 	public List<GameGib> CreateGibs( bool wasImpact = false, Vector3 damageOrigin = default, float scatterForceScale = 1f )
 	{

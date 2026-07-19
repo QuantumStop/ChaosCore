@@ -3,7 +3,7 @@
   "BodyModel": null,
   "HudEntries": [
     {
-      "RazorPath": "..\\Code\\ui\\Core\\Vanity\\BaseVanity.razor",
+      "RazorPath": "..\\Code\\UI\\Core\\Vanity\\BaseVanity.razor",
       "RequireSuitToDraw": false
     }
   ],

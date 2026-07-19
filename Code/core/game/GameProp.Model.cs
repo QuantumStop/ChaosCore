@@ -62,6 +62,7 @@ public partial class GameProp
 	List<Component> ProceduralComponents { get; set; }
 	private bool HasRigidbody => Components.Get<Rigidbody>().IsValid();
 
+	[Rpc.Broadcast]
 	public void ClearProcedurals()
 	{
 		if ( ProceduralComponents is null )
@@ -102,6 +103,7 @@ public partial class GameProp
 		if ( Scene.IsEditor ) SyncProceduralDebug();
 	}
 
+	[Rpc.Broadcast]
 	private void UpdateComponents()
 	{
 		if ( Model.IsValid() )

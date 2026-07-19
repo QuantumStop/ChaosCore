@@ -1,4 +1,5 @@
 ﻿using Sandbox.Internal;
+using SDK;
 using System;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -23,9 +24,9 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 	[Property, Feature( "Defines" )] public PlayerConfig PlayerCfg { get; set; }
 
-	protected override string GetEditorVis() { return null; }
+	protected override string GetEditorVis() => null;
 
-	protected virtual Model GetViewmodelHands() { return PlayerCfg.ViewmodelHands; }
+	protected virtual Model GetViewmodelHands() => PlayerCfg.ViewmodelHands;
 
 	[ConCmd( "noclip" )]
 	private static void ToggleNoclip()
@@ -60,16 +61,15 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 		ViewmodelHands.Model = GetViewmodelHands();
 
-		if ( !ViewmodelWeapon.IsValid() )
-			ViewmodelVisible = false;
+		if ( !ViewmodelWeapon.IsValid() ) ViewmodelVisible = false;
 
 		if ( HUDGameObject.IsValid() )
 		{
 			HUDGameObject.Components.GetOrCreate<ScreenPanel>().Enabled = true;
 
-			if ( PlayerCfg?.HudEntries.Count > 0 )
+			if ( PlayerCfg.IsValid() && PlayerCfg.HudEntries is not null && PlayerCfg.HudEntries.Count > 0 )
 			{
-				foreach ( var entry in PlayerCfg.HudEntries )
+				foreach ( var entry in PlayerCfg?.HudEntries )
 				{
 					if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
 						continue;
@@ -170,12 +170,11 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 		var soundEvent = foot == 0 ? "event:/Physics/StepLeft" : "event:/Physics/StepRight";
 		FootSound( soundEvent, GameObject, surfstring );
 #else
-		var left = (tr.Surface.SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().GetBaseSurface().SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().GetBaseSurface().GetBaseSurface().SoundCollection.FootLeft);
-		var right = (tr.Surface.SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().GetBaseSurface().SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().GetBaseSurface().GetBaseSurface().SoundCollection.FootRight);
+		var left = tr.Surface.SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().GetBaseSurface().SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().GetBaseSurface().GetBaseSurface().SoundCollection.FootLeft;
+		var right = tr.Surface.SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().GetBaseSurface().SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().GetBaseSurface().GetBaseSurface().SoundCollection.FootRight;
 		var soundEvent = foot == 0 ? left : right;
-#endif
-
 		FootSound( soundEvent, GameObject );
+#endif
 
 		if ( DebugFootsteps )
 		{
@@ -220,8 +219,6 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 	{
 		var handle = obj.PlaySound( path, 0 );
 		handle.Volume *= FootstepVolume;
-		handle.SpacialBlend = 0; // 2D footsteps
-
 	}
 #endif
 

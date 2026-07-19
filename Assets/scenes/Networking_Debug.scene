@@ -31,7 +31,7 @@
           "IsTrigger": false,
           "Mesh": {
             "Data": {
-              "$blob": "7207b940-f7cb-4a1d-a5e5-f518b82f9e92"
+              "$blob": "b0bd766f-0754-4e5c-af5a-fb900f4eb557"
             },
             "Materials": [
               "materials/dev/reflectivity_30.vmat"
@@ -1003,7 +1003,7 @@
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
-      "NetworkMode": 1,
+      "NetworkMode": 2,
       "NetworkFlags": 0,
       "NetworkOrphaned": 3,
       "NetworkTransmit": true,
@@ -1082,10 +1082,10 @@
           "PropBatchableDebug": true,
           "SerializedGuid": null,
           "ShadowRenderType": "On",
-          "ShowProceduralComponents": false,
+          "ShowProceduralComponents": true,
           "StartAsleep": false,
           "TargetName": "Core.GameProp_MgLfW",
-          "Tint": "1,1,1,1",
+          "Tint": "0,0.08333,1,1",
           "TintB": "1,1,1,1",
           "TintC": "1,1,1,1",
           "UseAuthoredExplosiveData": false,
@@ -1316,9 +1316,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-239.96907,277.208954,75.5383682",
+          "Position": "-161.225861,337.384827,108.547058",
           "Scale": "1,1,1",
-          "Rotation": "0.0129211955,0.234789044,-0.0534092896,0.970491946"
+          "Rotation": "-0.0282433089,0.23002322,0.118551515,0.965524316"
         },
         "_prefab": {
           "_type": "gameobject",

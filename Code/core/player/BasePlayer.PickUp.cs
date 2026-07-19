@@ -209,7 +209,7 @@ public partial class BasePlayer
 		// Handle new pickups / drop requests first
 		UpdatePickup();
 
-		if ( !HeldProp.IsValid() || !PropPhys.PhysicsBody.IsValid() )
+		if ( !HeldProp.IsValid() || !PropPhys.IsValid() || !PropPhys.PhysicsBody.IsValid() )
 			return;
 
 		// Drop if dead or standing on held prop
