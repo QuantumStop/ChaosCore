@@ -1,4 +1,5 @@
 ﻿namespace SDK;
+
 using Core;
 
 [Title( "SDK Example Player" )]
@@ -30,6 +31,5 @@ public partial class Player : BasePlayer
 		base.OnUpdate();
 
 		CalculateBob();
-		HandleSuitZoom();
 	}
 }

@@ -4,45 +4,6 @@ using Core;
 
 partial class Player
 {
-	[ReadOnly, Property, Feature( "Debug" )]
-	protected bool _isSuitZooming
-	{
-		get;
-		set
-		{
-			if ( field == value ) return;
-			field = value;
-
-			if ( value is true )
-			{
-				CurrentWeapon?.Holster();
-				Controller.AimSensitivityScale = (float)SuitZoomFOV / CurrentFOV; // for some reason this is backwards, i have no idea but it works
-			}
-			else
-			{
-				CurrentWeapon?.Draw();
-				Controller.AimSensitivityScale = 1f;
-			}
-		}
-	}
-
-	public const int SuitZoomFOV = 27;
-
-	private void HandleSuitZoom()
-	{
-		if ( HasSuit && LifeState == LifeState.Alive )
-		{
-			if ( Input.Pressed( "zoom" ) )
-			{
-				if ( SetFOV( this, SuitZoomFOV, 0.4f ) ) _isSuitZooming = true;
-			}
-			else if ( Input.Released( "zoom" ) )
-			{
-				if ( SetFOV( this, 0, 0.2f ) ) _isSuitZooming = false;
-			}
-		}
-	}
-
 	[Property, Feature( "Defines" )] public WorldInput WorldInput { get; set; }
 
 	[ConVar( "access_halo" )]
@@ -50,7 +11,8 @@ partial class Player
 
 	private void CalculateBob()
 	{
-		var camera = Local.Controller?.Camera;
+		var camera = Local?.Controller?.Camera;
+
 		if ( !camera.IsValid() )
 			return;
 

@@ -67,7 +67,7 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 		{
 			HUDGameObject.Components.GetOrCreate<ScreenPanel>().Enabled = true;
 
-			if ( PlayerCfg.HudEntries.Count > 0 )
+			if ( PlayerCfg?.HudEntries.Count > 0 )
 			{
 				foreach ( var entry in PlayerCfg.HudEntries )
 				{
