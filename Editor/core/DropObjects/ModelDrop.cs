@@ -2,7 +2,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application = Editor.Application;
 
-[DropObject( "model", "vmdl", "vmdl_c", Priority = 100 )]
+[DropObject( "model", "vmdl", "vmdl_c"
+#if IGNIS
+, Priority = 100 
+#endif
+)]
 class ModelDropObject : BaseDropObject
 {
 	Model model;

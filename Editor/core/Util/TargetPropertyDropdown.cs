@@ -1,3 +1,4 @@
+#if IGNIS
 namespace Editor;
 
 using System;
@@ -5,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Sandbox;
-using Core;
 
 [CustomEditor( typeof( TargetPropertyInfo ) )]
 public sealed class TargetPropertyDropdown : DropdownControlWidget<string>
@@ -207,3 +207,4 @@ public class MenuOption<T> : Widget
 		}
 	}
 }
+#endif

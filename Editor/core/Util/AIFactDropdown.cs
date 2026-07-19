@@ -37,22 +37,26 @@ public sealed class AIFactDropdown : ControlWidget
 	protected override void OnMouseClick( MouseEvent e )
 	{
 		if ( IsControlDisabled || !e.LeftMouseButton || _menu.IsValid() ) return;
+#if IGNIS
 		OpenMenu();
+#endif
 	}
 
 	public override void StartEditing()
 	{
 		if ( IsControlDisabled || _menu.IsValid() ) return;
+#if IGNIS
 		OpenMenu();
+#endif
 	}
 
 	private string GetCurrentLabel()
 	{
 		if ( SerializedProperty.IsMultipleDifferentValues ) return "Multiple Values"; // i don really know how much we need multiedit?
-		var value = SerializedProperty.GetValue<string>( string.Empty ) ?? string.Empty;
+		var value = SerializedProperty.GetValue( string.Empty ) ?? string.Empty;
 		return string.IsNullOrWhiteSpace( value ) ? "None" : value;
 	}
-
+#if IGNIS
 	private void OpenMenu()
 	{
 		PropertyStartEdit();
@@ -116,6 +120,7 @@ public sealed class AIFactDropdown : ControlWidget
 		if ( scroller.VerticalScrollbar.Minimum != scroller.VerticalScrollbar.Maximum )
 			scroller.Canvas.MaximumWidth -= 8;
 	}
+#endif
 
 	private bool PaintMenuBackground()
 	{
@@ -150,7 +155,7 @@ internal class FactMenuOption : Widget // internal so others can use this
 
 	private bool IsSelected()
 	{
-		var value = _property.GetValue<string>( string.Empty ) ?? string.Empty;
+		var value = _property.GetValue( string.Empty ) ?? string.Empty;
 		return string.Equals( value, _value, StringComparison.Ordinal );
 	}
 

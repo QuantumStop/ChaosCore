@@ -2,11 +2,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application = Editor.Application;
 
-[DropObject( "NpcDefinition", "npc", "npc_c", Priority = 100 )]
+[DropObject( "NpcDefinition", "npc", "npc_c"
+#if IGNIS
+, Priority = 100
+#endif
+)]
 class NpcDropObject : BaseDropObject
 {
 	Core.AI.NpcDefinition definition;
-	string archetype;
+	private string archetype;
 
 	protected override async Task Initialize( string dragData, CancellationToken token )
 	{
@@ -86,7 +90,7 @@ class NpcDropObject : BaseDropObject
 			};
 
 			var controller = GameObject.Components.Create<Core.AI.AIController>();
-			controller.Definition = definition;			
+			controller.Definition = definition;
 
 			EditorScene.Selection.Clear();
 			EditorScene.Selection.Add( GameObject );

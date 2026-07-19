@@ -1,5 +1,4 @@
 ﻿using System;
-using HL2K.AI;
 
 namespace Core.AI;
 
@@ -64,7 +63,7 @@ public abstract class AIAction
 	}
 	public virtual void OnEnter( AIController agent ) { }
 	public virtual void OnExit( AIController agent ) { }
-	public virtual bool IsFailed() { return false; }
+	public virtual bool IsFailed() => false;
 }
 
 // finally.
@@ -73,39 +72,36 @@ public class AIActionRegistry( Scene scene ) : GameObjectSystem<AIActionRegistry
 	private readonly Dictionary<AIActionDefinition.ActionList, Func<AIController, AIAction>> _registry = new()
 	{
 		{ AIActionDefinition.ActionList.ActionTakeCover,        a => new MoveToCoverAction( a )        },
-		{ AIActionDefinition.ActionList.ActionRangeAttack1,     a => new HoundeyeAttackAction( a )     },
+	//	{ AIActionDefinition.ActionList.ActionRangeAttack1,     a => new HoundeyeAttackAction( a )     },
 		{ AIActionDefinition.ActionList.ActionChaseEnemy,       a => new MoveToEnemyAction( a )        },
 		{ AIActionDefinition.ActionList.ActionScatter,          a => new PanicScatterAction( a )       },
 		{ AIActionDefinition.ActionList.ActionBackAwayFromEnemy,a => new HoundeyeBackOffAction( a )    },
 		{ AIActionDefinition.ActionList.ActionFollowTheLeader,  a => new FollowTheLeaderAction( a )    },
 		{ AIActionDefinition.ActionList.ActionGoToEnemyLKP,     a => new GoToEnemyLKPAction( a )       },
-		{ AIActionDefinition.ActionList.ActionHeadcrabLeapAttack,a => new HeadcrabLeapAttackAction( a )},
-		{ AIActionDefinition.ActionList.ActionBarnacleWait,     a => new BarnacleWait( a )             },
-		{ AIActionDefinition.ActionList.ActionBarnacleLift,     a => new BarnacleLift( a )             },
-		{ AIActionDefinition.ActionList.ActionBarnacleEat,      a => new BarnacleEat( a )             },
+	//	{ AIActionDefinition.ActionList.ActionHeadcrabLeapAttack,a => new HeadcrabLeapAttackAction( a )},
+	//	{ AIActionDefinition.ActionList.ActionBarnacleWait,     a => new BarnacleWait( a )             },
+	//	{ AIActionDefinition.ActionList.ActionBarnacleLift,     a => new BarnacleLift( a )             },
+	//	{ AIActionDefinition.ActionList.ActionBarnacleEat,      a => new BarnacleEat( a )             },
 		{ AIActionDefinition.ActionList.ActionMeleeAttack1,     a => new MeleeAttack1Action( a )       },
-		{ AIActionDefinition.ActionList.ActionHoundeyeRegroup,  a => new HoundeyeRegroup( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeFindRestingPoint,  a => new HoundeyeFindRestingPoint( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeRest,  a => new HoundeyeRest( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeGuard,  a => new HoundeyeGuard( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeMoveToGuardPoint,  a => new HoundeyeMoveToGuardPoint( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeSearch,  a => new HoundeyeSearchAction( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeEncircle,  a => new HoundeyeEncircleAction( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeCommunicate,  a => new HoundeyeCommunicate( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyePlayFleeFriend,  a => new HoundeyeFleeFriendAction( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyePlayChaseFriend,  a => new HoundeyeChaseFriendAction( a )          },
-		{ AIActionDefinition.ActionList.ActionHoundeyeReceiveCommunication,  a => new HoundeyeReceiveCommunication( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeRegroup,  a => new HoundeyeRegroup( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeFindRestingPoint,  a => new HoundeyeFindRestingPoint( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeRest,  a => new HoundeyeRest( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeGuard,  a => new HoundeyeGuard( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeMoveToGuardPoint,  a => new HoundeyeMoveToGuardPoint( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeSearch,  a => new HoundeyeSearchAction( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeEncircle,  a => new HoundeyeEncircleAction( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeCommunicate,  a => new HoundeyeCommunicate( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyePlayFleeFriend,  a => new HoundeyeFleeFriendAction( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyePlayChaseFriend,  a => new HoundeyeChaseFriendAction( a )          },
+	//	{ AIActionDefinition.ActionList.ActionHoundeyeReceiveCommunication,  a => new HoundeyeReceiveCommunication( a )          },
 		{ AIActionDefinition.ActionList.ProcessPainAction,  a => new ProcessPainAction( a )          },
 		{ AIActionDefinition.ActionList.InvestigateSoundAction,  a => new InvestigateSound( a )          },
-		{ AIActionDefinition.ActionList.HoundeyeHearSuspiciousSoundAction,  a => new HoundeyeHearSuspiciousAction( a )          },
-		{ AIActionDefinition.ActionList.ActionBullsquidSpitAttack,  a => new BullsquidSpitAttackAction( a )          },
+	//	{ AIActionDefinition.ActionList.HoundeyeHearSuspiciousSoundAction,  a => new HoundeyeHearSuspiciousAction( a )          },
+	//	{ AIActionDefinition.ActionList.ActionBullsquidSpitAttack,  a => new BullsquidSpitAttackAction( a )          },
 		{ AIActionDefinition.ActionList.SniffOutScent,  a => new SniffOutScentAction( a )          },
 	};
 
-	public void Register( AIActionDefinition.ActionList key, Func<AIController, AIAction> factory )
-	{
-		_registry[key] = factory;
-	}
+	public void Register( AIActionDefinition.ActionList key, Func<AIController, AIAction> factory ) => _registry[key] = factory;
 
 	public AIAction Create( AIActionDefinition.ActionList key, AIController owner )
 	{
