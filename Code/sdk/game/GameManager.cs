@@ -61,6 +61,8 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 
 				closest.GameObject.Destroy();
 
+				Player.NetworkSpawn( channel );
+
 				return;
 			}
 		}
@@ -80,9 +82,9 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 				playerComponent2.Controller.Controller.Velocity = Vector3.Zero;
 				playerComponent2.Controller.Controller.BaseVelocity = Vector3.Zero;
 			}
-		}
 
-		Player.NetworkSpawn( channel );
+			Player.NetworkSpawn( channel );
+		}
 	}
 
 	private void HandleEditor()
