@@ -31,7 +31,7 @@ public partial class PlayerWalkControllerComplex : Component
 			if ( field != value )
 			{
 				field = value;
-				if ( IsRunning ) WantSound = true;
+				if ( IsRunning && !RunByDefault ) WantSound = true;
 			}
 		}
 	}
