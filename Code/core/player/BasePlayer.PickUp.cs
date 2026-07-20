@@ -7,25 +7,25 @@ using Sandbox.Physics;
 public partial class BasePlayer
 {
 	[Property, Feature( "PickUp" )] public BasePlayer PickUpOwner { get; private set; }
-	[Property, ReadOnly, Feature( "PickUp" )] public GameObject HeldProp { get; private set; }
+	[Property, ReadOnly, Feature( "PickUp" ), Sync] public GameObject HeldProp { get; private set; }
 	[Property, ReadOnly, Feature( "PickUp" )] public Rigidbody PropPhys { get; private set; }
 	[Property, ReadOnly, Feature( "PickUp" )] public Angles PropRelativeRot { get; private set; }
 
-	private PhysicsJoint Joint;
-	private bool UseSuccess { get; set; } = false;
+	private PhysicsJoint _joint;
+	private bool _useSuccess { get; set; } = false;
 
-	private Vector3 predictedPosition;
-	private Rotation predictedRotation;
+	private Vector3 _predictedPosition;
+	private Rotation _predictedRotation;
 
-	private Vector3 targetPosition;
-	private Rotation targetRotation;
+	private Vector3 _targetPosition;
+	private Rotation _targetRotation;
 
 	[ConVar( "debug_nomass", ConVarFlags.Cheat )]
 	public static bool DebugNoMass { get; set; }
 
 	public void PickUpObject( GameObject obj )
 	{
-		if ( Networking.IsHost || !Networking.IsActive )
+		if ( Networking.IsHost )
 		{
 			TryPickup( obj );
 		}
@@ -41,13 +41,13 @@ public partial class BasePlayer
 		if ( !HeldProp.IsValid() || !PropPhys.IsValid() || !PickUpOwner.IsValid() )
 			return;
 
-		if ( Networking.IsHost || !Networking.IsActive )
+		if ( Networking.IsHost )
 		{
 			ApplyDropPhysics( punt );
 		}
 		else
 		{
-			predictedPosition += PickUpOwner.Controller.EyeAngles.Forward * (punt ? 400f * Time.Delta : 0f);
+			_predictedPosition += PickUpOwner.Controller.EyeAngles.Forward * (punt ? 400f * Time.Delta : 0f);
 		}
 
 		CleanupHeldProp();
@@ -58,19 +58,16 @@ public partial class BasePlayer
 		if ( !PickUpOwner.IsValid() || !Input.Pressed( "use" ) || PickUpOwner.LifeState != LifeState.Alive )
 			return;
 
-		UseSuccess = false;
+		_useSuccess = false;
 
 		if ( HeldProp.IsValid() )
 		{
-			if ( Networking.IsHost || !Networking.IsActive )
-				DropObject();
-			else
-				RequestDropRpc( false );
+			DropObject();
 			return;
 		}
 
 		var tr = Scene.Trace.Ray( PickUpOwner.Controller?.AimRay ?? default, 100f )
-			.IgnoreGameObjectHierarchy( this.GameObject )
+			.IgnoreGameObjectHierarchy( GameObject )
 			.WithoutTags( "trigger", "water" )
 			.HitTriggers()
 			.Run();
@@ -84,7 +81,7 @@ public partial class BasePlayer
 		if ( UseSuccess ) FMODSound.Play( "event:/Player/HUD/UseSuccess" );
 		else FMODSound.Play( "event:/Player/HUD/UseDeny" );
 #else
-		if ( UseSuccess ) Sound.Play( "usesuccess" ).Volume = 0.25f;
+		if ( _useSuccess ) Sound.Play( "usesuccess" ).Volume = 0.25f;
 		else Sound.Play( "usedeny" ).Volume = 0.25f;
 #endif
 	}
@@ -92,7 +89,7 @@ public partial class BasePlayer
 
 	private void TryPickup( GameObject obj )
 	{
-		if ( !PickUpOwner.IsValid() || PickUpOwner.LifeState != LifeState.Alive )
+		if ( !PickUpOwner.IsValid() || PickUpOwner.LifeState != LifeState.Alive || obj.Tags.Has( "HELD_PROP" ) )
 			return;
 
 		// no rigid body (static) or motion disabled
@@ -102,7 +99,7 @@ public partial class BasePlayer
 
 		if ( obj.Components.TryGet<BaseWeaponItem>( out var weapon ) )
 		{
-			UseSuccess = true; // for weapon holding we want successful sound, to know its actually happening
+			_useSuccess = true; // for weapon holding we want successful sound, to know its actually happening
 			return;
 		}
 
@@ -123,21 +120,19 @@ public partial class BasePlayer
 		{
 			var point1 = new PhysicsPoint( PropPhys.PhysicsBody );
 			var point2 = new PhysicsPoint( PickUpOwner.Controller.Controller.PhysicsBodyRigidbody.PhysicsBody );
-			Joint = PhysicsJoint.CreateSpring( point1, point2, 0, 99999 );
-			Joint.Collisions = false;
+			_joint = PhysicsJoint.CreateSpring( point1, point2, 0, 99999 );
+			_joint.Collisions = false;
 		}
 
-		predictedPosition = HeldProp.WorldPosition;
-		predictedRotation = HeldProp.WorldRotation;
-		targetPosition = predictedPosition;
-		targetRotation = predictedRotation;
+		_predictedPosition = HeldProp.WorldPosition;
+		_predictedRotation = HeldProp.WorldRotation;
+		_targetPosition = _predictedPosition;
+		_targetRotation = _predictedRotation;
 
 		OnPickupConfirmed( HeldProp );
+		OnPickupConfirmedRpc( HeldProp );
 
-		if ( Networking.IsActive )
-			OnPickupConfirmedRpc( HeldProp );
-
-		UseSuccess = true;
+		_useSuccess = true;
 	}
 
 	private void PredictPickup( GameObject obj )
@@ -145,11 +140,11 @@ public partial class BasePlayer
 		HeldProp = obj;
 		PropPhys = obj.Components.Get<Rigidbody>();
 
-		predictedPosition = obj.WorldPosition;
-		predictedRotation = obj.WorldRotation;
+		_predictedPosition = obj.WorldPosition;
+		_predictedRotation = obj.WorldRotation;
 
-		targetPosition = predictedPosition;
-		targetRotation = predictedRotation;
+		_targetPosition = _predictedPosition;
+		_targetRotation = _predictedRotation;
 
 		HeldProp.Tags.Add( "HELD_PROP" ); // ensure client knows it's held
 	}
@@ -167,8 +162,8 @@ public partial class BasePlayer
 
 		PropPhys.PhysicsBody.AngularVelocity *= 0.3f;
 
-		targetPosition = PropPhys.PhysicsBody.Position;
-		targetRotation = PropPhys.PhysicsBody.Rotation;
+		_targetPosition = PropPhys.PhysicsBody.Position;
+		_targetRotation = PropPhys.PhysicsBody.Rotation;
 	}
 
 	private void CleanupHeldProp()
@@ -177,8 +172,7 @@ public partial class BasePlayer
 		HeldProp = null;
 		PropPhys = null;
 
-		if ( Joint.IsValid() )
-			Joint.Remove();
+		if ( _joint.IsValid() ) _joint.Remove();
 
 		PickUpOwner.CurrentWeapon?.Draw();
 	}
@@ -189,12 +183,10 @@ public partial class BasePlayer
 		HeldProp = obj;
 		PropPhys = obj.Components.Get<Rigidbody>();
 
-		targetPosition = obj.WorldPosition;
-		targetRotation = obj.WorldRotation;
+		_targetPosition = obj.WorldPosition;
+		_targetRotation = obj.WorldRotation;
 	}
 
-	[Rpc.Host] private void RequestDropRpc( bool punt ) { DropObject( punt ); OnDropConfirmedRpc(); }
-	[Rpc.Broadcast] private void OnDropConfirmedRpc() => HeldProp = null;
 	[Rpc.Host] private void RequestPickupRpc( GameObject obj, BasePlayer requestingPlayer ) { PickUpOwner = requestingPlayer; TryPickup( obj ); }
 
 
@@ -229,11 +221,11 @@ public partial class BasePlayer
 		if ( !Networking.IsHost )
 		{
 			// Client-side prediction
-			predictedPosition = Vector3.Lerp( predictedPosition, targetPosition, 0.2f );
-			predictedRotation = Rotation.Slerp( predictedRotation, targetRotation, 0.2f );
+			_predictedPosition = Vector3.Lerp( _predictedPosition, _targetPosition, 0.2f );
+			_predictedRotation = Rotation.Slerp( _predictedRotation, _targetRotation, 0.2f );
 
-			PropPhys.PhysicsBody.Position = predictedPosition;
-			PropPhys.PhysicsBody.Rotation = predictedRotation;
+			PropPhys.PhysicsBody.Position = _predictedPosition;
+			PropPhys.PhysicsBody.Rotation = _predictedRotation;
 		}
 		else
 		{
@@ -254,17 +246,11 @@ public partial class BasePlayer
 			PropPhys.PhysicsBody.AngularVelocity = angvel;
 
 			// Update target positions for clients
-			targetPosition = PropPhys.PhysicsBody.Position;
-			targetRotation = PropPhys.PhysicsBody.Rotation;
+			_targetPosition = PropPhys.PhysicsBody.Position;
+			_targetRotation = PropPhys.PhysicsBody.Rotation;
 		}
 
 		// Drop / punt input
-		if ( Input.Pressed( "attack1" ) )
-		{
-			if ( Networking.IsActive )
-				RequestDropRpc( true );
-			else
-				DropObject( true );
-		}
+		if ( Input.Pressed( "attack1" ) ) DropObject( true );
 	}
 }
