@@ -15,6 +15,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	private float _timeSinceWishSprint = 0f;
 	private float _wishSprint = 0f;
+	public bool CanRun = true;
 
 	/// <summary>
 	/// Returns time since sprint was last requested
@@ -117,7 +118,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		else { _isCrouchDown = Input.Down( CrouchAction ); }
 	}
 
-	private bool _isMoving => (!Input.UsingController && RunByDefault) || ((Input.AnalogMove != Vector3.Zero) && Controller.Velocity.Length > Controller.StopSpeed); // up for debate, probably just analogmove check is fine
+	private bool _isMoving => (Input.AnalogMove != Vector3.Zero) && Controller.Velocity.Length > Controller.StopSpeed; // up for debate, probably just analogmove check is fine
 
 	/// <summary>
 	/// Crouching was forced through external means (a trigger or else)
@@ -133,9 +134,9 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		var crouch = _isCrouchDown || ForceCrouch;
 
 		if ( RunByDefault )
-			IsRunning = !run && EnableRunning && _isMoving;
+			IsRunning = !run && EnableRunning && CanRun && _isMoving;
 		else
-			IsRunning = run && EnableRunning && _isMoving;
+			IsRunning = run && EnableRunning && CanRun && _isMoving;
 
 		IsWalking = walk && EnableWalking;
 		IsCrouching = crouch || !CanUncrouch();
