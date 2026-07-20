@@ -13,6 +13,8 @@ public partial class Player : BasePlayer
 		if ( Halo2Crosshair ) Local.Controller.Camera.GameObject.LocalRotation *= new Angles( -9, 0, 0 );
 	}
 
+	[Property, ReadOnly, Feature( "Debug" )] public override bool HasSuit => true;
+
 	protected override void OnStart()
 	{
 		base.OnStart();
