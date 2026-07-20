@@ -46,8 +46,6 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 		GameObject.Name = PlayerName;
 
-		PickUpOwner ??= Local;
-
 		// Becauase they are static set them off on spawn, this might be fucked for save loading (saved with god mid gunfight) or we just dont care
 		Buddha = false;
 		God = false;
