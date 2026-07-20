@@ -121,9 +121,9 @@ public partial class BaseCombatWeapon
 		var snd = FMODSound.Play( sound );
 		if ( WeaponData.WantNearEmptySound ) FMODSound.SetParameter( snd, "parameter:/Weapons/MagPercent", (float)PrimaryAmmoLoaded / WeaponData.PrimaryAmmoCapacity );
 #else
-		shootHandle?.Stop( 0.1f ); // cut off previous sound first, as the engine doesnt have voice stealing
+		_shootHandle?.Stop( 0.1f ); // cut off previous sound first, as the engine doesnt have voice stealing
 		foreach ( var sound in WeaponData.AttackSoundsPrimary )
-			shootHandle = Sound.Play( sound );
+			_shootHandle = Sound.Play( sound );
 #endif
 	}
 

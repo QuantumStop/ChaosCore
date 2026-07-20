@@ -47,8 +47,8 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 
 	private readonly List<ThrownGrenade> _liveGrenades = [];
 
-	protected override bool ReloadsSingly => false;
-	protected override bool IsProjectile => true;
+	protected override bool _reloadsSingly => false;
+	protected override bool _isProjectile => true;
 	protected override void StartReload( bool _ = true ) { }
 	protected override void FinishReload( bool _ = true ) { }
 	protected override void EjectShells() { }

@@ -60,7 +60,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// <summary>
 	/// Reload one by one, instead of by mag (shotguns, rifles)
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected virtual bool ReloadsSingly => WeaponData.ReloadsSingly;
+	[Property, ReadOnly, Feature( "Debug" )] protected virtual bool _reloadsSingly => WeaponData.ReloadsSingly;
 	/// <summary>
 	/// This should've been OnStart
 	/// </summary>
@@ -160,8 +160,8 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
 	protected virtual void ChangeEmpty() => Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
 
-	[ConVar( "debug_reloadstage" )] static bool DebugReloadStage { get; set; }
-	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat )] static protected bool DebugNoRecoil { get; set; }
+	[ConVar( "debug_reloadstage" )] public static bool DebugReloadStage { get; set; }
+	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat )] static public bool DebugNoRecoil { get; set; }
 
 	/// <summary>
 	/// Syncs all animgraph parameters on Player to reflect current weapon state.
@@ -386,7 +386,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		return true;
 	}
 
-	protected SoundHandle shootHandle;
+	protected SoundHandle _shootHandle;
 
 	/// <summary>
 	/// The main weapon shot, usually left mouse click.
@@ -425,12 +425,12 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( !DebugNoRecoil )
 		{
 			CameraEffects.StartRecoil( WeaponData, LastAttackTime );
-			Owner.Player?.ApplyPhysRecoil();
+			BasePlayer.ApplyPhysRecoil( Owner.Player );
 		}
 	}
 
-	protected virtual int AmountPerShot => WeaponData.BulletsPerShot;
-	protected virtual bool IsProjectile => false;
+	protected virtual int _amountPerShot => WeaponData.BulletsPerShot;
+	protected virtual bool _isProjectile => false;
 
 	/// <summary>
 	/// Actually fire the AttackResult bullets	
@@ -444,11 +444,11 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( WeaponData.SpreadType == SpreadType.SPREAD_DYNAMIC
 			&& WeaponData.DynamicSpreadType == DynamicSpreadType.PER_CONSECUTIVE_SHOT )
 		{
-			for ( int i = 0; i < AmountPerShot; i++ )
+			for ( int i = 0; i < _amountPerShot; i++ )
 			{
-				float spread = GetSpreadForBullet( isPrimary, _shotsFired, i, AmountPerShot );
+				float spread = GetSpreadForBullet( isPrimary, _shotsFired, i, _amountPerShot );
 
-				if ( IsProjectile )
+				if ( _isProjectile )
 					AttackManager.FireProjectile( Owner.Player.GetEyeTransform(), damageInfo, spread );
 				else
 					AttackManager.FireHitscan( Owner.Player.GetEyeTransform(), damageInfo, spread );
@@ -456,11 +456,11 @@ public partial class BaseCombatWeapon : BaseEntity
 		}
 		else
 		{
-			for ( int i = 0; i < AmountPerShot; i++ )
+			for ( int i = 0; i < _amountPerShot; i++ )
 			{
 				float spread = GetSpreadForBullet( isPrimary, _shotsFired + i );
 
-				if ( IsProjectile )
+				if ( _isProjectile )
 					AttackManager.FireProjectile( Owner.Player.GetEyeTransform(), damageInfo, spread );
 				else
 					AttackManager.FireHitscan( Owner.Player.GetEyeTransform(), damageInfo, spread );
@@ -502,7 +502,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( reloadPrimary )
 		{
 			// only handle singly for primary, secondary most of the time is already singly anyway (hl2 SMG1 grenade, chaos M16 grenade, etc etc etc)
-			if ( ReloadsSingly )
+			if ( _reloadsSingly )
 			{
 				// TODO
 			}

@@ -51,12 +51,12 @@ public partial class BasePlayer
 	/// Get the viewmodel model
 	/// </summary>
 	/// <returns>Model as path</returns>
-	protected virtual string GetViewmodel() { return ""; }
+	protected virtual string GetViewmodel() => "";
 	/// <summary>
 	/// Vertex colors for blending in/out the FOV correction
 	/// </summary>
 	/// <returns>The three colors as a whole</returns>
-	protected virtual Vector3 GetViewmodelFovMask() { return Vector3.Up; }
+	protected virtual Vector3 GetViewmodelFovMask() => Vector3.Up;
 
 
 	[ConVar( "viewmodel_fov", Saved = true )]
@@ -65,11 +65,11 @@ public partial class BasePlayer
 	[Property, Feature( "Viewmodel" ), Range( 1f, 179f )]
 	public float ViewmodelFOVOverride { get; set; } = 0f;
 
-	private float lastPitch;
-	private float lastYaw;
+	private float _lastPitch;
+	private float _lastYaw;
 	[ReadOnly, Property, Feature( "Viewmodel" )] public float YawInertia { get; set; }
 	[ReadOnly, Property, Feature( "Viewmodel" )] public float PitchInertia { get; set; }
-	private Vector3 lerpedWishMove;
+	private Vector3 _lerpedWishMove;
 
 	[Group( "General Sway" ), Property, Feature( "Viewmodel" )] public float ViewInertiaSmoothTime { get; set; } = 0.015f;
 	[Group( "General Sway" ), Property, Feature( "Viewmodel" )] public float ViewMaxInertia { get; set; } = 60f;
@@ -101,32 +101,32 @@ public partial class BasePlayer
 	[Group( "Viewmodel Roll" ), Property, Range( 0f, 50f ), Feature( "Viewmodel" )] public float MaxTotalRoll { get; set; } = 15f;
 	[Group( "Viewmodel Roll" ), Property, Range( 0f, 20f ), Feature( "Viewmodel" )] public float RollLerpSpeed { get; set; } = 6f;
 
-	[Feature( "Debug" ), Property] public bool isDebug { get; set; } = false;
+	[Feature( "Debug" ), Property] public bool IsDebug { get; set; } = false;
 
 
 	// Need to do this here, as it doesn't get initialized properly in the curve itself
-	private static float localCrouchSpeed => Local?.Controller?.CrouchSpeed ?? 0f;
-	private static float localWalkSpeed => Local?.Controller?.WalkSpeed ?? 0f;
-	private static float localDefaultSpeed => Local?.Controller?.DefaultSpeed ?? 0f;
-	private static float localRunSpeed => Local?.Controller?.RunSpeed ?? 0f;
+	private static float _localCrouchSpeed => Local?.Controller?.CrouchSpeed ?? 0f;
+	private static float _localWalkSpeed => Local?.Controller?.WalkSpeed ?? 0f;
+	private static float _localDefaultSpeed => Local?.Controller?.DefaultSpeed ?? 0f;
+	private static float _localRunSpeed => Local?.Controller?.RunSpeed ?? 0f;
 
 	[Group( "ViewBob" ), Property, Range( 0f, 50f ), Feature( "Viewmodel" )]
 	public Curve BobAmplitudeCurve { get; set; } = new Curve(
 	new[] {
-		new Curve.Frame( localCrouchSpeed,  0.05f ),
-		new Curve.Frame( localWalkSpeed,    0.15f ),
-		new Curve.Frame( localDefaultSpeed, 0.35f ),
-		new Curve.Frame( localRunSpeed,     1.0f )
+		new Curve.Frame( _localCrouchSpeed,  0.05f ),
+		new Curve.Frame( _localWalkSpeed,    0.15f ),
+		new Curve.Frame( _localDefaultSpeed, 0.35f ),
+		new Curve.Frame( _localRunSpeed,     1.0f )
 		}
 	);
 
 	[Group( "ViewBob" ), Property, Feature( "Viewmodel" )]
 	public Curve BobFrequencyCurve { get; set; } = new Curve(
 	new[] {
-		new Curve.Frame( localCrouchSpeed,  0.5f ),
-		new Curve.Frame( localWalkSpeed,    1.0f ),
-		new Curve.Frame( localDefaultSpeed, 1.5f ),
-		new Curve.Frame( localRunSpeed,     2.0f )
+		new Curve.Frame( _localCrouchSpeed,  0.5f ),
+		new Curve.Frame( _localWalkSpeed,    1.0f ),
+		new Curve.Frame( _localDefaultSpeed, 1.5f ),
+		new Curve.Frame( _localRunSpeed,     2.0f )
 		}
 	);
 
@@ -142,15 +142,15 @@ public partial class BasePlayer
 	[Group( "Viewmodel Offset" ), Property, Feature( "Viewmodel" )] public float ViewmodelOffsetUp { get; set; } = 0f;
 
 	[ConVar( "viewmodel_offset_forward", Help = "Additive viewmodel forward offset (inches)" )]
-	private static float ViewmodelOffsetForwardConvar { get; set; } = 0f;
+	private static float _viewmodelOffsetForwardConvar { get; set; } = 0f;
 	[ConVar( "viewmodel_offset_right", Help = "Additive viewmodel right offset (inches)" )]
-	private static float ViewmodelOffsetRightConvar { get; set; } = 0f;
+	private static float _viewmodelOffsetRightConvar { get; set; } = 0f;
 	[ConVar( "viewmodel_offset_up", Help = "Additive viewmodel up offset (inches)" )]
-	private static float ViewmodelOffsetUpConvar { get; set; } = 0f;
+	private static float _viewmodelOffsetUpConvar { get; set; } = 0f;
 
-	protected float GetViewmodelOffsetForward() => ViewmodelOffsetForward + ViewmodelOffsetForwardConvar;
-	protected float GetViewmodelOffsetRight() => ViewmodelOffsetRight + ViewmodelOffsetRightConvar;
-	protected float GetViewmodelOffsetUp() => ViewmodelOffsetUp + ViewmodelOffsetUpConvar;
+	protected float GetViewmodelOffsetForward() => ViewmodelOffsetForward + _viewmodelOffsetForwardConvar;
+	protected float GetViewmodelOffsetRight() => ViewmodelOffsetRight + _viewmodelOffsetRightConvar;
+	protected float GetViewmodelOffsetUp() => ViewmodelOffsetUp + _viewmodelOffsetUpConvar;
 
 
 	/// <summary>
@@ -165,10 +165,10 @@ public partial class BasePlayer
 		SetAllAnimgraphParams( "f_wishsprint", (Local.Controller as PlayerController).WishSprint() );
 		SetAllAnimgraphParams( "b_sprint", Local.Controller.IsRunning );
 		SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
-		SetAllAnimgraphParams( "aim_pitch_inertia", -aimPitchLeanSmoothed + ViewPitchInertia * ViewmodelPitchInertiaScale );
-		SetAllAnimgraphParams( "aim_yaw_inertia", ViewYawInertia * ViewmodelYawInertiaScale + smoothedYawOffset );
-		SetAllAnimgraphParams( "aim_yaw", smoothedRoll );
-		SetAllAnimgraphParams( "aim_pitch", aimPitchLean );
+		SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
+		SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
+		SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
+		SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
 		ApplyInertia();
 		ApplyVelocity();
 
@@ -187,11 +187,11 @@ public partial class BasePlayer
 		var newPitch = camera.WorldRotation.Pitch();
 		var newYaw = camera.WorldRotation.Yaw();
 
-		PitchInertia = Angles.NormalizeAngle( newPitch - lastPitch );
-		YawInertia = Angles.NormalizeAngle( lastYaw - newYaw );
+		PitchInertia = Angles.NormalizeAngle( newPitch - _lastPitch );
+		YawInertia = Angles.NormalizeAngle( _lastYaw - newYaw );
 
-		lastPitch = newPitch;
-		lastYaw = newYaw;
+		_lastPitch = newPitch;
+		_lastYaw = newYaw;
 	}
 
 	// ======== Viewmodel Offset ======== //
@@ -202,71 +202,71 @@ public partial class BasePlayer
 	/// Stores the extra pitch lean when looking up/down past a specific threshold.
 	/// This helps simulate more pronounced lean based on pitch changes.
 	/// </summary>
-	private float retainedPitchLean = 0f;
+	private float _retainedPitchLean = 0f;
 
 	/// <summary>
 	/// Holds the smoothed roll value for the viewmodel's roll effect.
 	/// This is used to make the roll transition smoother over time.
 	/// </summary>
-	private float smoothedRoll = 0f;
+	private float _smoothedRoll = 0f;
 
 	/// <summary>
 	/// Holds the smoothed pitch lean value for aiming. This is used to apply smooth changes when aiming.
 	/// </summary>
-	private float aimPitchLeanSmoothed = 0f;
+	private float _aimPitchLeanSmoothed = 0f;
 
 	/// <summary>
 	/// Holds the smoothed yaw offset derived from the camera's pitch.
 	/// This helps smooth out the yaw during transitions when the pitch changes.
 	/// </summary>
-	private float smoothedYawOffset = 0f;
+	private float _smoothedYawOffset = 0f;
 
 	/// <summary>
 	/// Holds the smoothed camera pitch value, which is used for lean calculations during camera movement.
 	/// </summary>
-	private float smoothedCameraPitch = 0f;
+	private float _smoothedCameraPitch = 0f;
 
 	/// <summary>
 	/// Holds the current yaw inertia from the camera's view rotation.
 	/// This is used to simulate inertia effects when the camera rotates along the yaw axis.
 	/// </summary>
-	private float ViewYawInertia;
+	private float _viewYawInertia;
 
 	/// <summary>
 	/// Holds the current pitch inertia from the camera's view rotation.
 	/// This value helps simulate inertia effects when the camera rotates along the pitch axis.
 	/// </summary>
-	private float ViewPitchInertia;
+	private float _viewPitchInertia;
 
 	/// <summary>
 	/// Holds the target pitch lean value.
 	/// This is the desired pitch lean that the system will gradually reach over time.
 	/// </summary>
-	private float aimPitchLean;
+	private float _aimPitchLean;
 
 	/// <summary>
 	/// Holds the smoothed yaw inertia for the sway effect.
 	/// This value allows smoother transitions for the sway effect based on yaw rotation.
 	/// </summary>
-	private float smoothedViewYawInertia;
+	private float _smoothedViewYawInertia;
 
 	/// <summary>
 	/// Holds the smoothed pitch inertia for the sway effect.
 	/// This value allows smoother transitions for the sway effect based on pitch rotation.
 	/// </summary>
-	private float smoothedViewPitchInertia;
+	private float _smoothedViewPitchInertia;
 
-	private const float ViewmodelReferenceFramerate = 60f;
+	private const float _viewmodelReferenceFramerate = 60f;
 	private float ToReferenceFrameDelta( float angleDelta )
 	{
 		float dt = MathF.Max( Time.Delta, 0.0001f );
-		return angleDelta / dt * (1f / ViewmodelReferenceFramerate);
+		return angleDelta / dt * (1f / _viewmodelReferenceFramerate);
 	}
 
 	/// <summary>
 	/// Holds the last frame's camera rotation, used for delta calculation in determining view rotation changes.
 	/// </summary>
-	private Rotation lastViewRot;
+	private Rotation _lastViewRot;
 
 	/// <summary>
 	/// The current sway offset applied to the viewmodel.
@@ -286,10 +286,10 @@ public partial class BasePlayer
 		var playerVelocity = Local.Movement.Velocity;
 		var cameraPitch = Local.Controller.WorldRotation.Pitch();
 
-		var delta = lastViewRot.Inverse * currentViewRot;
+		var delta = _lastViewRot.Inverse * currentViewRot;
 		var deltaAngles = delta.Angles();
 
-		lastViewRot = currentViewRot;
+		_lastViewRot = currentViewRot;
 
 		UpdateViewInertia( deltaAngles );                                              // Calculate view rotation deltas for inertia
 		UpdateSwayOffset();                                                            // Apply weapon sway based on view deltas
@@ -307,18 +307,18 @@ public partial class BasePlayer
 		float yawDelta = ToReferenceFrameDelta( deltaAngles.yaw );
 		float pitchDelta = ToReferenceFrameDelta( deltaAngles.pitch );
 
-		smoothedViewYawInertia = MathX.Lerp( smoothedViewYawInertia, yawDelta, t );
-		smoothedViewPitchInertia = MathX.Lerp( smoothedViewPitchInertia, pitchDelta, t );
+		_smoothedViewYawInertia = MathX.Lerp( _smoothedViewYawInertia, yawDelta, t );
+		_smoothedViewPitchInertia = MathX.Lerp( _smoothedViewPitchInertia, pitchDelta, t );
 
-		ViewYawInertia = smoothedViewYawInertia.Clamp( -ViewMaxInertia, ViewMaxInertia );
-		ViewPitchInertia = smoothedViewPitchInertia.Clamp( -ViewMaxInertia, ViewMaxInertia );
+		_viewYawInertia = _smoothedViewYawInertia.Clamp( -ViewMaxInertia, ViewMaxInertia );
+		_viewPitchInertia = _smoothedViewPitchInertia.Clamp( -ViewMaxInertia, ViewMaxInertia );
 	}
 
 	private void UpdateSwayOffset()
 	{
 		Vector3 targetSway = new(
-			-ViewYawInertia * SwayIntensity,
-			ViewPitchInertia * SwayIntensity
+			-_viewYawInertia * SwayIntensity,
+			_viewPitchInertia * SwayIntensity
 		);
 
 		SwayOffset = Vector3.Lerp( SwayOffset, targetSway, Time.Delta * SwayReturnSpeed );
@@ -334,11 +334,11 @@ public partial class BasePlayer
 		if ( overThreshold > 60f )
 		{
 			var leanDir = cameraPitch > 0f ? 1f : -1f;
-			retainedPitchLean = overThreshold * leanDir * LeanLookBackMultiplier;
+			_retainedPitchLean = overThreshold * leanDir * LeanLookBackMultiplier;
 		}
 		else
 		{
-			retainedPitchLean = MathX.Lerp( retainedPitchLean, 0f, Time.Delta * 1.5f );
+			_retainedPitchLean = MathX.Lerp( _retainedPitchLean, 0f, Time.Delta * 1.5f );
 		}
 
 		var normalizedPitch = MathX.Clamp( cameraPitch / MaxLeanAngle, -1f, 1f );
@@ -347,23 +347,23 @@ public partial class BasePlayer
 			: normalizedPitch * -PitchLeanMin;
 
 		// Combine retained and regular lean
-		var targetPitchLean = pitchLean + retainedPitchLean;
+		var targetPitchLean = pitchLean + _retainedPitchLean;
 
-		aimPitchLeanSmoothed = MathX.Lerp( aimPitchLeanSmoothed, targetPitchLean, Time.Delta * LeanLerpSpeed );
+		_aimPitchLeanSmoothed = MathX.Lerp( _aimPitchLeanSmoothed, targetPitchLean, Time.Delta * LeanLerpSpeed );
 	}
 
 	private void UpdateYawOffsetFromPitch( float cameraPitch )
 	{
-		smoothedCameraPitch = MathX.Lerp( smoothedCameraPitch, cameraPitch, Time.Delta * 10f );
+		_smoothedCameraPitch = MathX.Lerp( _smoothedCameraPitch, cameraPitch, Time.Delta * 10f );
 
 		float targetYawOffset = 0f;
-		if ( smoothedCameraPitch > 0f )
+		if ( _smoothedCameraPitch > 0f )
 		{
-			float pitchUpFactor = (smoothedCameraPitch / MaxLeanAngle).Clamp( 0f, 1f );
+			float pitchUpFactor = (_smoothedCameraPitch / MaxLeanAngle).Clamp( 0f, 1f );
 			targetYawOffset = DownwardPitchYawOffset * pitchUpFactor;
 		}
 
-		smoothedYawOffset = MathX.Lerp( smoothedYawOffset, targetYawOffset, Time.Delta * YawOffsetLerpSpeed );
+		_smoothedYawOffset = MathX.Lerp( _smoothedYawOffset, targetYawOffset, Time.Delta * YawOffsetLerpSpeed );
 	}
 
 	private void UpdateMovementLean( Vector3 velocity, Vector3 cameraForward )
@@ -409,20 +409,20 @@ public partial class BasePlayer
 
 		float targetLean = targetWallLean + targetMoveLean;
 		float lerpSpeed = (MathF.Abs( targetLean ) > 0.0001f) ? 10f : 6f;
-		aimPitchLean = MathX.Lerp( aimPitchLean, targetLean, Time.Delta * lerpSpeed );
+		_aimPitchLean = MathX.Lerp( _aimPitchLean, targetLean, Time.Delta * lerpSpeed );
 
 	}
 
 	private void UpdateRollLean( Vector3 velocity, Vector3 cameraSide, Vector3 cameraForward, Angles deltaAngles )
 	{
 		float strafeRoll = velocity.Dot( cameraSide ) * StrafeDirectionRoll;
-		float inertiaRoll = -ViewYawInertia * InertiaRollIntensity;
+		float inertiaRoll = -_viewYawInertia * InertiaRollIntensity;
 		float rotationRoll = ToReferenceFrameDelta( deltaAngles.yaw ) * RotationRollIntensity;
 
 		float targetRoll = strafeRoll + inertiaRoll + rotationRoll;
 
-		smoothedRoll = MathX.Lerp( smoothedRoll, targetRoll, Time.Delta * RollLerpSpeed );
-		smoothedRoll = MathX.Clamp( smoothedRoll, -MaxTotalRoll, MaxTotalRoll );
+		_smoothedRoll = MathX.Lerp( _smoothedRoll, targetRoll, Time.Delta * RollLerpSpeed );
+		_smoothedRoll = MathX.Clamp( _smoothedRoll, -MaxTotalRoll, MaxTotalRoll );
 	}
 
 	private float WallProximityFactor( float maxDistance = 60f )
@@ -457,13 +457,13 @@ public partial class BasePlayer
 
 	// ViewBob control fields //	
 
-	private float bobTime = 0f;
+	private float _bobTime = 0f;
 
 	/// <summary> Lerp factor, we use this to reset lerping when the player stopped moving. </summary>
-	private float boblerpFactor = 0f;
+	private float _boblerpFactor = 0f;
 
 	/// <summary> The current roll we're applying to our camera from strafing </summary>
-	private float currentStrafeRoll;
+	private float _currentStrafeRoll;
 
 	/// <summary> The current roll we're applying to our camera from bobbing</summary>
 	/// Field 'BaseViewmodel.currentBobRoll' is never assigned to, and will always have its default value 0
@@ -474,25 +474,22 @@ public partial class BasePlayer
 		if ( Local.LifeState == LifeState.Dead )
 			return;
 
-		var camera = Local.Controller.Camera;
-		var player = Local;
-		var controller = player?.Controller;
 
-		if ( !controller.IsValid() || !camera.IsValid() )
+		if ( !(Local?.Controller).IsValid() || !Local.Controller.Camera.IsValid() )
 			return;
 
-		bool isOnGround = controller.Controller.IsOnGround;
-		Vector3 velocity = controller.Controller.Velocity;
-		Rotation eyeRot = controller.EyeAngles.ToRotation();
-		Vector3 headPos = controller.Head.WorldPosition;
-		Vector3 speed = player.Movement.Velocity;
+		bool isOnGround = (Local?.Controller).Controller.IsOnGround;
+		Vector3 velocity = (Local?.Controller).Controller.Velocity;
+		Rotation eyeRot = (Local?.Controller).EyeAngles.ToRotation();
+		Vector3 headPos = (Local?.Controller).Head.WorldPosition;
+		Vector3 speed = Local.Movement.Velocity;
 		float Velocity2D = speed.WithZ( 0 ).Length;
 
 		float speedNorm = RemapSpeedNormalized(
-			controller.CrouchSpeed,
-			controller.WalkSpeed,
-			controller.DefaultSpeed,
-			controller.RunSpeed,
+			(Local?.Controller).CrouchSpeed,
+			(Local?.Controller).WalkSpeed,
+			(Local?.Controller).DefaultSpeed,
+			(Local?.Controller).RunSpeed,
 			Velocity2D
 		);
 
@@ -503,51 +500,50 @@ public partial class BasePlayer
 		//	Log.Info( $"headPos: {headPos}" );
 
 		// Sync camera and head position
-		camera.WorldPosition = headPos;
+		Local.Controller.Camera.WorldPosition = headPos;
 
 		// Strafe roll doing is here
 		float targetStrafeRoll = CalculateStrafeRoll( eyeRot, velocity );
-		currentStrafeRoll = MathX.Lerp( currentStrafeRoll, targetStrafeRoll, Time.Delta * StrafeRollLerpSpeed );
+		_currentStrafeRoll = MathX.Lerp( _currentStrafeRoll, targetStrafeRoll, Time.Delta * StrafeRollLerpSpeed );
 
 		if ( bobStrength > 0f && isOnGround )
 		{
-			bobTime += Time.Delta * frequency;
+			_bobTime += Time.Delta * frequency;
 
 			// Bobbing movement with lerpFactor controlling smoothness
-			float verticalBob = MathF.Sin( bobTime * 2f ) * bobStrength;
-			float horizontalBob = MathF.Sin( bobTime ) * BobHorizontalScale * bobStrength;
-			float rollBob = MathF.Sin( bobTime ) * BobRollScale * bobStrength;
+			float verticalBob = MathF.Sin( _bobTime * 2f ) * bobStrength;
+			float horizontalBob = MathF.Sin( _bobTime ) * BobHorizontalScale * bobStrength;
+			float rollBob = MathF.Sin( _bobTime ) * BobRollScale * bobStrength;
 
 			// Apply bob offset relative to current view rotation
-			Vector3 offset = camera.WorldRotation.Up * verticalBob
-							 + camera.WorldRotation.Right * horizontalBob;
+			Vector3 offset = Local.Controller.Camera.WorldRotation.Up * verticalBob
+							 + Local.Controller.Camera.WorldRotation.Right * horizontalBob;
 
 			// Smoothly transition camera position based on bobbing
-			camera.WorldPosition = Vector3.Lerp( camera.WorldPosition, headPos + offset, Time.Delta * 10f );
-			camera.WorldRotation = controller.EyeAngles.ToRotation() * Rotation.From( 0, 0, rollBob );
+			Local.Controller.Camera.WorldPosition = Vector3.Lerp( Local.Controller.Camera.WorldPosition, headPos + offset, Time.Delta * 10f );
+			Local.Controller.Camera.WorldRotation = (Local?.Controller).EyeAngles.ToRotation() * Rotation.From( 0, 0, rollBob );
 		}
 		else
 		{
 			// Reset bob time and lerp factor when not moving
-			bobTime = 0f;
-			boblerpFactor = MathX.Lerp( boblerpFactor, 0f, Time.Delta * 8f );
+			_bobTime = 0f;
+			_boblerpFactor = MathX.Lerp( _boblerpFactor, 0f, Time.Delta * 8f );
 
 			// Smoothly return to default camera position (no bob effect)
-			camera.WorldPosition = Vector3.Lerp( camera.WorldPosition, headPos, Time.Delta * 10f );
-			camera.WorldRotation = controller.EyeAngles.ToRotation();
+			Local.Controller.Camera.WorldPosition = Vector3.Lerp( Local.Controller.Camera.WorldPosition, headPos, Time.Delta * 10f );
+			Local.Controller.Camera.WorldRotation = (Local?.Controller).EyeAngles.ToRotation();
 		}
 
 		// And then lets output it:
-		camera.WorldRotation = eyeRot * Rotation.From( 0f, 0f, currentStrafeRoll /*+ currentBobRoll*/ );
+		Local.Controller.Camera.WorldRotation = eyeRot * Rotation.From( 0f, 0f, _currentStrafeRoll /*+ currentBobRoll*/ );
 	}
 
 	// ======== Recoil ======== //
 
-	public void ApplyPhysRecoil()
+	public static void ApplyPhysRecoil( BasePlayer owner )
 	{
-		var player = Local.Controller;
-		var weapon = Local.CurrentWeapon;
-		var weaponData = weapon?.WeaponData;
+		var player = owner.Controller;
+		var weaponData = owner.CurrentWeapon?.WeaponData;
 
 		if ( !weaponData.IsValid() || Local.LifeState == LifeState.Dead )
 			return;
@@ -565,7 +561,7 @@ public partial class BasePlayer
 
 	protected void ApplyVelocity()
 	{
-		if ( !ViewmodelWeapon.IsValid() )
+		if ( !Local.ViewmodelWeapon.IsValid() )
 			return;
 
 		var moveLen = Local.Movement.Velocity.Length;
@@ -576,8 +572,8 @@ public partial class BasePlayer
 		if ( Local.Controller.IsWalking || Local.Controller.IsCrouching )
 			moveLen *= 0.5f;
 
-		lerpedWishMove = lerpedWishMove.LerpTo( wishMove, Time.Delta * 7.0f );
-		YawInertia += lerpedWishMove.y * 10f;
+		_lerpedWishMove = _lerpedWishMove.LerpTo( wishMove, Time.Delta * 7.0f );
+		YawInertia += _lerpedWishMove.y * 10f;
 
 		//	ModelRenderer?.Set( "move_bob", moveLen.Remap( 0, 300, 0, 1, true ) );
 	}
@@ -586,31 +582,19 @@ public partial class BasePlayer
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllAnimgraphParams( string v, float value )
-	{
-		ViewmodelWeapon.Set( v, value );
-	}
+	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon.Set( v, value );
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllAnimgraphParams( string v, bool value )
-	{
-		ViewmodelWeapon.Set( v, value );
-	}
+	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon.Set( v, value );
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllAnimgraphParams( string v, int value )
-	{
-		ViewmodelWeapon.Set( v, value );
-	}
+	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon.Set( v, value );
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllWeaponModels( Model model )
-	{
-		ViewmodelWeapon.Model = model;
-	}
+	public void SetAllWeaponModels( Model model ) => ViewmodelWeapon.Model = model;
 
 	/// <summary>
 	/// Process all animtags from animgraph
