@@ -251,6 +251,13 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		{
 			StandaloneVersion( pos );
 		}
+
+		if ( ShowPos )
+		{
+			PlayerPos( ref pos );
+			pos.y += _debugSpacing;
+		}
+
 #if IGNIS || STANDALONE
 		if ( ShowSaveSystem )
 		{
