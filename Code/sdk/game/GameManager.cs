@@ -21,7 +21,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 		Rules?.GameStart();
 	}
 
-	void Component.INetworkListener.OnActive( Connection channel )
+	public void OnActive( Connection channel )
 	{
 		SpawnNetworkPlayer( channel );
 		PostSpawn();
