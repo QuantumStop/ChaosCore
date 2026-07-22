@@ -35,7 +35,7 @@ public class GameRules
 	/// </summary>
 	public virtual void GameStart() { }
 	/// <summary>
-	/// Game Rules were changed to current rules (manually called)
+	/// Game Rules were changed to current rules
 	/// </summary>
 	public virtual void GameChange() { }
 	/// <summary>

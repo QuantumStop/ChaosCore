@@ -50,7 +50,16 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	/// <summary>
 	/// Which rules are used to determine gameworks
 	/// </summary>
-	public static GameRules Rules { get; protected set; }
+	public static GameRules Rules
+	{
+		get; protected set
+		{
+			if ( field == value ) return;
+
+			field = value;
+			value?.GameChange();
+		}
+	}
 	[Property] public SceneType SceneType { get; protected set; } = SceneType.Game;
 
 	/// <summary>
@@ -84,8 +93,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		Rules?.GameStart();
 
 #if IGNIS || STANDALONE
-		if ( !SaveSystem.IsRestoringSave )
-			ResetWorldTimeForSceneStart();
+		if ( !SaveSystem.IsRestoringSave ) ResetWorldTimeForSceneStart();
 #endif
 
 		PreSpawn();
