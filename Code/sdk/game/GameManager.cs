@@ -8,7 +8,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 {
 	public SDKGameManager( Scene scene ) : base( scene ) => Listen( Stage.SceneLoaded, -1, HandleEditor, "CreateEngineShit" );
 
-	protected override void DecideGameRules() => Rules = new SDKRules();
+	protected override void DecideGameRules() => Rules = new SDKRulesMP();
 
 	protected override void OnStart()
 	{
