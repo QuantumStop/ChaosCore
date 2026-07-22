@@ -2,7 +2,7 @@ namespace Core;
 
 using System;
 
-public abstract partial class GameManagerSystem : GameObjectSystem
+public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartup
 {
 	public static GameManagerSystem Current { get; set; }
 
@@ -109,6 +109,10 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	/// Game was unpaused
 	/// </summary>
 	protected virtual void OnGameUnpaused() { }
+
+	public virtual void OnHostPreInitialize( SceneFile scene ) { }
+	public virtual void OnHostInitialize() { }
+	public virtual void OnClientInitialize() { }
 }
 
 public enum SceneType
