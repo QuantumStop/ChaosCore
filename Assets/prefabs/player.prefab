@@ -320,7 +320,7 @@
         "InertiaRollIntensity": 0.1,
         "Initialized": false,
         "InternalID": null,
-        "isDebug": false,
+        "IsDebug": false,
         "LeanLerpSpeed": 6,
         "LeanLookBackMultiplier": 0.25,
         "LifeState": "Alive",
@@ -339,7 +339,6 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "OnKilled": null,
-        "PickUpOwner": null,
         "PickupTrigger": {
           "_type": "component",
           "component_id": "bc99ab78-bf6b-4401-8328-1ddcdcac966b",
@@ -370,7 +369,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 4404.2754
+          "Relative": 6478.742
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -591,7 +590,7 @@
             "Scale": "1,1,1",
             "Tags": "light_spot,light",
             "Enabled": true,
-            "NetworkMode": 2,
+            "NetworkMode": 0,
             "NetworkFlags": 0,
             "NetworkOrphaned": 0,
             "NetworkTransmit": true,
@@ -762,7 +761,7 @@
             "Scale": "1,1,1",
             "Tags": "",
             "Enabled": true,
-            "NetworkMode": 2,
+            "NetworkMode": 0,
             "NetworkFlags": 0,
             "NetworkOrphaned": 0,
             "NetworkTransmit": true,
