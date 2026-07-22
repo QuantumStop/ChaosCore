@@ -191,20 +191,8 @@ public partial class BasePlayer
 			return;
 		}
 
-		if ( !Networking.IsHost )
+		if ( Network.IsOwner )
 		{
-			// Client-side prediction
-			_predictedPosition = Vector3.Lerp( _predictedPosition, _targetPosition, 0.2f );
-			_predictedRotation = Rotation.Slerp( _predictedRotation, _targetRotation, 0.2f );
-
-			ChatLog( $"[{Rpc.Caller.DisplayName}] prediction" );
-
-			PropPhys.PhysicsBody.Position = _predictedPosition;
-			PropPhys.PhysicsBody.Rotation = _predictedRotation;
-		}
-		else
-		{
-			// Host authoritative movement
 			var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * 80f;
 			wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
 
@@ -222,6 +210,19 @@ public partial class BasePlayer
 			// Update target positions for clients
 			_targetPosition = PropPhys.PhysicsBody.Position;
 			_targetRotation = PropPhys.PhysicsBody.Rotation;
+
+			Log.Info( $"Owner holds: {HeldProp.Name}" );
+		}
+		else
+		{
+			// Client-side prediction
+			_predictedPosition = Vector3.Lerp( _predictedPosition, _targetPosition, 0.2f );
+			_predictedRotation = Rotation.Slerp( _predictedRotation, _targetRotation, 0.2f );
+
+			ChatLog( $"[{Rpc.Caller.DisplayName}] prediction" );
+
+			PropPhys.PhysicsBody.Position = _predictedPosition;
+			PropPhys.PhysicsBody.Rotation = _predictedRotation;
 		}
 
 		// Drop / punt input
