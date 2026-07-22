@@ -50,20 +50,19 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	/// <summary>
 	/// Which rules are used to determine gameworks
 	/// </summary>
-	public static GameRules Rules;
+	public static GameRules Rules { get; protected set; }
 	[Property] public SceneType SceneType { get; protected set; } = SceneType.Game;
 
 	/// <summary>
-	/// Set the proper gamerules on start, don't call base on override
+	/// Set the proper gamerules on start, leave empty if you are 
 	/// </summary>
-	protected virtual void DecideGameRules() => Rules = new GameRulesFallback();
+	protected abstract void DecideGameRules();
 
 	protected virtual void OnUpdate()
 	{
 		UpdateWorldTime();
 
-		if ( Input.Pressed( "Pause" ) )
-			TogglePause();
+		if ( Input.Pressed( "Pause" ) ) TogglePause();
 
 		Rules?.GameFrame();
 
