@@ -8,16 +8,17 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 {
 	public SDKGameManager( Scene scene ) : base( scene ) => Listen( Stage.SceneLoaded, -1, HandleEditor, "CreateEngineShit" );
 
-	protected override void DecideGameRules() => Rules = new SDKRulesMP();
+	public static new SDKGameManager Current => GameManagerSystem.Current as SDKGameManager;
+
+	protected override void DecideGameRules() => Rules = new SDKRulesSP();
 
 	protected override void OnStart()
 	{
 		InitScene();
 
 		DecideGameRules();
-		Rules?.GameStart();
-
 		PreSpawn();
+		Rules?.GameStart();
 	}
 
 	void Component.INetworkListener.OnActive( Connection channel )
