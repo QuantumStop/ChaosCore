@@ -62,7 +62,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 
 				closest.GameObject.Destroy();
 
-				Player.NetworkSpawn( channel );
+				if ( Networking.IsActive ) Player.NetworkSpawn( channel );
 
 				return;
 			}

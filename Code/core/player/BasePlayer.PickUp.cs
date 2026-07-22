@@ -183,7 +183,7 @@ public partial class BasePlayer
 			return;
 		}
 
-		if ( Network.IsOwner )
+		if ( Network.IsOwner || !Networking.IsActive )
 		{
 			var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * 80f;
 			wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
