@@ -41,7 +41,7 @@ public class DebrisManager : BaseEntity
 
 	[Property, Feature( "Debug" ), ShowIf( nameof( DisplayDebrisObj ), true )] private List<GameObject> _debrisObjects = [];
 
-	public DebrisManager() { Instance = this; }
+	public DebrisManager() => Instance = this;
 
 	protected override void OnStart()
 	{
@@ -92,17 +92,6 @@ public class DebrisManager : BaseEntity
 		IncreaseAmount( gameobject );
 
 		return gameobject;
-	}
-
-	/// <summary>
-	/// I'm not sure if this is good but this is probably shipped with core in some form idk
-	/// </summary>
-	private readonly static Surface _defaultSurface = ResourceLibrary.Get<Surface>( "surfaces/2k_default.surface" );
-
-	private static void ProcessDecal( Decal decal, Surface decalSurface )
-	{
-		decal.Decals = (SurfaceExtension.FindForResourceOrDefault( decalSurface ) ?? SurfaceExtension.FindForResourceOrDefault( _defaultSurface )).DecalList;
-		decal.Depth = 4;
 	}
 
 	public static void CreateHitSound( Vector3 position, Surface surface, GameObject HitObject )
@@ -166,7 +155,8 @@ public class DebrisManager : BaseEntity
 		//		decalcollider.Radius = 8;
 		//		decalcollider.IsTrigger = true;
 
-		ProcessDecal( decal, surface );
+		decal.Decals = SurfaceExtension.FindForResourceOrDefault( surface ).DecalList;
+		decal.Depth = 4;
 		decal.Scale = scale;
 
 		decalobject.Tags.Add( "allow_to_transition" );

@@ -181,8 +181,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		base.OnEnabled();
 
-		if ( IsProxy )
-			return;
+		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return;
 
 		if ( UsesPrimary() ) _nextPrimaryAttack = WorldTime.Now;
 		if ( UsesSecondary() ) _nextSecondaryAttack = WorldTime.Now;
@@ -195,8 +194,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		base.OnStart();
 
-		if ( IsProxy )
-			return;
+		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return;
 
 		//		if ( BasePlayer.Local.CurrentWeapon != this )
 		//			return;
@@ -229,8 +227,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 	protected override void OnUpdate()
 	{
-		if ( IsProxy )
-			return;
+		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return;
 
 		// nobody owns this, prevent nre
 		if ( Owner.Player is null && Owner.NPC is null )
@@ -370,18 +367,14 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual bool AttackConditions( bool primary = true )
 	{
 		// is not local player
-		if ( IsProxy )
-			return false;
+		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return false;
 
-		if ( Owner.Player?.LifeState == LifeState.Dead )
-			return false;
+		if ( Owner.Player?.LifeState == LifeState.Dead ) return false;
 
-		if ( Owner.Player.SelectionOpen )
-			return false;
+		if ( Owner.Player.SelectionOpen ) return false;
 
 		// blocked by an animtag
-		if ( _disallowAttack )
-			return false;
+		if ( _disallowAttack ) return false;
 
 		return true;
 	}

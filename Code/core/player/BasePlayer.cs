@@ -10,9 +10,9 @@ using FMODSbox;
 
 namespace Core;
 
-public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, ISaveEvents, ISaveRoot
+public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISaveEvents, ISaveRoot
 {
-	public static BasePlayer Local { get; private set; }
+	public static new BasePlayer Local => BasePawn.Local as BasePlayer;
 	public virtual string PlayerName { get; protected set; } = "Player";
 	public override string ToString() => $"{PlayerName}";
 	[Property, Feature( "Defines" )] public PlayerMovement Movement { get; set; }
@@ -23,7 +23,7 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 	protected override string GetEditorVis() => null;
 
-	protected virtual Model GetViewmodelHands() => PlayerCfg.ViewmodelHands;
+	protected virtual Model GetViewmodelHands() => PlayerCfg?.ViewmodelHands;
 
 	[ConCmd( "noclip" )]
 	private static void ToggleNoclip()
@@ -36,11 +36,9 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 	protected override void OnStart()
 	{
-		if ( !IsProxy )
-			Local = this;
-
 		// In some cases if we spawn very quickly we can die immediately from fall damage, this prevents it.
 		Local?.Controller?.Controller?.Velocity = Vector3.Zero;
+		UpdateBodyVisibility();
 
 		base.OnStart();
 
@@ -54,7 +52,7 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 		Controller.BodyModelRenderer.OnFootstepEvent += OnFootstepEvent;
 
-		ViewmodelHands.Model = GetViewmodelHands();
+		if ( PlayerCfg.IsValid() && PlayerCfg.ViewmodelHands.IsValid() ) ViewmodelHands.Model = GetViewmodelHands();
 
 		if ( !ViewmodelWeapon.IsValid() ) ViewmodelVisible = false;
 
@@ -86,8 +84,8 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 		}
 
 		// setup the gun
-		ViewmodelWeapon.RenderType = ModelRenderer.ShadowRenderType.Off;
-		ViewmodelHands.RenderType = ModelRenderer.ShadowRenderType.Off;
+		ViewmodelWeapon?.RenderType = ModelRenderer.ShadowRenderType.Off;
+		ViewmodelHands?.RenderType = ModelRenderer.ShadowRenderType.Off;
 
 		ViewmodelWeapon?.OnAnimTagEvent += HandleAnimTag;
 		PickupTrigger?.OnTriggerEnter += OnPickupTriggerEnter;
@@ -260,8 +258,7 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 	override protected void OnUpdate()
 	{
-		if ( IsProxy )
-			return;
+		if ( !IsControlledLocally ) return;
 
 		CalculateFOV();
 
@@ -270,8 +267,7 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 	override protected void OnFixedUpdate()
 	{
-		if ( IsProxy )
-			return;
+		if ( !IsControlledLocally ) return;
 
 		CheckWaterLevel();
 		HandleWeaponSelection();
@@ -298,11 +294,6 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 
 	protected virtual void SprintSound() => Sound.Play( "pl_sprint" );
-
-	protected override void OnDestroy()
-	{
-		if ( Local == this ) Local = null;
-	}
 
 	public virtual string SaveRootKey => "LocalPlayer";
 	public virtual GameObject SaveRootObject => GameObject;
@@ -332,15 +323,11 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 		else if ( node[nameof( Controller.LocalEyeAngles )] is JsonNode localEyeAnglesNode )
 			Controller.LocalEyeAngles = Json.FromNode<Angles>( localEyeAnglesNode );
 
-		if ( Controller.Head.IsValid() )
-			Controller.Head.WorldRotation = Controller.EyeAngles.ToRotation();
+		if ( Controller.Head.IsValid() ) Controller.Head.WorldRotation = Controller.EyeAngles.ToRotation();
 	}
 
 	void ISaveRoot.AfterLoadRoot()
 	{
-		if ( !IsProxy )
-			Local = this;
-
 		RestoreWeaponOwnership();
 
 		ForceWeaponChange();
@@ -379,34 +366,31 @@ public abstract partial class BasePlayer : BaseEntity, Component.IDamageable, IS
 
 		if ( speed > 526.5f )
 		{
-			//			do damage
+			//	do damage
 			speed -= 526.5f;
 			speed *= 100.0f / (922.5f - 526.5f);
-			speed = (float)Math.Floor( speed ); //	round down
-												//			apply to player
+			speed = MathF.Floor( speed ); //	round down
+										  // apply to player
 
-			var damage = new DamageInfo()
+			DamageInfo damage = new()
 			{
 				Attacker = GameObject,
 				Damage = speed,
 				Tags = { "fall" }
 			};
-			this.OnDamage( damage );
+
+			OnDamage( damage );
 		}
 	}
 
 	protected virtual void CheckPrefabSetup()
 	{
-		if ( !Movement.IsValid() )
-			Log.Error( "Player is missing Movement!" );
-
-		if ( !Controller.IsValid() )
-			Log.Error( "Player is missing PlayerController!" );
-
-		if ( !PickupTrigger.IsValid() )
-			Log.Error( "Player is missing the Pickup Trigger!" );
-
-		if ( !HUDGameObject.IsValid() )
-			Log.Error( "HUD GameObject is missing!" );
+		if ( !Movement.IsValid() ) Log.Error( "Player is missing Movement!" );
+		if ( !Controller.IsValid() ) Log.Error( "Player is missing PlayerController!" );
+		if ( !PickupTrigger.IsValid() ) Log.Error( "Player is missing the Pickup Trigger!" );
+		if ( !HUDGameObject.IsValid() ) Log.Error( "HUD GameObject is missing!" );
 	}
+
+	protected override void OnPossess() => UpdateBodyVisibility();
+	protected override void OnDePossess() => UpdateBodyVisibility();
 }

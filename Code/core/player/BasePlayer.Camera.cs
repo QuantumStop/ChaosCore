@@ -1,4 +1,5 @@
 ﻿using System;
+using XMovement;
 namespace Core;
 
 public partial class BasePlayer
@@ -79,7 +80,7 @@ public partial class BasePlayer
 	public bool IsHUDElementHidden( HIDEHUD_FLAGS flag )
 	{
 		// No local player yet?
-		if ( !Local.IsValid() && !IsProxy )
+		if ( !Local.IsValid() || !IsPossessedLocally )
 			return true;
 
 		bool check = false;
@@ -169,5 +170,31 @@ public partial class BasePlayer
 		_fovRate = rate;
 
 		return true;
+	}
+
+	protected void UpdateBodyVisibility()
+	{
+		if ( !IsControlledLocally )
+		{
+			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
+			{
+				mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+			}
+			return;
+		}
+		if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.FirstPerson )
+		{
+			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
+			{
+				mdlrenderer.RenderType = Controller.PlayerShadowsOnly ? ModelRenderer.ShadowRenderType.ShadowsOnly : ModelRenderer.ShadowRenderType.On;
+			}
+		}
+		if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
+		{
+			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
+			{
+				mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+			}
+		}
 	}
 }

@@ -9,7 +9,7 @@
     "Scale": "1,1,1",
     "Tags": "player",
     "Enabled": true,
-    "NetworkMode": 1,
+    "NetworkMode": 2,
     "NetworkFlags": 0,
     "NetworkOrphaned": 0,
     "NetworkTransmit": true,
@@ -20,6 +20,12 @@
         "__guid": "2bc68ce9-5044-4dd1-8823-2bd40130fdc7",
         "__enabled": true,
         "Flags": 0,
+        "_ownerPawn": {
+          "_type": "component",
+          "component_id": "76ab1155-8d8e-4db8-a514-202005115abd",
+          "go": "55197006-f7a6-4f1c-8242-809225d5757d",
+          "component_type": "Player"
+        },
         "AllowMovement": true,
         "AllowPogosticking": false,
         "Anchor": null,
@@ -225,6 +231,7 @@
         "_fovStart": 0,
         "_fovTarget": 0,
         "_fovTime": 0,
+        "_initialized": false,
         "_lastInventoryHash": 0,
         "_zoomOwner": null,
         "AllowWeaponModelChange": true,
@@ -318,9 +325,10 @@
           "go": "566b1312-0abc-4eff-8dc1-c654d837cd80"
         },
         "InertiaRollIntensity": 0.1,
-        "Initialized": false,
         "InternalID": null,
+        "IsControlledLocally": false,
         "IsDebug": false,
+        "IsPossessedLocally": false,
         "LeanLerpSpeed": 6,
         "LeanLookBackMultiplier": 0.25,
         "LifeState": "Alive",
@@ -339,6 +347,12 @@
         "OnComponentStart": null,
         "OnComponentUpdate": null,
         "OnKilled": null,
+        "PawnCamera": {
+          "_type": "component",
+          "component_id": "fb29ace4-e2a7-4426-901d-ff5c11699400",
+          "go": "b3fa3354-ca11-4766-872e-a11f24f38c83",
+          "component_type": "CameraComponent"
+        },
         "PickupTrigger": {
           "_type": "component",
           "component_id": "bc99ab78-bf6b-4401-8328-1ddcdcac966b",
@@ -369,7 +383,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 6478.742
+          "Relative": 2546.6213
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -589,7 +603,7 @@
             "Rotation": "0,0,0,1",
             "Scale": "1,1,1",
             "Tags": "light_spot,light",
-            "Enabled": true,
+            "Enabled": false,
             "NetworkMode": 0,
             "NetworkFlags": 0,
             "NetworkOrphaned": 0,
@@ -760,7 +774,7 @@
             "Rotation": "0,0,0,1",
             "Scale": "1,1,1",
             "Tags": "",
-            "Enabled": true,
+            "Enabled": false,
             "NetworkMode": 0,
             "NetworkFlags": 0,
             "NetworkOrphaned": 0,

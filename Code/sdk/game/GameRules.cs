@@ -8,5 +8,4 @@ public class SDKRulesMP : MultiplayerRules
 
 public class SDKRulesSP : SingleplayerRules
 {
-	public override void GameStart() => SDKGameManager.Current.OnActive( Connection.Local );
 }

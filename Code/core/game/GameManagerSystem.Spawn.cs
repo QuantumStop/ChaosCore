@@ -69,15 +69,16 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		//	otherwise spawn player at editor camera position
 		SceneTraceResult tr = Scene.Trace.Ray( LastEditorCameraPosition.Position, LastEditorCameraPosition.Position - Vector3.Up * 64f ).Run();
 
-		Player = playerPrefab.Clone();
-
-		Player.WorldPosition = Application.IsEditor ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero;
+		Player = playerPrefab.Clone( Application.IsEditor ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero );
 
 		if ( Player.Components.TryGet<BasePlayer>( out var playerComponent ) )
 		{
 			playerComponent.Controller.EyeAngles = Application.IsEditor ? LastEditorCameraPosition.Rotation : Angles.Zero;
 			playerComponent.Controller.Controller.Velocity = Vector3.Zero;
 			playerComponent.Controller.Controller.BaseVelocity = Vector3.Zero;
+			playerComponent.AsMain( Client.GetFromConnection( Connection.Local ) ); // stupid?
 		}
+
+		if ( Networking.IsActive ) Player.NetworkSpawn();
 	}
 }

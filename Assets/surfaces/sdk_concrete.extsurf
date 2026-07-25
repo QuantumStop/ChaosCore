@@ -1,0 +1,11 @@
+{
+  "DecalList": [
+    "scripts/decals/default.decal"
+  ],
+  "ExtensionDefault": true,
+  "ExtensionTargets": [
+    "surfaces/sdk_default.surface"
+  ],
+  "__references": [],
+  "__version": 0
+}

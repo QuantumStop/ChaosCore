@@ -7,4 +7,6 @@ public class SingleplayerRules : GameRules
 	public override bool IsSinglePlayer => true;
 	public virtual bool CanSaveLoad => true;
 	public override bool CanTransition => true;
+
+	public override void GameStart() => GameManagerSystem.Current.OnActive( Connection.Local );
 }

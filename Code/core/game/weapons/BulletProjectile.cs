@@ -8,7 +8,7 @@ public class BulletProjectile : BaseProjectile
 	/// Gravitational Constant G = 9.80665f, thank you Issac Newton
 	/// </summary>
 	private float DropPerSecond => MathX.MeterToInch( 9.80665f );
-	protected override float EntityGizmoSize => 8f;
+	protected override float _entityGizmoSize => 8f;
 	[Property, Feature( "Debug" ), ReadOnly] public CoreDamageInfo damageInfo { get; set; }
 
 	[Property, Feature( "Debug" ), ReadOnly] private TimeSince TravelTime { get; set; }

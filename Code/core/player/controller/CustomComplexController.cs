@@ -1,9 +1,71 @@
 ﻿using System;
 using Core;
+using Sandbox.Internal;
 using XMovement;
 
 public partial class PlayerController : PlayerWalkControllerComplex
 {
+	[Property] private BasePawn _ownerPawn { get; set; }
+
+	protected override void OnStart()
+	{
+		if ( _ownerPawn.IsControlledLocally )
+		{
+			SetupBody();
+			SetupHead();
+			SetupCamera();
+		}
+	}
+
+	protected override void OnUpdate()
+	{
+		if ( Scene.IsEditor ) return;
+
+		if ( AllowMovement )
+		{
+			if ( _ownerPawn.IsControlledLocally ) UpdateCamera();
+
+			DoEyeLook();
+
+			if ( _ownerPawn.IsControlledLocally )
+			{
+				BuildFrameInput();
+				DoUsing();
+			}
+
+			if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerUpdate ) DoMovement();
+
+			Animate();
+		}
+		else
+		{
+			PositionHead();
+		}
+	}
+
+	public override void BuildWishVelocity()
+	{
+		if ( _ownerPawn.IsControlledLocally ) base.BuildWishVelocity();
+	}
+
+	protected override void OnFixedUpdate()
+	{
+		if ( Scene.IsEditor ) return;
+
+		if ( AllowMovement )
+		{
+			//			if ( _ownerPawn.IsControlledLocally )
+			{
+				UpdateCrouching();
+			}
+
+			if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerFixedUpdate ) DoMovement();
+
+			Animate();
+		}
+		WorldRotation = Rotation.Identity; // external forces can rotate the root gameobject which fuck up all sorts of worldrotation based tracing
+	}
+
 	public override float GetWishSpeed()
 	{
 		var speed = DefaultSpeed;
@@ -59,33 +121,26 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	/// </summary>
 	public static float AimSensitivity => Input.UsingController ? GameSettings.Sensitivity.Controller * 0.5f : GameSettings.Sensitivity.Mouse;
 
-	private Angles HandleInvert( Angles look )
+	private static Angles HandleInvert( Angles look )
 	{
-		if ( Input.UsingController ? GameSettings.InvertCamera.PitchController : GameSettings.InvertCamera.PitchMouse )
-			look = look.WithPitch( -look.pitch );
+		if ( Input.UsingController ? GameSettings.InvertCamera.PitchController : GameSettings.InvertCamera.PitchMouse ) look = look.WithPitch( -look.pitch );
 
-		if ( Input.UsingController ? GameSettings.InvertCamera.YawController : GameSettings.InvertCamera.YawMouse )
-			look = look.WithYaw( -look.yaw );
-
+		if ( Input.UsingController ? GameSettings.InvertCamera.YawController : GameSettings.InvertCamera.YawMouse ) look = look.WithYaw( -look.yaw );
 
 		return look;
 	}
 
 	public override void DoEyeLook()
 	{
-		if ( !IsProxy )
+		if ( _ownerPawn.IsControlledLocally )
 		{
 			LocalEyeAngles += HandleInvert( Input.AnalogLook ) * AimSensitivity * AimSensitivityScale;
 
 			LocalEyeAngles = LocalEyeAngles.WithPitch( LocalEyeAngles.pitch.Clamp( -89f, 89f ) );
-
-			//	if ( IsInVR )
-			//	{
-			//		EyeAngles = Input.VR.Head.Rotation.Angles();
-			//	}
-
-			PositionHead();
 		}
+
+		if ( _ownerPawn.IsPossessedLocally ) PositionHead();
+
 	}
 
 	private bool _isSprintDown { get; set; }
@@ -127,6 +182,8 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	protected override void BuildInput()
 	{
+		if ( !_ownerPawn.IsControlledLocally ) return;
+
 		HandleModes();
 
 		var run = _isSprintDown;

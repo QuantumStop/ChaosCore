@@ -44,7 +44,7 @@ public partial class BasePlayer
 
 	public void UpdatePickup()
 	{
-		if ( !Input.Pressed( "use" ) || Local.LifeState != LifeState.Alive )
+		if ( !Input.Pressed( "use" ) || LifeState != LifeState.Alive )
 			return;
 
 		_useSuccess = false;
@@ -134,7 +134,7 @@ public partial class BasePlayer
 			PropPhys.PhysicsBody.Velocity += Controller.EyeAngles.Forward * 400f;
 
 		if ( HeldProp.Components.TryGet<BaseUsable>( out var usable ) )
-			usable.OnDropped?.Invoke( Local );
+			usable.OnDropped?.Invoke( this );
 
 		PropPhys.PhysicsBody.AngularVelocity *= 0.3f;
 
@@ -183,36 +183,23 @@ public partial class BasePlayer
 			return;
 		}
 
-		if ( Network.IsOwner || !Networking.IsActive )
-		{
-			var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * 80f;
-			wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
+		var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * 80f;
+		wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
 
-			var vel = PropPhys.PhysicsBody.Velocity;
-			var angvel = PropPhys.PhysicsBody.AngularVelocity;
+		var vel = PropPhys.PhysicsBody.Velocity;
+		var angvel = PropPhys.PhysicsBody.AngularVelocity;
 
-			Vector3.SmoothDamp( PropPhys.PhysicsBody.Position, wantedPosition, ref vel, 0.05f, Time.Delta );
-			Rotation.SmoothDamp( PropPhys.PhysicsBody.Rotation, (PropRelativeRot + Controller.EyeAngles.WithPitch( 0 )).ToRotation(), ref angvel, 0.05f, Time.Delta );
+		Vector3.SmoothDamp( PropPhys.PhysicsBody.Position, wantedPosition, ref vel, 0.05f, Time.Delta );
+		Rotation.SmoothDamp( PropPhys.PhysicsBody.Rotation, (PropRelativeRot + Controller.EyeAngles.WithPitch( 0 )).ToRotation(), ref angvel, 0.05f, Time.Delta );
 
-			vel = vel.ClampLength( 1250f );
+		vel = vel.ClampLength( 1250f );
 
-			PropPhys.PhysicsBody.Velocity = vel;
-			PropPhys.PhysicsBody.AngularVelocity = angvel;
+		PropPhys.PhysicsBody.Velocity = vel;
+		PropPhys.PhysicsBody.AngularVelocity = angvel;
 
-			// Update target positions for clients
-			_targetPosition = PropPhys.PhysicsBody.Position;
-			_targetRotation = PropPhys.PhysicsBody.Rotation;
-		}
-		else
-		{
-			// Client-side prediction
-			_predictedPosition = Vector3.Lerp( _predictedPosition, _targetPosition, 0.2f );
-			_predictedRotation = Rotation.Slerp( _predictedRotation, _targetRotation, 0.2f );
-
-
-			PropPhys.PhysicsBody.Position = _predictedPosition;
-			PropPhys.PhysicsBody.Rotation = _predictedRotation;
-		}
+		// Update target positions for clients
+		_targetPosition = PropPhys.PhysicsBody.Position;
+		_targetRotation = PropPhys.PhysicsBody.Rotation;
 
 		// Drop / punt input
 		if ( Input.Pressed( "attack1" ) ) DropObject( true );

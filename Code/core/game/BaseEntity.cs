@@ -8,10 +8,10 @@ using System.Numerics;
 [Category( "Core" )]
 public class BaseEntity : BaseCustomSerialize
 {
-	public BaseEntity()
+	public BaseEntity() // this stopped working idk
 	{
-		InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
-		if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
+		//	InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
+		//	if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
 	}
 	// Base delegate
 	public delegate void ChaosOutput( BaseEntity activator );
@@ -24,12 +24,14 @@ public class BaseEntity : BaseCustomSerialize
 	/// </summary>
 	[Property, Feature( "Debug" ), ReadOnly, Order( 9999 )] public string InternalID { get; set; }
 
-	[Property, Feature( "Debug" ), ReadOnly, Order( 9999 )] protected bool Initialized = false;
+	[Property, Feature( "Debug" ), ReadOnly, Order( 9999 )] protected bool _initialized = false;
 
 	//	============= Hooks ============= //
-	protected override void OnEnabled()
+	protected override void OnEnabled() => _initialized = true;
+	protected override void OnStart()
 	{
-		Initialized = true;
+		InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
+		if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
 	}
 
 	/// <summary>
@@ -67,7 +69,7 @@ public class BaseEntity : BaseCustomSerialize
 	/// <summary>
 	/// Size of the entity gizmo (icon)
 	/// </summary>
-	protected virtual float EntityGizmoSize => 18f;
+	protected virtual float _entityGizmoSize => 18f;
 
 	protected override void DrawGizmos()
 	{
@@ -89,7 +91,7 @@ public class BaseEntity : BaseCustomSerialize
 		Gizmo.Draw.Color = Color.White;
 		if ( isModel )
 		{
-			if ( !Scene.IsEditor && GetComponent<ModelRenderer>().IsValid() && Initialized )
+			if ( !Scene.IsEditor && GetComponent<ModelRenderer>().IsValid() && _initialized )
 				return;
 
 			Model model = Model.Load( editorVis );
@@ -128,10 +130,10 @@ public class BaseEntity : BaseCustomSerialize
 		// Texture sprite renderblock & fallback
 		Texture texture = Texture.Load( editorVis );
 		float spriteSize = Gizmo.IsHovered
-			? float.Lerp( EntityGizmoSize - 2, value2: EntityGizmoSize, 0.5f + MathF.Sin( WorldTime.Now * 2f ) * 0.5f )
-			: EntityGizmoSize;
+			? float.Lerp( _entityGizmoSize - 2, value2: _entityGizmoSize, 0.5f + MathF.Sin( WorldTime.Now * 2f ) * 0.5f )
+			: _entityGizmoSize;
 
-		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, EntityGizmoSize - 3 );
+		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, _entityGizmoSize - 3 );
 		Gizmo.Hitbox.BBox( bbox );
 		Gizmo.Draw.Sprite( Vector3.Zero, spriteSize, texture );
 

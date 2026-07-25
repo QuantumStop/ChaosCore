@@ -149,10 +149,7 @@ public static partial class AttackManager
 	/// <param name="distance">How far</param>
 	/// <param name="damage">Damage Information</param>
 	/// <returns>The trace</returns>
-	public static AttackResult TraceGenericAttack( Ray ray, float distance, DamageInfo damage )
-	{
-		return RunSceneTrace( Game.ActiveScene.Trace.Ray( ray, distance ), damage );
-	}
+	public static AttackResult TraceGenericAttack( Ray ray, float distance, DamageInfo damage ) => RunSceneTrace( Game.ActiveScene.Trace.Ray( ray, distance ), damage );
 	/// <summary>
 	/// A wrapper for SceneTrace to add debug and simplify input
 	/// </summary>
@@ -220,9 +217,7 @@ public static partial class AttackManager
 
 			if ( damage is CoreDamageInfo coreDamageInfo )
 			{
-				var alldmg = result.Last.GameObject.GetComponents<Component.IDamageable>();
-				foreach ( var candamage in alldmg )
-					candamage.OnDamage( coreDamageInfo );
+				foreach ( var candamage in result.Last.GameObject.Components.GetAll<Component.IDamageable>( FindMode.EverythingInSelfAndAncestors ) ) candamage.OnDamage( coreDamageInfo );
 			}
 		}
 
@@ -263,9 +258,7 @@ public static partial class AttackManager
 				coreDamageInfo.Force = (tr.GameObject.WorldPosition + Vector3.Up * 40f - position).Normal * 450f;
 				coreDamageInfo.Force *= damage.Damage / maxdamage;
 
-				var alldmg = tr.GameObject.GetComponents<Component.IDamageable>();
-				foreach ( var candamage in alldmg )
-					candamage.OnDamage( coreDamageInfo );
+				foreach ( var candamage in tr.GameObject.Components.GetAll<Component.IDamageable>( FindMode.EverythingInSelfAndAncestors ) ) candamage.OnDamage( coreDamageInfo );
 			}
 		}
 	}

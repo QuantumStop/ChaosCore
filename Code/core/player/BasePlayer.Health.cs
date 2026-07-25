@@ -99,7 +99,7 @@ public partial class BasePlayer
 			if ( _underwaterSnapshot.isValid() ) FMODSound.Stop( _underwaterSnapshot );
 		}
 #else
-	// nothing yet :)
+		// nothing yet :)
 #endif
 	}
 
@@ -279,7 +279,7 @@ public partial class BasePlayer
 #if FMOD
 					FMODSound.Play( "event:/Player/PainGeneric" );
 #else
-					Sound.Play( "pl_fallpain" );
+					Sound.Play( "pl_pain" );
 #endif
 					break;
 				case DamageTypes.DMG_FALL:
@@ -385,28 +385,28 @@ public partial class BasePlayer
 		switch ( channel )
 		{
 			default:
-				PickupHandleA?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
-				PickupHandleA = Sound.Play( name );
-				if ( IsProxy ) PickupHandleA.Position = pos; // if someone else picked up an item, play it at the position
-				else PickupHandleA.SpacialBlend = 0;
+				_pickupHandleA?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
+				_pickupHandleA = Sound.Play( name );
+				if ( IsPossessedLocally ) _pickupHandleA.SpacialBlend = 0;
+				else _pickupHandleA.Position = pos; // if someone else picked up an item, play it at the position
 				break;
 			case 1:
-				PickupHandleB?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
-				PickupHandleB = Sound.Play( name );
-				if ( IsProxy ) PickupHandleB.Position = pos; // if someone else picked up an item, play it at the position
-				else PickupHandleB.SpacialBlend = 0;
+				_pickupHandleB?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
+				_pickupHandleB = Sound.Play( name );
+				if ( IsPossessedLocally ) _pickupHandleB.SpacialBlend = 0;
+				else _pickupHandleB.Position = pos; // if someone else picked up an item, play it at the position
 				break;
 			case 2:
-				PickupHandleC?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
-				PickupHandleC = Sound.Play( name );
-				if ( IsProxy ) PickupHandleC.Position = pos; // if someone else picked up an item, play it at the position
-				else PickupHandleC.SpacialBlend = 0;
+				_pickupHandleC?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
+				_pickupHandleC = Sound.Play( name );
+				if ( IsPossessedLocally ) _pickupHandleC.SpacialBlend = 0;
+				else _pickupHandleC.Position = pos; // if someone else picked up an item, play it at the position
 				break;
 		}
 	}
 
-	SoundHandle PickupHandleA;
-	SoundHandle PickupHandleB;
-	SoundHandle PickupHandleC;
+	private SoundHandle _pickupHandleA;
+	private SoundHandle _pickupHandleB;
+	private SoundHandle _pickupHandleC;
 #endif
 }

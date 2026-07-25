@@ -90,13 +90,13 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 		InitScene();
 
 		DecideGameRules();
-		Rules?.GameStart();
-
+		PreSpawn();
 #if IGNIS || STANDALONE
 		if ( !SaveSystem.IsRestoringSave ) ResetWorldTimeForSceneStart();
 #endif
 
-		PreSpawn();
+		Rules?.GameStart();
+
 		PlayerSpawn();
 		PostSpawn();
 	}

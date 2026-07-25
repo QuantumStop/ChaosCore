@@ -4,13 +4,13 @@ using System;
 using Core;
 
 [Title( "HL2K Game Manager" )]
-public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Component.INetworkListener
+public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 {
 	public SDKGameManager( Scene scene ) : base( scene ) => Listen( Stage.SceneLoaded, -1, HandleEditor, "CreateEngineShit" );
 
 	public static new SDKGameManager Current => GameManagerSystem.Current as SDKGameManager;
 
-	protected override void DecideGameRules() => Rules = new SDKRulesSP();
+	protected override void DecideGameRules() => Rules = new SDKRulesMP();
 
 	protected override void OnStart()
 	{
@@ -21,12 +21,15 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 		Rules?.GameStart();
 	}
 
-	public void OnActive( Connection channel )
+	public override void OnActive( Connection channel )
 	{
+		base.OnActive( channel );
+
 		SpawnNetworkPlayer( channel );
 		PostSpawn();
 	}
 
+	[Rpc.Host]
 	private void SpawnNetworkPlayer( Connection channel )
 	{
 		if ( DontSpawnPlayer || Scene is null )
@@ -49,15 +52,14 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 
 			if ( closest.IsValid() )
 			{
-				Player = playerPrefab.Clone();
-
-				Player.WorldPosition = closest.WorldPosition;
+				Player = playerPrefab.Clone( closest.WorldPosition );
 
 				if ( Player.Components.TryGet<BasePlayer>( out var playerComponent ) )
 				{
 					playerComponent.Controller.EyeAngles = closest.WorldRotation;
 					playerComponent.Controller.Controller.Velocity = Vector3.Zero;
 					playerComponent.Controller.Controller.BaseVelocity = Vector3.Zero;
+					if ( Connection.Local == channel ) playerComponent.AsMain( Client.GetFromConnection( channel ) ); // stupid?
 				}
 
 				closest.GameObject.Destroy();
@@ -72,16 +74,15 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents, Componen
 			//	otherwise spawn player at editor camera position
 			SceneTraceResult tr = Scene.Trace.Ray( LastEditorCameraPosition.Position, LastEditorCameraPosition.Position - Vector3.Up * 64f ).Run();
 
-			Player = playerPrefab.Clone();
-
 			// if this is standalone there is no editor camera, so spawn at 0 0 0 (sucks but better than spawning in a random spot)
-			Player.WorldPosition = !Application.IsStandalone ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero;
+			Player = playerPrefab.Clone( !Application.IsStandalone ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero );
 
 			if ( Player.Components.TryGet<BasePlayer>( out var playerComponent2 ) )
 			{
 				playerComponent2.Controller.EyeAngles = !Application.IsStandalone ? LastEditorCameraPosition.Rotation : Angles.Zero;
 				playerComponent2.Controller.Controller.Velocity = Vector3.Zero;
 				playerComponent2.Controller.Controller.BaseVelocity = Vector3.Zero;
+				if ( Connection.Local == channel ) playerComponent2.AsMain( Client.GetFromConnection( channel ) ); // stupid?
 			}
 
 			Player.NetworkSpawn( channel );

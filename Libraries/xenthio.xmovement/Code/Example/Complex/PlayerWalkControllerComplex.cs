@@ -26,10 +26,7 @@ public partial class PlayerWalkControllerComplex : Component
 
 		if ( AllowMovement )
 		{
-			Camera.Enabled = !IsProxy;
-
-			if ( !IsProxy )
-				UpdateCamera();
+			if ( !IsProxy ) UpdateCamera();
 
 			DoEyeLook();
 
@@ -60,9 +57,6 @@ public partial class PlayerWalkControllerComplex : Component
 				if ( Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerFixedUpdate ) DoMovement();
 			}
 			Animate();
-
-			// HACK: For shitty networking purposes do this per FixedUpdate, we cant do this on start because new players wont ever fucking run that on join, nor any other function.
-			UpdateBodyVisibility();
 		}
 		WorldRotation = Rotation.Identity; // external forces can rotate the root gameobject which fuck up all sorts of worldrotation based tracing
 	}

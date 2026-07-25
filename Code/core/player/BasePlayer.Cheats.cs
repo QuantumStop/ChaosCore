@@ -6,12 +6,12 @@ namespace Core;
 
 public partial class BasePlayer
 {
-	private static float SpawnDistance = 1024f;
+	private const float _spawnDistance = 1024f;
 
 	[ConCmd( "ent_create", ConVarFlags.Cheat )]
 	public static void CreateEntity( string entname )
 	{
-		var tr = Local.Scene.Trace.Ray( Local.Controller.AimRay, SpawnDistance )
+		var tr = Local.Scene.Trace.Ray( Local.Controller.AimRay, _spawnDistance )
 		.IgnoreGameObjectHierarchy( Local.GameObject )
 		.WithoutTags( "trigger" )
 		.HitTriggers()

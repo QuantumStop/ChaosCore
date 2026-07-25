@@ -132,8 +132,5 @@ public partial class PlayerMovement : Component
 	/// Get the current friction.
 	/// </summary>
 	/// <returns></returns>
-	private float GetFriction()
-	{
-		return BaseFriction;
-	}
+	private float GetFriction() => BaseFriction;
 }

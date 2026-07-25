@@ -128,20 +128,14 @@ public partial class PlayerWalkControllerComplex : Component
 	/// A network message that lets other users that we've triggered a jump.
 	/// </summary>
 	[Rpc.Broadcast]
-	public void BroadcastPlayerJumped()
-	{
-		AnimationHelper?.TriggerJump();
-	}
+	public void BroadcastPlayerJumped() => AnimationHelper?.TriggerJump();
 
-	private void BuildFrameInput()
+	protected void BuildFrameInput()
 	{
 		if ( AllowPogosticking && Input.Down( JumpAction ) || (IsInVR && Input.VR.RightHand.ButtonA.IsPressed) ) WantsJump = true;
 		else if ( Input.Pressed( JumpAction ) || (IsInVR && Input.VR.RightHand.ButtonA.Delta) ) WantsJump = true;
 	}
-	private void ResetFrameInput()
-	{
-		WantsJump = false;
-	}
+	private void ResetFrameInput() => WantsJump = false;
 
 	protected virtual void BuildInput()
 	{
@@ -166,7 +160,7 @@ public partial class PlayerWalkControllerComplex : Component
 		return DefaultSpeed;
 	}
 
-	public void BuildWishVelocity()
+	public virtual void BuildWishVelocity()
 	{
 		WishMove = Input.AnalogMove;
 

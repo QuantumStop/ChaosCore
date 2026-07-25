@@ -12,8 +12,9 @@ public partial class BasePlayer
 		{
 			if ( field != value )
 			{
+				if ( value == true && !IsPossessedLocally ) return;
 				field = value;
-				ToggleViewmodel();
+				ToggleViewmodel( value, value );
 			}
 		}
 	} = true;
@@ -21,10 +22,16 @@ public partial class BasePlayer
 	/// <summary>
 	/// TODO: Revisit this when we'll do first person body
 	/// </summary>
-	public void ToggleViewmodel()
+	public void ToggleViewmodel( bool oldval, bool newval )
 	{
-		Local.ViewmodelWeapon.RenderOptions.Overlay = Local.ViewmodelVisible; // set the render layer to whatever we want, or the gun wont shoot
-		Local.ViewmodelHands.RenderOptions.Overlay = Local.ViewmodelVisible;
+		ViewmodelWeapon?.RenderOptions.Overlay = newval; // set the render layer to whatever we want, or the gun wont shoot
+		ViewmodelHands?.RenderOptions.Overlay = newval;
+	}
+
+	public override void SetCameraActive( bool which )
+	{
+		base.SetCameraActive( which );
+		ViewmodelWeaponObject.Enabled = which;
 	}
 
 	/// <summary>
@@ -582,19 +589,19 @@ public partial class BasePlayer
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon.Set( v, value );
+	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Set( v, value );
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon.Set( v, value );
+	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Set( v, value );
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon.Set( v, value );
+	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Set( v, value );
 	/// <summary>
 	/// Send shit to all parts of viewmodel
 	/// </summary>
-	public void SetAllWeaponModels( Model model ) => ViewmodelWeapon.Model = model;
+	public void SetAllWeaponModels( Model model ) => ViewmodelWeapon?.Model = model;
 
 	/// <summary>
 	/// Process all animtags from animgraph
@@ -646,7 +653,7 @@ public partial class BasePlayer
 	{
 		base.OnPreRender();
 
-		if ( IsProxy ) // only on viewmodel you can see
+		if ( !IsControlledLocally ) // only on viewmodel you can see
 			return;
 
 		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid() )
