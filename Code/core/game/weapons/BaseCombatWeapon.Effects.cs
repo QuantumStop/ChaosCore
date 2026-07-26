@@ -123,7 +123,10 @@ public partial class BaseCombatWeapon
 #else
 		_shootHandle?.Stop( 0.1f ); // cut off previous sound first, as the engine doesnt have voice stealing
 		foreach ( var sound in WeaponData.AttackSoundsPrimary )
+		{
 			_shootHandle = Sound.Play( sound );
+			_shootHandle.ListenLocal = true;
+		}
 #endif
 	}
 

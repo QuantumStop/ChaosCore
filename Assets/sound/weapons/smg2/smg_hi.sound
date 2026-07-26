@@ -1,6 +1,6 @@
 {
-  "UI": true,
-  "Volume": "0.8",
+  "UI": false,
+  "Volume": "0.800000012",
   "Pitch": "1",
   "Decibels": 70,
   "SelectionMode": "Random",
@@ -9,12 +9,15 @@
     "sound/weapons/smg2/sources/smg_hi03.vsnd",
     "sound/weapons/smg2/sources/smg_hi02.vsnd"
   ],
+  "OcclusionEnabled": true,
   "Occlusion": true,
+  "ReverbEnabled": true,
+  "Reflections": true,
   "AirAbsorption": true,
   "Transmission": true,
   "OcclusionRadius": 64,
   "DistanceAttenuation": true,
-  "Distance": 15000,
+  "Distance": 30000,
   "Falloff": [
     {
       "x": 0,
