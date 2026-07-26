@@ -55,7 +55,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		if ( PlayerCfg.IsValid() && PlayerCfg.ViewmodelHands.IsValid() ) ViewmodelHands.Model = GetViewmodelHands();
 
 		if ( !ViewmodelWeapon.IsValid() ) ViewmodelVisible = false;
-	
+
 		EnsureHudEntries();
 
 		// setup the gun

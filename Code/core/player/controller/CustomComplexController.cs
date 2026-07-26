@@ -200,4 +200,9 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 		if ( !_isMoving ) _isSprintDown = false;
 	}
+
+	public override void OnCameraModeChanged()
+	{
+		if ( _ownerPawn is BasePlayer basePlayer ) basePlayer.UpdateBodyVisibility();
+	}
 }
