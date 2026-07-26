@@ -1,5 +1,5 @@
 {
-  "ViewmodelHands": null,
+  "ViewmodelHands": "models/first_person/v_first_person_arms_human.vmdl",
   "BodyModel": null,
   "HudEntries": [
     {
@@ -13,6 +13,8 @@
   ],
   "PlayerData": [],
   "Faction": "PLAYER",
-  "__references": [],
+  "__references": [
+    "facepunch.v_first_person_arms_human#205798"
+  ],
   "__version": 0
 }

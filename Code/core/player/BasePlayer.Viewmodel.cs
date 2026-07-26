@@ -290,10 +290,8 @@ public partial class BasePlayer
 		if ( Local.LifeState == LifeState.Dead ) // Don't do anything if player is dead.
 			return;
 
-		var camera = Local.Controller.Camera;
-		var currentViewRot = camera.WorldRotation;
+		var currentViewRot = Local.Controller.Camera.WorldRotation;
 		var cameraForward = currentViewRot.Forward.Normal;
-		var cameraSide = currentViewRot.Left.Normal;
 		var playerVelocity = Local.Movement.Velocity;
 		var cameraPitch = Local.Controller.WorldRotation.Pitch();
 
@@ -307,7 +305,7 @@ public partial class BasePlayer
 		UpdatePitchLean( cameraPitch );                                                // Apply vertical lean from camera pitch
 		UpdateYawOffsetFromPitch( cameraPitch );                                       // Add yaw offset when looking up/down
 		UpdateMovementLean( playerVelocity, cameraForward );                           // Add forward/backward lean based on movement
-		UpdateRollLean( playerVelocity, cameraSide, cameraForward, deltaAngles );      // Roll lean from strafing, movement and turning
+		UpdateRollLean( playerVelocity, currentViewRot.Left.Normal, cameraForward, deltaAngles );      // Roll lean from strafing, movement and turning
 	}
 
 
@@ -653,11 +651,13 @@ public partial class BasePlayer
 
 	protected virtual float GetViewmodelFOV() => ViewmodelFOVOverride > 0f ? ViewmodelFOVOverride : ViewmodelFOV;
 
+	protected virtual bool _useFOVShader => false;
+
 	protected override void OnPreRender()
 	{
 		base.OnPreRender();
 
-		if ( !IsControlledLocally ) // only on viewmodel you can see
+		if ( !IsPossessedLocally ) // only on viewmodel you can see
 			return;
 
 		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid() )
@@ -666,7 +666,8 @@ public partial class BasePlayer
 		if ( !ViewmodelWeaponObject.Active )    // because we toggle the viewmodel object, check if its active (enabled)
 			return;
 
-		var camera = Local.Controller?.Camera;
+		var camera = Local.PawnCamera;
+
 		if ( !camera.IsValid() )
 			return;
 
@@ -675,19 +676,26 @@ public partial class BasePlayer
 		{
 			float vmFov = GetViewmodelFOV();
 
-			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
-			ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
+			if ( _useFOVShader )
+			{
+				ViewmodelWeapon.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
+				ViewmodelWeapon.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
+				ViewmodelWeapon.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
+				ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
 
-			ViewmodelWeapon.SceneModel.Attributes.Set( "vm_fov", vmFov );
+				ViewmodelWeapon.SceneModel.Attributes.Set( "vm_fov", vmFov );
 
-			ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
-			ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
+				ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
+				ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
+				ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
+				ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
 
-			ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", vmFov );
+				ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", vmFov );
+			}
+			else
+			{
+				ViewmodelWeaponObject.LocalScale = ViewmodelWeaponObject.LocalScale.WithX( vmFov / camera.FieldOfView );
+			}
 		}
 	}
 
