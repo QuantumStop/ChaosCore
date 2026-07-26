@@ -2,6 +2,8 @@
 
 public partial class GameProp
 {
+	private ModelPhysics _modelPhysics { get; set; }
+
 #if IGNIS
 	[DebugExpose]
 #endif
@@ -36,6 +38,16 @@ public partial class GameProp
 	[ShowIf( nameof( IsStatic ), false )]
 	[Description( "Physics will be asleep until it's woken up." )]
 	public bool StartAsleep { get; set; }
+
+#if IGNIS
+	[DebugExpose]
+#endif
+	[Sync]
+	[Group( "Physics Properties" )]
+	[Property, Order( 13 )]
+	[ShowIf( nameof( IsStatic ), false )]
+	[Description( "For multi-body models, lets physics drive the skinned renderer." )]
+	public bool RagdollActive { get; set; } = true;
 
 #if IGNIS
 	[DebugExpose]
@@ -86,10 +98,16 @@ public partial class GameProp
 
 	void CreatePhysicsComponent()
 	{
-		if ( Model.Physics is null || Model.Physics.Parts.Count == 0 ) return;
+		if ( Model.Physics is null || Model.Physics.Parts.Count == 0 )
+		{
+			DestroyRagdollPhysicsComponent();
+			return;
+		}
 
 		if ( IsStatic )
 		{
+			DestroyRagdollPhysicsComponent();
+
 			ModelCollider orCreate = Components.GetOrCreate<ModelCollider>();
 			orCreate.Static = true;
 			orCreate.Model = Model;
@@ -99,6 +117,8 @@ public partial class GameProp
 
 		if ( Model.Physics.Parts.Count == 1 )
 		{
+			DestroyRagdollPhysicsComponent();
+
 			var collider = Components.GetOrCreate<ModelCollider>();
 			collider.Model = Model;
 			collider.Static = false;
@@ -128,10 +148,62 @@ public partial class GameProp
 			return;
 		}
 
-		var p = Components.GetOrCreate<ModelPhysics>();
-		p.Renderer = ProceduralComponents?.OfType<SkinnedModelRenderer>().FirstOrDefault();
-		p.Model = Model;
-		AddProcedural( p );
+		CreateRagdollPhysicsComponent();
+	}
+
+	private void CreateRagdollPhysicsComponent()
+	{
+		_modelPhysics = Components.GetOrCreate<ModelPhysics>();
+		_modelPhysics.Model = Model;
+		_modelPhysics.Renderer = _modelRenderer as SkinnedModelRenderer ?? Components.Get<SkinnedModelRenderer>();
+		_modelPhysics.StartAsleep = StartAsleep;
+		_modelPhysics.MotionEnabled = RagdollActive;
+		_modelPhysics.Flags |= ComponentFlags.Hidden;
+	}
+
+	private void DestroyRagdollPhysicsComponent()
+	{
+		_modelPhysics ??= Components.Get<ModelPhysics>();
+		if ( !_modelPhysics.IsValid() )
+			return;
+
+		_modelPhysics.Destroy();
+		_modelPhysics = null;
+	}
+
+	public void SetRagdollActive( bool active, bool copyCurrentPose = true )
+	{
+		if ( IsProxy )
+			return;
+
+		RagdollActive = active;
+		ApplyRagdollState( copyCurrentPose );
+		NetworkSetRagdollActive( active, copyCurrentPose );
+	}
+
+	[Rpc.Broadcast]
+	private void NetworkSetRagdollActive( bool active, bool copyCurrentPose )
+	{
+		if ( !IsProxy )
+			return;
+
+		RagdollActive = active;
+		ApplyRagdollState( copyCurrentPose );
+	}
+
+	private void ApplyRagdollState( bool copyCurrentPose )
+	{
+		_modelPhysics ??= Components.Get<ModelPhysics>();
+		if ( !_modelPhysics.IsValid() )
+			return;
+
+		_modelPhysics.Model = Model;
+		_modelPhysics.Renderer ??= _modelRenderer as SkinnedModelRenderer ?? Components.Get<SkinnedModelRenderer>();
+
+		if ( copyCurrentPose && _modelPhysics.Renderer.IsValid() )
+			_modelPhysics.CopyBonesFrom( _modelPhysics.Renderer, true );
+
+		_modelPhysics.MotionEnabled = RagdollActive;
 	}
 
 	public void PassImpulse( Vector3? force = null, Vector3? angularForce = null, bool? includeChildren = false )
@@ -152,8 +224,23 @@ public partial class GameProp
 		else
 		{
 			Components.TryGet<Rigidbody>( out var rb );
-			rb?.PhysicsBody.ApplyImpulse( f );
-			rb?.PhysicsBody.ApplyAngularImpulse( af );
+			if ( rb.IsValid() )
+			{
+				rb.PhysicsBody.ApplyImpulse( f );
+				rb.PhysicsBody.ApplyAngularImpulse( af );
+				return;
+			}
+
+			_modelPhysics ??= Components.Get<ModelPhysics>();
+			if ( !_modelPhysics.IsValid() )
+				return;
+
+			var body = _modelPhysics.Bodies.FirstOrDefault().Component;
+			if ( !body.IsValid() || !body.PhysicsBody.IsValid() )
+				return;
+
+			body.PhysicsBody.ApplyImpulse( f );
+			body.PhysicsBody.ApplyAngularImpulse( af );
 		}
 	}
 
