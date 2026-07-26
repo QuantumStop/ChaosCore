@@ -4,42 +4,195 @@ namespace Core;
 using FMODSbox;
 #endif
 using Sandbox.Physics;
-using Sandbox.Platform;
+using System;
 
 public partial class BasePlayer
 {
-	[Property, ReadOnly, Feature( "PickUp" ), Sync] public GameObject HeldProp { get; private set; }
-	[Property, ReadOnly, Feature( "PickUp" ), Sync] public Rigidbody PropPhys { get; private set; }
-	[Property, ReadOnly, Feature( "PickUp" )] public Angles PropRelativeRot { get; private set; }
+	public readonly record struct GrabState( GameObject GameObject, Rigidbody Body, Vector3 LocalOffset, Rotation GrabOffset, float GrabDistance )
+	{
+		public bool IsValid => GameObject.IsValid() && Body.IsValid() && Body.PhysicsBody.IsValid();
 
-	private PhysicsJoint _joint;
+		public Vector3 EndPoint
+		{
+			get
+			{
+				if ( !IsValid )
+					return default;
+
+				return Body.PhysicsBody.Transform.PointToWorld( LocalOffset );
+			}
+		}
+	}
+
+	[Property, ReadOnly, Feature( "PickUp" )] public GameObject HeldProp => PickupState.GameObject;
+	[Property, ReadOnly, Feature( "PickUp" )] public Rigidbody PropPhys => PickupState.Body;
+	[Property, ReadOnly, Feature( "PickUp" ), Sync, Change( nameof( OnPickupStateChanged ) )] public GrabState PickupState { get; private set; }
+
+	private Sandbox.Physics.ControlJoint _joint;
+	private PhysicsBody _controlBody;
 	private bool _useSuccess { get; set; } = false;
-
-	private Vector3 _predictedPosition;
-	private Rotation _predictedRotation;
-
-	private Vector3 _targetPosition;
-	private Rotation _targetRotation;
 
 	[ConVar( "debug_nomass", ConVarFlags.Cheat )]
 	public static bool DebugNoMass { get; set; }
 
-
 	public void DropObject( bool punt = false )
 	{
-		if ( !HeldProp.IsValid() || !PropPhys.IsValid() )
+		if ( !PickupState.IsValid )
 			return;
 
-		if ( Networking.IsHost )
+		var state = PickupState;
+		var playerVelocity = Controller.Controller.Velocity;
+		var puntDirection = Controller.EyeAngles.Forward;
+
+		ApplyDropPhysics( state, punt, playerVelocity, puntDirection );
+
+		if ( Networking.IsActive && !Networking.IsHost )
 		{
-			ApplyDropPhysics( punt );
+			DropObjectHost( state, punt, playerVelocity, puntDirection );
 		}
-		else
-		{
-			_predictedPosition += Controller.EyeAngles.Forward * (punt ? 400f * Time.Delta : 0f);
-		}
+		else if ( Networking.IsHost )
+			ReleasePickupClaim( state );
 
 		CleanupHeldProp();
+	}
+
+	private bool IsHeldByAnyone( GameObject obj )
+	{
+		if ( obj.Tags.Has( "held_prop" ) )
+			return true;
+
+		var root = GetNetworkRoot( obj );
+		return root.IsValid() && root.Tags.Has( "held_prop" );
+	}
+
+	private GameObject GetHeldObject( GameObject obj )
+	{
+		var root = GetNetworkRoot( obj );
+		return root.IsValid() ? root : obj;
+	}
+
+	private GameObject GetNetworkRoot( GameObject obj )
+	{
+		GameObject root = obj.Network.Active ? obj : null;
+		var current = obj.Parent;
+
+		while ( current.IsValid() && !current.IsRoot )
+		{
+			if ( current.Network.Active )
+				root = current;
+
+			current = current.Parent;
+		}
+
+		return root;
+	}
+
+	private void TryTakePickupOwnership( GrabState state )
+	{
+		if ( !Networking.IsActive || !state.GameObject.Network.Active )
+			return;
+
+		if ( state.GameObject.Network.IsOwner )
+			return;
+
+		state.GameObject.Network.TakeOwnership();
+	}
+
+	private void DropPickupOwnership( GrabState state )
+	{
+		if ( !Networking.IsActive || !state.GameObject.Network.Active )
+			return;
+
+		if ( !state.GameObject.Network.IsOwner )
+			return;
+
+		state.GameObject.Network.DropOwnership();
+	}
+
+	private bool ValidatePickupState( GrabState state )
+	{
+		state = ResolvePickupState( state );
+
+		if ( !state.IsValid || !state.Body.MotionEnabled )
+			return false;
+
+		if ( state.GameObject.Tags.Has( "held_prop" ) )
+			return false;
+
+		if ( !DebugNoMass && state.Body.Mass > 35 )
+			return false;
+
+		if ( state.GameObject.Components.TryGet<BaseUsable>( out var usable ) && !usable.CanBeHeld )
+			return false;
+
+		return true;
+	}
+
+	private void ClaimPickupOnHost( GrabState state, Connection owner )
+	{
+		state = ResolvePickupState( state );
+
+		if ( !ValidatePickupState( state ) )
+		{
+			RejectPickup( state );
+			return;
+		}
+
+		PickupState = state;
+		SetHeldPropTag( state.GameObject, true );
+		SetHeldPropTagBroadcast( state.GameObject, true );
+
+		if ( owner is not null && state.GameObject.Network.Active )
+			state.GameObject.Network.AssignOwnership( owner );
+	}
+
+	[Rpc.Host]
+	private void ClaimPickupHost( GrabState state )
+	{
+		ClaimPickupOnHost( state, Rpc.Caller );
+	}
+
+	private GrabState ResolvePickupState( GrabState state )
+	{
+		if ( !state.GameObject.IsValid() )
+			return state;
+
+		if ( state.Body.IsValid() )
+			return state;
+
+		var body = state.GameObject.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndChildren );
+
+		if ( !body.IsValid() )
+			body = state.GameObject.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndParent );
+
+		if ( !body.IsValid() )
+			return state;
+
+		return state with { Body = body };
+	}
+
+	[Rpc.Owner]
+	private void RejectPickup( GrabState state )
+	{
+		if ( PickupState.GameObject != state.GameObject )
+			return;
+
+		DropPickupOwnership( state );
+		CleanupHeldProp();
+	}
+
+	[Rpc.Broadcast]
+	private void SetHeldPropTagBroadcast( GameObject obj, bool held )
+	{
+		SetHeldPropTag( obj, held );
+	}
+
+	private void SetHeldPropTag( GameObject obj, bool held )
+	{
+		if ( !obj.IsValid() )
+			return;
+
+		obj.Tags.Set( "held_prop", held );
 	}
 
 	public void UpdatePickup()
@@ -49,7 +202,7 @@ public partial class BasePlayer
 
 		_useSuccess = false;
 
-		if ( HeldProp.IsValid() )
+		if ( PickupState.IsValid )
 		{
 			DropObject();
 			return;
@@ -57,11 +210,11 @@ public partial class BasePlayer
 
 		var tr = Scene.Trace.Ray( Controller?.AimRay ?? default, 100f )
 			.IgnoreGameObjectHierarchy( GameObject )
-			.WithoutTags( "trigger", "water" )
+			.WithoutTags( "trigger", "water", "held_prop", "player" )
 			.HitTriggers()
 			.Run();
 
-		if ( tr.Hit && tr.GameObject.IsValid() ) TryPickup( tr.GameObject );
+		if ( tr.Hit && tr.GameObject.IsValid() ) TryPickup( tr );
 
 #if FMOD
 		if ( _useSuccess ) FMODSound.Play( "event:/Player/HUD/UseSuccess" );
@@ -73,14 +226,15 @@ public partial class BasePlayer
 	}
 
 
-	private void TryPickup( GameObject obj )
+	private void TryPickup( SceneTraceResult tr )
 	{
-		if ( LifeState != LifeState.Alive || obj.Tags.Has( "HELD_PROP" ) ) // important to filter out already held objects
+		var obj = tr.GameObject;
+		var heldObject = GetHeldObject( obj );
+
+		if ( LifeState != LifeState.Alive || IsHeldByAnyone( obj ) ) // important to filter out already held objects
 			return;
 
-		// no rigid body (static) or motion disabled
-		if ( obj.Components.TryGet<Rigidbody>( out var rigidbody ) ) { if ( !rigidbody.MotionEnabled ) return; }
-		else
+		if ( !TryFindPickupRigidbody( tr, out var rigidbody ) || !rigidbody.MotionEnabled )
 			return;
 
 		if ( obj.Components.TryGet<BaseWeaponItem>( out var weapon ) )
@@ -95,63 +249,138 @@ public partial class BasePlayer
 		if ( !DebugNoMass && rigidbody.Mass > 35 )
 			return;
 
-		RpcPickup( obj, rigidbody );
-		PropRelativeRot = HeldProp.WorldRotation.Angles() - Controller.EyeAngles.WithPitch( 0 );
+		var bodyTransform = rigidbody.PhysicsBody.Transform.WithScale( obj.WorldScale );
+		var localOffset = bodyTransform.PointToLocal( tr.HitPosition );
+		var grabDistance = Vector3.DistanceBetween( Controller.Head.WorldPosition, tr.HitPosition ).Clamp( 32.0f, 96.0f );
+		var grabOffset = Rotation.FromYaw( Controller.EyeAngles.yaw ).Inverse * bodyTransform.Rotation;
+		var state = new GrabState( heldObject, rigidbody, localOffset, grabOffset, grabDistance );
+
+		if ( Networking.IsHost )
+		{
+			ClaimPickupOnHost( state, Owner?.Connection ?? Connection.Local );
+		}
+		else
+		{
+			PickupState = state;
+			TryTakePickupOwnership( state );
+
+			if ( Networking.IsActive )
+				ClaimPickupHost( state );
+		}
 
 		CurrentWeapon?.Holster();
-
-		if ( Controller.Controller.PhysicsBodyRigidbody?.PhysicsBody is not null )
-		{
-			var point1 = new PhysicsPoint( PropPhys.PhysicsBody );
-			var point2 = new PhysicsPoint( Controller.Controller.PhysicsBodyRigidbody.PhysicsBody );
-			_joint = PhysicsJoint.CreateSpring( point1, point2, 0, 99999 );
-			_joint.Collisions = false;
-		}
 
 		_useSuccess = true;
 	}
 
-	[Rpc.Broadcast]
-	private void RpcPickup( GameObject obj, Rigidbody rigidbody )
+	private bool TryFindPickupRigidbody( SceneTraceResult tr, out Rigidbody rigidbody )
 	{
-		HeldProp = obj;
-		PropPhys = rigidbody;
+		rigidbody = tr.Body?.Component as Rigidbody;
 
-		_predictedPosition = obj.WorldPosition;
-		_predictedRotation = obj.WorldRotation;
-		_targetPosition = _predictedPosition;
-		_targetRotation = _predictedRotation;
+		if ( rigidbody.IsValid() )
+			return true;
 
-		HeldProp?.Tags.Add( "HELD_PROP" ); // ensure client knows it's held
+		rigidbody = tr.Component?.GameObject?.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndParent );
+
+		if ( rigidbody.IsValid() )
+			return true;
+
+		rigidbody = tr.GameObject.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndParent );
+
+		return rigidbody.IsValid();
 	}
 
-	private void ApplyDropPhysics( bool punt )
+	private void OnPickupStateChanged( GrabState oldState, GrabState newState )
 	{
-		PropPhys.PhysicsBody.Velocity += Controller.Controller.Velocity;
-		PropPhys.PhysicsBody.Velocity = PropPhys.PhysicsBody.Velocity.ClampLength( 350f );
+		var shouldPredictHeldTag = IsControlledLocally && !Networking.IsHost;
+
+		if ( shouldPredictHeldTag )
+			SetHeldPropTag( oldState.GameObject, false );
+
+		if ( newState.GameObject.IsValid() )
+		{
+			if ( shouldPredictHeldTag )
+				SetHeldPropTag( newState.GameObject, true );
+
+			CurrentWeapon?.Holster();
+			return;
+		}
+
+		ClearPickupJoint();
+		CurrentWeapon?.Draw();
+	}
+
+	private bool CanMove( GrabState state )
+	{
+		if ( !state.IsValid )
+			return false;
+
+		if ( state.Body.IsProxy )
+			return false;
+
+		if ( !state.Body.MotionEnabled )
+			return false;
+
+		return state.Body.PhysicsBody.IsValid();
+	}
+
+	[Rpc.Host]
+	private void DropObjectHost( GrabState state, bool punt, Vector3 playerVelocity, Vector3 puntDirection )
+	{
+		state = ResolvePickupState( state );
+		ApplyDropPhysics( state, punt, playerVelocity, puntDirection );
+
+		if ( PickupState.GameObject == state.GameObject )
+		{
+			ReleasePickupClaim( state );
+			CleanupHeldProp();
+		}
+	}
+
+	private void ReleasePickupClaim( GrabState state )
+	{
+		SetHeldPropTag( state.GameObject, false );
+		SetHeldPropTagBroadcast( state.GameObject, false );
+
+		if ( state.GameObject.Network.Active && !state.GameObject.Network.IsProxy )
+			state.GameObject.Network.DropOwnership();
+	}
+
+	private void ApplyDropPhysics( GrabState state, bool punt, Vector3 playerVelocity, Vector3 puntDirection )
+	{
+		if ( !CanMove( state ) )
+			return;
+
+		var velocity = state.Body.PhysicsBody.Velocity + playerVelocity;
+		velocity = velocity.ClampLength( 350f );
 
 		if ( punt )
-			PropPhys.PhysicsBody.Velocity += Controller.EyeAngles.Forward * 400f;
+			velocity += puntDirection * 400f;
 
-		if ( HeldProp.Components.TryGet<BaseUsable>( out var usable ) )
+		state.Body.PhysicsBody.Velocity = velocity;
+
+		if ( state.GameObject.Components.TryGet<BaseUsable>( out var usable ) )
 			usable.OnDropped?.Invoke( this );
 
-		PropPhys.PhysicsBody.AngularVelocity *= 0.3f;
-
-		_targetPosition = PropPhys.PhysicsBody.Position;
-		_targetRotation = PropPhys.PhysicsBody.Rotation;
+		state.Body.PhysicsBody.AngularVelocity *= 0.3f;
 	}
 
-	[Rpc.Broadcast]
 	private void CleanupHeldProp()
 	{
-		HeldProp?.Tags.Remove( "HELD_PROP" );
-		HeldProp = null;
-		PropPhys = null;
+		SetHeldPropTag( PickupState.GameObject, false );
+		PickupState = default;
 
-		if ( _joint.IsValid() ) _joint.Remove();
+		ClearPickupJoint();
+	}
 
-		CurrentWeapon?.Draw();
+	private void ClearPickupJoint()
+	{
+		if ( _joint.IsValid() )
+			_joint.Remove();
+
+		_joint = null;
+		_controlBody?.Remove();
+		_controlBody = null;
 	}
 
 
@@ -163,11 +392,14 @@ public partial class BasePlayer
 		if ( !Controller.Controller.IsValid() )
 			return;
 
-		// Handle new pickups / drop requests first
-		UpdatePickup();
+		if ( IsControlledLocally )
+			UpdatePickup();
 
-		if ( !HeldProp.IsValid() || !PropPhys.IsValid() || !PropPhys.PhysicsBody.IsValid() )
+		if ( !PickupState.IsValid )
+		{
+			ClearPickupJoint();
 			return;
+		}
 
 		// Drop if dead or standing on held prop
 		if ( LifeState != LifeState.Alive || Controller.Controller.GroundObject == HeldProp )
@@ -183,25 +415,60 @@ public partial class BasePlayer
 			return;
 		}
 
-		var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * 80f;
-		wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
-
-		var vel = PropPhys.PhysicsBody.Velocity;
-		var angvel = PropPhys.PhysicsBody.AngularVelocity;
-
-		Vector3.SmoothDamp( PropPhys.PhysicsBody.Position, wantedPosition, ref vel, 0.05f, Time.Delta );
-		Rotation.SmoothDamp( PropPhys.PhysicsBody.Rotation, (PropRelativeRot + Controller.EyeAngles.WithPitch( 0 )).ToRotation(), ref angvel, 0.05f, Time.Delta );
-
-		vel = vel.ClampLength( 1250f );
-
-		PropPhys.PhysicsBody.Velocity = vel;
-		PropPhys.PhysicsBody.AngularVelocity = angvel;
-
-		// Update target positions for clients
-		_targetPosition = PropPhys.PhysicsBody.Position;
-		_targetRotation = PropPhys.PhysicsBody.Rotation;
+		UpdatePickupJoint();
 
 		// Drop / punt input
-		if ( Input.Pressed( "attack1" ) ) DropObject( true );
+		if ( IsControlledLocally && Input.Pressed( "attack1" ) ) DropObject( true );
+	}
+
+	private void UpdatePickupJoint()
+	{
+		var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * PickupState.GrabDistance;
+		var wantedRotation = Rotation.FromYaw( Controller.EyeAngles.yaw ) * PickupState.GrabOffset;
+
+		if ( !CanMove( PickupState ) )
+		{
+			if ( IsControlledLocally && Networking.IsActive && !Networking.IsHost )
+				UpdatePickupTargetHost( PickupState, wantedPosition, wantedRotation );
+			else
+				ClearPickupJoint();
+
+			return;
+		}
+
+		UpdatePickupJoint( PickupState, wantedPosition, wantedRotation );
+	}
+
+	[Rpc.Host]
+	private void UpdatePickupTargetHost( GrabState state, Vector3 wantedPosition, Rotation wantedRotation )
+	{
+		if ( PickupState.GameObject != state.GameObject || !CanMove( state ) )
+			return;
+
+		UpdatePickupJoint( state, wantedPosition, wantedRotation );
+	}
+
+	private void UpdatePickupJoint( GrabState state, Vector3 wantedPosition, Rotation wantedRotation )
+	{
+		_controlBody ??= new PhysicsBody( Scene.PhysicsWorld )
+		{
+			BodyType = PhysicsBodyType.Keyframed,
+			AutoSleep = false
+		};
+
+		_controlBody.Transform = new Transform( wantedPosition, wantedRotation );
+
+		if ( !_joint.IsValid() )
+		{
+			var bodyTransform = state.Body.PhysicsBody.Transform.WithScale( state.GameObject.WorldScale );
+			var point1 = new PhysicsPoint( _controlBody );
+			var point2 = new PhysicsPoint( state.Body.PhysicsBody, bodyTransform.PointToLocal( state.EndPoint ) );
+			var mass = MathF.Max( state.Body.PhysicsBody.Mass, 1f );
+			var maxForce = mass * Scene.PhysicsWorld.Gravity.LengthSquared;
+
+			_joint = PhysicsJoint.CreateControl( point1, point2 );
+			_joint.LinearSpring = new PhysicsSpring( 32, 4, maxForce );
+			_joint.AngularSpring = new PhysicsSpring( 64, 4, maxForce * 3 );
+		}
 	}
 }

@@ -55,33 +55,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		if ( PlayerCfg.IsValid() && PlayerCfg.ViewmodelHands.IsValid() ) ViewmodelHands.Model = GetViewmodelHands();
 
 		if ( !ViewmodelWeapon.IsValid() ) ViewmodelVisible = false;
-
-		if ( HUDGameObject.IsValid() )
-		{
-			HUDGameObject.Components.GetOrCreate<ScreenPanel>().Enabled = true;
-
-			if ( PlayerCfg.IsValid() && PlayerCfg.HudEntries is not null && PlayerCfg.HudEntries.Count > 0 )
-			{
-				foreach ( var entry in PlayerCfg?.HudEntries )
-				{
-					if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
-						continue;
-
-					string className = GetClassName( entry.RazorPath );
-
-					TypeDescription type = GlobalGameNamespace.TypeLibrary.GetType( className );
-
-					if ( type is null )
-					{
-						Log.Warning( $"Ignoring bad razor path: {entry.RazorPath}" );
-						continue;
-					}
-
-					if ( !HUDGameObject.Components.Get( type.TargetType ).IsValid() )
-						HUDGameObject.Components.Create( type );
-				}
-			}
-		}
+	
+		EnsureHudEntries();
 
 		// setup the gun
 		ViewmodelWeapon?.RenderType = ModelRenderer.ShadowRenderType.Off;
@@ -115,6 +90,95 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	}
 
 	private string GetClassName( string path ) => System.IO.Path.GetFileNameWithoutExtension( path );
+
+	private bool ShouldCreateHudEntries() => IsControlledLocally && HUDGameObject.IsValid();
+
+	private void SetHudRootEnabled( bool enabled )
+	{
+		if ( !HUDGameObject.IsValid() )
+			return;
+
+		HUDGameObject.Enabled = enabled;
+
+		var screenPanel = HUDGameObject.Components.Get<ScreenPanel>();
+		if ( screenPanel.IsValid() )
+			screenPanel.Enabled = enabled;
+	}
+
+	private void EnsureHudEntries()
+	{
+		if ( !HUDGameObject.IsValid() )
+			return;
+
+		if ( !ShouldCreateHudEntries() || !PlayerCfg.IsValid() || PlayerCfg.HudEntries is null || PlayerCfg.HudEntries.Count <= 0 )
+		{
+			SetHudEntriesEnabled( false );
+			SetHudRootEnabled( false );
+			return;
+		}
+
+		HUDGameObject.Enabled = true;
+
+		var screenPanel = HUDGameObject.Components.GetOrCreate<ScreenPanel>();
+		screenPanel.Enabled = true;
+
+		foreach ( var entry in PlayerCfg?.HudEntries )
+		{
+			if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
+				continue;
+
+			string className = GetClassName( entry.RazorPath );
+
+			if ( !ShouldLoadHudEntry( className ) )
+				continue;
+
+			TypeDescription type = GlobalGameNamespace.TypeLibrary.GetType( className );
+
+			if ( type is null )
+			{
+				Log.Warning( $"Ignoring bad razor path: {entry.RazorPath}" );
+				continue;
+			}
+
+			if ( !HUDGameObject.Components.Get( type.TargetType ).IsValid() )
+				HUDGameObject.Components.Create( type );
+		}
+
+		SetHudEntriesEnabled( true );
+	}
+
+	private void SetHudEntriesEnabled( bool enabled )
+	{
+		if ( !HUDGameObject.IsValid() || !PlayerCfg.IsValid() || PlayerCfg.HudEntries is null )
+			return;
+
+		foreach ( var entry in PlayerCfg.HudEntries )
+		{
+			if ( string.IsNullOrWhiteSpace( entry.RazorPath ) )
+				continue;
+
+			string className = GetClassName( entry.RazorPath );
+
+			if ( !ShouldLoadHudEntry( className ) )
+				continue;
+
+			TypeDescription type = GlobalGameNamespace.TypeLibrary.GetType( className );
+			if ( type is null )
+				continue;
+
+			var component = HUDGameObject.Components.Get( type.TargetType );
+			if ( component.IsValid() )
+				component.Enabled = enabled;
+		}
+	}
+
+	private bool ShouldLoadHudEntry( string className )
+	{
+		if ( className is "ChatOverlay" or "ChaosChatOverlay" )
+			return GameManagerSystem.Rules?.IsOnline == true;
+
+		return true;
+	}
 
 	// technically you shouldnt disable the player (like ever), but still
 	protected override void OnDisabled()
@@ -267,6 +331,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	override protected void OnFixedUpdate()
 	{
+		UpdatePickupPhysics();
+
 		if ( !IsControlledLocally ) return;
 
 		CheckWaterLevel();
@@ -276,7 +342,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		if ( _allowSway ) ViewmodelFixedUpdate();
 		UpdateFallDamage();
-		UpdatePickupPhysics();
 	}
 
 	/// <summary>
@@ -391,6 +456,16 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		if ( !HUDGameObject.IsValid() ) Log.Error( "HUD GameObject is missing!" );
 	}
 
-	protected override void OnPossess() => UpdateBodyVisibility();
-	protected override void OnDePossess() => UpdateBodyVisibility();
+	protected override void OnPossess()
+	{
+		UpdateBodyVisibility();
+		EnsureHudEntries();
+	}
+
+	protected override void OnDePossess()
+	{
+		UpdateBodyVisibility();
+		SetHudEntriesEnabled( false );
+		SetHudRootEnabled( false );
+	}
 }
