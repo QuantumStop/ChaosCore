@@ -27,6 +27,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 		SpawnNetworkPlayer( channel );
 		PostSpawn();
+		SendChatHistorySnapshot( channel );
 	}
 
 	[Rpc.Host]
@@ -53,18 +54,24 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 			if ( closest.IsValid() )
 			{
 				Player = playerPrefab.Clone( closest.WorldPosition );
+				var client = Client.GetFromConnection( channel );
+				BasePlayer spawnedPlayer = null;
 
 				if ( Player.Components.TryGet<BasePlayer>( out var playerComponent ) )
 				{
+					spawnedPlayer = playerComponent;
 					playerComponent.Controller.EyeAngles = closest.WorldRotation;
 					playerComponent.Controller.Controller.Velocity = Vector3.Zero;
 					playerComponent.Controller.Controller.BaseVelocity = Vector3.Zero;
-					if ( Connection.Local == channel ) playerComponent.AsMain( Client.GetFromConnection( channel ) ); // stupid?
+					playerComponent.Owner = client;
 				}
 
 				closest.GameObject.Destroy();
 
 				if ( Networking.IsActive ) Player.NetworkSpawn( channel );
+
+				if ( spawnedPlayer.IsValid() )
+					spawnedPlayer.AsMain( client );
 
 				return;
 			}
@@ -76,16 +83,22 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 			// if this is standalone there is no editor camera, so spawn at 0 0 0 (sucks but better than spawning in a random spot)
 			Player = playerPrefab.Clone( !Application.IsStandalone ? LastEditorCameraPosition.Position - Vector3.Up * 64f * tr.Fraction : Vector3.Zero );
+			var client = Client.GetFromConnection( channel );
+			BasePlayer spawnedPlayer = null;
 
 			if ( Player.Components.TryGet<BasePlayer>( out var playerComponent2 ) )
 			{
+				spawnedPlayer = playerComponent2;
 				playerComponent2.Controller.EyeAngles = !Application.IsStandalone ? LastEditorCameraPosition.Rotation : Angles.Zero;
 				playerComponent2.Controller.Controller.Velocity = Vector3.Zero;
 				playerComponent2.Controller.Controller.BaseVelocity = Vector3.Zero;
-				if ( Connection.Local == channel ) playerComponent2.AsMain( Client.GetFromConnection( channel ) ); // stupid?
+				playerComponent2.Owner = client;
 			}
 
 			Player.NetworkSpawn( channel );
+
+			if ( spawnedPlayer.IsValid() )
+				spawnedPlayer.AsMain( client );
 		}
 	}
 
