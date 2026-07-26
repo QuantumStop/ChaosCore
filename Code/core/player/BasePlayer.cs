@@ -454,6 +454,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		if ( !Controller.IsValid() ) Log.Error( "Player is missing PlayerController!" );
 		if ( !PickupTrigger.IsValid() ) Log.Error( "Player is missing the Pickup Trigger!" );
 		if ( !HUDGameObject.IsValid() ) Log.Error( "HUD GameObject is missing!" );
+		if ( !PawnCamera.IsValid() ) Log.Error( "Pawn is missing a camera component! (or a reference to it)" );
 	}
 
 	protected override void OnPossess()

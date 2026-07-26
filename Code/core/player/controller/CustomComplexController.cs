@@ -203,6 +203,16 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void OnCameraModeChanged()
 	{
-		if ( _ownerPawn is BasePlayer basePlayer ) basePlayer.UpdateBodyVisibility();
+		if ( _ownerPawn is BasePlayer basePlayer )
+		{
+			basePlayer.UpdateBodyVisibility();
+			if ( !Camera.IsValid() ) basePlayer.ViewmodelVisible = false;
+
+			basePlayer.ViewmodelVisible = CameraMode switch
+			{
+				CameraModes.FirstPerson => true,
+				_ => false,
+			};
+		}
 	}
 }

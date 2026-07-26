@@ -14,7 +14,7 @@ public partial class BasePlayer
 			{
 				if ( value == true && !IsPossessedLocally ) return;
 				field = value;
-				ToggleViewmodel( value, value );
+				ToggleViewmodel( value );
 			}
 		}
 	} = true;
@@ -22,16 +22,15 @@ public partial class BasePlayer
 	/// <summary>
 	/// TODO: Revisit this when we'll do first person body
 	/// </summary>
-	public void ToggleViewmodel( bool oldval, bool newval )
-	{
-		ViewmodelWeapon?.RenderOptions.Overlay = newval; // set the render layer to whatever we want, or the gun wont shoot
-		ViewmodelHands?.RenderOptions.Overlay = newval;
-	}
+	public void ToggleViewmodel( bool newval ) => ViewmodelWeaponObject.Enabled = newval == true && ShouldDrawViewmodel();
 
-	public override void SetCameraActive( bool which )
+	public virtual bool ShouldDrawViewmodel()
 	{
-		base.SetCameraActive( which );
-		ViewmodelWeaponObject.Enabled = which;
+		if ( !IsPossessedLocally ) return false;
+		if ( !CurrentWeapon.IsValid() ) return false;
+		if ( !CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() ) return false;
+
+		return true;
 	}
 
 	/// <summary>
