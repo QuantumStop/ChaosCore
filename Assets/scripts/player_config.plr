@@ -5,6 +5,10 @@
     {
       "RazorPath": "..\\Code\\UI\\Core\\Vanity\\BaseVanity.razor",
       "RequireSuitToDraw": false
+    },
+    {
+      "RazorPath": "..\\Code\\UI\\SDK\\HUD\\ChaosChatOverlay.razor",
+      "RequireSuitToDraw": false
     }
   ],
   "PlayerData": [],
