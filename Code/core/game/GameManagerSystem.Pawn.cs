@@ -6,27 +6,26 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 {
 	private GameObject CreateClientObject( Connection connection, out Client client )
 	{
-		var clientObj = Scene.CreateObject();
+		var clientObj = new GameObject
+		{
+			Name = $"{connection.DisplayName} [CLIENT]",
+			NetworkMode = NetworkMode.Object
+		};
+
 		client = clientObj.Components.Create<Client>();
+		client.SteamId = connection.SteamId;
+		client.SteamName = connection.DisplayName;
 		clientObj.Network.SetOrphanedMode( NetworkOrphaned.ClearOwner );
-		clientObj.Name = $"{connection.DisplayName} [CLIENT]";
 
 		return clientObj;
 	}
 
 	private Client GetOrCreateClient( Connection channel = null )
 	{
-		Client possibleClient = Scene.GetAllComponents<Client>().FirstOrDefault( x =>
-		{
-			// A candidate player state has no owner.
-			return x.Connection is null && x.SteamId == channel.SteamId;
-		} );
+		Client possibleClient = Client.GetFromConnection( channel );
 
 		if ( possibleClient.IsValid() )
-		{
-			Log.Warning( $"Found existing player state for {channel.SteamId} that we can re-use. {possibleClient}" );
 			return possibleClient;
-		}
 
 		CreateClientObject( channel, out Client client );
 
@@ -56,7 +55,6 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 		else client.Network.AssignOwnership( channel );
 
 		client.HostInit();
-		client.ClientInit();
 	}
 
 	protected virtual void OnDisconnected( Connection channel )

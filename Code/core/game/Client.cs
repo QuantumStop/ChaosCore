@@ -1,6 +1,6 @@
 namespace Core;
 
-public partial class Client : Component, Component.INetworkListener
+public partial class Client : Component, Component.INetworkListener, IGameObjectNetworkEvents
 {
 	/// <summary>
 	/// The player we're currently in the view of (clientside).
@@ -64,10 +64,19 @@ public partial class Client : Component, Component.INetworkListener
 		SteamName = Connection.DisplayName;
 	}
 
-	/// <summary>
-	/// Initialize the client locally for that client only
-	/// </summary>
-	[Rpc.Owner] public void ClientInit() => Local = this;
+	protected override void OnStart()
+	{
+		TryBecomeLocalClient();
+	}
+
+	private void TryBecomeLocalClient()
+	{
+		if ( IsLocalPlayer )
+			Local = this;
+	}
+
+	void IGameObjectNetworkEvents.NetworkOwnerChanged( Connection newOwner, Connection previousOwner ) => TryBecomeLocalClient();
+	void IGameObjectNetworkEvents.StartControl() => TryBecomeLocalClient();
 
 	/// <summary>
 	/// This client possessed some pawn, consider this an "event" of sorts
@@ -91,7 +100,7 @@ public partial class Client : Component, Component.INetworkListener
 
 		if ( pawn.Network.Active ) Local.OnPossessRpc(); // only networked pawns, in cases when there are ones that aren't
 
-		Viewer = pawn.Client.IsValid() ? pawn.Client : Local;
+		Viewer = pawn.Owner.IsValid() ? pawn.Owner : Local;
 	}
 
 	/// <summary>
@@ -139,5 +148,13 @@ public partial class Client : Component, Component.INetworkListener
 		if ( _timeSinceDisconnected > _disconnectCleanupTime ) GameObject.Destroy();
 	}
 
-	static public Client GetFromConnection( Connection connection ) => Game.ActiveScene.GetAll<Client>().FirstOrDefault( x => x.Connection == connection );
+	static public Client GetFromConnection( Connection connection )
+	{
+		if ( connection is null )
+			return null;
+
+		return Game.ActiveScene.GetAll<Client>().FirstOrDefault( x =>
+			x.Connection == connection ||
+			(x.Connection is null && x.SteamId == connection.SteamId) );
+	}
 }
