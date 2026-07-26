@@ -1,0 +1,246 @@
+ChaosVirtualChatPanel
+{
+	font-family: Roboto Mono;
+	pointer-events: none;
+	flex-shrink: 0;
+	width: 45vh;
+	display: flex;
+	flex-direction: column;
+	letter-spacing: -1;
+
+	.message,
+	.input label,
+	.playername
+	{
+		text-transform: none;
+		font-size: 4.5em;
+	}
+
+	.chat-messages-box,
+	.chat-input-box
+	{
+		display: none;
+		opacity: 0;
+	}
+
+	.playername
+	{
+		font-weight: 600;
+		margin-right: 4px;
+		flex-shrink: 0;
+		color: #0094ff;
+		white-space: nowrap;
+	}
+
+	.chat-messages-box
+	{
+		height: 0px;
+	}
+	
+	.message
+	{
+		font-weight: 600;
+		color: rgb( 235, 235, 235 );
+		white-space: normal;
+		min-width: 0;
+		flex-shrink: 1;
+	}
+
+	.playername,
+	.message
+	{
+		font-smooth: always;
+
+		text-shadow:
+
+			0px 0px 4px rgba( 0, 0, 0, 1 );
+	}
+
+	.channel-label
+	{
+		font-size: 0.75em;
+		font-weight: 700;
+		text-transform: uppercase;
+		padding: 3px 8px;
+		margin-right: 6px;
+		color: rgb( 190, 200, 225 );
+		flex-shrink: 0;
+	}
+
+	.chat-hud-box
+	{
+		max-height: 220px;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: 4px;
+		overflow-y: hidden;
+
+		>.msg
+		{
+			transition: all 0.1s linear;
+			transform: translateX(0);
+			opacity: 1;
+
+			&.appearing { animation: msg-appear 0.15s forwards; }
+
+			&.expiring { animation: msg-expire 0.2s forwards; }
+		}
+	}
+
+	.msg
+	{
+		padding: 4px 6px;
+		display: flex;
+		align-items: flex-start;
+		flex-shrink: 0;
+		min-height: 24px;
+
+		.player-avatar
+		{
+			width: 18px;
+			height: 18px;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border: 0.1em solid rgba( 87, 87, 87, 0.6 );
+			border-radius: 0.25em;
+			margin-right: 6px;
+			flex-shrink: 0;
+		}
+
+		&.appearing
+		{
+			opacity: 1;
+			transition: opacity 0.2s ease-out;
+		}
+
+		&.expiring
+		{
+			opacity: 0.35;
+			transition: opacity 0.4s ease-out;
+		}
+	}
+}
+
+ChaosChatOverlay.open ChaosVirtualChatPanel
+{
+
+	transition: all 0.25s ease-out;
+	pointer-events: all;
+	padding: 6px;
+	background-color: rgba( 10, 10, 10, 0.95 );
+	border-radius: 0.35em;
+
+	.chat-messages-box,
+	.chat-input-box
+	{
+		opacity: 1;
+		transition: opacity 1s linear;
+	}
+
+	.chat-hud-box
+	{
+		display: none;
+	}
+
+	.playername,
+	.message
+	{
+		text-shadow: none;
+	}
+
+	.channel-label
+	{
+		background-color: rgba( 56, 56, 80, 0.95 );
+	}
+
+	.chat-messages-box
+	{
+		height: 280px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		padding: 4px;
+		background-color: rgba( 10, 10, 10, 0.5 );
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	//	transition: all 0.25s ease-out;
+		transition: height 0.1s linear,
+			opacity 0.4s ease-in;
+
+		// .msg:hover
+		// {
+		// 	background-color: rgba(228, 61, 61, 0.1);
+		// }
+
+		// .msg:active
+		// {
+		// 	background-color: rgba( 45, 45, 45, 0.1 );
+		// }
+
+		.msg:nth-child( odd )
+		{
+			background-color: rgba( 11, 11, 11, 0.25 );
+		}
+
+		.msg:nth-child( even )
+		{
+			background-color: rgba( 30, 30, 30, 0.25 );
+		}
+	}
+
+	.chat-input-box
+	{
+		transition: all 0.075s ease-out;
+		color: rgb( 207, 207, 207 );
+		background-color: rgba( 11, 11, 11, 0.5 );
+		border-top: 1px solid rgba( 100, 100, 100, 0.25 );
+		display: flex;
+		align-items: stretch;
+		min-height: 44px;
+
+		.input
+		{
+			flex-grow: 1;
+			min-width: 0;
+		}
+
+		.input-button
+		{		
+			align-items: center;
+			justify-content: center;
+			sound-in: "sounds/kenney/ui/ui.button.press.sound_c";
+			width: 58px;
+			padding-left: 0.5em;
+			padding-right: 1.5em;
+			font-weight: 800;			
+			font-size: 4.7em;
+			color: rgb( 125, 125, 125 );
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
+	}
+}
+
+@keyframes msg-expire {
+    
+	from {
+        opacity: 1;
+    }
+
+    to {
+    	opacity: 0;
+    }
+}
+
+@keyframes msg-appear {
+    
+	from {
+        transform: translateX(-20);
+		opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+		opacity: 1;
+    }
+}

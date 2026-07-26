@@ -1,0 +1,301 @@
+@using Sandbox
+@using Sandbox.UI
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using Core
+@using Microsoft.AspNetCore.Components.Rendering
+
+@inherits Panel
+@namespace SDK.UI
+
+<root>
+	<div class="chat-hud-box">
+		@foreach ( Core.ChatEntry entry in HudEntries )
+		{
+			@ChatEntry( entry )
+		}
+	</div>
+
+	<div class="chat-messages-box" @ref="MessageList">
+		@foreach ( Core.ChatEntry entry in VisibleEntries )
+		{
+			@ChatEntry( entry )
+		}
+	</div>
+
+	<div class="chat-input-box">
+		<ChaosChatBox class="input"
+			@ref="InputBox"
+			Placeholder="@InputPlaceholder"
+			MaxLength="@(Sandbox.Platform.Chat.MaxMessageLength)"
+			OnTabPressed="@OnTabPressed"
+			onsubmit="@OnInputSubmit" />
+
+		@if ( ShowInput )
+		{
+			<button class="input-button" onclick="@OnInputSubmit">SEND</button>
+		}
+	</div>
+</root>
+
+@code
+{
+	Panel MessageList;
+	ChaosChatBox InputBox;
+	bool WantsFocus;
+	bool WasShowingInput;
+	int VisibleStart;
+	int LastEntryCount;
+
+	const int VisibleMessageCount = 15;
+	const int ScrollStep = 3;
+
+	string InputPlaceholder => ShowInput ? InputPrefix : "";
+	IEnumerable<ChatEntry> HudEntries => ShowInput ? Array.Empty<ChatEntry>() : Entries.Where( x => ChatHistory.GetAge( x ) <= MessageFadeTime );
+	int MaxVisibleStart => Math.Max( Entries.Count - VisibleMessageCount, 0 );
+	int VisibleCount => Math.Min( VisibleMessageCount, Entries.Count - VisibleStart );
+	IEnumerable<ChatEntry> VisibleEntries => Entries.Skip( VisibleStart ).Take( Math.Max( VisibleCount, 0 ) );
+
+	[Parameter] public IReadOnlyList<ChatEntry> Entries { get; set; } = Array.Empty<ChatEntry>();
+	[Parameter] public Action<string> OnSubmit { get; set; }
+	[Parameter] public Action OnDismiss { get; set; }
+	[Parameter] public Action OnTabPressed { get; set; }
+	[Parameter] public bool ShowInput { get; set; }
+	[Parameter] public bool ShowChannelLabel { get; set; }
+	[Parameter] public float MessageFadeTime { get; set; } = 8f;
+	[Parameter] public string InputPrefix { get; set; }
+	[Parameter] public int EntriesVersion { get; set; }
+
+	public bool HasInputFocus => InputBox?.HasFocus ?? false;
+
+	public void FocusInput()
+	{
+		WantsFocus = true;
+		InputBox?.Focus();
+	}
+
+	public void BlurInput() => InputBox?.Blur();
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( firstTime && MessageList.IsValid() )
+		{
+			MessageList.CanDragScroll = false;
+			MessageList.AcceptsFocus = true;
+		}
+
+		ApplyPendingFocus();
+	}
+
+	public override void Tick()
+	{
+		UpdateEntryWindow();
+
+		if ( ShowInput && !WasShowingInput )
+			ScrollToBottom();
+
+		UpdateVirtualScroll();
+
+		WasShowingInput = ShowInput;
+		ApplyPendingFocus();
+	}
+
+	void UpdateEntryWindow()
+	{
+		if ( Entries.Count == LastEntryCount )
+			return;
+
+		int oldMaxVisibleStart = Math.Max( LastEntryCount - VisibleMessageCount, 0 );
+		bool wasViewingLatest = VisibleStart >= oldMaxVisibleStart;
+
+		LastEntryCount = Entries.Count;
+
+		if ( !ShowInput || wasViewingLatest )
+			ScrollToBottom();
+		else
+			VisibleStart = Math.Clamp( VisibleStart, min: 0, MaxVisibleStart );
+	}
+
+	void ScrollToBottom()
+	{
+		VisibleStart = MaxVisibleStart;
+	}
+
+	bool IsViewingLatest()
+	{
+		return VisibleStart >= MaxVisibleStart;
+	}
+
+	void UpdateVirtualScroll()
+	{
+		if ( !ShowInput || !MessageList.IsValid() )
+			return;
+
+		if ( IsMessageListActive() )
+			return;
+
+		float wheel = Input.MouseWheel.y;
+		if ( wheel == 0 )
+			return;
+
+		ScrollByWheel( wheel );
+	}
+
+	protected override void OnEvent( PanelEvent e )
+	{
+		if ( ShowInput && IsMessageListActive() && IsWheelEvent( e ) )
+		{
+			ScrollByWheel( GetWheelDelta( e ) );
+			e.StopPropagation();
+			return;
+		}
+
+		base.OnEvent( e );
+	}
+
+	bool IsWheelEvent( PanelEvent e )
+	{
+		return e.Name == "onmousewheel"
+			|| e.Name == "onwheel"
+			|| e.Name == "mousewheel";
+	}
+
+	float GetWheelDelta( PanelEvent e )
+	{
+		if ( e.Value is float f ) return f;
+		if ( e.Value is int i ) return i;
+		if ( e.Value is Vector2 v ) return v.y;
+
+		return Input.MouseWheel.y;
+	}
+
+	string GetMessageClass( ChatEntry entry )
+	{
+		string classes = "msg";
+
+		if ( !string.IsNullOrWhiteSpace( entry.ExtraClass ) )
+			classes += $" {entry.ExtraClass}";
+
+		if ( !string.IsNullOrWhiteSpace( entry.Channel ) )
+			classes += $" channel-{entry.Channel}";
+
+		float age =ChatHistory.GetAge( entry );
+
+		if ( age < 0.35f )
+			classes += " appearing";
+		else if ( !ShowInput && age > MessageFadeTime - 1.25f )
+			classes += " expiring";
+
+		return classes;
+	}
+
+	void ScrollByWheel( float wheel )
+	{
+		if ( wheel == 0 )
+			return;
+
+		if ( wheel > 0 )
+			VisibleStart -= ScrollStep;
+		else
+			VisibleStart += ScrollStep;
+
+		VisibleStart = Math.Clamp( VisibleStart, min: 0, MaxVisibleStart );
+		StateHasChanged();
+	}
+
+	bool IsMessageListActive()
+	{
+		if ( !MessageList.IsValid() )
+			return false;
+
+		if ( MessageList.HasFocus )
+			return true;
+
+		Rect rect = MessageList.Box.Rect * MessageList.ScaleFromScreen;
+		Vector2 mouse = Mouse.Position;
+
+		return mouse.x >= rect.Left
+			&& mouse.x <= rect.Right
+			&& mouse.y >= rect.Top
+			&& mouse.y <= rect.Bottom;
+	}
+
+	void ApplyPendingFocus()
+	{
+		if ( !WantsFocus || InputBox is null )
+			return;
+
+		InputBox.Focus();
+
+		if ( InputBox.HasFocus )
+			WantsFocus = false;
+	}
+
+	void OnInputSubmit()
+	{
+		if ( InputBox is null ) return;
+
+		string text = InputBox.Text?.Trim();
+		InputBox.Text = "";
+
+		if ( !string.IsNullOrWhiteSpace( text ) )
+		{
+			InputBox.AddToHistory( text );
+			OnSubmit?.Invoke( text );
+		}
+		else
+		{
+			OnDismiss?.Invoke();
+		}
+	}
+
+	RenderFragment<object> ChatEntry => obj =>
+	{
+		ChatEntry entry = (ChatEntry)obj;
+
+		return builder =>
+		{
+			int seq = 0;
+
+			builder.OpenElement( seq++, elementName: "div" );
+			builder.AddAttribute( seq++, attrName: "class", GetMessageClass( entry ) );
+
+			if ( entry.SteamId > 0 )
+			{
+				builder.OpenElement( seq++, elementName: "div" );
+				builder.AddAttribute( seq++, attrName: "class", "player-avatar" );
+				builder.AddAttribute( seq++, attrName: "style", $"background-image: url( avatar:{entry.SteamId} )" );
+				builder.CloseElement();
+			}
+
+			if ( !string.IsNullOrEmpty( entry.Name ) )
+			{
+				builder.OpenElement( seq++, elementName: "span" );
+				builder.AddAttribute( seq++, attrName: "class", value: "playername" );
+				builder.AddContent( seq++, entry.Name );
+				builder.CloseElement();
+			}
+
+			if ( entry.Channel == "party" && ShowChannelLabel )
+			{
+				builder.OpenElement( seq++, elementName: "span" );
+				builder.AddAttribute( seq++, attrName: "class", value: "channel-label" );
+				builder.AddContent( seq++, content: "PARTY" );
+				builder.CloseElement();
+			}
+
+			builder.OpenElement( seq++, elementName: "span" );
+			builder.AddAttribute( seq++, attrName: "class", value: "message" );
+			builder.AddContent( seq++, entry.Message );
+			builder.CloseElement();
+
+			builder.CloseElement();
+		};
+	};
+
+	protected override int BuildHash()
+	{
+		return System.HashCode.Combine( ShowInput, InputPrefix, EntriesVersion, Entries.Count, VisibleStart, (int)(Time.Now / 0.25f) );
+	}
+}
