@@ -10,7 +10,7 @@ public partial class BasePlayer
 		get;
 		set
 		{
-			if ( field != value )
+			//	if ( field != value )
 			{
 				if ( value == true && !IsPossessedLocally ) return;
 				field = value;
@@ -29,6 +29,7 @@ public partial class BasePlayer
 		if ( !IsPossessedLocally ) return false;
 		if ( !CurrentWeapon.IsValid() ) return false;
 		if ( !CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() ) return false;
+		if ( Controller.CameraMode != XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson ) return false;
 
 		return true;
 	}
