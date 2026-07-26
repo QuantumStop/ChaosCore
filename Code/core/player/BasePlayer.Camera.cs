@@ -172,6 +172,12 @@ public partial class BasePlayer
 		return true;
 	}
 
+	public override void SetCameraActive( bool which )
+	{
+		base.SetCameraActive( which );
+		ViewmodelWeaponObject.Enabled = which;
+	}
+
 	public virtual void UpdateBodyVisibility()
 	{
 		if ( !IsPossessedLocally )

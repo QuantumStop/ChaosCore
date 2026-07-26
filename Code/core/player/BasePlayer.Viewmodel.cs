@@ -22,7 +22,11 @@ public partial class BasePlayer
 	/// <summary>
 	/// TODO: Revisit this when we'll do first person body
 	/// </summary>
-	public void ToggleViewmodel( bool newval ) => ViewmodelWeaponObject.Enabled = newval == true && ShouldDrawViewmodel();
+	public void ToggleViewmodel( bool newval )
+	{
+		ViewmodelWeapon.RenderOptions.Overlay = newval == true && ShouldDrawViewmodel();
+		ViewmodelHands.RenderOptions.Overlay = newval == true && ShouldDrawViewmodel();
+	}
 
 	public virtual bool ShouldDrawViewmodel()
 	{
