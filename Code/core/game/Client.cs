@@ -153,8 +153,6 @@ public partial class Client : Component, Component.INetworkListener, IGameObject
 		if ( connection is null )
 			return null;
 
-		return Game.ActiveScene.GetAll<Client>().FirstOrDefault( x =>
-			x.Connection == connection ||
-			(x.Connection is null && x.SteamId == connection.SteamId) );
+		return Game.ActiveScene.GetAll<Client>().FirstOrDefault( x => x.Connection == connection );
 	}
 }

@@ -6,11 +6,7 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 {
 	private GameObject CreateClientObject( Connection connection, out Client client )
 	{
-		var clientObj = new GameObject
-		{
-			Name = $"{connection.DisplayName} [CLIENT]",
-			NetworkMode = NetworkMode.Object
-		};
+		var clientObj = new GameObject { Name = $"{connection.DisplayName} [CLIENT]" };
 
 		client = clientObj.Components.Create<Client>();
 		client.SteamId = connection.SteamId;
@@ -20,17 +16,15 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 		return clientObj;
 	}
 
-	private Client GetOrCreateClient( Connection channel = null )
+	private Client GetOrCreateClient( Connection channel )
 	{
-		Client possibleClient = Client.GetFromConnection( channel );
+		Client possibleClient = Scene.GetAllComponents<Client>().FirstOrDefault( x => x.Connection is null && x.SteamId == channel.SteamId );
 
-		if ( possibleClient.IsValid() )
-			return possibleClient;
+		if ( possibleClient.IsValid() ) return possibleClient;
 
 		CreateClientObject( channel, out Client client );
 
-		if ( !client.IsValid() )
-			return null;
+		if ( !client.IsValid() ) return null;
 
 		return client;
 	}
