@@ -1,13 +1,14 @@
 {
   "BaseSurface": null,
-  "AudioSurface": "Generic",
+  "AudioSurface": "Concrete",
   "Description": "The default surface.",
   "Friction": 0.8,
   "Elasticity": 0.05,
   "Density": 2000,
-  "Thickness": -1,
   "RollingResistance": 0,
   "BounceThreshold": 35,
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": [],
@@ -46,6 +47,7 @@
       "_type": "gameobject",
       "prefab": "prefabs/game/particles/impact_generic_smokepuff.prefab"
     },
+    "BulletImpactDecal": null,
     "BluntImpact": null
   },
   "SoundCollection": {
@@ -53,7 +55,7 @@
     "FootRight": "sounds/footsteps/footstep-concrete.sound",
     "FootLaunch": "sounds/footsteps/footstep-concrete-jump.sound",
     "FootLand": "sounds/footsteps/footstep-concrete-land.sound",
-    "Bullet": "sound/physics/concrete/concrete_impact_bullet.sound",
+    "Bullet": "sounds/impacts/bullets/impact-bullet-concrete.sound",
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,

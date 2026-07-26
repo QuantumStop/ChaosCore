@@ -645,6 +645,67 @@
             "OnComponentUpdate": null,
             "RightMouseAction": "",
             "VRHandSource": "Right"
+          },
+          {
+            "__type": "Sandbox.Voice",
+            "__guid": "508f3d90-0013-42d2-b4fe-dd0c60d5f0af",
+            "__enabled": true,
+            "Flags": 0,
+            "Distance": 12500,
+            "Falloff": [
+              {
+                "x": 0,
+                "y": 1,
+                "in": 0,
+                "out": -1.8,
+                "mode": "Mirrored"
+              },
+              {
+                "x": 0.05,
+                "y": 0.22,
+                "in": 3.5,
+                "out": -3.5,
+                "mode": "Mirrored"
+              },
+              {
+                "x": 0.2,
+                "y": 0.04,
+                "in": 0.16,
+                "out": -0.16,
+                "mode": "Mirrored"
+              },
+              {
+                "x": 1,
+                "y": 0,
+                "in": 0,
+                "out": 0,
+                "mode": "Mirrored"
+              }
+            ],
+            "LipSync": true,
+            "Loopback": false,
+            "Mode": "PushToTalk",
+            "MorphScale": 3,
+            "MorphSmoothTime": 0.1,
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null,
+            "PushToTalkInput": "voice",
+            "Renderer": {
+              "_type": "component",
+              "component_id": "b245634c-86aa-4f28-aa9d-3838d11a0d0f",
+              "go": "f57a7a30-a821-4603-952e-2a394a53830c",
+              "component_type": "SkinnedModelRenderer"
+            },
+            "VoiceMixer": {
+              "Name": "voice",
+              "Id": "34a5d22b-386f-44ea-85ea-c8851692f87d"
+            },
+            "Volume": 0.5000004,
+            "WorldspacePlayback": true
           }
         ],
         "Children": [

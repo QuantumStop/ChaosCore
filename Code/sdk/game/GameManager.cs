@@ -70,8 +70,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 				if ( Networking.IsActive ) Player.NetworkSpawn( channel );
 
-				if ( spawnedPlayer.IsValid() )
-					spawnedPlayer.AsMain( client );
+				if ( spawnedPlayer.IsValid() ) spawnedPlayer.AsMain( client );
 
 				return;
 			}
