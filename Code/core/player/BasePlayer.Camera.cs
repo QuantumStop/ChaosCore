@@ -172,9 +172,9 @@ public partial class BasePlayer
 		return true;
 	}
 
-	protected void UpdateBodyVisibility()
+	public virtual void UpdateBodyVisibility()
 	{
-		if ( !IsControlledLocally )
+		if ( !IsPossessedLocally )
 		{
 			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 			{
