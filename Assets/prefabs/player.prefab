@@ -46,7 +46,7 @@
           "component_type": "CameraComponent"
         },
         "CameraMode": "FirstPerson",
-        "CameraToggleAction": "",
+        "CameraToggleAction": "View",
         "ClimbSpeed": 100,
         "CrouchAction": "Duck",
         "CrouchSpeed": 66,
