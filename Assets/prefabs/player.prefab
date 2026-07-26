@@ -392,7 +392,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 37564.074
+          "Relative": 2398.23
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -521,7 +521,7 @@
             },
             "Clothing": [],
             "ManualAge": 0,
-            "ManualHeight": 0.98,
+            "ManualHeight": 1,
             "ManualTint": 0,
             "OnComponentDestroy": null,
             "OnComponentDisabled": null,
@@ -529,8 +529,8 @@
             "OnComponentFixedUpdate": null,
             "OnComponentStart": null,
             "OnComponentUpdate": null,
-            "RemoveUnownedItems": true,
-            "Source": "LocalUser",
+            "RemoveUnownedItems": false,
+            "Source": "OwnerConnection",
             "WorkshopItems": []
           }
         ],
@@ -559,7 +559,7 @@
             "Flags": 0,
             "AnimationGraph": null,
             "AnimationGraph2": null,
-            "BodyGroups": 5441,
+            "BodyGroups": 5185,
             "BoneMergeTarget": null,
             "CreateAttachments": false,
             "CreateBoneObjects": false,
