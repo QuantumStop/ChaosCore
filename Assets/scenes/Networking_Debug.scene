@@ -550,25 +550,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "4cd12aba-ca3b-4102-9328-3309873c0729",
+              "component_id": "07a4c2bd-b61d-4af1-9baf-94bba5785191",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "5d0d22fb-086e-42ad-a5c9-eaa90e3ef1f5",
+              "component_id": "3fd1ef34-0415-421e-8c23-c4a74f495cab",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "4da639bb-6387-44fc-8d4d-8e7e085efae5",
+              "component_id": "e09e6ee2-7302-4e9e-9a2e-35fe3c83a54f",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "02c58391-cbd3-41d8-a820-1b414816c000",
+              "component_id": "e2a2c53e-fea3-4572-9161-0d811b5c875c",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "TintComponent"
             }
@@ -658,25 +658,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "0d84ee8f-081f-4395-a525-d4d240c0a32c",
+              "component_id": "f11b752f-343c-49d0-b915-2d6b95c34e87",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "53167010-5fb4-404f-9c1b-09a25ddb9170",
+              "component_id": "e5ff2eb7-377d-4d43-95a0-37583f0bccd0",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "b065f54e-afa5-4d3f-acb1-d949e09cc474",
+              "component_id": "f5926d4f-7f44-4dfc-b16d-b5a5f251d318",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "2bc1f578-ba82-4001-94ab-a805dd86cd65",
+              "component_id": "e69b9b5e-0405-4672-82ef-6b8bc0e24954",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "TintComponent"
             }
@@ -766,25 +766,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "247b4914-bb33-4296-be1e-ef71168874ad",
+              "component_id": "112d33d3-64a0-4a6b-8ab5-da7b663d949a",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "8dac7e1f-2a63-4b3d-863c-2225818b0b6a",
+              "component_id": "cf04428a-bd1a-4423-8fb9-90d948ea3eff",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "be5194cf-1fc6-42ea-abab-3b95a4b1918a",
+              "component_id": "b5cedf4a-5672-4acb-9b50-2a17d889d249",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "fff11ef5-5a2b-4048-9b76-de421afab777",
+              "component_id": "7378385a-7ae8-495a-8e3b-c1f0a30a531c",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "TintComponent"
             }
@@ -874,25 +874,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "43a6582d-f9af-4683-b1b4-671da2d441e6",
+              "component_id": "6563ae18-0451-4f6d-9c12-cf4f54f78754",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "a7dc5404-dab4-4a8a-b1b8-e47f31abe2ae",
+              "component_id": "44c54f25-57f4-4fd1-9055-ec8d696064b3",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "4bcee1dc-3fae-4360-879a-e65ba0e42813",
+              "component_id": "9d2df0e6-cc6e-43d7-8dcd-19eca3a000cb",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "c72cdc44-d86b-476b-b9d0-528b9aca3ea1",
+              "component_id": "cfc2421f-ea05-4b74-9b4c-e2dc57649b82",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "TintComponent"
             }
@@ -982,19 +982,19 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "52e35222-48d2-4903-b4c3-fe9d0218aad4",
+              "component_id": "34f4451b-ad1e-4c8b-996a-d0ebdf9f3e63",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "81647e18-06a8-4a63-a046-26be9a96f001",
+              "component_id": "0d7de7d8-b58f-49fd-b254-d922c81d239b",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "2978bbb8-7742-45c3-832e-7a7bfdf1e73c",
+              "component_id": "5c9726b4-bb13-4246-87f0-9760817229aa",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "TintComponent"
             }
@@ -1084,25 +1084,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "b8ba7bc8-2063-4615-98f7-64fc1dc61303",
+              "component_id": "b38927e8-3236-457f-9f80-bbcd6f74f52c",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "cbf0688a-da2b-42e7-bb81-47af30764916",
+              "component_id": "7d149cd4-888a-40d7-9dc6-0cc6e3729cfe",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "5308324e-8b20-4312-920a-dd83bd6e42b1",
+              "component_id": "89c8bc22-50c5-438d-ae37-00848c2325ea",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "c1d6988b-5d2a-49e1-b37c-cb13f0ceec35",
+              "component_id": "4539653e-fb91-4a76-84f1-ad4ae956e9cf",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "TintComponent"
             }
@@ -1209,19 +1209,19 @@
               "ProceduralComponentsDebug": [
                 {
                   "_type": "component",
-                  "component_id": "6ca47484-24aa-4915-ae22-47f8e95dc7c2",
+                  "component_id": "cdc27b11-5ded-4aed-8239-5cf198b88bda",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "SkinnedModelRenderer"
                 },
                 {
                   "_type": "component",
-                  "component_id": "97049983-8fec-4ad4-838e-466c83be8072",
+                  "component_id": "714adcff-3e62-4713-b32d-a95f231d870c",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "ModelCollider"
                 },
                 {
                   "_type": "component",
-                  "component_id": "2150ba8d-1cc5-4016-91fc-c6488cb01c13",
+                  "component_id": "a57572a2-c3a5-40fd-a4f0-d2db53b74c62",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "TintComponent"
                 }
@@ -1309,7 +1309,7 @@
           ],
           "Children": [
             {
-              "__guid": "b395289f-ec7c-4783-836d-718d4960f2d0",
+              "__guid": "1b7f8623-946a-483e-b74b-76a08aa95b29",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - loose_shirt",
@@ -1326,7 +1326,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "89541ebe-8f7d-4ab1-81ec-778586607e9f",
+                  "__guid": "aa035118-cc54-4485-8fd3-597dd9da0f78",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1375,7 +1375,7 @@
               "Children": []
             },
             {
-              "__guid": "17df9a1b-72ed-41d1-a753-c91874758b48",
+              "__guid": "aed949ab-60cb-43ff-b8d3-b08693afc8d3",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - tactical_vest",
@@ -1392,7 +1392,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "4d8e80d6-facb-47b0-9bf7-de7dfb97b42a",
+                  "__guid": "ce5a3e31-31ba-433a-b9b2-5575e23ab578",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1441,7 +1441,7 @@
               "Children": []
             },
             {
-              "__guid": "762d319e-f649-4a4b-bc41-d4cb101bc580",
+              "__guid": "2f3753d6-9678-463d-b942-f69f82989182",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - jeans_black",
@@ -1458,7 +1458,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "b70ea555-47d0-4bc5-bd31-0e1a420adf52",
+                  "__guid": "0c5cbcd3-a2b5-495c-8cbd-810d4ce41618",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1507,7 +1507,7 @@
               "Children": []
             },
             {
-              "__guid": "4b96c730-a2d9-41ae-8bbc-44c28b7c70cd",
+              "__guid": "96d5adeb-bfce-413d-a180-afd3a0b4d0a7",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - army_boots",
@@ -1524,7 +1524,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "6b926780-9d56-4946-a3c1-87e8da5c72a8",
+                  "__guid": "4a4a7b17-6bcf-49f7-afe7-29fc05bb6e1b",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1573,7 +1573,7 @@
               "Children": []
             },
             {
-              "__guid": "48f8339a-9703-4188-be33-d2ec69e41b57",
+              "__guid": "ab9ad6b0-a5b4-44a4-8b8e-edb9f9fa37bb",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - fingerless_gloves",
@@ -1590,7 +1590,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "62f8afd1-5c4a-44ff-85d2-a73c896bee55",
+                  "__guid": "ea3b7415-125f-46cd-9fc1-45214b67f350",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1639,7 +1639,7 @@
               "Children": []
             },
             {
-              "__guid": "6c74a9a0-e712-4353-8804-393f1d72e1b1",
+              "__guid": "47f5317b-57e6-4fe7-8424-eb51b98ad70e",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - hair_slickedback",
@@ -1656,7 +1656,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "6772521b-5d09-4f2e-9d84-ac0ec7019de5",
+                  "__guid": "ba4a3802-a593-48f7-b4e4-4b80db9f3dc1",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1775,13 +1775,13 @@
               "ProceduralComponentsDebug": [
                 {
                   "_type": "component",
-                  "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
+                  "component_id": "6c50e567-c44d-4c66-bdd5-b061bd0ac15c",
                   "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                   "component_type": "SkinnedModelRenderer"
                 },
                 {
                   "_type": "component",
-                  "component_id": "851ff337-db87-4ae0-9a69-70e44b8d59d5",
+                  "component_id": "a6c712fa-8ce8-4d70-b714-a29cabb39b90",
                   "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                   "component_type": "TintComponent"
                 }
@@ -1829,12 +1829,7 @@
               "__enabled": true,
               "Flags": 0,
               "ApplyHeightScale": true,
-              "BodyTarget": {
-                "_type": "component",
-                "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                "component_type": "SkinnedModelRenderer"
-              },
+              "BodyTarget": null,
               "Clothing": [
                 {
                   "Clothing": "models/citizen_clothes/body/human05.clothing"
@@ -1901,7 +1896,7 @@
               "PhysicsWereCreated": false,
               "Renderer": {
                 "_type": "component",
-                "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
+                "component_id": "6c50e567-c44d-4c66-bdd5-b061bd0ac15c",
                 "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                 "component_type": "SkinnedModelRenderer"
               },
@@ -1911,7 +1906,7 @@
           ],
           "Children": [
             {
-              "__guid": "ece9c6f1-93c0-4426-b489-33b67b0b319e",
+              "__guid": "55df3179-3c57-44be-b967-fb8717bde0f7",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - beanie_green",
@@ -1928,18 +1923,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "ee70428e-6d27-4fda-b4e8-55a5c0171687",
+                  "__guid": "5b2fc382-ab7e-4be7-b87f-7ce438c1f4aa",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -1982,7 +1972,7 @@
               "Children": []
             },
             {
-              "__guid": "4932ea79-bf56-4e86-b505-b0ebaf33d719",
+              "__guid": "76344393-c0a9-474a-9e8b-66b1a4894f72",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - patchy_beard",
@@ -1999,18 +1989,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "0e362110-ebe5-4d7b-a179-60233b59f87c",
+                  "__guid": "db02809d-5ec5-4df0-9906-0d2c65b77856",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -2053,7 +2038,7 @@
               "Children": []
             },
             {
-              "__guid": "356c788d-2a44-48f2-bfdc-94bfa99f1e30",
+              "__guid": "30085e45-ce13-400e-bb57-17b7283c9aa9",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - flannel_shirt",
@@ -2070,18 +2055,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "580226e9-6a5d-4a27-9e9c-89dcae9ffbef",
+                  "__guid": "e855b9f5-a1de-456b-884a-99662f181dca",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -2124,7 +2104,7 @@
               "Children": []
             },
             {
-              "__guid": "c891dbea-be67-400d-ad08-ad0364b3314c",
+              "__guid": "d20813e4-0869-49a2-9015-d6819b9546df",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - tactical_vest",
@@ -2141,18 +2121,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "932429ac-b644-4b42-af54-ff50956c8da0",
+                  "__guid": "467a2b04-08fa-431a-94e6-e4fb3cbfc84d",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -2195,7 +2170,7 @@
               "Children": []
             },
             {
-              "__guid": "6a8ca841-9869-4671-897e-8723eb3ef7b5",
+              "__guid": "5b949083-8a0b-4fe2-85b0-6f983a787e1a",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - jeans_black",
@@ -2212,18 +2187,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "b53ce076-08fd-4fa4-a3a7-597faaa82c78",
+                  "__guid": "13380e3e-d618-49d3-8a8e-13639cdc568b",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -2266,7 +2236,7 @@
               "Children": []
             },
             {
-              "__guid": "d3831645-1f62-400d-91aa-a1d83ebe8231",
+              "__guid": "de00b8dd-378f-431e-99b5-13ddceb44c94",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - army_boots",
@@ -2283,18 +2253,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "edc063ca-7f9e-4ac0-9eab-f1ca99a01aa7",
+                  "__guid": "dc3cbf8e-98b0-4370-8a9a-c815c3a3d1cc",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -2337,7 +2302,7 @@
               "Children": []
             },
             {
-              "__guid": "e069ac92-bca5-4702-a5bc-e97c58d4a782",
+              "__guid": "a428786d-2295-43a6-8523-cb7ef662f96c",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - fingerless_gloves",
@@ -2354,18 +2319,13 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "43dd252a-84cd-42c8-9787-50a2b6de9780",
+                  "__guid": "f2af269d-3d1d-4f43-b9ec-0a97b3147322",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
                   "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": {
-                    "_type": "component",
-                    "component_id": "349164a7-33f2-42c9-8a82-1bbae95d16b2",
-                    "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
-                    "component_type": "SkinnedModelRenderer"
-                  },
+                  "BoneMergeTarget": null,
                   "CreateAttachments": false,
                   "CreateBoneObjects": false,
                   "LodOverride": null,
@@ -2656,10 +2616,10 @@
           "IsTrigger": false,
           "Mesh": {
             "Data": {
-              "$blob": "30b91d72-1543-806e-9ec1-39245764e49c"
+              "$blob": "aaa04b04-89c7-872d-9867-bb4c6c2767e4"
             },
             "Materials": [
-              "materials/dev/reflectivity_30.vmat"
+              "materials/dev/dev_texture_surface_metal1_tinted.vmat"
             ]
           },
           "OnComponentDestroy": null,
@@ -2708,9 +2668,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-300.436523,297.441833,152.427383",
+          "Position": "-78.9088516,-135.295197,206.159286",
           "Scale": "1,1,1",
-          "Rotation": "0.0194879174,0.220845133,-0.085713394,0.971339703"
+          "Rotation": "-0.114400662,0.140553147,0.620808482,0.762728035"
         },
         "_prefab": {
           "_type": "gameobject",
