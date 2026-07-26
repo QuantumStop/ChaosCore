@@ -3,7 +3,7 @@ namespace Core;
 public abstract class BasePawn : BaseEntity
 {
 	public static BasePawn Local { get; private set; }
-	[Sync( SyncFlags.FromHost )] public Client Client { get; set; }
+	[Property, ReadOnly, Sync( SyncFlags.FromHost )] public Client Owner { get; set; }
 	/// <summary>
 	/// Are we possessing this pawn right now? (Clientside)
 	/// </summary>
@@ -78,11 +78,33 @@ public abstract class BasePawn : BaseEntity
 	/// <summary>
 	/// Possess this pawn as client's "Main Pawn" (primarily for player spawning)
 	/// </summary>
-	public void AsMain( Client client )
+	public void AsMain( Client owner )
 	{
-		Client = client;
-		Possess( this );
-		if ( this is BasePlayer basePlayer ) Client?.MainPawn = basePlayer;
+		Owner = owner;
+		if ( this is BasePlayer basePlayer ) Owner?.MainPawn = basePlayer;
+
+		if ( !Owner.IsValid() )
+		{
+			Possess();
+			return;
+		}
+
+		if ( Owner.IsLocalPlayer )
+		{
+			Possess();
+			return;
+		}
+
+		OnOwnerAssigned( owner );
+	}
+
+	[Rpc.Owner]
+	public virtual void OnOwnerAssigned( Client owner )
+	{
+		if ( !owner.IsValid() || !owner.IsLocalPlayer )
+			return;
+
+		Possess();
 	}
 
 	protected override void OnStart()
@@ -105,7 +127,7 @@ public abstract class BasePawn : BaseEntity
 	/// </summary>
 	protected override void OnDisabled()
 	{
-		if ( Client.MainPawn != this && Client.MainPawn.IsValid() ) Possess( Client.MainPawn );
+		if ( Owner.IsValid() && Owner.MainPawn != this && Owner.MainPawn.IsValid() ) Possess( Owner.MainPawn );
 		else DePossess();
 	}
 
