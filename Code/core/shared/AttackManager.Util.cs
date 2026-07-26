@@ -95,7 +95,6 @@ partial class AttackManager
 			physics.ApplyImpulseAt( coreDamageInfo.Position, coreDamageInfo.Force * BulletImpulse( ammo.Grains, ammo.FtPerSec, 1.25f ) * 2.2f );  // magic bullshit lbs/kg number
 
 		// Create all the effects
-
 		DebrisManager.CreateBulletDecal( attack.Last.EndPosition,
 													transform.Forward.LerpTo( -attack.Last.Normal, 0.75f ).Normal,
 													attack.Last.Surface,

@@ -24,8 +24,9 @@ public partial class BasePlayer
 	/// </summary>
 	public void ToggleViewmodel( bool newval )
 	{
-		ViewmodelWeapon.RenderOptions.Overlay = newval == true && ShouldDrawViewmodel();
-		ViewmodelHands.RenderOptions.Overlay = newval == true && ShouldDrawViewmodel();
+		bool huh = newval == true && ShouldDrawViewmodel();
+		ViewmodelWeapon?.RenderOptions.Overlay = huh;
+		ViewmodelHands?.RenderOptions.Overlay = huh;
 	}
 
 	public virtual bool ShouldDrawViewmodel()

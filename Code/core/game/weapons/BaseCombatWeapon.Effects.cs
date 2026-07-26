@@ -5,8 +5,8 @@ namespace Core;
 
 public partial class BaseCombatWeapon
 {
-	protected virtual KelvinSpotLight MuzzleSpotLight { get; set; }
-	protected TemporaryEffect delete { get; set; }
+	protected virtual KelvinSpotLight _muzzleSpotLight { get; set; }
+	protected TemporaryEffect _delete { get; set; }
 
 	[ConVar( "debug_muzzle" )] static public bool DebugMuzzle { get; set; }
 
@@ -35,14 +35,15 @@ public partial class BaseCombatWeapon
 	public static Transform GetPlayerAttachObject( BasePlayer owner, string name, out GameObject muzzleObject )
 	{
 		Transform output = new();
-		muzzleObject = owner.ViewmodelWeapon.GetAttachmentObject( name );
+		bool isUs = owner == BasePlayer.Local;
+		muzzleObject = isUs ? owner.ViewmodelWeapon.GetAttachmentObject( name ) : owner.Controller.Head;
 
 		if ( muzzleObject.IsValid() )
 		{
 			output = muzzleObject.WorldTransform;
-			if ( owner == BasePlayer.Local ) output.Position = ReprojectToViewmodel( muzzleObject.WorldPosition,
-			 owner.Scene.Camera.WorldPosition,
-			 owner.Scene.Camera.WorldRotation.Forward,
+			if ( isUs ) output.Position = ReprojectToViewmodel( muzzleObject.WorldPosition,
+			 owner.PawnCamera.WorldPosition,
+			 owner.PawnCamera.WorldRotation.Forward,
 			 BasePlayer.ViewmodelFOV,
 			 GameSettings.FieldOfView ); // don't scale if player isnt local
 		}
@@ -66,6 +67,7 @@ public partial class BaseCombatWeapon
 	/// <summary>
 	/// Create the muzzle effect (particle and light) with all settings from the weapon resource
 	/// </summary>
+	[Rpc.Broadcast]
 	protected virtual void CreateMuzzleFlash()
 	{
 		Transform adjustedTransform = GetPlayerAttachObject( Owner.Player, "muzzle", out var attachmentObj );
@@ -78,9 +80,9 @@ public partial class BaseCombatWeapon
 
 		// auto clear
 		GameObject delete_go = Scene.CreateObject();
-		delete = delete_go.Components.Create<TemporaryEffect>();
-		delete.DestroyAfterSeconds = WeaponData.MuzzleLightTime;
-		delete.WaitForChildEffects = false;
+		_delete = delete_go.Components.Create<TemporaryEffect>();
+		_delete.DestroyAfterSeconds = WeaponData.MuzzleLightTime;
+		_delete.WaitForChildEffects = false;
 
 		// TODO: In the future will have own muzzleflash particle component we can pass stuff to.
 		// Seems nicer than just having a prefab only, particles should be scaleable per our need
@@ -89,14 +91,14 @@ public partial class BaseCombatWeapon
 		// stay parented
 		delete_go.Parent = attachmentObj;
 
-		MuzzleSpotLight = delete_go.Components.Create<KelvinSpotLight>();
-		MuzzleSpotLight.Brightness = 2f;
-		MuzzleSpotLight.Shadows = false;
-		MuzzleSpotLight.Cookie = WeaponData.MuzzleLightCookie;
-		MuzzleSpotLight.ConeInner = 0;
-		MuzzleSpotLight.ConeOuter = WeaponData.MuzzleLightFOV;
-		MuzzleSpotLight.Attenuation = 0.5f;
-		MuzzleSpotLight.Refresh();
+		_muzzleSpotLight = delete_go.Components.Create<KelvinSpotLight>();
+		_muzzleSpotLight.Brightness = 2f;
+		_muzzleSpotLight.Shadows = false;
+		_muzzleSpotLight.Cookie = WeaponData.MuzzleLightCookie;
+		_muzzleSpotLight.ConeInner = 0;
+		_muzzleSpotLight.ConeOuter = WeaponData.MuzzleLightFOV;
+		_muzzleSpotLight.Attenuation = 0.5f;
+		_muzzleSpotLight.Refresh();
 	}
 
 	/// <summary>
@@ -111,6 +113,7 @@ public partial class BaseCombatWeapon
 		}
 	}
 
+	[Rpc.Broadcast]
 	protected virtual void AttackSound( bool primary = true )
 	{
 #if FMOD
@@ -121,11 +124,13 @@ public partial class BaseCombatWeapon
 		var snd = FMODSound.Play( sound );
 		if ( WeaponData.WantNearEmptySound ) FMODSound.SetParameter( snd, "parameter:/Weapons/MagPercent", (float)PrimaryAmmoLoaded / WeaponData.PrimaryAmmoCapacity );
 #else
+		var sounds = primary ? WeaponData.AttackSoundsPrimary : WeaponData.AttackSoundsSecondary;
+		if ( sounds.Count < 1 ) return;
+
 		_shootHandle?.Stop( 0.1f ); // cut off previous sound first, as the engine doesnt have voice stealing
-		foreach ( var sound in WeaponData.AttackSoundsPrimary )
+		foreach ( var sound in sounds )
 		{
-			_shootHandle = Sound.Play( sound );
-			_shootHandle.ListenLocal = true;
+			_shootHandle = Owner.Player.Controller.Head.PlaySound( sound, new( 16, 0, 0 ) ); // for that yummy steam audio
 		}
 #endif
 	}

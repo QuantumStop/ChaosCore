@@ -94,6 +94,7 @@ public class DebrisManager : BaseEntity
 		return gameobject;
 	}
 
+	[Rpc.Broadcast]
 	public static void CreateHitSound( Vector3 position, Surface surface, GameObject HitObject )
 	{
 #if FMOD
@@ -118,12 +119,13 @@ public class DebrisManager : BaseEntity
 #endif
 	}
 
-	public static GameObject CreateBulletDecal( Vector3 position, Vector3 normal, Surface surface, GameObject parent, float scale = 0.25f )
+	[Rpc.Broadcast]
+	public static void CreateBulletDecal( Vector3 position, Vector3 normal, Surface surface, GameObject parent, float scale = 0.25f )
 	{
 		if ( surface.HasTag( "noimpactdecal" ) || surface.HasTag( "noimpact" ) )
 		{
 			if ( ShowSurfaceDebug ) Log.Info( $"[TEMP DEBUG] {surface} set to not have a decal" );
-			return null;
+			return;
 		}
 
 		/*
@@ -173,9 +175,10 @@ public class DebrisManager : BaseEntity
 
 		IncreaseAmount( decalobject );
 
-		return decalobject;
+		//	return decalobject;
 	}
 
+	[Rpc.Broadcast]
 	public static void CreateBulletImpact( Vector3 position, Vector3 normal, Surface surface, bool wantColor = false, Color color = default )
 	{
 		if ( surface.HasTag( "noimpactparticle" ) || surface.HasTag( "noimpact" ) )
@@ -261,6 +264,7 @@ public class DebrisManager : BaseEntity
 		}
 	}
 
+	[Rpc.Broadcast]
 	public void CreateBulletTracer( GameObject attacker, WeaponParse weapon, Vector3 position, Vector3 normal )
 	{
 		float minTracerDistance = 300f;
@@ -426,6 +430,7 @@ public class DebrisManager : BaseEntity
 		return muzzleflashObj;
 	}
 
+	[Rpc.Broadcast]
 	public void CreateShellCasing( string prefabPath, Vector3 position, Rotation rotation, Vector3 velocity )
 	{
 		if ( string.IsNullOrEmpty( prefabPath ) )
@@ -480,11 +485,6 @@ public class DebrisManager : BaseEntity
 				casingObject.Destroy();
 			}
 		};
-	}
-
-	protected override void OnDestroy()
-	{
-		base.OnDestroy();
 	}
 
 	private void handleWeaponCasings( ParticleEffect effect, Vector3 initialVelocity )

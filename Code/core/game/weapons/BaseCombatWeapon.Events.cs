@@ -3,7 +3,7 @@ namespace Core;
 
 public partial class BaseCombatWeapon
 {
-	[ConVar( "debug_animevents" )] static bool DebugAnimEvents { get; set; }
+	[ConVar( "debug_animevents" )] private static bool _debugAnimEvents { get; set; }
 
 	/// <summary>
 	/// Fill the ammo in hand up to mag size using reserve ammo. Perhaps this is better at the end of FinishReload, otherwise a bit of overlap/confusion between the anim clips that have this event.
@@ -14,7 +14,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: SwapMag" );
 	}
 
@@ -27,7 +27,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: DisallowFiring (" + disallow + ")" );
 
 		_disallowAttack = disallow;
@@ -40,7 +40,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: DrawFinished" );
 
 		IsHolstered = false;
@@ -63,7 +63,7 @@ public partial class BaseCombatWeapon
 		IsHolstered = true;
 		ReadyToFire = false;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: HolsterFinished" );
 
 	}
@@ -75,7 +75,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: PrimaryFire" );
 	}
 
@@ -87,7 +87,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: MagOut" );
 
 		_currentReloadStage = 1; // next would be magin
@@ -102,7 +102,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: MagIn" );
 
 		_currentReloadStage = 2; // next would be boltrelease
@@ -116,7 +116,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: BoltRelease" );
 
 		_currentReloadStage = 3; // this is the last
@@ -129,7 +129,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( DebugAnimEvents )
+		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: ReloadFinished" );
 
 		if ( _disallowAttack )

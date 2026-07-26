@@ -543,7 +543,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( reloadPrimary )
 		{
-			if ( DebugAnimEvents )
+			if ( _debugAnimEvents )
 				Log.Info( "(not) AnimEvent: FinishReload" );
 
 			// since its looking for the smallest value, when having no reserve and trying to reload, it will be the smallest, and will try to add nothing

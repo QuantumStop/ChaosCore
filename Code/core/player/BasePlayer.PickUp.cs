@@ -28,7 +28,7 @@ public partial class BasePlayer
 	[Property, ReadOnly, Feature( "PickUp" )] public Rigidbody PropPhys => PickupState.Body;
 	[Property, ReadOnly, Feature( "PickUp" ), Sync, Change( nameof( OnPickupStateChanged ) )] public GrabState PickupState { get; private set; }
 
-	private Sandbox.Physics.ControlJoint _joint;
+	private ControlJoint _joint;
 	private PhysicsBody _controlBody;
 	private bool _useSuccess { get; set; } = false;
 
@@ -40,26 +40,20 @@ public partial class BasePlayer
 		if ( !PickupState.IsValid )
 			return;
 
-		var state = PickupState;
 		var playerVelocity = Controller.Controller.Velocity;
 		var puntDirection = Controller.EyeAngles.Forward;
 
-		ApplyDropPhysics( state, punt, playerVelocity, puntDirection );
+		ApplyDropPhysics( PickupState, punt, playerVelocity, puntDirection );
 
-		if ( Networking.IsActive && !Networking.IsHost )
-		{
-			DropObjectHost( state, punt, playerVelocity, puntDirection );
-		}
-		else if ( Networking.IsHost )
-			ReleasePickupClaim( state );
+		if ( Networking.IsActive && !Networking.IsHost ) DropObjectHost( PickupState, punt, playerVelocity, puntDirection );
+		else if ( Networking.IsHost ) ReleasePickupClaim( PickupState );
 
 		CleanupHeldProp();
 	}
 
 	private bool IsHeldByAnyone( GameObject obj )
 	{
-		if ( obj.Tags.Has( "held_prop" ) )
-			return true;
+		if ( obj.Tags.Has( "held_prop" ) ) return true;
 
 		var root = GetNetworkRoot( obj );
 		return root.IsValid() && root.Tags.Has( "held_prop" );
@@ -147,10 +141,7 @@ public partial class BasePlayer
 	}
 
 	[Rpc.Host]
-	private void ClaimPickupHost( GrabState state )
-	{
-		ClaimPickupOnHost( state, Rpc.Caller );
-	}
+	private void ClaimPickupHost( GrabState state ) => ClaimPickupOnHost( state, Rpc.Caller );
 
 	private GrabState ResolvePickupState( GrabState state )
 	{
@@ -182,15 +173,11 @@ public partial class BasePlayer
 	}
 
 	[Rpc.Broadcast]
-	private void SetHeldPropTagBroadcast( GameObject obj, bool held )
-	{
-		SetHeldPropTag( obj, held );
-	}
+	private void SetHeldPropTagBroadcast( GameObject obj, bool held ) => SetHeldPropTag( obj, held );
 
 	private void SetHeldPropTag( GameObject obj, bool held )
 	{
-		if ( !obj.IsValid() )
-			return;
+		if ( !obj.IsValid() ) return;
 
 		obj.Tags.Set( "held_prop", held );
 	}
@@ -312,14 +299,11 @@ public partial class BasePlayer
 
 	private bool CanMove( GrabState state )
 	{
-		if ( !state.IsValid )
-			return false;
+		if ( !state.IsValid ) return false;
 
-		if ( state.Body.IsProxy )
-			return false;
+		if ( state.Body.IsProxy ) return false;
 
-		if ( !state.Body.MotionEnabled )
-			return false;
+		if ( !state.Body.MotionEnabled ) return false;
 
 		return state.Body.PhysicsBody.IsValid();
 	}
@@ -348,8 +332,7 @@ public partial class BasePlayer
 
 	private void ApplyDropPhysics( GrabState state, bool punt, Vector3 playerVelocity, Vector3 puntDirection )
 	{
-		if ( !CanMove( state ) )
-			return;
+		if ( !CanMove( state ) ) return;
 
 		var velocity = state.Body.PhysicsBody.Velocity + playerVelocity;
 		velocity = velocity.ClampLength( 350f );
@@ -389,11 +372,9 @@ public partial class BasePlayer
 	/// </summary>
 	public void UpdatePickupPhysics()
 	{
-		if ( !Controller.Controller.IsValid() )
-			return;
+		if ( !Controller.Controller.IsValid() ) return;
 
-		if ( IsControlledLocally )
-			UpdatePickup();
+		if ( IsControlledLocally ) UpdatePickup();
 
 		if ( !PickupState.IsValid )
 		{
