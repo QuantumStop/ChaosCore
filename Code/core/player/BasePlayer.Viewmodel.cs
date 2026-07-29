@@ -672,11 +672,11 @@ public partial class BasePlayer
 		if ( !camera.IsValid() )
 			return;
 
-		//		set attributes for viewmodel fov
+		float vmFov = GetViewmodelFOV();
+
+		//	set attributes for viewmodel fov
 		if ( ViewmodelWeapon.Model.IsValid() )
 		{
-			float vmFov = GetViewmodelFOV();
-
 			if ( _useFOVShader )
 			{
 				ViewmodelWeapon.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
@@ -685,18 +685,21 @@ public partial class BasePlayer
 				ViewmodelWeapon.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
 
 				ViewmodelWeapon.SceneModel.Attributes.Set( "vm_fov", vmFov );
-
-				ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
-				ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
-				ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
-				ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
-
-				ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", vmFov );
 			}
 			else
 			{
 				ViewmodelWeaponObject.LocalScale = ViewmodelWeaponObject.LocalScale.WithX( vmFov / camera.FieldOfView );
 			}
+		}
+
+		if ( ViewmodelHands.Model.IsValid() && _useFOVShader ) // only both, because we have one gameobject for both so scaling it would affect both
+		{
+			ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_fov", camera.FieldOfView );
+			ViewmodelHands.SceneModel.Attributes.Set( "cam_pos", camera.WorldPosition );
+
+			ViewmodelHands.SceneModel.Attributes.Set( "vm_fov", vmFov );
 		}
 	}
 
