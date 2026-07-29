@@ -9,9 +9,8 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 		var clientObj = new GameObject { Name = $"{connection.DisplayName} [CLIENT]" };
 
 		client = clientObj.Components.Create<Client>();
-		client.SteamId = connection.SteamId;
-		client.SteamName = connection.DisplayName;
 		clientObj.Network.SetOrphanedMode( NetworkOrphaned.ClearOwner );
+		clientObj.Name = $"{connection.DisplayName} [CLIENT]";
 
 		return clientObj;
 	}
@@ -49,6 +48,7 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 		else client.Network.AssignOwnership( channel );
 
 		client.HostInit();
+		client.ClientInit();
 	}
 
 	protected virtual void OnDisconnected( Connection channel )

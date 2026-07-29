@@ -1,6 +1,6 @@
 namespace Core;
 
-public partial class Client : Component, Component.INetworkListener, IGameObjectNetworkEvents
+public partial class Client : Component, Component.INetworkListener
 {
 	/// <summary>
 	/// The player we're currently in the view of (clientside).
@@ -64,19 +64,10 @@ public partial class Client : Component, Component.INetworkListener, IGameObject
 		SteamName = Connection.DisplayName;
 	}
 
-	protected override void OnStart()
-	{
-		TryBecomeLocalClient();
-	}
-
-	private void TryBecomeLocalClient()
-	{
-		if ( IsLocalPlayer )
-			Local = this;
-	}
-
-	void IGameObjectNetworkEvents.NetworkOwnerChanged( Connection newOwner, Connection previousOwner ) => TryBecomeLocalClient();
-	void IGameObjectNetworkEvents.StartControl() => TryBecomeLocalClient();
+	/// <summary>
+	/// Initialize the client locally for that client only
+	/// </summary>
+	[Rpc.Owner] public void ClientInit() => Local = this;
 
 	/// <summary>
 	/// This client possessed some pawn, consider this an "event" of sorts
