@@ -5,9 +5,10 @@
   "Friction": 0.8,
   "Elasticity": 0.25,
   "Density": 2000,
-  "Thickness": -1,
   "RollingResistance": 0,
   "BounceThreshold": 40,
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": null,
@@ -39,6 +40,7 @@
   },
   "PrefabCollection": {
     "BulletImpact": null,
+    "BulletImpactDecal": null,
     "BluntImpact": null
   },
   "SoundCollection": {
@@ -46,7 +48,7 @@
     "FootRight": "sounds/footsteps/footstep-wood.sound",
     "FootLaunch": "sounds/footsteps/footstep-wood-jump.sound",
     "FootLand": "sounds/footsteps/footstep-wood-land.sound",
-    "Bullet": null,
+    "Bullet": "sounds/impacts/bullets/impact-bullet-wood.sound",
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,

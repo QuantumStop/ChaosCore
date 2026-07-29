@@ -110,11 +110,10 @@ public class DebrisManager : BaseEntity
 #else
 		var sound = surface.SoundCollection.Bullet ?? surface.GetBaseSurface().SoundCollection.Bullet;
 
-		if ( !sound.IsValid() )
-			return;
+		if ( !sound.IsValid() ) return;
 
 		var soundh = Sound.Play( sound, position );
-		soundh.Volume *= 0.5f;
+		soundh?.Volume *= 0.5f;
 		if ( HitObject.Components.TryGet<AIController>( out var npc ) ) Sound.Play( "hit_marker" );
 #endif
 	}

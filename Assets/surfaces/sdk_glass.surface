@@ -5,9 +5,10 @@
   "Friction": 0.8,
   "Elasticity": 0.25,
   "Density": 2000,
-  "Thickness": -1,
   "RollingResistance": 0,
   "BounceThreshold": 40,
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": null,
@@ -39,14 +40,15 @@
   },
   "PrefabCollection": {
     "BulletImpact": null,
+    "BulletImpactDecal": null,
     "BluntImpact": null
   },
   "SoundCollection": {
-    "FootLeft": "sound/physics/footsteps/glass.sound",
-    "FootRight": "sound/physics/footsteps/glass.sound",
+    "FootLeft": "sounds/footsteps/footstep-glass.sound",
+    "FootRight": "sounds/footsteps/footstep-glass.sound",
     "FootLaunch": null,
     "FootLand": null,
-    "Bullet": "sound/physics/glass/glass_impact_bullet.sound",
+    "Bullet": "sounds/impacts/bullets/impact-bullet-glass.sound",
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,

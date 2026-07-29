@@ -5,9 +5,10 @@
   "Friction": 1,
   "Elasticity": 0.1,
   "Density": 1500,
-  "Thickness": -1,
   "RollingResistance": 0,
   "BounceThreshold": 0,
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": [],
@@ -39,6 +40,7 @@
   },
   "PrefabCollection": {
     "BulletImpact": null,
+    "BulletImpactDecal": null,
     "BluntImpact": null
   },
   "SoundCollection": {
@@ -46,7 +48,7 @@
     "FootRight": "sounds/footsteps/footstep-metal.sound",
     "FootLaunch": null,
     "FootLand": null,
-    "Bullet": "sound/physics/metal/metal_solid_impact_bullet.sound",
+    "Bullet": "sounds/impacts/bullets/impact-bullet-metal.sound",
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,
