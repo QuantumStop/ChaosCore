@@ -550,25 +550,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "07a4c2bd-b61d-4af1-9baf-94bba5785191",
+              "component_id": "a1e8ed4e-a377-4003-bd4b-f6c6649abd35",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "3fd1ef34-0415-421e-8c23-c4a74f495cab",
+              "component_id": "69923d89-4fff-4bff-8a70-f7463684bdb5",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "e09e6ee2-7302-4e9e-9a2e-35fe3c83a54f",
+              "component_id": "16676a33-5e4d-49c7-ba5f-acdcedc3043a",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "e2a2c53e-fea3-4572-9161-0d811b5c875c",
+              "component_id": "37d8cb01-7362-4d79-bb08-5b64a2d6380e",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "TintComponent"
             }
@@ -658,25 +658,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "f11b752f-343c-49d0-b915-2d6b95c34e87",
+              "component_id": "d5714023-2486-428b-8935-931833f18a45",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "e5ff2eb7-377d-4d43-95a0-37583f0bccd0",
+              "component_id": "4151abf8-4aa0-4fbb-8ef7-d978dd5e890d",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "f5926d4f-7f44-4dfc-b16d-b5a5f251d318",
+              "component_id": "913f91be-d60a-47c6-8045-04feffb45478",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "e69b9b5e-0405-4672-82ef-6b8bc0e24954",
+              "component_id": "517c25a7-c5d3-45bf-87c8-958c31c22370",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "TintComponent"
             }
@@ -766,25 +766,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "112d33d3-64a0-4a6b-8ab5-da7b663d949a",
+              "component_id": "922484ca-d541-401b-9156-edc44d3ff3a8",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "cf04428a-bd1a-4423-8fb9-90d948ea3eff",
+              "component_id": "12f205cf-8ef6-4b12-8f67-c9dfcf509f76",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "b5cedf4a-5672-4acb-9b50-2a17d889d249",
+              "component_id": "1ffedeb3-c5de-4002-a321-93ae5266aca8",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "7378385a-7ae8-495a-8e3b-c1f0a30a531c",
+              "component_id": "430ef2aa-ea56-4f18-abe0-e2fc8eff0f72",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "TintComponent"
             }
@@ -874,25 +874,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "6563ae18-0451-4f6d-9c12-cf4f54f78754",
+              "component_id": "a906088c-73c0-44b9-9a38-a88edc3a03cb",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "44c54f25-57f4-4fd1-9055-ec8d696064b3",
+              "component_id": "acddfe00-1e73-43fd-8e41-195271bb417a",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "9d2df0e6-cc6e-43d7-8dcd-19eca3a000cb",
+              "component_id": "57b1723e-82b7-4d4a-9ba0-2fb3fcbe0172",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "cfc2421f-ea05-4b74-9b4c-e2dc57649b82",
+              "component_id": "3de3f867-bf08-4f52-a6f5-0ce8aba772fb",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "TintComponent"
             }
@@ -982,19 +982,19 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "34f4451b-ad1e-4c8b-996a-d0ebdf9f3e63",
+              "component_id": "4e5000de-e046-45cb-85a0-8f815ab31f21",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "0d7de7d8-b58f-49fd-b254-d922c81d239b",
+              "component_id": "cf9836be-29b8-44ef-a2d9-ab52bd592671",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "5c9726b4-bb13-4246-87f0-9760817229aa",
+              "component_id": "d7986b19-5caa-497a-9da4-5b49b367da0b",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "TintComponent"
             }
@@ -1084,25 +1084,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "b38927e8-3236-457f-9f80-bbcd6f74f52c",
+              "component_id": "ac8da0a0-1b84-4959-af20-2585257be583",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "7d149cd4-888a-40d7-9dc6-0cc6e3729cfe",
+              "component_id": "b58c316c-910c-44d5-9fb7-15d017e6cc59",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "89c8bc22-50c5-438d-ae37-00848c2325ea",
+              "component_id": "f382ce40-9976-43c6-b3dc-21dfba49cd4e",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "4539653e-fb91-4a76-84f1-ad4ae956e9cf",
+              "component_id": "cc9189a1-533e-469a-a3be-23240eed0085",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "TintComponent"
             }
@@ -1209,19 +1209,19 @@
               "ProceduralComponentsDebug": [
                 {
                   "_type": "component",
-                  "component_id": "cdc27b11-5ded-4aed-8239-5cf198b88bda",
+                  "component_id": "ac966ab8-82b1-46b7-99cd-b165b5bbd1d4",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "SkinnedModelRenderer"
                 },
                 {
                   "_type": "component",
-                  "component_id": "714adcff-3e62-4713-b32d-a95f231d870c",
+                  "component_id": "650b9c37-49d8-4e98-9ccb-f942aa51f635",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "ModelCollider"
                 },
                 {
                   "_type": "component",
-                  "component_id": "a57572a2-c3a5-40fd-a4f0-d2db53b74c62",
+                  "component_id": "ec1395c9-6baf-46d2-ab1f-cb2d037cd9e6",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "TintComponent"
                 }
@@ -1309,7 +1309,7 @@
           ],
           "Children": [
             {
-              "__guid": "1b7f8623-946a-483e-b74b-76a08aa95b29",
+              "__guid": "2e52a799-44de-48cf-a748-cb07d1e2ae7b",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - loose_shirt",
@@ -1326,11 +1326,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "aa035118-cc54-4485-8fd3-597dd9da0f78",
+                  "__guid": "b6bce1cd-4568-41a5-8daf-2a074e74ecec",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1352,8 +1351,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1375,7 +1373,7 @@
               "Children": []
             },
             {
-              "__guid": "aed949ab-60cb-43ff-b8d3-b08693afc8d3",
+              "__guid": "c689b955-a987-4240-a601-fcdc32ede044",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - tactical_vest",
@@ -1392,11 +1390,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "ce5a3e31-31ba-433a-b9b2-5575e23ab578",
+                  "__guid": "216a4c6a-1ec7-411d-9c97-99466b81bfc9",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1418,8 +1415,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1441,7 +1437,7 @@
               "Children": []
             },
             {
-              "__guid": "2f3753d6-9678-463d-b942-f69f82989182",
+              "__guid": "45f8548f-dbe4-45c9-b983-368b499c29cb",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - jeans_black",
@@ -1458,11 +1454,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "0c5cbcd3-a2b5-495c-8cbd-810d4ce41618",
+                  "__guid": "b96f6188-7906-43b4-837e-5d7be5d92c0c",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1484,8 +1479,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1507,7 +1501,7 @@
               "Children": []
             },
             {
-              "__guid": "96d5adeb-bfce-413d-a180-afd3a0b4d0a7",
+              "__guid": "a769b60b-f55e-4c02-9567-7b1b55d0af77",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - army_boots",
@@ -1524,11 +1518,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "4a4a7b17-6bcf-49f7-afe7-29fc05bb6e1b",
+                  "__guid": "dab2f369-0bf8-4d98-8fea-d5ca279dae1f",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1550,8 +1543,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1573,7 +1565,7 @@
               "Children": []
             },
             {
-              "__guid": "ab9ad6b0-a5b4-44a4-8b8e-edb9f9fa37bb",
+              "__guid": "fbffa520-7b70-49b6-b51f-2626be59f0ec",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - fingerless_gloves",
@@ -1590,11 +1582,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "ea3b7415-125f-46cd-9fc1-45214b67f350",
+                  "__guid": "2d323d94-1aae-4281-b723-49db041839fd",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1616,8 +1607,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1639,7 +1629,7 @@
               "Children": []
             },
             {
-              "__guid": "47f5317b-57e6-4fe7-8424-eb51b98ad70e",
+              "__guid": "b10d8af9-e1aa-4e6c-a3b1-b90b239def97",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - hair_slickedback",
@@ -1656,11 +1646,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "ba4a3802-a593-48f7-b4e4-4b80db9f3dc1",
+                  "__guid": "45f01259-ff45-44a4-957d-bba314c224b2",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1682,8 +1671,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1775,13 +1763,13 @@
               "ProceduralComponentsDebug": [
                 {
                   "_type": "component",
-                  "component_id": "6c50e567-c44d-4c66-bdd5-b061bd0ac15c",
+                  "component_id": "622c6e01-afb0-4c1b-bf02-4d71c62323e2",
                   "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                   "component_type": "SkinnedModelRenderer"
                 },
                 {
                   "_type": "component",
-                  "component_id": "a6c712fa-8ce8-4d70-b714-a29cabb39b90",
+                  "component_id": "800ea605-95d4-4ad5-8681-e36e6d12c5fe",
                   "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                   "component_type": "TintComponent"
                 }
@@ -1896,7 +1884,7 @@
               "PhysicsWereCreated": false,
               "Renderer": {
                 "_type": "component",
-                "component_id": "6c50e567-c44d-4c66-bdd5-b061bd0ac15c",
+                "component_id": "622c6e01-afb0-4c1b-bf02-4d71c62323e2",
                 "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                 "component_type": "SkinnedModelRenderer"
               },
@@ -1906,7 +1894,7 @@
           ],
           "Children": [
             {
-              "__guid": "55df3179-3c57-44be-b967-fb8717bde0f7",
+              "__guid": "8edaedb5-78df-4a67-be19-006ff729b476",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - beanie_green",
@@ -1923,11 +1911,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "5b2fc382-ab7e-4be7-b87f-7ce438c1f4aa",
+                  "__guid": "dd4742d2-d730-461c-b546-9e3e163cab3f",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -1949,8 +1936,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -1972,7 +1958,7 @@
               "Children": []
             },
             {
-              "__guid": "76344393-c0a9-474a-9e8b-66b1a4894f72",
+              "__guid": "5428f948-611f-453d-9d58-a9bd99f7b5de",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - patchy_beard",
@@ -1989,11 +1975,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "db02809d-5ec5-4df0-9906-0d2c65b77856",
+                  "__guid": "242b7159-136b-4827-91d8-f6c5145637e3",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -2015,8 +2000,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -2038,7 +2022,7 @@
               "Children": []
             },
             {
-              "__guid": "30085e45-ce13-400e-bb57-17b7283c9aa9",
+              "__guid": "daf205cc-65b7-4197-987f-fcce7eebb1ba",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - flannel_shirt",
@@ -2055,11 +2039,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "e855b9f5-a1de-456b-884a-99662f181dca",
+                  "__guid": "91daaa3c-b5be-40a5-81e1-d227b52ed362",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -2081,8 +2064,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -2104,7 +2086,7 @@
               "Children": []
             },
             {
-              "__guid": "d20813e4-0869-49a2-9015-d6819b9546df",
+              "__guid": "71502d68-4d49-439a-b242-21287f849eed",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - tactical_vest",
@@ -2121,11 +2103,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "467a2b04-08fa-431a-94e6-e4fb3cbfc84d",
+                  "__guid": "c3b992f1-36f2-4859-984a-a0f00c9c8310",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -2147,8 +2128,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -2170,7 +2150,7 @@
               "Children": []
             },
             {
-              "__guid": "5b949083-8a0b-4fe2-85b0-6f983a787e1a",
+              "__guid": "905a09e6-5351-4e14-865f-9512bfa22942",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - jeans_black",
@@ -2187,11 +2167,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "13380e3e-d618-49d3-8a8e-13639cdc568b",
+                  "__guid": "8c7cf97a-74ce-4593-bcdf-a962eae8d6f8",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -2213,8 +2192,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -2236,7 +2214,7 @@
               "Children": []
             },
             {
-              "__guid": "de00b8dd-378f-431e-99b5-13ddceb44c94",
+              "__guid": "cf47f3d6-d572-48c4-877d-00306a3c5c0d",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - army_boots",
@@ -2253,11 +2231,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "dc3cbf8e-98b0-4370-8a9a-c815c3a3d1cc",
+                  "__guid": "dd5077d2-328b-4df8-ad19-47b64b0668c0",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -2279,8 +2256,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -2302,7 +2278,7 @@
               "Children": []
             },
             {
-              "__guid": "a428786d-2295-43a6-8523-cb7ef662f96c",
+              "__guid": "83080509-a447-454d-9dab-0af2f5c381f3",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - fingerless_gloves",
@@ -2319,11 +2295,10 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "f2af269d-3d1d-4f43-b9ec-0a97b3147322",
+                  "__guid": "bf0560ac-400c-48ed-aac2-5536b61e19d4",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
-                  "AnimationGraph2": null,
                   "BodyGroups": 18446744073709551615,
                   "BoneMergeTarget": null,
                   "CreateAttachments": false,
@@ -2345,8 +2320,7 @@
                     "ints": {},
                     "floats": {},
                     "vectors": {},
-                    "rotations": {},
-                    "strings": {}
+                    "rotations": {}
                   },
                   "PlaybackRate": 1,
                   "RenderOptions": {
@@ -2616,7 +2590,7 @@
           "IsTrigger": false,
           "Mesh": {
             "Data": {
-              "$blob": "bbd04a4a-8d96-806d-ba66-a756b915233f"
+              "$blob": "b56e2586-16c1-8bd9-891b-93cf5a9dc89a"
             },
             "Materials": [
               "materials/dev/dev_texture_surface_metal1_tinted.vmat"
@@ -2638,6 +2612,277 @@
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "f667626c-dab0-4a89-94df-88b1e54eef3d",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Text",
+      "Position": "-40,-112.000015,64",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.TextRenderer",
+          "__guid": "d0c31d0f-af11-4dce-a8ea-6279c8427828",
+          "__enabled": true,
+          "Flags": 0,
+          "__version": 2,
+          "Billboard": "None",
+          "BlendMode": "Normal",
+          "FogStrength": 1,
+          "HorizontalAlignment": "Center",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "Scale": 0.1,
+          "TextScope": {
+            "Text": "Example Gun\n\nFiring is allowed when not moving,\nor moving slowly with Shift a la tactique shooter",
+            "TextColor": "1,1,1,1",
+            "FontName": "Poppins",
+            "FontSize": 64,
+            "FontWeight": 800,
+            "FontItalic": false,
+            "FontVariantNumeric": "Normal",
+            "LineHeight": 1,
+            "LetterSpacing": 0,
+            "WordSpacing": 0,
+            "FilterMode": "Anisotropic",
+            "FontSmooth": "Auto",
+            "Outline": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,0,1,1"
+            },
+            "Shadow": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,0,0,1",
+              "Offset": "4,4"
+            },
+            "OutlineUnder": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,1,0,1"
+            },
+            "ShadowUnder": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,0,0,1",
+              "Offset": "4,4"
+            }
+          },
+          "VerticalAlignment": "Center"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "a0027e57-24d2-445d-8b5d-a0eff3b1103a",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Text (1)",
+      "Position": "16,128,64",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.TextRenderer",
+          "__guid": "4d1c7a6b-9e1b-41ea-9210-e0f317524fcd",
+          "__enabled": true,
+          "Flags": 0,
+          "__version": 2,
+          "Billboard": "None",
+          "BlendMode": "Normal",
+          "FogStrength": 1,
+          "HorizontalAlignment": "Center",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "Scale": 0.1,
+          "TextScope": {
+            "Text": "Physical props\n\nPickup on E, throw on left click",
+            "TextColor": "1,1,1,1",
+            "FontName": "Poppins",
+            "FontSize": 64,
+            "FontWeight": 800,
+            "FontItalic": false,
+            "FontVariantNumeric": "Normal",
+            "LineHeight": 1,
+            "LetterSpacing": 0,
+            "WordSpacing": 0,
+            "FilterMode": "Anisotropic",
+            "FontSmooth": "Auto",
+            "Outline": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,0,1,1"
+            },
+            "Shadow": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,0,0,1",
+              "Offset": "4,4"
+            },
+            "OutlineUnder": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,1,0,1"
+            },
+            "ShadowUnder": {
+              "Enabled": false,
+              "Size": 4,
+              "Color": "0,0,0,1",
+              "Offset": "4,4"
+            }
+          },
+          "VerticalAlignment": "Center"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "b89b1089-8ce7-4db9-bad7-06d9f2d2eb87",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Block",
+      "Position": "-48,-112,16",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "world",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "64cf5dc2-08f5-4c75-afdd-273413d1c25a",
+          "__enabled": true,
+          "Flags": 0,
+          "ColliderFlags": 0,
+          "Collision": "Mesh",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": false,
+          "IsTrigger": false,
+          "Mesh": {
+            "Data": {
+              "$blob": "2ed1623a-ed02-8fb0-93b4-317feeaf819f"
+            },
+            "Materials": [
+              "materials/dev/dev_texture_surface_metal1_tinted.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": true,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "89c0d074-10c7-483a-96f1-10f0d08c5b54",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "MP5",
+      "Position": "-47.9999962,-112,40",
+      "Rotation": "0.5,0.5,0.49999997,0.49999997",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Core.BaseWeaponItem",
+          "__guid": "f3b1952a-5df2-490b-a75f-d20d886db7e5",
+          "__enabled": true,
+          "Flags": 0,
+          "_initialized": false,
+          "Collider": null,
+          "counter": 0,
+          "Data": "scripts/weapons/weapon_smg.wpn",
+          "FillReserveAmmoForWeapon": true,
+          "InternalAmmoCountPrimary": 1,
+          "InternalID": null,
+          "isPressing": false,
+          "Mesh": null,
+          "MotionEnabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnDropped": null,
+          "OnHoldFixedUpdate": null,
+          "OnHoldStart": null,
+          "OnHoldUpdate": null,
+          "OnKilled": null,
+          "OnPickupOutput": null,
+          "OnUse": null,
+          "Physics": null,
+          "PickUp": false,
+          "PickupTime": 0.3,
+          "SerializedGuid": null,
+          "SkipFirstEquipAnim": true,
+          "TargetName": null,
+          "WasDropped": false
         }
       ],
       "Children": []
@@ -2668,9 +2913,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-234.259796,-159.428833,88.8629303",
+          "Position": "-392.359436,85.5811844,157.136734",
           "Scale": "1,1,1",
-          "Rotation": "-0.0144781824,0.0620118044,0.226898655,0.971834302"
+          "Rotation": "0.0090497816,0.106975473,-0.083808504,0.990681827"
         },
         "_prefab": {
           "_type": "gameobject",

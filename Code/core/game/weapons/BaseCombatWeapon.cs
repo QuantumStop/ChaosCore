@@ -392,8 +392,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( !UsesPrimary() )
 			return;
 
-		if ( (WorldTime.Now - LastAttackTime) > (GetPrimaryFireRate() + 0.1f) )
-			_shotsFired = 0;
+		if ( (WorldTime.Now - LastAttackTime) > (GetPrimaryFireRate() + 0.1f) ) _shotsFired = 0;
 
 		++_shotsFired;
 

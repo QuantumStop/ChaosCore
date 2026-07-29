@@ -185,7 +185,7 @@ public partial class BasePlayer
 			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 			{
 				mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
-				//	Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath} !PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
+				//		Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath} !PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
 			}
 		}
 		else

@@ -6,29 +6,14 @@ public partial class BaseCombatWeapon
 	[ConVar( "debug_animevents" )] private static bool _debugAnimEvents { get; set; }
 
 	/// <summary>
-	/// Fill the ammo in hand up to mag size using reserve ammo. Perhaps this is better at the end of FinishReload, otherwise a bit of overlap/confusion between the anim clips that have this event.
-	/// </summary>
-	[Obsolete]
-	public virtual void EventSwapMag()
-	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
-
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: SwapMag" );
-	}
-
-	/// <summary>
 	/// Cannot shoot
 	/// </summary>
 	/// <param name="disallow">True = not allow; False = allow</param>
 	public virtual void EventDisallowFiring( bool disallow )
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: DisallowFiring (" + disallow + ")" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: DisallowFiring (" + disallow + ")" );
 
 		_disallowAttack = disallow;
 	}
@@ -37,17 +22,14 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventDrawFinished()
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: DrawFinished" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: DrawFinished" );
 
 		IsHolstered = false;
 		ReadyToFire = true;
 
-		if ( FirstEquip )
-			_currentReloadStage = 0;
+		if ( FirstEquip ) _currentReloadStage = 0;
 
 		Owner.Player.SetAllAnimgraphParams( "b_first_equip", false );
 		FirstEquip = false;
@@ -57,8 +39,7 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventHolsterFinished()
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
 		IsHolstered = true;
 		ReadyToFire = false;
@@ -72,8 +53,7 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventPrimaryFire()
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
 		if ( _debugAnimEvents )
 			Log.Info( "AnimEvent: PrimaryFire" );
@@ -87,8 +67,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: MagOut" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: MagOut" );
 
 		_currentReloadStage = 1; // next would be magin
 		MagOut = true;
@@ -99,11 +78,9 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventMagIn()
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: MagIn" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: MagIn" );
 
 		_currentReloadStage = 2; // next would be boltrelease
 		MagOut = false;
@@ -113,11 +90,9 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventBoltRelease()
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: BoltRelease" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: BoltRelease" );
 
 		_currentReloadStage = 3; // this is the last
 	}
@@ -126,14 +101,11 @@ public partial class BaseCombatWeapon
 	/// </summary>
 	public virtual void EventReloadFinished()
 	{
-		if ( Owner.Player.CurrentWeapon != this )
-			return;
+		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: ReloadFinished" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: ReloadFinished" );
 
-		if ( _disallowAttack )
-			EventDisallowFiring( false ); // a slight hack to help with weapons that have fucked event tags in animgraph
+		if ( _disallowAttack ) EventDisallowFiring( false ); // a slight hack to help with weapons that have fucked event tags in animgraph
 	}
 
 }
