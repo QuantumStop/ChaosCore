@@ -77,7 +77,6 @@ public partial class PlayerWalkControllerComplex : Component
 	public virtual void OnCameraModeChanged() { }
 	public void SetupCamera()
 	{
-		OnCameraModeChanged();
 		if ( CameraMode != CameraModes.Manual && !Camera.IsValid() )
 		{
 			var cameraobj = Scene.CreateObject();
@@ -96,19 +95,14 @@ public partial class PlayerWalkControllerComplex : Component
 			Camera.LocalPosition = ThirdPersonOffset;
 		}
 
-		//	UpdateBodyVisibility();
+		OnCameraModeChanged();
 	}
 
 	public void UpdateCamera()
 	{
 		if ( CameraMode == CameraModes.ThirdPerson )
 		{
-			var fraction = 1f;
-			var start = Head.WorldPosition;
-			var end = Head.WorldPosition + (ThirdPersonOffset * Head.WorldRotation);
-			var tr = Scene.Trace.Ray( start, end ).IgnoreDynamic().Run();
-			fraction = tr.Fraction;
-			Camera.LocalPosition = ThirdPersonOffset * fraction;
+			Camera.LocalPosition = ThirdPersonOffset * Scene.Trace.Ray( Head.WorldPosition, Head.WorldPosition + (ThirdPersonOffset * Head.WorldRotation) ).IgnoreDynamic().Run().Fraction;
 		}
 		if ( Input.Pressed( CameraToggleAction ) )
 		{

@@ -4,7 +4,7 @@ namespace Core;
 
 partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 {
-	private GameObject CreateClientObject( Connection connection, out Client client )
+	private static GameObject CreateClientObject( Connection connection, out Client client )
 	{
 		var clientObj = new GameObject { Name = $"{connection.DisplayName} [CLIENT]" };
 

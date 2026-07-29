@@ -141,9 +141,7 @@ public partial class Client : Component, Component.INetworkListener
 
 	static public Client GetFromConnection( Connection connection )
 	{
-		if ( connection is null )
-			return null;
-
+		if ( connection is null ) return null;
 		return Game.ActiveScene.GetAll<Client>().FirstOrDefault( x => x.Connection == connection );
 	}
 }

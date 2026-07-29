@@ -38,7 +38,10 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	{
 		// In some cases if we spawn very quickly we can die immediately from fall damage, this prevents it.
 		Local?.Controller?.Controller?.Velocity = Vector3.Zero;
-		UpdateBodyVisibility();
+
+		// HACKHACKHACK: don't call this for yourself to not get a double call, 
+		// the "real" refresh if you happen to be this player when OnStart is called is in OnPossess()
+		if ( !IsPossessedLocally ) UpdateBodyVisibility();
 
 		base.OnStart();
 
@@ -54,7 +57,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		if ( PlayerCfg.IsValid() && PlayerCfg.ViewmodelHands.IsValid() ) ViewmodelHands.Model = GetViewmodelHands();
 
-		if ( !ViewmodelWeapon.IsValid() ) ViewmodelVisible = false;
+		if ( !ViewmodelWeapon.IsValid() || !IsPossessedLocally || !CurrentWeapon.IsValid() ) ViewmodelVisible = false;
 
 		EnsureHudEntries();
 
@@ -397,8 +400,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		ForceWeaponChange();
 
-		if ( CurrentWeapon.IsValid() )
-			CurrentWeapon.Draw();
+		if ( CurrentWeapon.IsValid() ) CurrentWeapon.Draw();
 	}
 
 	public float FallingSpeed = 0;

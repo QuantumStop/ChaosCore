@@ -185,21 +185,27 @@ public partial class BasePlayer
 			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 			{
 				mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
-			}
-			return;
-		}
-		if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.FirstPerson )
-		{
-			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
-			{
-				mdlrenderer.RenderType = Controller.PlayerShadowsOnly ? ModelRenderer.ShadowRenderType.ShadowsOnly : ModelRenderer.ShadowRenderType.On;
+				//	Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath} !PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
 			}
 		}
-		if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
+		else
 		{
-			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
+			if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.FirstPerson )
 			{
-				mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+				foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
+				{
+					mdlrenderer.RenderType = Controller.PlayerShadowsOnly ? ModelRenderer.ShadowRenderType.ShadowsOnly : ModelRenderer.ShadowRenderType.On;
+					//	Log.Info( $"Called from: {name}" );
+					//	Log.Info( $" " );
+					//	Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath}  PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
+				}
+			}
+			if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
+			{
+				foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
+				{
+					mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+				}
 			}
 		}
 	}

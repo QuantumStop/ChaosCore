@@ -13,7 +13,6 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		{
 			SetupBody();
 			SetupHead();
-			SetupCamera();
 		}
 	}
 
@@ -203,16 +202,15 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void OnCameraModeChanged()
 	{
+		if ( !_ownerPawn.IsPossessedLocally ) return;
+
 		if ( _ownerPawn is BasePlayer basePlayer )
 		{
 			basePlayer.UpdateBodyVisibility();
+
 			if ( !Camera.IsValid() ) basePlayer.ViewmodelVisible = false;
 
-			basePlayer.ViewmodelVisible = CameraMode switch
-			{
-				CameraModes.FirstPerson => true,
-				_ => false,
-			};
+			basePlayer.ViewmodelVisible = CameraMode == CameraModes.FirstPerson;
 		}
 	}
 }
