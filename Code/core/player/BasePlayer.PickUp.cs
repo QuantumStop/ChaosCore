@@ -230,10 +230,8 @@ public partial class BasePlayer
 		if ( !DebugNoMass && rigidbody.Mass > 35 ) return;
 
 		var bodyTransform = rigidbody.PhysicsBody.Transform.WithScale( obj.WorldScale );
-		var localOffset = bodyTransform.PointToLocal( tr.HitPosition );
-		var grabDistance = Vector3.DistanceBetween( Controller.Head.WorldPosition, tr.HitPosition ).Clamp( 32.0f, 96.0f );
-		var grabOffset = Rotation.FromYaw( Controller.EyeAngles.yaw ).Inverse * bodyTransform.Rotation;
-		var state = new GrabState( heldObject, rigidbody, localOffset, grabOffset, grabDistance );
+		var grabOffset = obj.WorldRotation.Angles() - Controller.EyeAngles.WithPitch( 0 );
+		var state = new GrabState( heldObject, rigidbody, bodyTransform.PointToLocal( tr.HitPosition ), grabOffset, Vector3.DistanceBetween( Controller.Head.WorldPosition, tr.HitPosition ).Clamp( 32.0f, 80.0f ) );
 
 		if ( Networking.IsHost )
 		{
@@ -397,7 +395,8 @@ public partial class BasePlayer
 	private void UpdatePickupJoint()
 	{
 		var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * PickupState.GrabDistance;
-		var wantedRotation = Rotation.FromYaw( Controller.EyeAngles.yaw ) * PickupState.GrabOffset;
+		wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
+		var wantedRotation = PickupState.GrabOffset * Controller.EyeAngles.WithPitch( 0 ).ToRotation();
 
 		if ( !CanMove( PickupState ) )
 		{
@@ -430,13 +429,9 @@ public partial class BasePlayer
 
 		if ( !_joint.IsValid() )
 		{
-			var bodyTransform = state.Body.PhysicsBody.Transform.WithScale( state.GameObject.WorldScale );
-			var point1 = new PhysicsPoint( _controlBody );
-			var point2 = new PhysicsPoint( state.Body.PhysicsBody, bodyTransform.PointToLocal( state.EndPoint ) );
-			var mass = MathF.Max( state.Body.PhysicsBody.Mass, 1f );
-			var maxForce = mass * Scene.PhysicsWorld.Gravity.LengthSquared;
+			var maxForce = MathF.Max( state.Body.PhysicsBody.Mass, 1f ) * Scene.PhysicsWorld.Gravity.LengthSquared;
 
-			_joint = PhysicsJoint.CreateControl( point1, point2 );
+			_joint = PhysicsJoint.CreateControl( new PhysicsPoint( _controlBody ), new PhysicsPoint( state.Body.PhysicsBody ) );
 			_joint.LinearSpring = new PhysicsSpring( 32, 4, maxForce );
 			_joint.AngularSpring = new PhysicsSpring( 64, 4, maxForce * 3 );
 		}
