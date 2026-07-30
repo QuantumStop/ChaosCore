@@ -79,6 +79,6 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			playerComponent.AsMain( Client.GetFromConnection( Connection.Local ) ); // stupid?
 		}
 
-		if ( Networking.IsActive ) Player.NetworkSpawn();
+		if ( Rules.IsOnline ) Player.NetworkSpawn();
 	}
 }

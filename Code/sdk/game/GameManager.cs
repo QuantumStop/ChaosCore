@@ -68,7 +68,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 				closest.GameObject.Destroy();
 
-				if ( Networking.IsActive ) Player.NetworkSpawn( channel );
+				if ( Rules.IsOnline ) Player.NetworkSpawn( channel );
 
 				if ( spawnedPlayer.IsValid() ) spawnedPlayer.AsMain( client );
 

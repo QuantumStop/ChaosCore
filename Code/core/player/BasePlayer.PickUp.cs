@@ -45,7 +45,7 @@ public partial class BasePlayer
 
 		ApplyDropPhysics( PickupState, punt, playerVelocity, puntDirection );
 
-		if ( Networking.IsActive && !Networking.IsHost ) DropObjectHost( PickupState, punt, playerVelocity, puntDirection );
+		if ( GameManagerSystem.Rules.IsOnline && !Networking.IsHost ) DropObjectHost( PickupState, punt, playerVelocity, puntDirection );
 		else if ( Networking.IsHost ) ReleasePickupClaim( PickupState );
 
 		CleanupHeldProp();
@@ -83,22 +83,18 @@ public partial class BasePlayer
 
 	private void TryTakePickupOwnership( GrabState state )
 	{
-		if ( !Networking.IsActive || !state.GameObject.Network.Active )
-			return;
+		if ( GameManagerSystem.Rules.IsOnline || !state.GameObject.Network.Active ) return;
 
-		if ( state.GameObject.Network.IsOwner )
-			return;
+		if ( state.GameObject.Network.IsOwner ) return;
 
 		state.GameObject.Network.TakeOwnership();
 	}
 
 	private void DropPickupOwnership( GrabState state )
 	{
-		if ( !Networking.IsActive || !state.GameObject.Network.Active )
-			return;
+		if ( !GameManagerSystem.Rules.IsOnline || !state.GameObject.Network.Active ) return;
 
-		if ( !state.GameObject.Network.IsOwner )
-			return;
+		if ( !state.GameObject.Network.IsOwner ) return;
 
 		state.GameObject.Network.DropOwnership();
 	}
@@ -218,11 +214,9 @@ public partial class BasePlayer
 		var obj = tr.GameObject;
 		var heldObject = GetHeldObject( obj );
 
-		if ( LifeState != LifeState.Alive || IsHeldByAnyone( obj ) ) // important to filter out already held objects
-			return;
+		if ( LifeState != LifeState.Alive || IsHeldByAnyone( obj ) ) return;// important to filter out already held objects
 
-		if ( !TryFindPickupRigidbody( tr, out var rigidbody ) || !rigidbody.MotionEnabled )
-			return;
+		if ( !TryFindPickupRigidbody( tr, out var rigidbody ) || !rigidbody.MotionEnabled ) return;
 
 		if ( obj.Components.TryGet<BaseWeaponItem>( out var weapon ) )
 		{
@@ -233,8 +227,7 @@ public partial class BasePlayer
 		if ( obj.Components.TryGet<BaseUsable>( out var usable ) )
 			if ( !usable.CanBeHeld ) return;
 
-		if ( !DebugNoMass && rigidbody.Mass > 35 )
-			return;
+		if ( !DebugNoMass && rigidbody.Mass > 35 ) return;
 
 		var bodyTransform = rigidbody.PhysicsBody.Transform.WithScale( obj.WorldScale );
 		var localOffset = bodyTransform.PointToLocal( tr.HitPosition );
@@ -251,8 +244,7 @@ public partial class BasePlayer
 			PickupState = state;
 			TryTakePickupOwnership( state );
 
-			if ( Networking.IsActive )
-				ClaimPickupHost( state );
+			if ( GameManagerSystem.Rules.IsOnline ) ClaimPickupHost( state );
 		}
 
 		CurrentWeapon?.Holster();
@@ -409,10 +401,8 @@ public partial class BasePlayer
 
 		if ( !CanMove( PickupState ) )
 		{
-			if ( IsControlledLocally && Networking.IsActive && !Networking.IsHost )
-				UpdatePickupTargetHost( PickupState, wantedPosition, wantedRotation );
-			else
-				ClearPickupJoint();
+			if ( IsControlledLocally && GameManagerSystem.Rules.IsOnline && !Networking.IsHost ) UpdatePickupTargetHost( PickupState, wantedPosition, wantedRotation );
+			else ClearPickupJoint();
 
 			return;
 		}
@@ -423,8 +413,7 @@ public partial class BasePlayer
 	[Rpc.Host]
 	private void UpdatePickupTargetHost( GrabState state, Vector3 wantedPosition, Rotation wantedRotation )
 	{
-		if ( PickupState.GameObject != state.GameObject || !CanMove( state ) )
-			return;
+		if ( PickupState.GameObject != state.GameObject || !CanMove( state ) ) return;
 
 		UpdatePickupJoint( state, wantedPosition, wantedRotation );
 	}

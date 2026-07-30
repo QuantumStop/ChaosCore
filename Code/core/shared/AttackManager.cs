@@ -158,10 +158,7 @@ public static partial class AttackManager
 	/// <returns>The trace</returns>
 	public static AttackResult TraceGenericAttack( Capsule capsule, DamageInfo damage )
 	{
-		if ( DebugDamageEvents )
-		{
-			DebugOverlaySystem.Current.Capsule( capsule, Color.Green, 10, default, true );
-		}
+		if ( DebugDamageEvents ) DebugOverlaySystem.Current.Capsule( capsule, Color.Green, 10, default, true );
 		return RunSceneTrace( Game.ActiveScene.Trace.Capsule( capsule ), damage );
 	}
 
