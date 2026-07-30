@@ -27,4 +27,23 @@ public class weapon_smg : Core.BaseCombatWeapon
 
 		Owner.Player?.SetAllAnimgraphParams( "b_attack", true ); // FP guns have a different naming scheme than us
 	}
+
+	/// <summary>
+	/// Draw the weapon.
+	/// Needs to be public because other stuff can force us to draw
+	/// </summary>
+	public override void Draw()
+	{
+		base.Draw();
+		Owner.Player?.SetAllAnimgraphParams( "b_holster", false );
+	}
+	/// <summary>
+	/// Holster the weapon.
+	/// Needs to be public because other stuff can force us to put down the weapon
+	/// </summary>
+	public override void Holster()
+	{
+		base.Holster();
+		Owner.Player?.SetAllAnimgraphParams( "b_holster", true );
+	}
 }
