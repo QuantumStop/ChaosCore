@@ -131,7 +131,7 @@ public abstract class BasePawn : BaseEntity
 		else DePossess();
 	}
 
-	[ConCmd( "pawn_force_possess", ConVarFlags.Cheat, Help = "Forcefully possess a pawn with given GO name" )] public static void ForcePossess( string name ) => Game.ActiveScene.GetAllComponents<BasePawn>().FirstOrDefault( x => x.GameObject.Name == name && Client.Local.MainPawn != x ).Possess();
+	[ConCmd( "pawn_force_possess", ConVarFlags.Cheat, Help = "Forcefully possess a pawn with given GO name" )] public static void ForcePossess( string name ) => Game.ActiveScene.GetAllComponents<BasePawn>().FirstOrDefault( x => x.GameObject.Name == name && Client.Local.MainPawn != x )?.Possess();
 
 	[ConCmd( "pawn_force_main", ConVarFlags.Cheat, Help = "Forcefully return to main pawn" )] public static void ForceReturnMain() => Possess( Client.Local.MainPawn );
 }
