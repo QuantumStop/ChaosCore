@@ -181,7 +181,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		base.OnEnabled();
 
-		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return;
+		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return;
 
 		if ( UsesPrimary() ) _nextPrimaryAttack = WorldTime.Now;
 		if ( UsesSecondary() ) _nextSecondaryAttack = WorldTime.Now;
@@ -194,7 +194,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		base.OnStart();
 
-		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return;
+		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return;
 
 		//		if ( BasePlayer.Local.CurrentWeapon != this )
 		//			return;
@@ -227,7 +227,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 	protected override void OnUpdate()
 	{
-		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return;
+		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return;
 
 		// nobody owns this, prevent nre
 		if ( Owner.Player is null && Owner.NPC is null )
@@ -367,7 +367,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual bool AttackConditions( bool primary = true )
 	{
 		// is not local player
-		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return false;
+		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return false;
 
 		if ( Owner.Player?.LifeState == LifeState.Dead ) return false;
 

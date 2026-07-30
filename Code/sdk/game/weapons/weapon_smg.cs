@@ -8,7 +8,7 @@ public class weapon_smg : Core.BaseCombatWeapon
 	protected override bool AttackConditions( bool primary = true )
 	{
 		// is not local player
-		if ( IsProxy || (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) ) return false;
+		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return false;
 
 		if ( Owner.Player?.LifeState == LifeState.Dead ) return false;
 
