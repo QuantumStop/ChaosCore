@@ -512,7 +512,7 @@
             "__guid": "43f147c5-c6e8-4f1b-ad1b-9c7a58530ae0",
             "__enabled": true,
             "Flags": 0,
-            "ApplyHeightScale": true,
+            "ApplyHeightScale": false,
             "BodyTarget": {
               "_type": "component",
               "component_id": "b245634c-86aa-4f28-aa9d-3838d11a0d0f",
