@@ -1,0 +1,490 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:modeldoc30:version{8c2d7a91-9c42-4bf0-883a-5a3b1762d4f1} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		children = 
+		[
+			{
+				_class = "WeightListList"
+				children = 
+				[
+					{
+						_class = "WeightList"
+						name = "gun_main"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Main"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "fingers_trigger"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Metacarpal1_R"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "holster_use_base_pose"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "ForeArm_L"
+								weight = 0.390625
+							},
+							{
+								bone = "Gun_Barrel"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Eject"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_IKleft"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_IKright"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Mag"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Muzzle"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_React"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Slide"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_SlideRelease"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Trigger"
+								weight = 1.0
+							},
+							{
+								bone = "Hand_L"
+								weight = 0.65625
+							},
+							{
+								bone = "Metacarpal1_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal1_R"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal2_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal2_R"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal3_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal3_R"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal4_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal4_R"
+								weight = 1.0
+							},
+							{
+								bone = "Thumb1_L"
+								weight = 1.0
+							},
+							{
+								bone = "Thumb1_R"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "all_off"
+						default_weight = 0.0
+						weights = [  ]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "reduce_weaponroot_50"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Main"
+								weight = 0.52518
+							},
+							{
+								bone = "Root"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "arms"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Root"
+								weight = 1.0
+							},
+							{
+								bone = "UpperArm_L"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+				]
+			},
+			{
+				_class = "Folder"
+				name = "weapon_bones"
+				children = 
+				[
+					{
+						_class = "WeightList"
+						name = "weapon_bones_smg"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Bolt"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_BoltRelease"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_ChargeHandle"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Eject"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Mag"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_MagRelease"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Muzzle"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Stock"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_StockRelease"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Trigger"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "weapon_bones_pistol"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Barrel"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Eject"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Mag"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Muzzle"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_React"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Slide"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_SlideRelease"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Trigger"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "gun_slide_smg"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Bolt"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "gun_slide_pistol"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Barrel"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Muzzle"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Slide"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_SlideRelease"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "gun_firing_pistol"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Barrel"
+								weight = 0.0
+							},
+							{
+								bone = "Gun_Bullet"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Eject"
+								weight = 0.0
+							},
+							{
+								bone = "Gun_IKleft"
+								weight = 0.0
+							},
+							{
+								bone = "Gun_IKright"
+								weight = 0.0
+							},
+							{
+								bone = "Gun_Mag"
+								weight = 0.0
+							},
+							{
+								bone = "Gun_Muzzle"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_React"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Slide"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_SlideRelease"
+								weight = 0.0
+							},
+							{
+								bone = "Gun_Trigger"
+								weight = 0.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "gun_firing_smg"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_Bolt"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_Muzzle"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+				]
+			},
+			{
+				_class = "Folder"
+				name = "hands_bones"
+				children = 
+				[
+					{
+						_class = "WeightList"
+						name = "arm_left"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_IKHand_L"
+								weight = 1.0
+							},
+							{
+								bone = "Hand_L_To_Gun_IKRule"
+								weight = 1.0
+							},
+							{
+								bone = "UpperArm_L"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "arm_right"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Gun_IKHand_L"
+								weight = 1.0
+							},
+							{
+								bone = "Gun_IKHand_R"
+								weight = 1.0
+							},
+							{
+								bone = "Hand_L_To_Gun_IKRule"
+								weight = 1.0
+							},
+							{
+								bone = "Hand_R_To_Gun_IKRule"
+								weight = 1.0
+							},
+							{
+								bone = "UpperArm_R"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+					{
+						_class = "WeightList"
+						name = "fingers_left"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "Metacarpal1_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal2_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal3_L"
+								weight = 1.0
+							},
+							{
+								bone = "Metacarpal4_L"
+								weight = 1.0
+							},
+							{
+								bone = "Thumb1_L"
+								weight = 1.0
+							},
+						]
+						master_morph_weight = -1.0
+						morph_weights = [  ]
+					},
+				]
+			},
+		]
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

@@ -1,0 +1,722 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:modeldoc30:version{8c2d7a91-9c42-4bf0-883a-5a3b1762d4f1} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		children = 
+		[
+			{
+				_class = "AnimationList"
+				children = 
+				[
+					{
+						_class = "Folder"
+						name = "Shared_WeaponOffset"
+						children = 
+						[
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Backwards"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 9
+								end_frame = 9
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Center"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 0
+								end_frame = 0
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Forward"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 10
+								end_frame = 10
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Up"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 1
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 1
+								end_frame = 1
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_UpLeft"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 3
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 3
+								end_frame = 3
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Left"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 7
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 7
+								end_frame = 7
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_DownLeft"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 6
+								end_frame = 6
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Down"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 4
+								end_frame = 4
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_DownRight"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 5
+								end_frame = 5
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Right"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 8
+								end_frame = 8
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_UpRight"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 2
+								end_frame = 2
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Up"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 11
+								end_frame = 11
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_UpRight"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 12
+								end_frame = 12
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Right"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 17
+								end_frame = 17
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_DownRight"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 15
+								end_frame = 15
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Down"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 14
+								end_frame = 14
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_DownLeft"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 16
+								end_frame = 16
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Left"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 18
+								end_frame = 18
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_UpLeft"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 13
+								end_frame = 13
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Forward"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										disabled = true
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 0
+								end_frame = 20
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Roll_Left"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 20
+								end_frame = 20
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "WeaponOffset_Orientation_Roll_Right"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "WeaponOffset_Center"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = 19
+								end_frame = 19
+								framerate = -1.0
+								take = 34
+								reverse = false
+							},
+						]
+					},
+					{
+						_class = "AnimBindPose"
+						name = "bindPose_internal"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						frame_count = 1
+						frame_rate = 30
+					},
+				]
+				default_root_bone_name = ""
+			},
+		]
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

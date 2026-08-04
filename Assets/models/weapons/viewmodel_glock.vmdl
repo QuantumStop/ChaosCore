@@ -1,0 +1,1658 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:modeldoc30:version{8c2d7a91-9c42-4bf0-883a-5a3b1762d4f1} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		children = 
+		[
+			{
+				_class = "MaterialGroupList"
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						remaps = 
+						[
+							{
+								from = "glock.vmat"
+								to = "materials/dev/dev_measuregeneric01b.vmat"
+							},
+						]
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+			},
+			{
+				_class = "RenderMeshList"
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						children = 
+						[
+							{
+								_class = "RenderMeshMarkup"
+								material_search_path = ""
+								use_expensive_tangents = true
+								high_high_precision_texcoords = false
+								calc_per_vertex_curvature = false
+								prefer_high_density_tris_in_uv_density_calc = false
+							},
+						]
+						filename = "models/weapons/glock/v_glock.dmx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+				]
+			},
+			{
+				_class = "AnimationList"
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						name = "Draw"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "G_Throw"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 13
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "gun_ref"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 14
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Holster"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 15
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Low_To_Idle"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 22
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Low"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 21
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "preview"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 23
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "ref"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 24
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Idle_Empty_only_arms"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "gun_slide_ignore"
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 17
+						reverse = false
+					},
+					{
+						_class = "Folder"
+						name = "Firing"
+						children = 
+						[
+							{
+								_class = "AnimFile"
+								name = "Fire1"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Fire1"
+										frame = 14
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 2
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Fire2"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Fire2"
+										frame = 14
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 3
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Fire3"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Fire3"
+										frame = 14
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 4
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Fire4"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Fire4"
+										frame = 14
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 5
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Fire_Last"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Fire_Last"
+										frame = 15
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 1
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "First_Draw"
+								children = 
+								[
+									{
+										_class = "AnimEvent"
+										event_class = "AE_CL_PLAYSOUND"
+										event_frame = 0
+										event_keys = 
+										{
+											name = "sound/weapons/glock/g_firstdraw.sound"
+											stop_on_seq_change = true
+											use_layer_sequence = false
+											tags = ""
+										}
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 7
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Dry_Fire"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Dry_Fire"
+										frame = 17
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 6
+								reverse = false
+							},
+						]
+					},
+					{
+						_class = "Folder"
+						name = "Idle"
+						children = 
+						[
+							{
+								_class = "AnimFile"
+								name = "Idle_Empty"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 17
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Idle_Pose"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 18
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Idle_To_Low"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 19
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Idle_To_Sprint"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Idle"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 20
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Idle"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 16
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "bindPose_delta"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "bindPose_delta"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 16
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Idle_Empty_delta"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Idle"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 17
+								reverse = false
+							},
+						]
+					},
+					{
+						_class = "Folder"
+						name = "Reload"
+						children = 
+						[
+							{
+								_class = "AnimFile"
+								name = "Reload"
+								children = 
+								[
+									{
+										_class = "AnimEvent"
+										event_class = "AE_CL_PLAYSOUND"
+										event_frame = 0
+										event_keys = 
+										{
+											name = "sound/weapons/glock/g_reload.sound"
+											stop_on_seq_change = true
+											use_layer_sequence = false
+											tags = ""
+										}
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 25
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Reload_Empty_V2"
+								children = 
+								[
+									{
+										_class = "AnimEvent"
+										event_class = "AE_CL_PLAYSOUND"
+										event_frame = 0
+										event_keys = 
+										{
+											name = "sound/weapons/glock/g_reload_empty.sound"
+											stop_on_seq_change = true
+											use_layer_sequence = false
+											tags = ""
+										}
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 27
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Reload_Empty_V2_boltrelease"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 28
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Reload_Empty_V2_magin"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 29
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Reload_magin"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 30
+								reverse = false
+							},
+						]
+					},
+					{
+						_class = "Folder"
+						name = "Locomoting"
+						children = 
+						[
+							{
+								_class = "AnimFile"
+								name = "Sprint_To_Idle"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Idle"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 32
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Sprint"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Idle"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 31
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Walk"
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 33
+								reverse = false
+							},
+							{
+								_class = "AnimFile"
+								name = "Walk_delta"
+								children = 
+								[
+									{
+										_class = "AnimSubtract"
+										anim_name = "Idle"
+										frame = 0
+									},
+								]
+								activity_name = ""
+								activity_weight = 1
+								weight_list_name = ""
+								fade_in_time = 0.2
+								fade_out_time = 0.2
+								looping = false
+								delta = false
+								worldSpace = false
+								hidden = false
+								anim_markup_ordered = false
+								disable_compression = false
+								disable_interpolation = false
+								enable_scale = false
+								source_filename = "animation/anims/viewmodel/glock_anims.fbx"
+								start_frame = -1
+								end_frame = -1
+								framerate = -1.0
+								take = 33
+								reverse = false
+							},
+						]
+					},
+					{
+						_class = "Prefab"
+						target_file = "models/weapons/prefabs/viewmodel_shared_animationslist.vmdl_prefab"
+					},
+				]
+				default_root_bone_name = ""
+			},
+			{
+				_class = "BoneMarkupList"
+				children = 
+				[
+					{
+						_class = "Prefab"
+						target_file = "models/weapons/prefabs/viewmodel_shared_bonemarkuplist.vmdl_prefab"
+					},
+					{
+						_class = "BoneMarkup"
+						target_bone = "Gun_Slide"
+						ignore_Translation = false
+						ignore_rotation = false
+						do_not_discard = true
+					},
+					{
+						_class = "BoneMarkup"
+						target_bone = "Gun_Bullet"
+						ignore_Translation = false
+						ignore_rotation = false
+						do_not_discard = true
+					},
+					{
+						_class = "BoneMarkup"
+						target_bone = "Gun_Eject"
+						ignore_Translation = false
+						ignore_rotation = false
+						do_not_discard = true
+					},
+					{
+						_class = "BoneMarkup"
+						target_bone = "Gun_Barrel"
+						ignore_Translation = false
+						ignore_rotation = false
+						do_not_discard = true
+					},
+					{
+						_class = "BoneMarkup"
+						target_bone = "Gun_SlideRelease"
+						ignore_Translation = false
+						ignore_rotation = false
+						do_not_discard = true
+					},
+				]
+				bone_cull_type = "Aggressive"
+			},
+			{
+				_class = "AttachmentList"
+				children = 
+				[
+					{
+						_class = "Attachment"
+						name = "muzzle"
+						parent_bone = "Gun_Muzzle"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ -90.0, 90.0, 180.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Hand_L"
+						parent_bone = "Hand_L"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Hand_R"
+						parent_bone = "Hand_R"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "gun_mag__post_mag_out_from_draw_offset"
+						parent_bone = "Hand_L"
+						relative_origin = [ -1.908663, 3.985202, 2.914296 ]
+						relative_angles = [ 12.79653, -152.246933, 142.37178 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "gun_mag__holster_offset"
+						parent_bone = "Thumb2_L"
+						relative_origin = [ 0.167478, 1.851166, 0.864971 ]
+						relative_angles = [ 72.836098, -85.655182, -96.404106 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "gun_mag__offscreen"
+						parent_bone = ""
+						relative_origin = [ -0.231453, 0.120718, -20.050678 ]
+						relative_angles = [ -41.601913, 112.227745, 56.898254 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "shell_eject"
+						parent_bone = "Gun_Main"
+						relative_origin = [ -0.699033, 2.040956, -1.701267 ]
+						relative_angles = [ -89.999947, -89.999947, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Gun_Attach_rule_R"
+						parent_bone = "Hand_R_To_Gun_IKRule"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Gun_Attach_rule_L"
+						parent_bone = "Hand_L_To_Gun_IKRule"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "MagDrop"
+						parent_bone = "Gun_Mag"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+			},
+			{
+				_class = "WeightListList"
+				children = 
+				[
+					{
+						_class = "Prefab"
+						target_file = "models/weapons/prefabs/viewmodel_shared_weightslist.vmdl_prefab"
+					},
+					{
+						_class = "Folder"
+						name = "fallback"
+						children = 
+						[
+							{
+								_class = "WeightList"
+								name = "arm_left"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_IKHand_L"
+										weight = 1.0
+									},
+									{
+										bone = "Hand_L_To_Gun_IKRule"
+										weight = 1.0
+									},
+									{
+										bone = "UpperArm_L"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "arm_right"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_IKHand_L"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_IKHand_R"
+										weight = 1.0
+									},
+									{
+										bone = "Hand_L_To_Gun_IKRule"
+										weight = 1.0
+									},
+									{
+										bone = "Hand_R_To_Gun_IKRule"
+										weight = 1.0
+									},
+									{
+										bone = "UpperArm_R"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "fingers_left"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Metacarpal1_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal2_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal3_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal4_L"
+										weight = 1.0
+									},
+									{
+										bone = "Thumb1_L"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "holster_use_base_pose"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "ForeArm_L"
+										weight = 0.390625
+									},
+									{
+										bone = "Gun_Barrel"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Eject"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_IKleft"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_IKright"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Mag"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Muzzle"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_React"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Slide"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_SlideRelease"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Trigger"
+										weight = 1.0
+									},
+									{
+										bone = "Hand_L"
+										weight = 0.65625
+									},
+									{
+										bone = "Metacarpal1_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal1_R"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal2_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal2_R"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal3_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal3_R"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal4_L"
+										weight = 1.0
+									},
+									{
+										bone = "Metacarpal4_R"
+										weight = 1.0
+									},
+									{
+										bone = "Thumb1_L"
+										weight = 1.0
+									},
+									{
+										bone = "Thumb1_R"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "weapon_bones"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_Barrel"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Eject"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Mag"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Muzzle"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_React"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Slide"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_SlideRelease"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Trigger"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "gun_main"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_Apex"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Main"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_React"
+										weight = 0.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "fingers_trigger"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Metacarpal1_R"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "gun_firing"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_Barrel"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_Bullet"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Eject"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_IKleft"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_IKright"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_Mag"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_Muzzle"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_React"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Slide"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_SlideRelease"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_Trigger"
+										weight = 0.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "all_off"
+								disabled = true
+								default_weight = 0.0
+								weights = [  ]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "gun_slide"
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_Barrel"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Muzzle"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Slide"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_SlideRelease"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "gun_slide_ignore"
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_Apex"
+										weight = 1.0
+									},
+									{
+										bone = "Gun_Barrel"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_Muzzle"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_Slide"
+										weight = 0.0
+									},
+									{
+										bone = "Gun_SlideRelease"
+										weight = 0.0
+									},
+									{
+										bone = "Root"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+							{
+								_class = "WeightList"
+								name = "reduce_weaponroot_50"
+								disabled = true
+								default_weight = 0.0
+								weights = 
+								[
+									{
+										bone = "Gun_Main"
+										weight = 0.52518
+									},
+									{
+										bone = "Root"
+										weight = 1.0
+									},
+								]
+								master_morph_weight = -1.0
+								morph_weights = [  ]
+							},
+						]
+					},
+				]
+			},
+			{
+				_class = "AnimConstraintList"
+				children = 
+				[
+					{
+						_class = "Prefab"
+						target_file = "models/weapons/prefabs/viewmodel_shared_animconstraintlist.vmdl_prefab"
+					},
+					{
+						_class = "Folder"
+						name = "Belt_Constraint"
+						note = "This sucks ::( \n"
+						children = 
+						[
+							{
+								_class = "AnimConstraintAim"
+								children = 
+								[
+									{
+										_class = "AnimConstraintBoneInput"
+										parent_bone = "Hand_L"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 1.0
+									},
+									{
+										_class = "AnimConstraintSlave"
+										parent_bone = "Belt_Side"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 1.0
+									},
+								]
+								aim_offset = [ 0.0, 0.0, 0.0 ]
+								up_type = 0
+								up_vector = [ 0.0, 0.0, 1.0 ]
+							},
+							{
+								_class = "AnimConstraintAim"
+								children = 
+								[
+									{
+										_class = "AnimConstraintBoneInput"
+										parent_bone = "Hand_L"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 1.0
+									},
+									{
+										_class = "AnimConstraintSlave"
+										parent_bone = "Belt_Top"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 1.0
+									},
+								]
+								aim_offset = [ 0.0, 0.0, 0.0 ]
+								up_type = 0
+								up_vector = [ 0.0, 0.0, 1.0 ]
+							},
+							{
+								_class = "AnimConstraintAim"
+								children = 
+								[
+									{
+										_class = "AnimConstraintBoneInput"
+										parent_bone = "Hand_L"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 1.0
+									},
+									{
+										_class = "AnimConstraintSlave"
+										parent_bone = "Belt_Bottom"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 0.2
+									},
+								]
+								aim_offset = [ -129.0, 120.0, -131.0 ]
+								up_type = 1
+								up_vector = [ 0.0, 0.0, 0.0 ]
+							},
+							{
+								_class = "AnimConstraintAim"
+								children = 
+								[
+									{
+										_class = "AnimConstraintBoneInput"
+										parent_bone = "Hand_L"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 1.0
+									},
+									{
+										_class = "AnimConstraintSlave"
+										parent_bone = "Buckle"
+										relative_origin = [ 0.0, 0.0, 0.0 ]
+										relative_angles = [ 0.0, 0.0, 0.0 ]
+										weight = 0.75
+									},
+								]
+								aim_offset = [ 0.0, 0.0, 0.0 ]
+								up_type = 0
+								up_vector = [ 0.0, 0.0, -28.0 ]
+							},
+						]
+					},
+				]
+			},
+		]
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

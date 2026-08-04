@@ -1,0 +1,85 @@
+{
+  "Version": 1,
+  "nodes": [
+    {
+      "_class": "TwoBoneIKNode",
+      "Input": {
+        "Identifier": null,
+        "Output": null
+      },
+      "EffectorTarget": {
+        "Identifier": "1c7026bf-8bcf-4cce-b535-4650c2f32b60",
+        "Output": "Target"
+      },
+      "Enable": {
+        "Identifier": null,
+        "Output": null
+      },
+      "BlendMode": "Effector",
+      "IsTargetInWorldSpace": true,
+      "ReferencePoseTwistWeight": 0,
+      "DefaultVariationData": {
+        "EffectorBone": "Hand_L",
+        "BlendTime": 0
+      },
+      "Overrides": [],
+      "Identifier": "57fcce3b-c7a7-4e02-83bb-f496644669da",
+      "Position": "120,-240",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "TwoBoneIKNode",
+      "Input": {
+        "Identifier": "57fcce3b-c7a7-4e02-83bb-f496644669da",
+        "Output": "Result"
+      },
+      "EffectorTarget": {
+        "Identifier": "1b94ae2f-97d6-4124-bb36-64b8303fc10e",
+        "Output": "Target"
+      },
+      "Enable": {
+        "Identifier": null,
+        "Output": null
+      },
+      "BlendMode": "Effector",
+      "IsTargetInWorldSpace": true,
+      "ReferencePoseTwistWeight": 0,
+      "DefaultVariationData": {
+        "EffectorBone": "Hand_R",
+        "BlendTime": 0
+      },
+      "Overrides": [],
+      "Identifier": "3e02e201-5f05-4ec5-8bfe-758395400be0",
+      "Position": "336,-156",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ConstBoneTargetNode",
+      "Bone": "Hand_R_To_Gun_IKRule",
+      "Identifier": "1b94ae2f-97d6-4124-bb36-64b8303fc10e",
+      "Position": "-252,-132",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "ConstBoneTargetNode",
+      "Bone": "Hand_L_To_Gun_IKRule",
+      "Identifier": "1c7026bf-8bcf-4cce-b535-4650c2f32b60",
+      "Position": "-252,-216",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "PoseResultNode",
+      "Pose": {
+        "Identifier": "3e02e201-5f05-4ec5-8bfe-758395400be0",
+        "Output": "Result"
+      },
+      "Identifier": "ec5915c2-852e-4fc1-9858-aa8faf148723",
+      "Position": "660,-156",
+      "HandleOffsets": {}
+    }
+  ],
+  "Model": "models/weapons/viewmodel_glock.vmdl",
+  "parameters": [],
+  "virtualParameters": [],
+  "PreviewFocusBone": "UpperArm_R"
+}
