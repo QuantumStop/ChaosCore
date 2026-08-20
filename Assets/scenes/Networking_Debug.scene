@@ -1136,7 +1136,7 @@
           ],
           "Children": [
             {
-              "__guid": "a54dbb37-d970-4aea-bba1-222914908b44",
+              "__guid": "f58de5b4-f31b-45f6-aad2-48f7defd29f6",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - loose_shirt",
@@ -1153,7 +1153,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "3bbf566c-efb9-426a-a69d-4b4adc85fc5f",
+                  "__guid": "d942fe90-15c1-4af2-a646-392aa3f322c9",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1200,7 +1200,7 @@
               "Children": []
             },
             {
-              "__guid": "625ec5ae-bb87-4d38-8ce1-14419e452309",
+              "__guid": "5ebe22da-1e9b-4d77-8573-bcb587cd0ffd",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - tactical_vest",
@@ -1217,7 +1217,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "83e3e5a0-124f-4cbe-94a3-14a29bd47b96",
+                  "__guid": "9c3ea39f-36bd-4dac-85a7-106b272684df",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1264,7 +1264,7 @@
               "Children": []
             },
             {
-              "__guid": "20dccbeb-bf47-45a9-af66-1f4a18cb9f7f",
+              "__guid": "7e229e2c-2abe-4492-8872-b8a7db25207a",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - jeans_black",
@@ -1281,7 +1281,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "4aa932c6-8523-4e70-9467-ee09fbc82e7d",
+                  "__guid": "63428016-d7f8-412b-80ce-6b58b09f8d0a",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1328,7 +1328,7 @@
               "Children": []
             },
             {
-              "__guid": "7c17a457-ff98-4cef-9f47-5a03b22ac859",
+              "__guid": "a23e4b40-02ae-426c-b56e-5b6eae1a3910",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - army_boots",
@@ -1345,7 +1345,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "f4b58245-fa87-4133-aa2d-cc5dd29725ac",
+                  "__guid": "f1172fd8-d72f-44e6-aa2c-c6ba5f83b9f4",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1392,7 +1392,7 @@
               "Children": []
             },
             {
-              "__guid": "e23f892a-692c-4f6d-8e40-481db2ae1f4c",
+              "__guid": "be8f056b-b887-454e-be34-3646f0db644f",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - fingerless_gloves",
@@ -1409,7 +1409,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "94220932-0354-44e2-a918-809b7af73025",
+                  "__guid": "76eef03a-68c2-4f6a-9e2b-231cdf1fbbc6",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1456,7 +1456,7 @@
               "Children": []
             },
             {
-              "__guid": "94951ac5-e44d-401b-8e8c-a3ed9cd6a94f",
+              "__guid": "e04269f9-d926-477c-a891-30c0a53ae364",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - hair_slickedback",
@@ -1473,7 +1473,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "e992856e-4056-4004-841c-9e489a8ed720",
+                  "__guid": "df918389-6cb2-4032-b3c9-5b159c2b92c2",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1670,7 +1670,7 @@
           ],
           "Children": [
             {
-              "__guid": "1ff42e62-71b1-4089-b310-cec9f014b2b6",
+              "__guid": "74339ba8-5cb2-445a-a935-500765cfb68a",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - beanie_green",
@@ -1687,7 +1687,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "68b18e66-711c-4916-849d-c71518f44db5",
+                  "__guid": "70c8992d-f88d-4b32-9d05-0d67c605b3a6",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1734,7 +1734,7 @@
               "Children": []
             },
             {
-              "__guid": "ea078bed-0f84-4cec-9ba5-c3471b513d2f",
+              "__guid": "7271edd5-fcce-48c7-ae4c-32801cd3e954",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - patchy_beard",
@@ -1751,7 +1751,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "77101e58-cc2e-4e5f-ab5a-0f392ca9d160",
+                  "__guid": "02b255f3-67fa-4711-9da9-b98f95fa4702",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1798,7 +1798,7 @@
               "Children": []
             },
             {
-              "__guid": "2a6d3b40-a8f2-41f0-b286-c6d74d65f548",
+              "__guid": "9c1a3203-e219-4dca-8c11-8fc5a4e5560d",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - flannel_shirt",
@@ -1815,7 +1815,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "6fdee026-82cf-4145-878c-80f2fcc5f832",
+                  "__guid": "460b320f-47e6-4e23-bcbe-ac16ed752799",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1862,7 +1862,7 @@
               "Children": []
             },
             {
-              "__guid": "62c513f5-25ba-4864-82c7-0b8017e320ab",
+              "__guid": "124a26ad-46db-4386-b36f-ee812d6e09cd",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - tactical_vest",
@@ -1879,7 +1879,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "a8c53803-1824-404f-981b-b1db35d2740a",
+                  "__guid": "3814c558-6981-4f3e-ba57-aa70e032c09c",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1926,7 +1926,7 @@
               "Children": []
             },
             {
-              "__guid": "4aa09966-75dc-4b1d-af35-babb69690733",
+              "__guid": "d496a285-51dd-462b-bf14-19acf3f624b6",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - jeans_black",
@@ -1943,7 +1943,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "eb856a2d-f2e6-4981-862d-768de12431d7",
+                  "__guid": "1fe0072d-a845-4fb2-9404-0eec6665f0eb",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -1990,7 +1990,7 @@
               "Children": []
             },
             {
-              "__guid": "46668769-74e0-48e3-9562-63bb003747e0",
+              "__guid": "62bf180e-75e5-4fea-9c2b-5dc5e45b8e2b",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - army_boots",
@@ -2007,7 +2007,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "05db6ff5-5164-4d4a-9cf2-9e8a3e5ac066",
+                  "__guid": "f89c3a32-7c51-4e48-84ca-6cdceadd7741",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -2054,7 +2054,7 @@
               "Children": []
             },
             {
-              "__guid": "8c65924d-b88e-455e-ac2c-41890fd70ae6",
+              "__guid": "323e0623-48bd-4ca0-a615-c0e575cccef5",
               "__version": 2,
               "Flags": 0,
               "Name": "Clothing - fingerless_gloves",
@@ -2071,7 +2071,7 @@
               "Components": [
                 {
                   "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "2f1d26ae-d1c5-4f72-97d1-0a8948ad3072",
+                  "__guid": "77cde569-775b-4e95-a7be-6204d57adac2",
                   "__enabled": true,
                   "Flags": 0,
                   "AnimationGraph": null,
@@ -2884,7 +2884,7 @@
       "Flags": 0,
       "Name": "MP5 (1)",
       "Position": "-47.9999962,-224,40",
-      "Rotation": "0.5,0.5,0.49999997,0.49999997",
+      "Rotation": "0.49999997,0.49999997,0.49999997,0.49999997",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
@@ -2903,7 +2903,7 @@
           "_initialized": false,
           "_isPressing": false,
           "Collider": null,
-          "Data": "scripts/weapons/weapon_smg.wpn",
+          "Data": "scripts/weapons/weapon_shotgun.wpn",
           "FillReserveAmmoForWeapon": true,
           "InternalAmmoCountPrimary": 1,
           "InternalID": null,
@@ -2958,9 +2958,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-428.061493,-85.2264481,100.652855",
+          "Position": "-297.374542,-105.974731,91.9406662",
           "Scale": "1,1,1",
-          "Rotation": "0.00264975778,0.0297769476,-0.0885970145,0.99561888"
+          "Rotation": "0.00593999634,0.196080223,-0.0296914708,0.980120182"
         },
         "_prefab": {
           "_type": "gameobject",
