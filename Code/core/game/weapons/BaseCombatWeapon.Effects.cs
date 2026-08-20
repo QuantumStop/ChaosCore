@@ -1,7 +1,9 @@
+using Core.AI;
+namespace Core;
+
 #if FMOD
 using FMODSbox;
 #endif
-namespace Core;
 
 public partial class BaseCombatWeapon
 {
@@ -22,8 +24,7 @@ public partial class BaseCombatWeapon
 		Vector3 adjusted = worldPos - zOffset * (1.0f - fovScale);
 
 		// Flatten
-		if ( flatten > 0f )
-			adjusted = Vector3.Lerp( adjusted, cameraPos, flatten );
+		if ( flatten > 0f ) adjusted = Vector3.Lerp( adjusted, cameraPos, flatten );
 
 		return adjusted;
 	}
@@ -32,35 +33,32 @@ public partial class BaseCombatWeapon
 	/// Easy way to get world transform of the attachment as an attachment object, if there is one
 	/// </summary>
 	/// <returns>FOV scaled transform of the muzzle, if the player is local</returns>
-	public static Transform GetPlayerAttachObject( BasePlayer owner, string name, out GameObject muzzleObject )
+	public static Transform GetMuzzleAttachObject( BaseEntity owner, string name, out GameObject muzzleObject )
 	{
 		Transform output = new();
-		bool isUs = owner == BasePlayer.Local;
-		muzzleObject = isUs ? owner.ViewmodelWeapon.GetAttachmentObject( name ) : owner.Controller.Head;
+		muzzleObject = null;
 
-		if ( muzzleObject.IsValid() )
+		if ( owner is BasePlayer basePlayer )
 		{
+			bool isUs = basePlayer == BasePlayer.Local;
+			muzzleObject = isUs ? basePlayer.ViewmodelWeapon.GetAttachmentObject( name ) : basePlayer.Controller.Head;
+
+			if ( muzzleObject.IsValid() )
+			{
+				output = muzzleObject.WorldTransform;
+				if ( isUs && basePlayer.UseFOVShader ) output.Position = ReprojectToViewmodel( muzzleObject.WorldPosition,
+				 basePlayer.PawnCamera.WorldPosition,
+				 basePlayer.PawnCamera.WorldRotation.Forward,
+				 BasePlayer.ViewmodelFOV,
+				 GameSettings.FieldOfView ); // don't scale if player isnt local
+			}
+		}
+		else if ( owner is AIController ai )
+		{
+			muzzleObject = ai.WeaponModel.GetAttachmentObject( name ); // TODO: replace with proper when we have the gun refs
 			output = muzzleObject.WorldTransform;
-			if ( isUs ) output.Position = ReprojectToViewmodel( muzzleObject.WorldPosition,
-			 owner.PawnCamera.WorldPosition,
-			 owner.PawnCamera.WorldRotation.Forward,
-			 BasePlayer.ViewmodelFOV,
-			 GameSettings.FieldOfView ); // don't scale if player isnt local
 		}
 
-		return output;
-	}
-
-	/// <summary>
-	/// TODO: Fill out the stub
-	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="muzzleObject"></param>
-	/// <returns></returns>
-	public static Transform GetNPCAttachObject( string name, out GameObject muzzleObject )
-	{
-		Transform output = new();
-		muzzleObject = new();
 		return output;
 	}
 
@@ -68,9 +66,9 @@ public partial class BaseCombatWeapon
 	/// Create the muzzle effect (particle and light) with all settings from the weapon resource
 	/// </summary>
 	[Rpc.Broadcast]
-	protected virtual void CreateMuzzleFlash()
+	protected virtual void CreateMuzzleFlash( bool player = true )
 	{
-		Transform adjustedTransform = GetPlayerAttachObject( Owner.Player, "muzzle", out var attachmentObj );
+		Transform adjustedTransform = GetMuzzleAttachObject( player ? Owner.Player : Owner.NPC, "muzzle", out var attachmentObj );
 
 		if ( !attachmentObj.IsValid() )
 		{
@@ -114,14 +112,15 @@ public partial class BaseCombatWeapon
 	}
 
 	[Rpc.Broadcast]
-	protected virtual void AttackSound( bool primary = true )
+	protected virtual void AttackSound( bool firstperson = true, bool primary = true )
 	{
 #if FMOD
-		var sound = primary ? WeaponData.AttackSoundPrimary : WeaponData.AttackSoundSecondary;
+		var sound = firstperson ? primary ? WeaponData.AttackSoundPrimary : WeaponData.AttackSoundSecondary : primary ? WeaponData.AttackSoundPrimaryThirdPerson : WeaponData.AttackSoundSecondaryThirdPerson;
 
 		if ( !sound.IsValid() ) return;
 
-		var snd = FMODSound.Play( sound );
+
+		var snd = firstperson ? FMODSound.Play( sound ) : FMODSound.Play( sound, GetMuzzleAttachObject( Owner.Player.IsValid() ? Owner.Player : Owner.NPC, "muzzle", out var attachmentObj ).Position );
 		if ( WeaponData.WantNearEmptySound ) FMODSound.SetParameter( snd, "parameter:/Weapons/MagPercent", (float)PrimaryAmmoLoaded / WeaponData.PrimaryAmmoCapacity );
 #else
 		var sounds = primary ? WeaponData.AttackSoundsPrimary : WeaponData.AttackSoundsSecondary;

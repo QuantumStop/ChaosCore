@@ -339,6 +339,13 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	[Property] public bool FallToGround = true;
 
+	[Property] public WeaponParse? SpawnedWeaponData = null;
+	public BaseCombatWeapon? CurrentWeapon = null;
+	public bool CanUseWeapon = true;
+
+	public GameObject WeaponGO;
+	public SkinnedModelRenderer WeaponModel;
+
 #if IGNIS
 	[SaveRestore]
 #endif
@@ -588,6 +595,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			Agent.Radius = Definition.AgentRadius;
 			Agent.Height = Definition.AgentHeight;
 			Agent.Separation = Definition.AgentSeparation;
+	
 		}
 
 		if ( BodyModel.SceneModel is not null )
@@ -730,6 +738,26 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		AIManager.AddAI( this );
 	}
 
+	public void ConfigureWeapon()
+	{
+		if ( SpawnedWeaponData is not null )
+		{
+			WeaponGO = Scene.CreateObject();
+			WeaponGO.Name = $"{SpawnedWeaponData.Name}";
+			WeaponGO.Parent = GameObject;
+			WeaponModel = WeaponGO.AddComponent<SkinnedModelRenderer>();
+			WeaponModel.Model = SpawnedWeaponData.WeaponWorldmodel;
+
+			CurrentWeapon = WeaponGO.AddComponent<BaseCombatWeapon>(false);
+			CurrentWeapon.Owner = new BaseCombatWeapon.WeaponOwner( this );
+			CurrentWeapon.WeaponData = SpawnedWeaponData;
+			CurrentWeapon.Enabled = true;
+	
+			//Log.Info($"Weapon Created for {CurrentWeapon} with owner {CurrentWeapon.Owner}");
+
+		}
+	}
+
 	/// <summary>
 	/// Handles setup and creation of the NPC using the Definition.
 	/// </summary>
@@ -754,6 +782,9 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		PopulateHints();
 		GetAndSetHealth();
 		AddNPCToAIManager();
+
+		if (CanUseWeapon)
+		ConfigureWeapon();
 
 		if ( CurrentSleepState > 0 )
 			SleepNPC();

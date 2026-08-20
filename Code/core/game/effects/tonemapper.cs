@@ -57,11 +57,17 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 		switch ( Mode )
 		{
 			case TonemappingMode.Linear:
-				return;
+				_bias = 1;
+				Attributes.SetCombo( "D_GAMMA", 0 );
+				Attributes.SetCombo( "D_SAT", 0 );
+				_lookupTexture = Texture.Load( "materials/shaders/linear_srgb_rec709.vtex" );
+				_oklab = 1;
+				_satBlend = 0;
+				break;
 			case TonemappingMode.Saturated:
 				_bias = 1.8f;
-				Attributes.SetCombo( "D_GAMMA", 0 );    // nothing
-				Attributes.SetCombo( "D_SAT", 0 );  // use the oklch saturation
+				Attributes.SetCombo( "D_GAMMA", 0 );
+				Attributes.SetCombo( "D_SAT", 0 );
 				_lookupTexture = Texture.Load( "materials/shaders/agx_logc3_rec709.vtex" );
 				_oklab = 1;
 				_satBlend = 0;
@@ -100,11 +106,11 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 		Attributes.Set( "SatBlend", GetWeighted( x => x._satBlend ) );
 		Attributes.Set( "LookupTexture", _lookupTexture );
 
-		var blit = BlitMode.WithBackbuffer( Shader, Sandbox.Rendering.Stage.Tonemapping, int.MaxValue, false );
+		var blit = BlitMode.WithBackbuffer( _shader, Sandbox.Rendering.Stage.Tonemapping, int.MaxValue, false );
 		Blit( blit, "Ignis Tonemapper" );
 	}
 
-	private static Material Shader = Material.FromShader( "tonemapping.shader" );
+	private static Material _shader = Material.FromShader( "tonemapping.shader" );
 
 	/// <summary>
 	/// Calculate resulting gamma bias, instead of using two separate gammas and calculating each

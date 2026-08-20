@@ -19,9 +19,9 @@ public partial class GameProp
 			{
 				field = value;
 
-				CanBeHeldAccessor = !value;
+				_canBeHeldAccessor = !value;
 
-				if ( Active && ProceduralComponents is not null )
+				if ( Active && _proceduralComponents is not null )
 				{
 					ClearProcedurals();
 					UpdateComponents();
@@ -83,18 +83,9 @@ public partial class GameProp
 		}
 	} = 10f;
 
-	private void OnMassChange()
-	{
-		Rigidbody rb = Components.Get<Rigidbody>();
+	private void OnMassChange() => _rigidbody?.MassOverride = OverrideMass ? NewMass : 0;
 
-		if ( rb.IsValid() )
-		{
-			if ( OverrideMass )
-				rb.MassOverride = NewMass;
-			else
-				rb.MassOverride = 0;
-		}
-	}
+	private ModelHitboxes _modelHitboxes { get; set; }
 
 	void CreatePhysicsComponent()
 	{
@@ -102,6 +93,13 @@ public partial class GameProp
 		{
 			DestroyRagdollPhysicsComponent();
 			return;
+		}
+
+		if ( Model.HitboxSet?.All.Count > 0 && _modelRenderer.IsValid() && _modelRenderer is SkinnedModelRenderer skinned )
+		{
+			_modelHitboxes = Components.GetOrCreate<ModelHitboxes>();
+			_modelHitboxes.Renderer = skinned;
+			AddProcedural( _modelHitboxes );
 		}
 
 		if ( IsStatic )
@@ -127,23 +125,19 @@ public partial class GameProp
 
 			AddProcedural( collider );
 
-			var rigidBody = Components.GetOrCreate<Rigidbody>();
+			_rigidbody = Components.GetOrCreate<Rigidbody>();
 
 			// Need to initially sync mass here if we override it, can
 			// continue changing the mass from there on too as well
-			if ( OverrideMass )
-				rigidBody.MassOverride = NewMass;
+			if ( OverrideMass ) _rigidbody.MassOverride = NewMass;
 
 			if ( StartAsleep )
 			{
-				rigidBody.StartAsleep = true;
-				if ( rigidBody.PhysicsBody.IsValid() )
-				{
-					rigidBody.PhysicsBody.Sleeping = true;
-				}
+				_rigidbody.StartAsleep = true;
+				_rigidbody.PhysicsBody?.Sleeping = true;
 			}
 
-			AddProcedural( rigidBody );
+			AddProcedural( _rigidbody );
 
 			return;
 		}
@@ -158,15 +152,17 @@ public partial class GameProp
 		_modelPhysics.Renderer = _modelRenderer as SkinnedModelRenderer ?? Components.Get<SkinnedModelRenderer>();
 		_modelPhysics.StartAsleep = StartAsleep;
 		_modelPhysics.MotionEnabled = RagdollActive;
-		_modelPhysics.Flags |= ComponentFlags.Hidden;
+
+		AddProcedural( _modelPhysics );
 	}
 
 	private void DestroyRagdollPhysicsComponent()
 	{
 		_modelPhysics ??= Components.Get<ModelPhysics>();
-		if ( !_modelPhysics.IsValid() )
-			return;
 
+		if ( !_modelPhysics.IsValid() ) return;
+
+		if ( _proceduralComponents.Contains( _modelPhysics ) ) _proceduralComponents.Remove( _modelPhysics );
 		_modelPhysics.Destroy();
 		_modelPhysics = null;
 	}
@@ -223,11 +219,10 @@ public partial class GameProp
 		}
 		else
 		{
-			Components.TryGet<Rigidbody>( out var rb );
-			if ( rb.IsValid() )
+			if ( _rigidbody.IsValid() )
 			{
-				rb.PhysicsBody.ApplyImpulse( f );
-				rb.PhysicsBody.ApplyAngularImpulse( af );
+				_rigidbody.PhysicsBody.ApplyImpulse( f );
+				_rigidbody.PhysicsBody.ApplyAngularImpulse( af );
 				return;
 			}
 

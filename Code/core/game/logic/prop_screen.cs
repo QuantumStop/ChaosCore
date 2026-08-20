@@ -62,7 +62,7 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 	[DebugExpose]
 #endif
 	[Property, Order( 1 ), Title( "Selected Video: " ), FilePath( Extension = "mp4" ), WideMode()]
-	private string VideoPath
+	private string _videoPath
 	{
 		get;
 		set
@@ -101,15 +101,17 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Property, FeatureEnabled( "Cookie" )] private bool Cookie { get; set; } = false;
+	[Property, FeatureEnabled( "Cookie" )] private bool _cookie { get; set; } = false;
 
-	const string EditorVideo = "resource/videos/screen/editor.mp4";
+	private const string _editorVideo = "resource/videos/screen/editor.mp4";
+
+	public bool IsPlaying => _videoPlayer is not null && !_videoPlayer.IsPaused && _videoPlayer.Duration > 0;
 
 	[Button, Order( 10 ), Feature( "Debug" )]
 	private void CopyEditorTestVideoToGame()
 	{
-		if ( VideoPath != EditorVideo )
-			VideoPath = EditorVideo;
+		if ( _videoPath != _editorVideo )
+			_videoPath = _editorVideo;
 		else
 			Log.Warning( "It is already bizking the limp" );
 	}
@@ -145,7 +147,7 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 
 			if ( _videoPlayer is not null )
 			{
-				var whatvid = string.IsNullOrEmpty( VideoPath ) ? EditorVideo : VideoPath;
+				var whatvid = string.IsNullOrEmpty( _videoPath ) ? _editorVideo : _videoPath;
 				_videoPlayer?.Play( FileSystem.Mounted, whatvid );
 
 				_videoPlayer.Repeat = Scene.IsEditor || ShouldLoop;
@@ -166,7 +168,7 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 	{
 		_videoPlayer?.Stop();
 		_videoPlayer?.Dispose();
-		_kelvinSpotLight?.Cookie.Dispose();
+		_kelvinSpotLight?.Cookie?.Dispose();
 	}
 
 	[Button, Title( "Force Start Video" ), Feature( "Debug" ), WideMode]
@@ -180,8 +182,10 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 
 	private void UpdateAttributeAndCookie( bool isVideo = true )
 	{
+		if ( !IsPlaying && _cookie ) { _kelvinSpotLight?.Enabled = false; return; }
+
 		_modelRenderer?.Attributes.Set( "ScreenTexture", isVideo ? _videoPlayer?.Texture : _renderTarget?.Texture );
-		if ( Cookie ) _kelvinSpotLight?.Cookie = isVideo ? _videoPlayer?.Texture : _renderTarget?.Texture;
+		if ( _cookie ) _kelvinSpotLight?.Cookie = isVideo ? _videoPlayer?.Texture : _renderTarget?.Texture;
 	}
 
 	/*

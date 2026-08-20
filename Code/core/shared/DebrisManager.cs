@@ -348,17 +348,14 @@ public class DebrisManager : BaseEntity
 		//		prefabObject.Clone( transform );
 		//		prefabObject.BreakFromPrefab(); // dont want the prefab, so we can add shit to it
 
-		GameObject prefabObject = new()
-		{
-			Name = "Projectile",
-		};
+		GameObject prefabObject = new( " Projectile" );
 		prefabObject.SetParent( Instance.GameObject );
 		prefabObject.LocalRotation = transform.Rotation;
 		prefabObject.LocalPosition = transform.Position;
 
 		bullet = prefabObject.AddComponent<BulletProjectile>(); // just a bullet for now but later we should decide which component
 		bullet.Ammo = coreDamageInfo.Ammo;
-		bullet.damageInfo = coreDamageInfo;
+		bullet.DamageInfo = coreDamageInfo;
 		bullet.Spread = spread;
 
 		if ( prefabObject.Components.TryGet<BulletProjectile>( out var bulletref ) ) // we just created it, it will probably be not null but you will never know

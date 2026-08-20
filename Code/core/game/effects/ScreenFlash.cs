@@ -8,7 +8,6 @@ namespace Core;
 public sealed class ScreenFlash : BasePostProcess<ScreenFlash>, Component.ExecuteInEditor
 {
 	public static ScreenFlash Instance { get; set; }
-	public ScreenFlash() => Instance = this;
 
 	private float _strength { get; set; } = 0f;
 	private Color _flashColor { get; set; }

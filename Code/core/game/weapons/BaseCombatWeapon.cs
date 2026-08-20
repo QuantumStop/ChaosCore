@@ -6,15 +6,6 @@
 using System;
 using Core.AI;
 
-// move this out this is more npc related
-public enum WeaponEquipSlot
-{
-	SLOT_PRIMARY,
-	SLOT_SIDEARM,
-	SLOT_MELEE,
-	NONE
-}
-
 [Hide]
 public partial class BaseCombatWeapon : BaseEntity
 {
@@ -64,7 +55,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// <summary>
 	/// This should've been OnStart
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected bool _doFirstSetup { get; set; } = true;
+	[Property, ReadOnly, Feature( "Debug" )] public bool DoFirstSetup { get; protected set; } = true;
 	[Property, ReadOnly, Feature( "Debug" )] public bool WasOnTheGround { get; set; } = false;
 	/// <summary>
 	/// How many shots were fired in quick succession (consequitive shots)
@@ -160,7 +151,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
 	protected virtual void ChangeEmpty() => Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
 
-	[ConVar( "debug_reloadstage" )] public static bool DebugReloadStage { get; set; }
+	[ConVar( "debug_reloadstage" )] static public bool DebugReloadStage { get; set; }
 	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat )] static public bool DebugNoRecoil { get; set; }
 
 	/// <summary>
@@ -168,7 +159,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	private void SyncAnimgraphState()
 	{
-		FirstEquip = FirstEquip && _doFirstSetup;
+		FirstEquip = FirstEquip && DoFirstSetup;
 
 		Owner.Player?.SetAllAnimgraphParams( "b_first_equip", FirstEquip );
 		Owner.Player?.SetAllAnimgraphParams( "b_mag_out", MagOut );
@@ -200,13 +191,19 @@ public partial class BaseCombatWeapon : BaseEntity
 		//			return;
 
 		FirstSetup();
+		SetupCustomData();
 
 		WasOnTheGround = false;
 	}
 
+	/// <summary>
+	/// Use this to setup your custom data instead of overriding OnStart and having to do base.OnStart() etc etc
+	/// </summary>
+	protected virtual void SetupCustomData() { }
+
 	protected virtual void FirstSetup()
 	{
-		if ( _doFirstSetup )
+		if ( DoFirstSetup )
 		{
 			if ( !WasOnTheGround ) PrimaryAmmoLoaded = WeaponData.PrimaryAmmoCapacity;
 			PrimaryAmmoInChamber = 1;
@@ -215,7 +212,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 			IsHolstered = true;
 
-			_doFirstSetup = false;
+			DoFirstSetup = false;
 		}
 	}
 
@@ -227,18 +224,35 @@ public partial class BaseCombatWeapon : BaseEntity
 
 	protected override void OnUpdate()
 	{
+		// nobody owns this
+		if ( !Owner.Player.IsValid() && !Owner.NPC.IsValid() ) return;
+
 		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return;
 
-		// nobody owns this, prevent nre
-		if ( Owner.Player is null && Owner.NPC is null )
-			return;
-
 		// dont run the whole update if its not equipped
-		if ( !ReadyToFire )
-			return;
+		if ( !ReadyToFire ) return;
 
-		HandleWeaponInput();
-		HandleWeaponStates();
+		if ( Owner.Player.IsValid() )
+		{
+			HandleWeaponInput();
+			HandleWeaponStates();
+			return;
+		}
+
+		if ( Owner.NPC.IsValid() ) OnUpdateNPC();
+	}
+
+	protected override void OnFixedUpdate()
+	{
+		// nobody owns this
+		if ( !Owner.Player.IsValid() && !Owner.NPC.IsValid() ) return;
+
+		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return;
+
+		// dont run the whole fixedupdate if its not equipped
+		if ( !ReadyToFire ) return;
+
+		if ( Owner.NPC.IsValid() ) OnFixedUpdateNPC();
 	}
 
 	/// <summary>
@@ -313,34 +327,41 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual void HandleWeaponStates()
 	{
 		//	auto reload even if you are already in one, but only if you have ammo
-		if ( PrimaryAmmoLoaded <= 0 && ReadyToFire && HasUsableAmmo() )
+		if ( !IsMeleeWeapon() )
 		{
-			_gunEmpty = true;
-			if ( _gunEmptyTime + _autoReloadDelay < WorldTime.Now )
+			if ( PrimaryAmmoLoaded <= 0 && ReadyToFire && HasUsableAmmo() )
+			{
+				_gunEmpty = true;
+				if ( _gunEmptyTime + _autoReloadDelay < WorldTime.Now )
+					StartReload();
+			}
+			else if ( (PrimaryAmmoLoaded > 0) && _inStagedReload )
+			{
 				StartReload();
-		}
-		else if ( (PrimaryAmmoLoaded > 0) && _inStagedReload )
-		{
-			StartReload();
-		}
-		else if ( PrimaryAmmoLoaded <= 0 && ReadyToFire && !HasUsableAmmo() ) // super empty
-		{
-			_gunEmpty = true;
-			if ( _gunEmptyTime + (_autoReloadDelay * 5) < WorldTime.Now )
-				Owner.Player?.SwitchToWeapon( BasePlayer.BestNextWeapon( this ) );
-		}
-		else
-		{
-			_gunEmpty = false;
-			_gunEmptyTime = WorldTime.Now;
+			}
+			else if ( PrimaryAmmoLoaded <= 0 && ReadyToFire && !HasUsableAmmo() ) // super empty
+			{
+				_gunEmpty = true;
+				if ( _gunEmptyTime + (_autoReloadDelay * 5) < WorldTime.Now )
+					Owner.Player?.SwitchToWeapon( BasePlayer.BestNextWeapon( this ) );
+			}
+			else
+			{
+				_gunEmpty = false;
+				_gunEmptyTime = WorldTime.Now;
+			}
 		}
 	}
 	/// <summary>
 	/// Draw the weapon.
 	/// Needs to be public because other stuff can force us to draw
 	/// </summary>
-	public virtual void Draw()
+	public virtual void Draw( BasePlayer.HolsterType type = BasePlayer.HolsterType.Weapon, bool force = false )
 	{
+		if ( !force && Owner.Player.HolsterOwner != BasePlayer.HolsterType.None && Owner.Player.HolsterOwner != type ) return;
+
+		Owner.Player.HolsterOwner = BasePlayer.HolsterType.None; // clear the owner
+
 		SyncAnimgraphState();
 		Owner.Player?.SetAllAnimgraphParams( "b_equipped", true );
 
@@ -379,7 +400,9 @@ public partial class BaseCombatWeapon : BaseEntity
 		return true;
 	}
 
+#if !FMOD
 	protected SoundHandle _shootHandle;
+#endif
 
 	/// <summary>
 	/// The main weapon shot, usually left mouse click.
@@ -400,7 +423,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
 
-		AttackSound();
+		AttackSound( Owner.Player.IsPossessedLocally );
 
 		if ( !BasePlayer.NoReload )
 		{
@@ -432,6 +455,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	public virtual void FireBullet( bool isPlayer = true, bool isPrimary = true )
 	{
 		var damageInfo = GetDamageInfo( isPrimary, isPlayer );
+		var ownerTransform = isPlayer ? Owner.Player.GetEyeTransform() : Owner.NPC.WorldTransform;
 
 		if ( WeaponData.SpreadType == SpreadType.SPREAD_DYNAMIC
 			&& WeaponData.DynamicSpreadType == DynamicSpreadType.PER_CONSECUTIVE_SHOT )
@@ -441,9 +465,9 @@ public partial class BaseCombatWeapon : BaseEntity
 				float spread = GetSpreadForBullet( isPrimary, _shotsFired, i, _amountPerShot );
 
 				if ( _isProjectile )
-					AttackManager.FireProjectile( Owner.Player.GetEyeTransform(), damageInfo, spread );
+					AttackManager.FireProjectile( ownerTransform, damageInfo, spread );
 				else
-					AttackManager.FireHitscan( Owner.Player.GetEyeTransform(), damageInfo, spread );
+					AttackManager.FireHitscan( ownerTransform, damageInfo, spread );
 			}
 		}
 		else
@@ -453,9 +477,9 @@ public partial class BaseCombatWeapon : BaseEntity
 				float spread = GetSpreadForBullet( isPrimary, _shotsFired + i );
 
 				if ( _isProjectile )
-					AttackManager.FireProjectile( Owner.Player.GetEyeTransform(), damageInfo, spread );
+					AttackManager.FireProjectile( ownerTransform, damageInfo, spread );
 				else
-					AttackManager.FireHitscan( Owner.Player.GetEyeTransform(), damageInfo, spread );
+					AttackManager.FireHitscan( ownerTransform, damageInfo, spread );
 			}
 		}
 	}
@@ -476,11 +500,9 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	protected virtual void SecondaryAttack()
 	{
-		if ( !AttackConditions() )
-			return;
+		if ( !AttackConditions( false ) ) return;
 
-		if ( !UsesSecondary() )
-			return;
+		if ( !UsesSecondary() ) return;
 
 		LastAttackTime = WorldTime.Now;
 
@@ -580,10 +602,8 @@ public partial class BaseCombatWeapon : BaseEntity
 		/// </summary>
 		public readonly AIController NPC;
 
-		public WeaponOwner( BaseEntity owner )
-		{
-			if ( owner is BasePlayer player ) Player = player;
-			if ( owner is AIController controller ) NPC = controller;
-		}
+		public WeaponOwner( BasePlayer player ) => Player = player;
+
+		public WeaponOwner( AIController npc ) => NPC = npc;
 	}
 }

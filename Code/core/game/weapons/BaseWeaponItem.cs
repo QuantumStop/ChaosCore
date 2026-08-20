@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Sandbox.Internal;
 
 namespace Core;
 
@@ -68,47 +69,34 @@ public class BaseWeaponItem : BaseItem
 		if ( !WasDropped && Data.HasPrimaryAmmoType && !FillReserveAmmoForWeapon ) InternalAmmoCountPrimary = Data.PrimaryAmmoCapacity;
 	}
 
-	public override bool Press( IPressable.Event press )
-	{
-		if ( BasePlayer.Local.LifeState == LifeState.Dead )
-			return false;
+	public const float PickupTime = 0.3f;
 
-		var TryGet = press.Source.Components.TryGet<BasePlayer>( out var Activator );
-
-		// Source of the Use should be a player, as this is specifically a player input press thing rather than general "anyone" (NPC) interaction
-		OnUse?.Invoke( Activator );
-
-		return true;
-	}
-
-	[Property] public float PickupTime { get; private set; } = 0.3f;
-
-	[Property, ReadOnly, Feature( "Debug" )] private float counter = 0;
-	[Property, ReadOnly, Feature( "Debug" )] private bool isPressing = false;
+	[Property, ReadOnly, Feature( "Debug" )] private float _counter = 0;
+	[Property, ReadOnly, Feature( "Debug" )] private bool _isPressing = false;
 
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
 
 		if ( Input.Released( "use" ) ) // IPressable Release doesnt work somehow
-			isPressing = false;
+			_isPressing = false;
 
-		if ( !isPressing && counter > 0 )
-			counter -= Time.Delta;
+		if ( !_isPressing && _counter > 0 )
+			_counter -= Time.Delta;
 
-		counter = Math.Clamp( counter, 0, PickupTime );
+		_counter = Math.Clamp( _counter, 0, PickupTime );
 	}
 
 	public override bool Pressing( IPressable.Event press )
 	{
 		base.Pressing( press );
 
-		isPressing = true;
+		_isPressing = true;
 
-		if ( counter < PickupTime )
-			counter += Time.Delta;
+		if ( _counter < PickupTime )
+			_counter += Time.Delta;
 
-		if ( counter == PickupTime )
+		if ( _counter == PickupTime )
 		{
 			press.Source.Components.TryGet<BasePlayer>( out var Activator );
 
@@ -142,12 +130,8 @@ public class BaseWeaponItem : BaseItem
 	/// </summary>
 	public bool NeedsWarmingUp { get; set; } = false;
 
-
 	public override void OnPickup( BasePlayer Activator = null )
 	{
-		//		if ( !Data?.WeaponViewmodel.IsValid() )   // no viewmodel? goodbye!
-		//			return;
-
 		if ( Activator.LifeState == LifeState.Dead ) // Ghosts can attempt to pick up items, but we won't let them actually do it
 			return;
 

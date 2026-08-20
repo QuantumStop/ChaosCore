@@ -289,6 +289,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			pos.y += _debugSpacing;
 		}
 
+		if ( AIManager.AIDisable ) AIDisable( new( Screen.Width * 0.7f, Screen.Height * 0.8f ) );
 	}
 
 	private static void WorldTime( ref Vector2 pos )
@@ -543,6 +544,22 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		DebugOverlaySystem.Current.ScreenText( new Vector2( x, y ), scope, TextFlag.Left, 0f );
 
 		pos.y = y;
+	}
+
+	private static void AIDisable( Vector2 pos )
+	{
+		if ( !BasePlayer.Local.IsValid() ) return;
+
+		var scope = InitDebugTextScope();
+		scope.FontSize *= 3;
+
+		var x = pos.x;
+		var y = pos.y;
+
+		scope.Text = "AI Disabled...";
+		scope.TextColor = Color.Red;
+
+		DebugOverlaySystem.Current.ScreenText( new Vector2( x, y ), scope, TextFlag.Left, 0f );
 	}
 
 	private static void StandaloneVersion( Vector2 pos )

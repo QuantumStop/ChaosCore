@@ -99,46 +99,46 @@ public partial class GameProp
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public Vector3 CurrentVelocity => Components.Get<Rigidbody>() is { } rigidBody && rigidBody.IsValid() ? rigidBody.Velocity : default;
 #if IGNIS
 	[DebugExpose]
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public Vector3 PreImpactVelocity => Components.Get<Rigidbody>() is { } rigidBody && rigidBody.IsValid() ? rigidBody.PreVelocity : default;
 	[DebugExpose]
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public Vector3 PreImpactAngularVelocity => Components.Get<Rigidbody>() is { } rigidBody && rigidBody.IsValid() ? rigidBody.PreAngularVelocity : default;
 
 	[DebugExpose]
 #endif
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public float CurrentSpeed => CurrentVelocity.Length;
 #if IGNIS
 	[DebugExpose]
 
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public float PreImpactSpeed => PreImpactVelocity.Length;
 
 	[DebugExpose]
 #endif
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public float ImpactSpeedThreshold => ResolvedMinImpactDamageSpeed;
 
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public float ImpactDamageAmount => ResolvedImpactDamage;
 
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public float LastImpactSpeed { get; private set; }
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( HasRigidbody ), true )]
+	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public bool LastImpactPassedThreshold { get; private set; }
 
 	private bool ModelFlammable => Model?.Data.Flammable ?? false;
@@ -282,7 +282,7 @@ public partial class GameProp
 
 		OnPropExplode?.Invoke( null );
 #if FMOD
-		FMODSound.Play( "event:/Weapons/3P/Explosion", go.WorldPosition );
+		FMODSound.Play( "event:/Weapons/Explosion", go.WorldPosition );
 #endif
 		// set up the damage appropriately
 		go.RunEvent<RadiusDamage>( x =>
@@ -302,7 +302,7 @@ public partial class GameProp
 
 	private void PlayBreakSound()
 	{
-		if ( ProceduralComponents is null )
+		if ( _proceduralComponents is null )
 			return;
 
 		if ( !Components.TryGet<Rigidbody>( out var rigidBody ) || !rigidBody.PhysicsBody.IsValid() )

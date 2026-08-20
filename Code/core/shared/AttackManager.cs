@@ -61,7 +61,7 @@ public static partial class AttackManager
 			attack.Result = bullet.Result;
 
 			// TODO: make this not BasePlayer.Local
-			Transform muzzleTrans = BaseCombatWeapon.GetPlayerAttachObject( BasePlayer.Local, "muzzle", out var attachmentObj );
+			Transform muzzleTrans = BaseCombatWeapon.GetMuzzleAttachObject( BasePlayer.Local, "muzzle", out var attachmentObj );
 
 			if ( attachmentObj.IsValid() )
 			{
@@ -192,17 +192,19 @@ public static partial class AttackManager
 
 			foreach ( var traceHit in list )
 			{
-				if ( !IsDamageValid( traceHit, damage ) ) // filter the bad first
-					continue;
+				// filter the bad first
+				if ( !IsDamageValid( traceHit, damage ) ) continue;
 
-				//	Log.Info( $"{traceHit} / {traceHit.Component} / {traceHit.Hitbox}" );
-				//	Log.Info( " " );
+				if ( DebugHitResult )
+				{
+					Log.Info( $"Struct: {traceHit} / Component: {traceHit.Component} / Hitbox: {traceHit.Hitbox}" );
+					Log.Info( " " );
+				}
 
 				result.Hit = true; // because of RunAll, if we are here then its true anyway
 				result.Last = traceHit;
 
-				if ( traceHit.Hitbox is not null || traceHit.Component is Collider || traceHit.Component is Rigidbody )
-					break;
+				if ( traceHit.Hitbox is not null || traceHit.Component is Collider || traceHit.Component is Rigidbody ) break;
 			}
 		}
 
@@ -220,6 +222,8 @@ public static partial class AttackManager
 
 		return result;
 	}
+
+	[ConVar( "debug_hit_result" )] public static bool DebugHitResult { get; set; }
 
 	/// <summary>
 	/// Trace an explosion instead of a ray, apply damage and force to all objects

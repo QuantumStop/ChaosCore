@@ -176,6 +176,7 @@ public partial class BasePlayer
 	{
 		base.SetCameraActive( which );
 		ViewmodelWeaponObject.Enabled = which;
+		ScreenFlash.Instance = PawnCamera.Components.GetOrCreate<ScreenFlash>();
 	}
 
 	public virtual void UpdateBodyVisibility()

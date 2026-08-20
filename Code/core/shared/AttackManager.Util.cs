@@ -90,9 +90,14 @@ partial class AttackManager
 		var ammo = coreDamageInfo.Ammo;
 
 		// apply force to all rigidbodies in the object that was hit
-		var rigid = attack.Last.GameObject.GetComponents<Rigidbody>();
-		foreach ( var physics in rigid )
-			physics.ApplyImpulseAt( coreDamageInfo.Position, coreDamageInfo.Force * BulletImpulse( ammo.Grains, ammo.FtPerSec, 1.25f ) * 2.2f );  // magic bullshit lbs/kg number
+		var rigid = (isSkinned ? bone : attack.Last.GameObject).Components.Get<Rigidbody>();
+		var force = coreDamageInfo.Force * BulletImpulse( ammo.Grains, ammo.FtPerSec, 1.25f ) * 2.2f; // magic bullshit lbs/kg number
+
+		if ( rigid.IsValid() )
+		{
+			if ( isSkinned ) force *= MathF.Max( rigid.Mass, 1 );
+			rigid.ApplyImpulseAt( coreDamageInfo.Position, force );
+		}
 
 		// Create all the effects
 		DebrisManager.CreateBulletDecal( attack.Last.EndPosition,

@@ -21,8 +21,15 @@ public class NpcDefinition : GameResource
 	}
 
 	[Category( "Model Config" )] public List<Model> Models { get; set; }
-	[Category( "Model Config" ), AttachmentSelector] public string EyeAttachment { get; set; }   // seconds before alert drops
-	[Category( "Model Config" ), AttachmentSelector] public List<string> footAttachments { get; set; }   // seconds before alert drops
+	[Category( "Model Config" ), AttachmentSelector] public string EyeAttachment { get; set; }
+	[Category( "Model Config" ), AttachmentSelector] public List<string> FootAttachments { get; set; }
+	/// <summary>Attachment for big weapon holster on the back</summary>
+	[Category( "Model Config" ), AttachmentSelector] public string TwoHandedAttachment { get; set; }
+	/// <summary>Attachment for small weapon holster on the side</summary>
+	[Category( "Model Config" ), AttachmentSelector] public string OneHandedAttachment { get; set; }
+	/// <summary>Attachment for small weapon holster on the wherever</summary>
+	[Category( "Model Config" ), AttachmentSelector] public string MeleeAttachment { get; set; }
+
 
 
 	/*[Category( "Weaponry" )] public bool SupportsPrimaryWeapons { get; set; }
@@ -101,7 +108,15 @@ public class NpcDefinition : GameResource
 	[Category( "Sounds" )] public float MaxCombatSoundRefire { get; set; } = 6;
 	[Category( "Sounds" )] public float MinPainSoundRefire { get; set; } = 2;
 	[Category( "Sounds" )] public float MaxPainSoundRefire { get; set; } = 6;
-	[Category( "Sounds" ), Property] public Curve BreathingCurve { get; set; }// experiment. uses a curve to define the movement of the breathing flex. breathing should probably be an optional shared ability
+	[Category( "Sounds" ), Property] public Curve BreathingCurve { get; set; } // experiment. uses a curve to define the movement of the breathing flex. breathing should probably be an optional shared ability
+
+	public string GetHolsterAttachment( BaseCombatWeapon weapon ) => weapon.WeaponData.EquipSlot switch
+	{
+		WeaponHolsterSlot.SLOT_TWOHANDED => TwoHandedAttachment,
+		WeaponHolsterSlot.SLOT_ONEHANDED => OneHandedAttachment,
+		WeaponHolsterSlot.SLOT_MELEE => MeleeAttachment,
+		_ => null
+	};
 
 	protected override Bitmap CreateAssetTypeIcon( int width, int height ) => CreateSimpleAssetTypeIcon( "share", width, height, "#c23737", "#e2e2e2" );
 
@@ -169,71 +184,4 @@ public class AIActionDefinition : GameResource
 
 
 	public ActionList Action { get; set; }
-}
-
-
-
-[AssetType( Name = "AI Shared Model Information", Extension = "npcsmi", Category = "NPC" )]
-public class SharedNpcModelInfo : GameResource
-{
-	[Category( "Weaponry" )] public string PrimaryWeaponAttachmentEquipped { get; set; }
-	[Category( "Weaponry" )] public string SidearmWeaponAttachmentEquipped { get; set; }
-	[Category( "Weaponry" )] public string MeleeWeaponAttachmentEquipped { get; set; }
-	[Category( "Weaponry" )] public string PrimaryWeaponAttachmentOffhand { get; set; }
-	[Category( "Weaponry" )] public string SidearmWeaponAttachmentOffhand { get; set; }
-	[Category( "Weaponry" )] public string MeleeWeaponAttachmentOffhand { get; set; }
-	[Category( "Weaponry" )] public string PrimaryWeaponAttachmentHolstered { get; set; }
-	[Category( "Weaponry" )] public string SidearmWeaponAttachmentHolstered { get; set; }
-	[Category( "Weaponry" )] public string MeleeWeaponAttachmentHolstered { get; set; }
-
-	[Category( "Animation" )] public string AnimgraphControllerClass { get; set; }
-	[Category( "Animation" )] public AnimationGraph Animgraph { get; set; }
-
-	public struct FootData
-	{
-		[AttachmentSelector] public string HeelAttachment { get; set; }
-		[AttachmentSelector] public string ToeAttachment { get; set; }
-	}
-	[Category( "Feet" )] public Dictionary<string, FootData> Feet { get; set; }
-
-	[Category( "Hands" )] public string HandLeft { get; set; }
-	[Category( "Hands" )] public string WeaponBoneLeft { get; set; }
-	[Category( "Hands" )] public string HandRight { get; set; }
-	[Category( "Hands" )] public string WeaponBoneRight { get; set; }
-
-	[Category( "Face" ), AttachmentSelector] public string EyeAttachment { get; set; }
-	[Category( "Face" ), AttachmentSelector] public string MouthAttachment { get; set; }
-
-	[Category( "Corpse" )] public string CorpseCenter { get; set; }
-
-	public string GetEquippedAttachment( BaseNpcWeapon weapon )
-	{
-		return weapon.WeaponData.EquipSlot switch
-		{
-			WeaponEquipSlot.SLOT_PRIMARY => PrimaryWeaponAttachmentEquipped,
-			WeaponEquipSlot.SLOT_SIDEARM => SidearmWeaponAttachmentEquipped,
-			WeaponEquipSlot.SLOT_MELEE => MeleeWeaponAttachmentEquipped,
-			_ => null
-		};
-	}
-	public string GetOffhandAttachment( BaseNpcWeapon weapon )
-	{
-		return weapon.WeaponData.EquipSlot switch
-		{
-			WeaponEquipSlot.SLOT_PRIMARY => PrimaryWeaponAttachmentOffhand,
-			WeaponEquipSlot.SLOT_SIDEARM => SidearmWeaponAttachmentOffhand,
-			WeaponEquipSlot.SLOT_MELEE => MeleeWeaponAttachmentOffhand,
-			_ => null
-		};
-	}
-	public string GetHolsteredAttachment( BaseNpcWeapon weapon )
-	{
-		return weapon.WeaponData.EquipSlot switch
-		{
-			WeaponEquipSlot.SLOT_PRIMARY => PrimaryWeaponAttachmentHolstered,
-			WeaponEquipSlot.SLOT_SIDEARM => SidearmWeaponAttachmentHolstered,
-			WeaponEquipSlot.SLOT_MELEE => MeleeWeaponAttachmentHolstered,
-			_ => null
-		};
-	}
 }

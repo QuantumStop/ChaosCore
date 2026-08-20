@@ -35,7 +35,7 @@ public class AIManager : GameObjectSystem<AIManager>
 	public List<AIController> currentNPCsInScene { get; set; }
 
 	[ConVar( "ai_max_nav_calls_pertick" )] public static int MaxNavCallsPerTick { get; set; } = 4;
-	[ConVar( "ai_max_phase_per_tick" )] public static int MaxPhasesPerTick { get; set; } = 5;
+	[ConVar( "ai_max_phase_per_tick" )] public static int MaxPhasesPerTick { get; set; } = 15;
 	[ConVar( "ai_debug_actions" )] public static bool AIDebugActions { get; set; } = false;
 	[ConVar( "ai_debug_corpses" )] public static bool AIDebugCorpses { get; set; } = false;
 	[ConVar( "ai_disable" )] public static bool AIDisable { get; set; } = false;

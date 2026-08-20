@@ -5,15 +5,16 @@ using FMODSbox;
 #endif
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 partial class BasePlayer
 {
-	private static readonly Dictionary<string, bool> WeaponIconIsValidCache = new( StringComparer.OrdinalIgnoreCase );
+	private static readonly Dictionary<string, bool> _weaponIconIsValidCache = new( StringComparer.OrdinalIgnoreCase );
 
 	public bool SelectionOpen = false;
 	public bool WeaponJustConfirmed = false;
-	private TimeSince timeSinceLastScroll;
-	private const float ScrollCooldown = 0.075f;
+	private TimeSince _timeSinceLastScroll;
+	private const float _scrollCooldown = 0.075f;
 #if !FMOD
 	SoundHandle WeaponSelectHandle;
 #endif
@@ -237,7 +238,7 @@ partial class BasePlayer
 
 		if ( string.IsNullOrEmpty( icon ) ) return null;
 
-		if ( WeaponIconIsValidCache.TryGetValue( icon, out var isValid ) )
+		if ( _weaponIconIsValidCache.TryGetValue( icon, out var isValid ) )
 			return isValid ? icon : null;
 
 		isValid = false;
@@ -248,7 +249,7 @@ partial class BasePlayer
 				isValid = true;
 		}
 
-		WeaponIconIsValidCache[icon] = isValid;
+		_weaponIconIsValidCache[icon] = isValid;
 		return isValid ? icon : null;
 	}
 
@@ -261,9 +262,9 @@ partial class BasePlayer
 
 		// --- Handle scroll wheel ---
 		float scrollDelta = Input.MouseWheel.y;
-		if ( scrollDelta != 0 && timeSinceLastScroll >= ScrollCooldown )
+		if ( scrollDelta != 0 && _timeSinceLastScroll >= _scrollCooldown )
 		{
-			timeSinceLastScroll = 0;
+			_timeSinceLastScroll = 0;
 			TimeSinceLastWeaponSelect = 0;
 			int direction = scrollDelta < 0 ? 1 : -1;
 
@@ -562,5 +563,14 @@ partial class BasePlayer
 	{
 		if ( bucket is null || bucket.Count == 0 ) return false;
 		return bucket.Any( w => w.IsValid() && w.HasUsableAmmo() );
+	}
+
+	/// <summary>
+	/// Handle the "Switch to last weapon" input
+	/// </summary>
+	private void HandleLastSelected()
+	{
+		// don't allow us to switch to previous weapon if we don't have anything right now or it would be weird (we most likely want to not have something at this moment)
+		if ( Input.Pressed( "LastInv" ) && LastWeapon.IsValid() && CurrentWeapon.IsValid() ) SwitchToWeapon( LastWeapon );
 	}
 }

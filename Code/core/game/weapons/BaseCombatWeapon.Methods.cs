@@ -59,7 +59,7 @@ public partial class BaseCombatWeapon
 	/// Does this weapon use primary attack?
 	/// </summary>
 	/// <returns>Yes/No</returns>
-	public bool UsesPrimary() => AmmoResourceHasAnythingPrimary() || (GetPrimaryCapacity() > 0);
+	public bool UsesPrimary() => IsMeleeWeapon() || AmmoResourceHasAnythingPrimary() || (GetPrimaryCapacity() > 0);
 	/// <summary>
 	/// Does this weapon use secondary attack?
 	/// </summary>
@@ -69,17 +69,17 @@ public partial class BaseCombatWeapon
 	/// Is this weapon a melee?
 	/// </summary>
 	/// <returns>Yes/No</returns>
-	public bool IsMeleeWeapon() => WeaponData.WeaponType == WeaponType.WEAPON_MELEE;
+	public virtual bool IsMeleeWeapon() => WeaponData.WeaponType == WeaponType.WEAPON_MELEE;
 	/// <summary>
 	/// Get the fire rate for primary attack
 	/// </summary>
 	/// <returns>The it</returns>
-	public float GetPrimaryFireRate() => 60f / WeaponData.PrimaryFireRateRPM;
+	public virtual float GetPrimaryFireRate() => 60f / WeaponData.PrimaryFireRateRPM;
 	/// <summary>
 	/// Get the fire rate for secondary attack
 	/// </summary>
 	/// <returns>The it</returns>
-	public float GetSecondaryFireRate() => 60f / WeaponData.SecondaryFireRateRPM;
+	public virtual float GetSecondaryFireRate() => 60f / WeaponData.SecondaryFireRateRPM;
 	/// <summary>
 	/// Get weapon type as string
 	/// </summary>
@@ -145,7 +145,7 @@ public partial class BaseCombatWeapon
 			Weapon = GameObject,
 			Damage = isPlayer ? (isPrimary ? AmmoInfo.GetAmmoData( GetPrimaryAmmoType() ) : AmmoInfo.GetAmmoData( GetSecondaryAmmoType() )).DamagePlayer
 			: (isPrimary ? AmmoInfo.GetAmmoData( GetPrimaryAmmoType() ) : AmmoInfo.GetAmmoData( GetSecondaryAmmoType() )).DamageNPC,
-			Tags = { "bullet" },
+			Tags = { DamageTypes.DMG_BULLET },
 			Ammo = isPrimary ? AmmoInfo.GetAmmoData( GetPrimaryAmmoType() ) : AmmoInfo.GetAmmoData( GetSecondaryAmmoType() ),
 			BaseCombatWeapon = this,
 			Position = GameObject.Root.WorldPosition

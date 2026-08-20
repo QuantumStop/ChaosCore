@@ -22,19 +22,21 @@ public partial class GameProp : BaseUsable, Component.ExecuteInEditor, Component
 		else return null;
 	}
 
-	readonly ComponentFlags procFlags = ComponentFlags.NotSaved | ComponentFlags.NotCloned | ComponentFlags.Hidden;
+	readonly ComponentFlags _procFlags = ComponentFlags.NotSaved | ComponentFlags.NotCloned | ComponentFlags.Hidden;
+
+	public override bool CanInteract => !BasePlayer.DebugNoMass && _rigidbody?.Mass < 35;
 
 	/// <summary>
 	/// Adds the component flags to all procedural components
 	/// </summary>
 	public void ApplyVisibilityFlags()
 	{
-		if ( ProceduralComponents is null )
+		if ( _proceduralComponents is null )
 			return;
 
-		foreach ( var c in ProceduralComponents )
+		foreach ( var c in _proceduralComponents )
 		{
-			c.Flags = procFlags;
+			c.Flags = _procFlags;
 		}
 	}
 
@@ -70,9 +72,9 @@ public partial class GameProp : BaseUsable, Component.ExecuteInEditor, Component
 
 	private void UpdateProceduralVisibility()
 	{
-		if ( ProceduralComponents is null ) return;
+		if ( _proceduralComponents is null ) return;
 
-		foreach ( var comp in ProceduralComponents )
+		foreach ( var comp in _proceduralComponents )
 		{
 			if ( !comp.IsValid() ) continue;
 
@@ -81,9 +83,6 @@ public partial class GameProp : BaseUsable, Component.ExecuteInEditor, Component
 			else
 				comp.Flags |= ComponentFlags.Hidden;
 		}
-
-		if ( Scene.IsEditor )
-			SyncProceduralDebug();
 	}
 
 	/// <summary>

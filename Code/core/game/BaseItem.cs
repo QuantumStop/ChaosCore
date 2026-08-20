@@ -32,7 +32,7 @@ public class BaseItem : BaseUsable
 		set
 		{
 			field = value;
-			CanBeHeldAccessor = value;
+			_canBeHeldAccessor = value;
 		}
 	} = true;
 

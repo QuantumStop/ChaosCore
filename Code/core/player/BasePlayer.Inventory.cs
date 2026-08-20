@@ -81,6 +81,7 @@ public partial class BasePlayer
 			}
 		}
 	}
+	[Property, Feature( "Weapons" ), ReadOnly] public BaseCombatWeapon LastWeapon { get; set; }
 	/// <summary>
 	/// Weapon soon to be equipped
 	/// </summary>

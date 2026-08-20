@@ -9,7 +9,9 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	protected override void OnStart()
 	{
-		if ( _ownerPawn.IsControlledLocally )
+		_ownerPawn ??= Components.Get<BasePawn>();
+
+		if ( _ownerPawn?.IsControlledLocally is true )
 		{
 			SetupBody();
 			SetupHead();
@@ -22,11 +24,11 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 		if ( AllowMovement )
 		{
-			if ( _ownerPawn.IsControlledLocally ) UpdateCamera();
+			if ( _ownerPawn?.IsControlledLocally is true ) UpdateCamera();
 
 			DoEyeLook();
 
-			if ( _ownerPawn.IsControlledLocally )
+			if ( _ownerPawn?.IsControlledLocally is true )
 			{
 				BuildFrameInput();
 				DoUsing();
@@ -44,7 +46,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void BuildWishVelocity()
 	{
-		if ( _ownerPawn.IsControlledLocally ) base.BuildWishVelocity();
+		if ( _ownerPawn?.IsControlledLocally is true ) base.BuildWishVelocity();
 	}
 
 	protected override void OnFixedUpdate()
@@ -131,14 +133,14 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void DoEyeLook()
 	{
-		if ( _ownerPawn.IsControlledLocally )
+		if ( _ownerPawn?.IsControlledLocally is true )
 		{
 			LocalEyeAngles += HandleInvert( Input.AnalogLook ) * AimSensitivity * AimSensitivityScale;
 
 			LocalEyeAngles = LocalEyeAngles.WithPitch( LocalEyeAngles.pitch.Clamp( -89f, 89f ) );
 		}
 
-		if ( _ownerPawn.IsPossessedLocally ) PositionHead();
+		if ( _ownerPawn?.IsPossessedLocally is true ) PositionHead();
 
 	}
 
@@ -181,7 +183,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	protected override void BuildInput()
 	{
-		if ( !_ownerPawn.IsControlledLocally ) return;
+		if ( _ownerPawn?.IsControlledLocally is false ) return;
 
 		HandleModes();
 
@@ -202,15 +204,15 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void OnCameraModeChanged()
 	{
-		if ( !_ownerPawn.IsPossessedLocally ) return;
+		if ( _ownerPawn?.IsPossessedLocally is false ) return;
 
 		if ( _ownerPawn is BasePlayer basePlayer )
 		{
-			basePlayer.UpdateBodyVisibility();
+			basePlayer?.UpdateBodyVisibility();
 
-			if ( !Camera.IsValid() ) basePlayer.ViewmodelVisible = false;
+			if ( !Camera.IsValid() ) basePlayer?.ViewmodelVisible = false;
 
-			basePlayer.ViewmodelVisible = CameraMode == CameraModes.FirstPerson;
+			basePlayer?.ViewmodelVisible = CameraMode == CameraModes.FirstPerson;
 		}
 	}
 }

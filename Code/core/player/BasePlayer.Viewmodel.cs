@@ -654,7 +654,7 @@ public partial class BasePlayer
 
 	protected virtual float GetViewmodelFOV() => ViewmodelFOVOverride > 0f ? ViewmodelFOVOverride : ViewmodelFOV;
 
-	protected virtual bool _useFOVShader => false;
+	public virtual bool UseFOVShader => true;
 
 	protected override void OnPreRender()
 	{
@@ -679,7 +679,7 @@ public partial class BasePlayer
 		//	set attributes for viewmodel fov
 		if ( ViewmodelWeapon.Model.IsValid() )
 		{
-			if ( _useFOVShader )
+			if ( UseFOVShader )
 			{
 				ViewmodelWeapon.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
 				ViewmodelWeapon.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );
@@ -694,7 +694,7 @@ public partial class BasePlayer
 			}
 		}
 
-		if ( ViewmodelHands.Model.IsValid() && _useFOVShader ) // only both, because we have one gameobject for both so scaling it would affect both
+		if ( ViewmodelHands.Model.IsValid() && UseFOVShader ) // only both, because we have one gameobject for both so scaling it would affect both
 		{
 			ViewmodelHands.SceneModel.Attributes.Set( "vm_blend", ViewmodelBlend );
 			ViewmodelHands.SceneModel.Attributes.Set( "cam_forward", GetEyeForward() );

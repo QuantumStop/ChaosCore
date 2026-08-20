@@ -26,18 +26,18 @@ public class WeaponParse : GameResource
 	[Order( 0 )] public CrosshairData WeaponCrosshair { get; set; } = null;
 
 	[Header( "Reloading" )]
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( CanStageReload ), true ), Range( 1, 6 ), Step( 1 ), Description( "How many stages, starting from 1" )] public int StageAmount { get; set; } = 3;
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _canStageReload ), true ), Range( 1, 6 ), Step( 1 ), Description( "How many stages, starting from 1" )] public int StageAmount { get; set; } = 3;
 
 	[Header( "Firing" )]
 	[Category( "Features" ), Order( 2 ), HideIf( nameof( WeaponType ), WeaponType.WEAPON_MELEE )] public bool FiresUnderwater { get; set; }
 	[Category( "Features" ), Order( 2 ), HideIf( nameof( WeaponType ), WeaponType.WEAPON_MELEE )] public bool ReloadsSingly { get; set; }
-	[Category( "Features" ), Order( 2 ), Header( "Muzzle Light" ), ShowIf( nameof( HasBullets ), true )] public Texture MuzzleLightCookie { get; set; } = Texture.Load( "materials/cookies/muzzle_light01.tif" );
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( HasBullets ), true ), Range( 0.01f, 0.1f ), Step( 0.01f )] public float MuzzleLightTime { get; set; } = 0.02f;
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( HasBullets ), true ), Range( 1.0f, 90.0f ), Step( 1 )] public float MuzzleLightFOV { get; set; } = 60f;
+	[Category( "Features" ), Order( 2 ), Header( "Muzzle Light" ), ShowIf( nameof( _hasBullets ), true )] public Texture MuzzleLightCookie { get; set; } = Texture.Load( "materials/cookies/muzzle_light01.tif" );
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.01f, 0.1f ), Step( 0.01f )] public float MuzzleLightTime { get; set; } = 0.02f;
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 1.0f, 90.0f ), Step( 1 )] public float MuzzleLightFOV { get; set; } = 60f;
 
 	[Header( "Muzzle Effects" )]
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( HasBullets ), true )] public PrefabFile MuzzleFlashEffect { get; set; }
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( HasBullets ), true )] public PrefabFile TracerEffect { get; set; }
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true )] public PrefabFile MuzzleFlashEffect { get; set; }
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true )] public PrefabFile TracerEffect { get; set; }
 
 
 	/// <summary> Min/Max of how much the recoil grows over time (if at all). </summary>
@@ -98,7 +98,7 @@ public class WeaponParse : GameResource
 
 
 	[Header( "Ammo" )]
-	[Category( "Primary" ), Order( 3 ), ShowIf( nameof( HasBullets ), true )] public AmmoInfo PrimaryAmmoType { get; set; }
+	[Category( "Primary" ), Order( 3 ), ShowIf( nameof( _hasBullets ), true )] public AmmoInfo PrimaryAmmoType { get; set; }
 
 	[ShowIf( nameof( HasPrimaryAmmoType ), true )]
 	[Category( "Primary" ), Order( 3 ), Range( 0, 9999, true, false ), Step( 1 )] public int PrimaryAmmoCapacity { get; set; }
@@ -130,16 +130,15 @@ public class WeaponParse : GameResource
 	[Category( "Primary" ), Order( 3 ), Description( "Spread the scale if degrees are not enough" ), Range( 1, 10 )] public float SpreadScale { get; set; } = 1f;
 #if FMOD
 	[Header( "Sound" )]
-	[ShowIf( nameof( HasPrimaryAmmoType ), true )]
 	[Category( "Primary" ), Order( 3 )] public FMODEventResource AttackSoundPrimary { get; set; }
 	[Category( "Primary" ), Order( 3 )] public bool WantNearEmptySound { get; set; }
+	[Category( "Primary" ), Order( 3 )] public FMODEventResource AttackSoundPrimaryThirdPerson { get; set; }
 #else
 	[Header( "Sound" )]
-	[ShowIf( nameof( HasPrimaryAmmoType ), true )]
 	[Category( "Primary" ), Order( 3 )] public List<SoundEvent> AttackSoundsPrimary { get; set; } = [];
 #endif
 	[Header( "Ammo" )]
-	[Category( "Secondary" ), Order( 4 ), ShowIf( nameof( HasBullets ), true )] public AmmoInfo SecondaryAmmoType { get; set; }
+	[Category( "Secondary" ), Order( 4 ), ShowIf( nameof( _hasBullets ), true )] public AmmoInfo SecondaryAmmoType { get; set; }
 
 	[ShowIf( nameof( HasSecondaryAmmoType ), true )]
 	[Category( "Secondary" ), Order( 4 )] public int SecondaryAmmoCapacity { get; set; }
@@ -157,6 +156,8 @@ public class WeaponParse : GameResource
 	[Header( "Sound" )]
 	[ShowIf( nameof( HasSecondaryAmmoType ), true )]
 	[Category( "Secondary" ), Order( 3 )] public FMODEventResource AttackSoundSecondary { get; set; }
+	[ShowIf( nameof( HasSecondaryAmmoType ), true )]
+	[Category( "Secondary" ), Order( 3 )] public FMODEventResource AttackSoundSecondaryThirdPerson { get; set; }
 #else
 	[Header( "Sound" )]
 	[ShowIf( nameof( HasSecondaryAmmoType ), true )]
@@ -168,8 +169,11 @@ public class WeaponParse : GameResource
 	[Category( "Inventory" ), Order( 5 ), Range( 0, 12 ), Step( 1 )] public int Weight { get; set; } = 0;
 	[Category( "Inventory" ), Order( 5 ), FilePath] public string Icon { get; set; }
 	[Category( "Inventory" ), Order( 5 ), Title( "Print Name" )] public string Name { get; set; }
-
-	[Category( "NPC" ), Order( 6 )] public WeaponEquipSlot EquipSlot { get; set; }
+	/// <summary>Which holster is used for this weapon, when the NPC puts it away</summary>
+	[Category( "NPC" ), Order( 6 )] public WeaponHolsterSlot EquipSlot { get; set; }
+	[Category( "NPC" ), Order( 6 )] public float BurstInterval { get; set; } = 1f;
+	[Category( "NPC" ), Order( 6 )] public float RestMin { get; set; } = 1f;
+	[Category( "NPC" ), Order( 6 )] public float RestMax { get; set; } = 5f;
 
 	/// <summary>
 	/// This is used to pass custom data that we would otherwise have to define and support in resource manually, which might be pain.
@@ -182,8 +186,8 @@ public class WeaponParse : GameResource
 	// This will let you hide features based on having certain ammo type. Doesn't work directly within ShowIf/HideIf otherwise
 	[Hide] public bool HasPrimaryAmmoType => PrimaryAmmoType.IsValid();
 	[Hide] public bool HasSecondaryAmmoType => SecondaryAmmoType.IsValid();
-	[Hide] private bool HasBullets => WeaponType != WeaponType.WEAPON_MELEE && WeaponType != WeaponType.WEAPON_EXPLOSIVE;
-	[Hide] private bool CanStageReload => (WeaponType != WeaponType.WEAPON_MELEE) && (WeaponType != WeaponType.WEAPON_SHOTGUN) && (WeaponType != WeaponType.WEAPON_EXPLOSIVE);
+	[Hide] private bool _hasBullets => WeaponType != WeaponType.WEAPON_MELEE && WeaponType != WeaponType.WEAPON_EXPLOSIVE;
+	[Hide] private bool _canStageReload => (WeaponType != WeaponType.WEAPON_MELEE) && (WeaponType != WeaponType.WEAPON_SHOTGUN) && (WeaponType != WeaponType.WEAPON_EXPLOSIVE);
 
 	public static WeaponParse GetWeaponData( string weaponname ) => ResourceLibrary.Get<WeaponParse>( "scripts/weapons/" + weaponname + ".wpn" );
 	protected override Bitmap CreateAssetTypeIcon( int width, int height ) => CreateSimpleAssetTypeIcon( "plumbing", width, height, "#acac5c", "#2b2b17" );

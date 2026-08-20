@@ -8,25 +8,25 @@ using System;
 
 public partial class BasePlayer
 {
-	public readonly record struct GrabState( GameObject GameObject, Rigidbody Body, Vector3 LocalOffset, Rotation GrabOffset, float GrabDistance )
+	public readonly record struct GrabState( GameObject GameObject, Rigidbody Body, Vector3 LocalOffset, Angles GrabOffset, float GrabDistance )
 	{
 		public bool IsValid => GameObject.IsValid() && Body.IsValid() && Body.PhysicsBody.IsValid();
 
-		public Vector3 EndPoint
-		{
-			get
-			{
-				if ( !IsValid )
-					return default;
-
-				return Body.PhysicsBody.Transform.PointToWorld( LocalOffset );
-			}
-		}
+		public Vector3 EndPoint => !IsValid ? default : Body.PhysicsBody.Transform.PointToWorld( LocalOffset );
 	}
 
-	[Property, ReadOnly, Feature( "PickUp" )] public GameObject HeldProp => PickupState.GameObject;
-	[Property, ReadOnly, Feature( "PickUp" )] public Rigidbody PropPhys => PickupState.Body;
-	[Property, ReadOnly, Feature( "PickUp" ), Sync, Change( nameof( OnPickupStateChanged ) )] public GrabState PickupState { get; private set; }
+
+	[Property, ReadOnly, Feature( "PickUp" ), Sync]
+	public GrabState PickupState
+	{
+		get;
+		private set
+		{
+			if ( field == value ) return;
+			OnPickupStateChanged( field, value );
+			field = value;
+		}
+	}
 
 	private ControlJoint _joint;
 	private PhysicsBody _controlBody;
@@ -37,8 +37,7 @@ public partial class BasePlayer
 
 	public void DropObject( bool punt = false )
 	{
-		if ( !PickupState.IsValid )
-			return;
+		if ( !PickupState.IsValid ) return;
 
 		var playerVelocity = Controller.Controller.Velocity;
 		var puntDirection = Controller.EyeAngles.Forward;
@@ -141,19 +140,15 @@ public partial class BasePlayer
 
 	private GrabState ResolvePickupState( GrabState state )
 	{
-		if ( !state.GameObject.IsValid() )
-			return state;
+		if ( !state.GameObject.IsValid() ) return state;
 
-		if ( state.Body.IsValid() )
-			return state;
+		if ( state.Body.IsValid() ) return state;
 
 		var body = state.GameObject.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndChildren );
 
-		if ( !body.IsValid() )
-			body = state.GameObject.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndParent );
+		if ( !body.IsValid() ) body = state.GameObject.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndParent );
 
-		if ( !body.IsValid() )
-			return state;
+		if ( !body.IsValid() ) return state;
 
 		return state with { Body = body };
 	}
@@ -161,15 +156,13 @@ public partial class BasePlayer
 	[Rpc.Owner]
 	private void RejectPickup( GrabState state )
 	{
-		if ( PickupState.GameObject != state.GameObject )
-			return;
+		if ( PickupState.GameObject != state.GameObject ) return;
 
 		DropPickupOwnership( state );
 		CleanupHeldProp();
 	}
 
-	[Rpc.Broadcast]
-	private void SetHeldPropTagBroadcast( GameObject obj, bool held ) => SetHeldPropTag( obj, held );
+	[Rpc.Broadcast] private void SetHeldPropTagBroadcast( GameObject obj, bool held ) => SetHeldPropTag( obj, held );
 
 	private void SetHeldPropTag( GameObject obj, bool held )
 	{
@@ -214,24 +207,28 @@ public partial class BasePlayer
 		var obj = tr.GameObject;
 		var heldObject = GetHeldObject( obj );
 
-		if ( LifeState != LifeState.Alive || IsHeldByAnyone( obj ) ) return;// important to filter out already held objects
+		if ( LifeState != LifeState.Alive || IsHeldByAnyone( obj ) ) return; // important to filter out already held objects
 
-		if ( !TryFindPickupRigidbody( tr, out var rigidbody ) || !rigidbody.MotionEnabled ) return;
+		var all = obj.Components.GetAll<BaseUsable>();
 
-		if ( obj.Components.TryGet<BaseWeaponItem>( out var weapon ) )
+		foreach ( var usable in all )
 		{
-			_useSuccess = true; // for weapon holding we want successful sound, to know its actually happening
-			return;
+			if ( !usable.IsValid() ) continue;
+
+			if ( usable.CanInteract ) _useSuccess = true;
+			if ( !usable.CanBeHeld && all.Count() > 1 ) continue;
+			if ( !usable.CanBeHeld ) return;
 		}
 
-		if ( obj.Components.TryGet<BaseUsable>( out var usable ) )
-			if ( !usable.CanBeHeld ) return;
+		if ( !TryFindPickupRigidbody( tr, out var rigidbody ) ) return;
+
+		if ( !rigidbody.MotionEnabled ) return;
 
 		if ( !DebugNoMass && rigidbody.Mass > 35 ) return;
 
 		var bodyTransform = rigidbody.PhysicsBody.Transform.WithScale( obj.WorldScale );
 		var grabOffset = obj.WorldRotation.Angles() - Controller.EyeAngles.WithPitch( 0 );
-		var state = new GrabState( heldObject, rigidbody, bodyTransform.PointToLocal( tr.HitPosition ), grabOffset, Vector3.DistanceBetween( Controller.Head.WorldPosition, tr.HitPosition ).Clamp( 32.0f, 80.0f ) );
+		var state = new GrabState( heldObject, rigidbody, bodyTransform.PointToLocal( tr.HitPosition ), grabOffset, 80f );
 
 		if ( Networking.IsHost )
 		{
@@ -246,8 +243,6 @@ public partial class BasePlayer
 		}
 
 		CurrentWeapon?.Holster();
-
-		_useSuccess = true;
 	}
 
 	private bool TryFindPickupRigidbody( SceneTraceResult tr, out Rigidbody rigidbody )
@@ -271,13 +266,11 @@ public partial class BasePlayer
 	{
 		var shouldPredictHeldTag = IsControlledLocally && !Networking.IsHost;
 
-		if ( shouldPredictHeldTag )
-			SetHeldPropTag( oldState.GameObject, false );
+		if ( shouldPredictHeldTag ) SetHeldPropTag( oldState.GameObject, false );
 
 		if ( newState.GameObject.IsValid() )
 		{
-			if ( shouldPredictHeldTag )
-				SetHeldPropTag( newState.GameObject, true );
+			if ( shouldPredictHeldTag ) SetHeldPropTag( newState.GameObject, true );
 
 			CurrentWeapon?.Holster();
 			return;
@@ -327,8 +320,7 @@ public partial class BasePlayer
 		var velocity = state.Body.PhysicsBody.Velocity + playerVelocity;
 		velocity = velocity.ClampLength( 350f );
 
-		if ( punt )
-			velocity += puntDirection * 400f;
+		if ( punt ) velocity += puntDirection * 400f;
 
 		state.Body.PhysicsBody.Velocity = velocity;
 
@@ -373,14 +365,14 @@ public partial class BasePlayer
 		}
 
 		// Drop if dead or standing on held prop
-		if ( LifeState != LifeState.Alive || Controller.Controller.GroundObject == HeldProp )
+		if ( LifeState != LifeState.Alive || Controller.Controller.GroundObject == PickupState.GameObject )
 		{
 			DropObject();
 			return;
 		}
 
 		// Drop if too far
-		if ( Vector3.DistanceBetween( PropPhys.PhysicsBody.MassCenter, Controller.Head.WorldPosition ) > 128f )
+		if ( Vector3.DistanceBetween( PickupState.Body.PhysicsBody.MassCenter, Controller.Head.WorldPosition ) > 128f )
 		{
 			DropObject();
 			return;
@@ -395,8 +387,8 @@ public partial class BasePlayer
 	private void UpdatePickupJoint()
 	{
 		var wantedPosition = Controller.Head.WorldPosition + Controller.EyeAngles.Forward * PickupState.GrabDistance;
-		wantedPosition += HeldProp.WorldPosition - PropPhys.PhysicsBody.MassCenter;
-		var wantedRotation = PickupState.GrabOffset * Controller.EyeAngles.WithPitch( 0 ).ToRotation();
+		wantedPosition += PickupState.GameObject.WorldPosition - PickupState.Body.PhysicsBody.MassCenter;
+		var wantedRotation = (PickupState.GrabOffset + Controller.EyeAngles.WithPitch( 0 )).ToRotation();
 
 		if ( !CanMove( PickupState ) )
 		{
@@ -434,6 +426,7 @@ public partial class BasePlayer
 			_joint = PhysicsJoint.CreateControl( new PhysicsPoint( _controlBody ), new PhysicsPoint( state.Body.PhysicsBody ) );
 			_joint.LinearSpring = new PhysicsSpring( 32, 4, maxForce );
 			_joint.AngularSpring = new PhysicsSpring( 64, 4, maxForce * 3 );
+			_joint.Collisions = false;
 		}
 	}
 }

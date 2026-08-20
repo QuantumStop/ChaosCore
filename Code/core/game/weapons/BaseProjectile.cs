@@ -41,7 +41,7 @@ public class BaseProjectile : BaseEntity
 	/// <summary>
 	/// Override per type, should be in units (inches, not feet or yards or duyms)
 	/// </summary>
-	protected virtual float VelocityPerTick => 0;
+	protected virtual float _velocityPerTick => 0;
 	/// <summary>
 	/// The ammo this is using (filled in through DamageInfo)
 	/// </summary>

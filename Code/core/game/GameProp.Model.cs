@@ -55,20 +55,20 @@ public partial class GameProp
 	[DebugExpose]
 #endif
 	private ModelRenderer _modelRenderer { get; set; }
-
-	[Property, ReadOnly, Feature( "Debug" ), Title( "Procedural Components" ), Order( 50 )]
-	private List<Component> ProceduralComponentsDebug { get; set; } = [];
-
-	List<Component> ProceduralComponents { get; set; }
-	private bool HasRigidbody => Components.Get<Rigidbody>().IsValid();
+	/*
+		[Property, ReadOnly, Feature( "Debug" ), Title( "Procedural Components" ), Order( 50 )]
+		private List<Component> _proceduralComponentsDebug { get; set; } = [];
+	*/
+	List<Component> _proceduralComponents { get; set; }
+	private bool _hasRigidbody => Components.Get<Rigidbody>().IsValid();
+	private Rigidbody _rigidbody { get; set; }
 
 	[Rpc.Broadcast]
 	public void ClearProcedurals()
 	{
-		if ( ProceduralComponents is null )
-			return;
+		if ( _proceduralComponents is null ) return;
 
-		foreach ( var p in ProceduralComponents.ToArray() )
+		foreach ( var p in _proceduralComponents.ToArray() )
 		{
 			if ( !p.IsValid() )
 				continue;
@@ -83,24 +83,19 @@ public partial class GameProp
 			}
 		}
 
-		ProceduralComponents.Clear();
+		_proceduralComponents.Clear();
 		_modelRenderer = null;
-
-		if ( Scene.IsEditor ) SyncProceduralDebug();
 	}
 
 	public void AddProcedural( Component p )
 	{
 		Assert.AreNotEqual( p, this );
 
-		ProceduralComponents ??= [];
+		_proceduralComponents ??= [];
 
-		p.Flags |= procFlags;
+		p.Flags |= _procFlags;
 
-		if ( !ProceduralComponents.Contains( p ) )
-			ProceduralComponents?.Add( p );
-
-		if ( Scene.IsEditor ) SyncProceduralDebug();
+		if ( !_proceduralComponents.Contains( p ) ) _proceduralComponents?.Add( p );
 	}
 
 	[Rpc.Broadcast]
@@ -128,19 +123,5 @@ public partial class GameProp
 		_modelRenderer.RenderType = ShadowRenderType;
 
 		AddProcedural( _modelRenderer );
-	}
-
-	void SyncProceduralDebug()
-	{
-		ProceduralComponentsDebug.Clear();
-
-		if ( ProceduralComponents is null )
-			return;
-
-		foreach ( var c in ProceduralComponents )
-		{
-			if ( c.IsValid() )
-				ProceduralComponentsDebug.Add( c );
-		}
 	}
 }

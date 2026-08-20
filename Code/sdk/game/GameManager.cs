@@ -10,7 +10,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 	public static new SDKGameManager Current => GameManagerSystem.Current as SDKGameManager;
 
-	protected override void DecideGameRules() => Rules = new SDKRulesMP();
+	protected override void DecideGameRules() => Rules = new SDKRulesSP();
 
 	protected override void OnStart()
 	{
@@ -96,8 +96,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 			Player.NetworkSpawn( channel );
 
-			if ( spawnedPlayer.IsValid() )
-				spawnedPlayer.AsMain( client );
+			if ( spawnedPlayer.IsValid() ) spawnedPlayer.AsMain( client );
 		}
 	}
 

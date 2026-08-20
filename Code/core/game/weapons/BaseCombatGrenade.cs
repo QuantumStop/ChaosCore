@@ -52,7 +52,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	protected override void StartReload( bool _ = true ) { }
 	protected override void FinishReload( bool _ = true ) { }
 	protected override void EjectShells() { }
-	protected override void CreateMuzzleFlash() { }
+	protected override void CreateMuzzleFlash( bool player = true ) { }
 
 	protected virtual bool HasGrenades() => PrimaryAmmoLoaded >= 0;
 
@@ -373,7 +373,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 			.Clone( origin );
 		}
 #if FMOD
-		FMODSound.Play( "event:/Weapons/3P/Explosion", origin );
+		FMODSound.Play( "event:/Weapons/Explosion", origin );
 #endif
 	}
 

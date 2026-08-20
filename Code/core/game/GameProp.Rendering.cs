@@ -4,7 +4,7 @@ partial class GameProp
 {
 	[Property, Order( 12 ), Header( "Rendering" ), Sync]
 	[Model.BodyGroupMask]
-	[ShowIf( nameof( HasBodyGroups ), true )]
+	[ShowIf( nameof( _hasBodyGroups ), true )]
 	public ulong BodyGroups
 	{
 		get;
@@ -18,11 +18,11 @@ partial class GameProp
 		}
 	} = ulong.MaxValue;
 
-	protected bool HasBodyGroups => Model?.Parts.All.Sum( x => x.Choices.Count ) > 1;
+	protected bool _hasBodyGroups => Model?.Parts.All.Sum( x => x.Choices.Count ) > 1;
 
 	[Property, Order( 11 ), Header( "Rendering" ), Title( "Skin" ), Sync]
 	[Model.MaterialGroup]
-	[ShowIf( nameof( HasMaterialGroups ), true )]
+	[ShowIf( nameof( _hasMaterialGroups ), true )]
 	public string MaterialGroup
 	{
 		get;
@@ -36,7 +36,7 @@ partial class GameProp
 		}
 	}
 
-	protected bool HasMaterialGroups => Model?.MaterialGroupCount > 0;
+	protected bool _hasMaterialGroups => Model?.MaterialGroupCount > 0;
 
 	[Property, Order( 11 ), Title( "Cast Shadows?" ), Group( "Render Properties" )]
 	public ModelRenderer.ShadowRenderType ShadowRenderType
@@ -47,9 +47,7 @@ partial class GameProp
 			if ( field != value )
 			{
 				field = value;
-
-				if ( _modelRenderer.IsValid() )
-					_modelRenderer.RenderType = value;
+				if ( _modelRenderer.IsValid() ) _modelRenderer.RenderType = value;
 			}
 		}
 	}

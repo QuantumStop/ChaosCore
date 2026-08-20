@@ -9,7 +9,7 @@ partial class Player
 	[ConVar( "access_halo" )]
 	static public bool Halo2Crosshair { get; set; } = false;
 
-	protected override bool _useFOVShader => false;
+	public override bool UseFOVShader => false;
 
 	private void CalculateBob()
 	{

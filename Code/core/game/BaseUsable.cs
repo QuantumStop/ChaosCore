@@ -12,12 +12,12 @@ public class BaseUsable : BaseEntity, Component.IPressable
 	/// <summary>
 	/// Can this entity be held
 	/// </summary>
-	[Property, Group( "Physics Properties" ), Order( 13 ), ShowIf( nameof( CanBeHeldAccessor ), true )] public virtual bool CanBeHeld { get; set; } = true;
+	[Property, Group( "Physics Properties" ), Order( 13 ), ShowIf( nameof( _canBeHeldAccessor ), true )] public virtual bool CanBeHeld { get; set; } = true;
 
 	/// <summary>
 	/// Since the property is needed everywhere but sometimes hidden based on other variables, change this to hide it
 	/// </summary>
-	protected virtual bool CanBeHeldAccessor { get; set; } = true;
+	protected virtual bool _canBeHeldAccessor { get; set; } = true;
 
 	/// <summary>
 	/// When tried using the entity
@@ -42,10 +42,7 @@ public class BaseUsable : BaseEntity, Component.IPressable
 
 	public virtual bool Press( IPressable.Event press )
 	{
-		if ( BasePlayer.Local.LifeState == LifeState.Dead )
-			return false;
-
-		var TryGet = press.Source.Components.TryGet<BasePlayer>( out var basePlayer );
+		if ( !press.Source.Components.TryGet<BasePlayer>( out var basePlayer ) || basePlayer?.LifeState == LifeState.Dead ) return false;
 
 		// Source of the Use should be a player, as this is specifically a player input press thing rather than general "anyone" (NPC) interaction
 		OnUse?.Invoke( basePlayer );
@@ -53,12 +50,14 @@ public class BaseUsable : BaseEntity, Component.IPressable
 		return true;
 	}
 
-	public virtual bool Pressing( IPressable.Event press )
-	{
-		if ( BasePlayer.Local.LifeState == LifeState.Dead )
-			return false;
+	/// <summary> Determine what allows us to get a success sound when pressing interaction input, vs fail sound</summary>
+	public virtual bool CanInteract => true;
 
-		return true;
-	}
+	/// <summary>Filter IPressable trace with our bool</summary>
+	/// <param name="e"></param>
+	/// <returns></returns>
+	public bool CanPress( IPressable.Event e ) => CanInteract;
+
+	public virtual bool Pressing( IPressable.Event press ) => !press.Source.Components.TryGet<BasePlayer>( out var basePlayer ) || basePlayer.LifeState != LifeState.Dead;
 
 }

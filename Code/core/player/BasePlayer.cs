@@ -256,7 +256,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	/// <param name="surfstring">Surface string (fmod only)</param>
 	static public void FootSound( string path, GameObject obj, string surfstring = null )
 	{
-
 		var handle = FMODSound.Create( path );
 		var newsnd = SolveFootstepSoundOverrides( surfstring );
 
@@ -329,6 +328,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		CalculateFOV();
 
+		HandleLastSelected();
 		if ( _allowSway ) ViewmodelUpdate();
 	}
 
@@ -429,7 +429,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		//		TODO: Scale it down if we landed on something that's floating... (speed -= 173)
 		//		TODO: Subtract the velocity of whatever we landed on, dont allow negative speed
-		//		TODO: get sound volume and play sound
 
 		if ( speed > 526.5f )
 		{
@@ -443,7 +442,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 			{
 				Attacker = GameObject,
 				Damage = speed,
-				Tags = { "fall" }
+				Tags = { DamageTypes.DMG_FALL }
 			};
 
 			OnDamage( damage );

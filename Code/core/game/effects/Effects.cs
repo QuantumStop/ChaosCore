@@ -90,40 +90,40 @@ public static partial class Effects
 #if IGNIS
 		[DebugExpose]
 #endif
-		[Property, FeatureEnabled( "Custom Color" )] private bool UseCustomColor { get; set; } = false;
+		[Property, FeatureEnabled( "Custom Color" )] private bool _useCustomColor { get; set; } = false;
 		[Property, Feature( "Custom Color" )] public Gradient CustomColor { get; set; }
-		[Property, ReadOnly, Feature( "Debug" )] public Decal decal { get; set; }
+		[Property, ReadOnly, Feature( "Debug" )] public Decal Decal { get; set; }
 		[Property] public float TimeToDry { get; set; } = 60f;
 		/// <summary>
 		/// The predefined colors
 		/// </summary>
-		[Property, Space] BloodColor.ColorList PresetColor { get; set; }
+		[Property, Space] public BloodColor.ColorList PresetColor { get; set; }
 		/// <summary>
 		/// We can cheat and sort of get a multiply effect by putting the Color Mix to -1, but that inverts the colors so we have to account for that, also the edges are a tiny bit shit but should be ok
 		/// </summary>
 		[Property] public bool CoolBlendMode { get; set; } = false;
 
-		private float startScale;
-		[Property, ReadOnly, Feature( "Debug" )] private Gradient definedColors = Color.Red;
-		private TimeSince time { get; set; }
+		private float _startScale;
+		[Property, ReadOnly, Feature( "Debug" )] private Gradient _definedColors = Color.Red;
+		private TimeSince _time { get; set; }
 
 		protected override void OnStart()
 		{
 			if ( Components.TryGet<Decal>( out var comp ) )
 			{
-				decal = comp;
-				startScale = decal.Scale.ConstantValue;
-				decal.ColorMix = CoolBlendMode ? -1 : decal.ColorMix;
+				Decal = comp;
+				_startScale = Decal.Scale.ConstantValue;
+				Decal.ColorMix = CoolBlendMode ? -1 : Decal.ColorMix;
 			}
 
-			if ( !UseCustomColor )
+			if ( !_useCustomColor )
 			{
-				definedColors = new();
-				definedColors.AddColor( 0, CoolBlendMode ? BloodColor.ConvertColor( PresetColor ).Invert() : BloodColor.ConvertColor( PresetColor ) );
-				definedColors.AddColor( x: 1, CoolBlendMode ? BloodColor.ConvertColor( PresetColor, true ).Invert() : BloodColor.ConvertColor( PresetColor, true ) );
+				_definedColors = new();
+				_definedColors.AddColor( 0, CoolBlendMode ? BloodColor.ConvertColor( PresetColor ).Invert() : BloodColor.ConvertColor( PresetColor ) );
+				_definedColors.AddColor( x: 1, CoolBlendMode ? BloodColor.ConvertColor( PresetColor, true ).Invert() : BloodColor.ConvertColor( PresetColor, true ) );
 			}
 
-			time = 0;
+			_time = 0;
 		}
 
 		[Property, FeatureEnabled( "Spill" )] public bool SpillEnabled { get; set; } = false;
@@ -133,10 +133,10 @@ public static partial class Effects
 		{
 			base.OnFixedUpdate();
 
-			if ( time < TimeToDry )
+			if ( _time < TimeToDry )
 			{
-				decal?.Scale = MathX.Lerp( startScale, startScale * SpillSize, MathX.Remap( time, 0, TimeToDry, 0, 1 ) );
-				decal?.ColorTint = UseCustomColor ? CustomColor.Evaluate( MathX.Remap( time, 0, TimeToDry ) ) : definedColors.Evaluate( MathX.Remap( time, 0, TimeToDry ) );
+				Decal?.Scale = MathX.Lerp( _startScale, _startScale * SpillSize, MathX.Remap( _time, 0, TimeToDry, 0, 1 ) );
+				Decal?.ColorTint = _useCustomColor ? CustomColor.Evaluate( MathX.Remap( _time, 0, TimeToDry ) ) : _definedColors.Evaluate( MathX.Remap( _time, 0, TimeToDry ) );
 			}
 		}
 	}

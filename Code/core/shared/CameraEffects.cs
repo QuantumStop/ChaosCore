@@ -46,7 +46,7 @@ public static class CameraEffects
 
 	public static void Push( CameraEffect effect, float initialTriggerTime = -1f, float initialRampTime = 0f )
 	{
-		if ( isForceDisabled ) return;
+		if ( IsForceDisabled ) return;
 
 		activeEffects.Add( new ActiveEffect
 		{
@@ -65,7 +65,7 @@ public static class CameraEffects
 	/// </summary>
 	public static void StartRecoil( WeaponParse weaponData, float lastTriggerTime )
 	{
-		if ( isForceDisabled ) return;
+		if ( IsForceDisabled ) return;
 
 		// Find existing recoil effect for this weapon and update it, or push a new one
 		for ( int i = 0; i < activeEffects.Count; i++ )
@@ -110,7 +110,7 @@ public static class CameraEffects
 	/// </summary>
 	public static void AddTrauma( float amount )
 	{
-		if ( isForceDisabled ) return;
+		if ( IsForceDisabled ) return;
 
 		trauma = Math.Clamp( trauma + amount, 0f, 1f );
 	}
@@ -125,7 +125,7 @@ public static class CameraEffects
 	public static void AddShake( float strength, float duration, float delay = 0f, float frequency = 10f, bool shakePitch = true,
 		bool shakeYaw = false, bool shakeRoll = true, Vector3? sourcePosition = null, Curve? falloffCurve = null )
 	{
-		if ( isForceDisabled ) return;
+		if ( IsForceDisabled ) return;
 
 		Push( new CameraEffect
 		{
@@ -145,7 +145,7 @@ public static class CameraEffects
 	{
 		if ( !camera.IsValid() ) return;
 
-		if ( !isForceDisabled )
+		if ( !IsForceDisabled )
 		{
 			for ( int i = activeEffects.Count - 1; i >= 0; i-- )
 			{
@@ -164,7 +164,7 @@ public static class CameraEffects
 			}
 		}
 
-		if ( isDebug )
+		if ( IsDebug )
 			DrawDebug( lastTriggerTime ?? -1f );
 	}
 
@@ -400,8 +400,8 @@ public static class CameraEffects
 	public static float maxRollAngle = 3f;
 	public static float rollSpeed = 10f;
 
-	[ConVar( "ch_cameraeffect_debug", Help = "Show/Log CameraEffects debug" ),] public static bool isDebug { get; set; } = false;
-	[ConVar( "ch_cameraeffect_disable", Help = "Force Disable CameraEffects" ),] public static bool isForceDisabled { get; set; } = false;
+	[ConVar( "ch_cameraeffect_debug", Help = "Show/Log CameraEffects debug" ),] public static bool IsDebug { get; set; } = false;
+	[ConVar( "ch_cameraeffect_disable", Help = "Force Disable CameraEffects" ),] public static bool IsForceDisabled { get; set; } = false;
 
 	// Helpers
 

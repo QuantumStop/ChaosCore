@@ -189,7 +189,7 @@ public class CameraExposure : BaseEntity, Component.ExecuteInEditor
 	}
 #else
 	[Button]
-	public void ClearExposure() { Scene.RenderAttributes.Set( "ExposureFromEV", 1f ); }
+	public void ClearExposure() => Scene.RenderAttributes.Set( "ExposureFromEV", 1f );
 #endif
 
 

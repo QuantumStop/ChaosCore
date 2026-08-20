@@ -13,8 +13,8 @@ public partial class PropScreen
 
 	private void PlayFMODSound()
 	{
-		if ( UseFMODSound && !string.IsNullOrEmpty( VideoPath ) && !ShouldBeMuted )
-			FMODSound.Play( $"event:/Videos/{Path.GetFileNameWithoutExtension( VideoPath ).ToLowerInvariant()}", WorldPosition );
+		if ( UseFMODSound && !string.IsNullOrEmpty( _videoPath ) && !ShouldBeMuted )
+			FMODSound.Play( $"event:/Videos/{Path.GetFileNameWithoutExtension( _videoPath ).ToLowerInvariant()}", WorldPosition );
 	}
 }
 #endif
