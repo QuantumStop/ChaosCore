@@ -550,25 +550,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "a1e8ed4e-a377-4003-bd4b-f6c6649abd35",
+              "component_id": "ea2c2440-c899-4e62-be28-05da26000343",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "69923d89-4fff-4bff-8a70-f7463684bdb5",
+              "component_id": "4b8bc964-e646-463e-a15e-2d5e4d3045f8",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "16676a33-5e4d-49c7-ba5f-acdcedc3043a",
+              "component_id": "0c98b074-b916-4649-85cb-1358dd458222",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "37d8cb01-7362-4d79-bb08-5b64a2d6380e",
+              "component_id": "9dc58ad6-7fc6-427e-82c0-eec52cc37c07",
               "go": "90626247-cec4-41f9-931c-778b622bd41c",
               "component_type": "TintComponent"
             }
@@ -658,25 +658,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "d5714023-2486-428b-8935-931833f18a45",
+              "component_id": "2c79daca-3662-4104-89f3-d0d110f49d37",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "4151abf8-4aa0-4fbb-8ef7-d978dd5e890d",
+              "component_id": "6ef75aa4-a4e9-4b46-afeb-51002b7656da",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "913f91be-d60a-47c6-8045-04feffb45478",
+              "component_id": "12d5acb9-280d-48e9-bc85-5bb65d7d8a12",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "517c25a7-c5d3-45bf-87c8-958c31c22370",
+              "component_id": "dd970700-dd7e-45a5-80a2-d84d31455a6d",
               "go": "66982db0-9919-45a7-88e7-07e681a19756",
               "component_type": "TintComponent"
             }
@@ -766,25 +766,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "922484ca-d541-401b-9156-edc44d3ff3a8",
+              "component_id": "948c2244-b926-4b29-91ab-d7d2983aecc1",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "12f205cf-8ef6-4b12-8f67-c9dfcf509f76",
+              "component_id": "2b49b37a-a9d8-47d5-bfc7-4e20ed5e2d3c",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "1ffedeb3-c5de-4002-a321-93ae5266aca8",
+              "component_id": "a96ee2b7-3cb1-4ad3-a5f3-dd50810d95da",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "430ef2aa-ea56-4f18-abe0-e2fc8eff0f72",
+              "component_id": "bf598f4e-d598-484c-94e4-9d03965638e1",
               "go": "0fd4240f-f1f6-4a00-b219-3f2dfe350910",
               "component_type": "TintComponent"
             }
@@ -874,25 +874,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "a906088c-73c0-44b9-9a38-a88edc3a03cb",
+              "component_id": "0edb88aa-9f03-413b-81db-3763e17dccb5",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "acddfe00-1e73-43fd-8e41-195271bb417a",
+              "component_id": "3b9ded4f-26b6-49d6-b2b5-8d36c4923c4c",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "57b1723e-82b7-4d4a-9ba0-2fb3fcbe0172",
+              "component_id": "c1e278a4-4610-4362-8745-78c2b3127cf8",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "3de3f867-bf08-4f52-a6f5-0ce8aba772fb",
+              "component_id": "57ac3f68-a7e0-4ed5-b9ea-74615268ac32",
               "go": "3236da42-5a9c-4bb4-bc3d-ec0904f471ea",
               "component_type": "TintComponent"
             }
@@ -982,19 +982,19 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "4e5000de-e046-45cb-85a0-8f815ab31f21",
+              "component_id": "c237c452-cae3-4ead-9233-0b4b28f3949b",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "cf9836be-29b8-44ef-a2d9-ab52bd592671",
+              "component_id": "76a3edfb-5d20-4969-afca-6bb1decd409e",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "d7986b19-5caa-497a-9da4-5b49b367da0b",
+              "component_id": "bfb55941-200d-425c-ba0e-77c56edd2526",
               "go": "754f31a0-652f-45bd-af8b-c6a78e78f195",
               "component_type": "TintComponent"
             }
@@ -1084,25 +1084,25 @@
           "ProceduralComponentsDebug": [
             {
               "_type": "component",
-              "component_id": "ac8da0a0-1b84-4959-af20-2585257be583",
+              "component_id": "a0feb6ea-677b-4347-9fea-42d85affa67a",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelRenderer"
             },
             {
               "_type": "component",
-              "component_id": "b58c316c-910c-44d5-9fb7-15d017e6cc59",
+              "component_id": "f02595c3-ea4e-4beb-8545-dcb18a9b05a2",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "ModelCollider"
             },
             {
               "_type": "component",
-              "component_id": "f382ce40-9976-43c6-b3dc-21dfba49cd4e",
+              "component_id": "898f94d0-232b-49f7-9110-10d981ef21ac",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "Rigidbody"
             },
             {
               "_type": "component",
-              "component_id": "cc9189a1-533e-469a-a3be-23240eed0085",
+              "component_id": "ed3baef3-d371-4489-82a1-40461def3ac7",
               "go": "fef48f9b-9478-4c3f-b1d4-fd1d3f70fc9c",
               "component_type": "TintComponent"
             }
@@ -1162,7 +1162,7 @@
               "__enabled": true,
               "Flags": 0,
               "_initialized": true,
-              "BodyGroups": 18446744073709551615,
+              "BodyGroups": 18446744073709551585,
               "CanBeHeld": true,
               "CurrentSpeed": 0,
               "CurrentVelocity": "0,0,0",
@@ -1209,19 +1209,19 @@
               "ProceduralComponentsDebug": [
                 {
                   "_type": "component",
-                  "component_id": "ac966ab8-82b1-46b7-99cd-b165b5bbd1d4",
+                  "component_id": "3322b718-8cc8-4ee4-8e19-42adbdc132e5",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "SkinnedModelRenderer"
                 },
                 {
                   "_type": "component",
-                  "component_id": "650b9c37-49d8-4e98-9ccb-f942aa51f635",
+                  "component_id": "b325c4c4-3b95-4f94-a450-2052ede3ff51",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "ModelCollider"
                 },
                 {
                   "_type": "component",
-                  "component_id": "ec1395c9-6baf-46d2-ab1f-cb2d037cd9e6",
+                  "component_id": "59f356e7-63c3-4e2e-b2d6-b805686a8b6e",
                   "go": "db69f4ad-fbdb-4a35-b9cc-f12941716250",
                   "component_type": "TintComponent"
                 }
@@ -1272,9 +1272,6 @@
               "BodyTarget": null,
               "Clothing": [
                 {
-                  "Clothing": "models/citizen_clothes/body/human07.clothing"
-                },
-                {
                   "Clothing": "models/citizen_clothes/shirt/loose_shirt/loose_shirt.clothing"
                 },
                 {
@@ -1307,392 +1304,7 @@
               "WorkshopItems": []
             }
           ],
-          "Children": [
-            {
-              "__guid": "2e52a799-44de-48cf-a748-cb07d1e2ae7b",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - loose_shirt",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "b6bce1cd-4568-41a5-8daf-2a074e74ecec",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/shirt/loose_shirt/models/loose_shirts_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "c689b955-a987-4240-a601-fcdc32ede044",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - tactical_vest",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "216a4c6a-1ec7-411d-9c97-99466b81bfc9",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/vest/tactical_vest/models/tactical_vest_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "45f8548f-dbe4-45c9-b983-368b499c29cb",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - jeans_black",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "b96f6188-7906-43b4-837e-5d7be5d92c0c",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/trousers/jeans/models/jeans_black_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "a769b60b-f55e-4c02-9567-7b1b55d0af77",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - army_boots",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "dab2f369-0bf8-4d98-8fea-d5ca279dae1f",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/shoes/boots/models/army_boots_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "fbffa520-7b70-49b6-b51f-2626be59f0ec",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - fingerless_gloves",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "2d323d94-1aae-4281-b723-49db041839fd",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/gloves/fingerless_gloves/models/fingerless_gloves_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "b10d8af9-e1aa-4e6c-a3b1-b90b239def97",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - hair_slickedback",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "45f01259-ff45-44a4-957d-bba314c224b2",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/hair/hair_slickedback/models/hair_slickedback_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "0.64483,0.41616,0.29728,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            }
-          ]
+          "Children": []
         },
         {
           "__guid": "5b595e00-0e3d-4113-a2cb-136bf528b713",
@@ -1716,7 +1328,7 @@
               "__enabled": true,
               "Flags": 0,
               "_initialized": true,
-              "BodyGroups": 18446744073709551615,
+              "BodyGroups": 18446744073709551585,
               "CanBeHeld": true,
               "CurrentSpeed": 0,
               "CurrentVelocity": "0,0,0",
@@ -1763,13 +1375,13 @@
               "ProceduralComponentsDebug": [
                 {
                   "_type": "component",
-                  "component_id": "622c6e01-afb0-4c1b-bf02-4d71c62323e2",
+                  "component_id": "97a63eea-37fa-48d1-9a3b-2cf30cd8f0bb",
                   "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                   "component_type": "SkinnedModelRenderer"
                 },
                 {
                   "_type": "component",
-                  "component_id": "800ea605-95d4-4ad5-8681-e36e6d12c5fe",
+                  "component_id": "4220281d-483d-4245-a846-50e3938b98cd",
                   "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                   "component_type": "TintComponent"
                 }
@@ -1819,9 +1431,6 @@
               "ApplyHeightScale": true,
               "BodyTarget": null,
               "Clothing": [
-                {
-                  "Clothing": "models/citizen_clothes/body/human05.clothing"
-                },
                 {
                   "Clothing": "models/citizen_clothes/hat/beanie/beanie_green.clothing"
                 },
@@ -1884,7 +1493,7 @@
               "PhysicsWereCreated": false,
               "Renderer": {
                 "_type": "component",
-                "component_id": "622c6e01-afb0-4c1b-bf02-4d71c62323e2",
+                "component_id": "97a63eea-37fa-48d1-9a3b-2cf30cd8f0bb",
                 "go": "5b595e00-0e3d-4113-a2cb-136bf528b713",
                 "component_type": "SkinnedModelRenderer"
               },
@@ -1892,456 +1501,7 @@
               "StartAsleep": true
             }
           ],
-          "Children": [
-            {
-              "__guid": "8edaedb5-78df-4a67-be19-006ff729b476",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - beanie_green",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "dd4742d2-d730-461c-b546-9e3e163cab3f",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/hat/beanie/models/beanie_green_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "5428f948-611f-453d-9d58-a9bd99f7b5de",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - patchy_beard",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "242b7159-136b-4827-91d8-f6c5145637e3",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/hair/patchy_beard/models/patchy_beard_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "0.65661,0.50094,0.41942,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "daf205cc-65b7-4197-987f-fcce7eebb1ba",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - flannel_shirt",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "91daaa3c-b5be-40a5-81e1-d227b52ed362",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/shirt/flannel_shirt/models/flannel_shirt_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "71502d68-4d49-439a-b242-21287f849eed",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - tactical_vest",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "c3b992f1-36f2-4859-984a-a0f00c9c8310",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/vest/tactical_vest/models/tactical_vest_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "905a09e6-5351-4e14-865f-9512bfa22942",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - jeans_black",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "8c7cf97a-74ce-4593-bcdf-a962eae8d6f8",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/trousers/jeans/models/jeans_black_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "cf47f3d6-d572-48c4-877d-00306a3c5c0d",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - army_boots",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "dd5077d2-328b-4df8-ad19-47b64b0668c0",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/shoes/boots/models/army_boots_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            },
-            {
-              "__guid": "83080509-a447-454d-9dab-0af2f5c381f3",
-              "__version": 2,
-              "Flags": 0,
-              "Name": "Clothing - fingerless_gloves",
-              "Position": "0,0,0",
-              "Rotation": "0,0,0,1",
-              "Scale": "1,1,1",
-              "Tags": "clothing",
-              "Enabled": true,
-              "NetworkMode": 2,
-              "NetworkFlags": 0,
-              "NetworkOrphaned": 0,
-              "NetworkTransmit": true,
-              "OwnerTransfer": 1,
-              "Components": [
-                {
-                  "__type": "Sandbox.SkinnedModelRenderer",
-                  "__guid": "bf0560ac-400c-48ed-aac2-5536b61e19d4",
-                  "__enabled": true,
-                  "Flags": 0,
-                  "AnimationGraph": null,
-                  "BodyGroups": 18446744073709551615,
-                  "BoneMergeTarget": null,
-                  "CreateAttachments": false,
-                  "CreateBoneObjects": false,
-                  "LodOverride": null,
-                  "MaterialGroup": null,
-                  "MaterialOverride": null,
-                  "Materials": null,
-                  "Model": "models/citizen_clothes/gloves/fingerless_gloves/models/fingerless_gloves_m_human.vmdl",
-                  "Morphs": {},
-                  "OnComponentDestroy": null,
-                  "OnComponentDisabled": null,
-                  "OnComponentEnabled": null,
-                  "OnComponentFixedUpdate": null,
-                  "OnComponentStart": null,
-                  "OnComponentUpdate": null,
-                  "Parameters": {
-                    "bools": {},
-                    "ints": {},
-                    "floats": {},
-                    "vectors": {},
-                    "rotations": {}
-                  },
-                  "PlaybackRate": 1,
-                  "RenderOptions": {
-                    "GameLayer": true,
-                    "OverlayLayer": false,
-                    "BloomLayer": false,
-                    "AfterUILayer": false
-                  },
-                  "RenderType": "On",
-                  "Sequence": {
-                    "Name": null,
-                    "Looping": true,
-                    "Blending": false
-                  },
-                  "Tint": "1,1,1,1",
-                  "UseAnimGraph": true
-                }
-              ],
-              "Children": []
-            }
-          ]
+          "Children": []
         }
       ]
     },
@@ -2913,9 +2073,9 @@
       },
       "SDK.SDKGameManager": {
         "LastEditorCameraPosition": {
-          "Position": "-392.359436,85.5811844,157.136734",
+          "Position": "-114.887169,387.232117,63.7138443",
           "Scale": "1,1,1",
-          "Rotation": "0.0090497816,0.106975473,-0.083808504,0.990681827"
+          "Rotation": "-0.0220987424,0.186299399,0.115702197,0.975406229"
         },
         "_prefab": {
           "_type": "gameobject",
@@ -2924,7 +2084,8 @@
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "64db792e-5935-8fbc-8cfa-050cd49fa7fd"
+          "$blob": "64db792e-5935-8fbc-8cfa-050cd49fa7fd",
+          "$refs": []
         }
       },
       "Sandbox.SelectionSetsSystem": {
