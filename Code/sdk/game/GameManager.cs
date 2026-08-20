@@ -3,7 +3,7 @@ namespace SDK;
 using System;
 using Core;
 
-[Title( "HL2K Game Manager" )]
+[Title( "SDK Game Manager" )]
 public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 {
 	public SDKGameManager( Scene scene ) : base( scene ) => Listen( Stage.SceneLoaded, -1, HandleEditor, "CreateEngineShit" );

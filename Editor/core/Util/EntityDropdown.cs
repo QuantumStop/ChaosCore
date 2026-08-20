@@ -30,7 +30,7 @@ public sealed class EntityDropdown( SerializedProperty property ) : DropdownCont
 		{
 			var displayName = string.IsNullOrEmpty( type.Namespace )
 				? type.Name
-				: $"{type.Namespace.Replace( "HL2K.Entities.", "" )}/{type.Name}";
+				: $"{type.Namespace.Replace( ".Entities.", "" )}/{type.Name}";
 
 			yield return new Entry
 			{

@@ -321,7 +321,7 @@ public class iSpyProfilerWidget : Widget
 		if ( spyType is null )
 		{
 			foreach ( var assembly in AppDomain.CurrentDomain.GetAssemblies()
-				.Where( a => a.GetName().Name.StartsWith( "package.local.hl2k" ) ) )
+				.Where( a => a.GetName().Name.StartsWith( "package.local." ) ) )
 			{
 				spyType = assembly.GetType( "iSpy" );
 				if ( spyType is not null ) break;
