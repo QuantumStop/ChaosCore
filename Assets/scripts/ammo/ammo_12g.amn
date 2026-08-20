@@ -1,0 +1,15 @@
+{
+  "AmmoModel": null,
+  "AmmoModelLarge": null,
+  "AmmoName": null,
+  "HudSymbol": null,
+  "HoleSize": 0.25,
+  "DamagePlayer": 3,
+  "MaxAmmo": 90,
+  "DefaultAmmo": 8,
+  "DamageNPC": 3,
+  "Grains": 171,
+  "FtPerSec": 1000,
+  "__references": [],
+  "__version": 0
+}

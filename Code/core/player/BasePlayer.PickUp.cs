@@ -242,7 +242,7 @@ public partial class BasePlayer
 			if ( GameManagerSystem.Rules.IsOnline ) ClaimPickupHost( state );
 		}
 
-		CurrentWeapon?.Holster();
+		CurrentWeapon?.Holster( HolsterType.Pickup );
 	}
 
 	private bool TryFindPickupRigidbody( SceneTraceResult tr, out Rigidbody rigidbody )
@@ -272,12 +272,12 @@ public partial class BasePlayer
 		{
 			if ( shouldPredictHeldTag ) SetHeldPropTag( newState.GameObject, true );
 
-			CurrentWeapon?.Holster();
+			CurrentWeapon?.Holster( HolsterType.Pickup );
 			return;
 		}
 
 		ClearPickupJoint();
-		CurrentWeapon?.Draw();
+		CurrentWeapon?.Draw( HolsterType.Pickup );
 	}
 
 	private bool CanMove( GrabState state )

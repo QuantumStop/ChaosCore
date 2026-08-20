@@ -340,7 +340,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		CheckWaterLevel();
 		HandleWeaponSelection();
-		HandleWeaponInventory();
 		WantsSprint();
 
 		if ( _allowSway ) ViewmodelFixedUpdate();

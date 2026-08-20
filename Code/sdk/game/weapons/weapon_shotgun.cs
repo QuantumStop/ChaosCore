@@ -1,6 +1,6 @@
 // dont put these into a namespace it will fuck the weapon giving and youll have to do give sdk.weapon_smg and thats ass
 using Core;
-public class weapon_smg : Core.BaseCombatWeapon
+public class weapon_shotgun : Core.BaseCombatWeapon
 {
 	// an example weapon
 
@@ -19,6 +19,11 @@ public class weapon_smg : Core.BaseCombatWeapon
 		if ( Owner.Player.Controller.IsRunning ) return false; // cant shoot when sprinting (aka in this example case, regular non-Shift movement)
 
 		return true;
+	}
+
+	protected override void HandleWeaponInput()
+	{
+		if ( Input.Released( "attack1" ) ) Owner.Player?.SetAllAnimgraphParams( "b_attack", false ); // FP guns have a different idea of how a shotgun should work
 	}
 
 	protected override void PrimaryAttack()

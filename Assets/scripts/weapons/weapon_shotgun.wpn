@@ -1,0 +1,124 @@
+{
+  "WeaponViewmodel": "models/weapons/sbox_shotgun_spaghellim4/v_spaghellim4.vmdl",
+  "WeaponWorldmodel": "models/weapons/sbox_shotgun_spaghellim4/w_spaghellim4.vmdl",
+  "BulletCasingModel": null,
+  "BulletCasingParticle": null,
+  "ExplosionParticle": null,
+  "WeaponType": "WEAPON_SHOTGUN",
+  "WeaponCrosshair": null,
+  "StageAmount": 3,
+  "FiresUnderwater": false,
+  "ReloadsSingly": false,
+  "MuzzleLightCookie": "materials/cookies/muzzle_light01.tif",
+  "MuzzleLightTime": 0.02,
+  "MuzzleLightFOV": 60,
+  "MuzzleFlashEffect": null,
+  "TracerEffect": null,
+  "RecoilStrengthCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "ExplosionType": "Trace",
+  "ExplosionRadius": 180,
+  "ExplosionDamage": 100,
+  "ExplosionDuration": 0.05,
+  "ExplosionMaxVoxels": 10,
+  "ExplosionCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": -1,
+      "out": 1,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": -1,
+      "out": 1,
+      "mode": "Mirrored"
+    }
+  ],
+  "ExplosionPushBack": [
+    {
+      "x": 0,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "RecoilResetThreshold": 2,
+  "RecoilRampSpeed": 2,
+  "RecoilPushForce": 1,
+  "PrimaryAmmoType": "scripts/ammo/ammo_12g.amn",
+  "PrimaryAmmoCapacity": 0,
+  "DefaultPrimaryAmmo": 0,
+  "BulletsPerShot": 7,
+  "PrimaryFireRateRPM": 100,
+  "SpreadDegreesPrimary": 5,
+  "SpreadProgressionCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "SpreadType": "SPREAD_STATIC",
+  "DynamicSpreadType": "PER_CONSECUTIVE_SHOT",
+  "SpreadScale": 1,
+  "AttackSoundsPrimary": [],
+  "SecondaryAmmoType": null,
+  "SecondaryAmmoCapacity": 0,
+  "DefaultSecondaryAmmo": 0,
+  "SecondaryFireRateRPM": 1,
+  "SpreadDegreesSecondary": 1,
+  "AttackSoundsSecondary": [],
+  "Bucket": 0,
+  "Position": 0,
+  "Weight": 0,
+  "Icon": null,
+  "Name": null,
+  "EquipSlot": "SLOT_TWOHANDED",
+  "BurstInterval": 1,
+  "RestMin": 1,
+  "RestMax": 5,
+  "CustomDataFloat": {},
+  "CustomDataString": {},
+  "IgnoreAmmo": false,
+  "HasPrimaryAmmoType": true,
+  "HasSecondaryAmmoType": false,
+  "__references": [
+    "facepunch.v_spaghellim4#279115",
+    "facepunch.w_spaghellim4#279114"
+  ],
+  "__version": 0
+}

@@ -95,8 +95,24 @@ public partial class BasePlayer
 			{
 				field = value;
 
-				if ( value.IsValid() && value != CurrentWeapon )
-					CurrentWeapon?.Holster();
+				if ( value.IsValid() )
+				{
+					if ( CurrentWeapon.IsValid() && value == CurrentWeapon )
+					{
+						field = null; // just reset it back and ignore the rest, this CAN happen
+						return;
+					}
+
+					// being in a reload skips the holster, or it will be waiting for it to finish first,
+					// which defeats the purpose for having staged reloads at all and also is annoying
+					// In an ideal world the animgraph could be redone to support transitioning into the holster,
+					// but this is easier and you probably want faster switching for this anyway
+
+					// THIS IS FUCKED I DONT KNOW WHY
+					if ( CurrentWeapon.IsValid() && CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() && !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading ) CurrentWeapon?.Holster();
+					else
+						HandleWeaponInventory(); // animationless switch
+				}
 			}
 		}
 	}
@@ -257,15 +273,20 @@ public partial class BasePlayer
 	}
 
 	/// <summary>
-	/// Switch to specified weapon
+	/// Switch to specified weapon, if called directly instead of SwitchToWeapon, skips the holster (if any)
 	/// </summary>
 	/// <param name="weapon">Weapon in question</param>
-	virtual protected void WeaponSwitch( BaseCombatWeapon weapon )
+	protected virtual void WeaponSwitch( BaseCombatWeapon weapon )
 	{
 		if ( CurrentWeapon.IsValid() && CurrentWeapon == weapon )
 			return;
 
-		if ( DebugWantHolster ) CurrentWeapon?.Holster(); // call holster anyway since it disables the component, we never see it
+		if ( DebugSkipHolster ) CurrentWeapon?.Holster(); // call holster anyway since it disables the component, we never see it
+
+		if ( CurrentWeapon.IsValid() && CurrentWeapon.HasUsableAmmo() ) LastWeapon = CurrentWeapon;
+
+		// if holster was skipped due to whatever circumstances, the "old" weapon component isnt disabled which is usually not good
+		if ( CurrentWeapon.IsValid() && !CurrentWeapon.IsHolstered && CurrentWeapon.Enabled ) CurrentWeapon.Enabled = false;
 
 		CurrentWeapon = weapon;
 		ViewmodelVisible = true;
@@ -273,12 +294,12 @@ public partial class BasePlayer
 		CurrentWeapon?.Draw();
 
 		WeaponGameObject.Name = "Viewmodel " + "(" + weapon.WeaponData.Name + ")";
-
 	}
+
 	/// <summary>
 	/// Skip holster delay when switching weapons.
 	/// </summary>
-	[ConVar( "debug_holster_switch", ConVarFlags.Cheat, Help = "Skip holster delay when switching weapons." )] public static bool DebugWantHolster { get; set; } = false;
+	[ConVar( "debug_holster_switch", ConVarFlags.Cheat, Help = "Skip holster delay when switching weapons." )] public static bool DebugSkipHolster { get; set; } = false;
 
 	/// <summary>
 	/// Public accessor to WeaponSwitch, which also decides if we want the holster delay or not
@@ -286,51 +307,41 @@ public partial class BasePlayer
 	/// <param name="weapon"></param>
 	public void SwitchToWeapon( BaseCombatWeapon weapon )
 	{
-		if ( !DebugWantHolster ) WeaponToEquip = weapon;
+		if ( !DebugSkipHolster ) WeaponToEquip = weapon;
 		else WeaponSwitch( weapon );
 	}
 
-	/// <summary>
-	/// Handle the additional inventory stuff every frame, like checking the holster thing
-	/// </summary>
-	private void HandleWeaponInventory()
+	/// <summary>This is so you can have delayed weapon switching for holster animations</summary>
+	public void HandleWeaponInventory()
 	{
-		// I assume this was so you can have delayed weapon switching for holster animations? - Xenthio
-		// Correct! - answer
-		if ( WeaponToEquip.IsValid() )
+		if ( WeaponToEquip.IsValid() ) // this used to be way longer but now its just this
 		{
-			if ( CurrentWeapon.IsValid() && WeaponToEquip == CurrentWeapon )
-			{
-				WeaponToEquip = null; // just reset it back and ignore the rest, this CAN happen
-				return;
-			}
-
-			//	CurrentWeapon?.Holster();
-
-			// being in a reload skips the holster, or it will be waiting for it to finish first,
-			// which defeats the purpose for having staged reloads at all and also is annoying
-			// In an ideal world the animgraph could be redone to support transitioning into the holster,
-			// but this is easier and you probably want faster switching for this anyway
-			// Also so much fucking support for weapons with no viewmodel which is really a dev only thing
-			if ( !CurrentWeapon.IsValid() ||
-				(CurrentWeapon.IsValid() && !CurrentWeapon.WeaponData.WeaponViewmodel.IsValid()) ||
-				(CurrentWeapon.IsValid() && (CurrentWeapon.IsHolstered ^ CurrentWeapon.IsReloading)) )
-			{
-				// the only time we want to call the internal function directly, or we will be stuck in a loop
-				// where SwitchToWeapon will be calling this fucking thing over and over
-				WeaponSwitch( WeaponToEquip );
-				WeaponToEquip = null;
-			}
+			// the only time we want to call the internal function directly, or we will be stuck in a loop
+			// where SwitchToWeapon will be calling this fucking thing over and over
+			WeaponSwitch( WeaponToEquip );
+			WeaponToEquip = null;
 		}
 	}
 
 	/// <summary>
-	/// We want this called once, but only switching is able to be calledo once due to 50 conditions, so we have to force this be called once
+	/// What kind of holstering was activated
 	/// </summary>
-	private void WeaponToEquipChange()
+	[Property, ReadOnly, Feature( "Debug" )] public HolsterType HolsterOwner { get; set; }
+
+	public enum HolsterType
 	{
-		if ( WeaponToEquip.IsValid() && WeaponToEquip != CurrentWeapon )
-			CurrentWeapon?.Holster();
+		/// <summary>Anything can become the next owner</summary>
+		None,
+		/// <summary>Weapon switching, or other directly weapon related </summary>
+		Weapon,
+		/// <summary>Something was done to the camera, which needed to holster the gun </summary>
+		Camera,
+		/// <summary>Some sort of action was performed (usually player doing something)</summary>
+		Action,
+		/// <summary>Player picked up a physics object (separate from action just in case)</summary>
+		Pickup,
+		/// <summary>Something not covered by other categories</summary>
+		Speical
 	}
 
 	/// <summary>

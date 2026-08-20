@@ -87,8 +87,36 @@ public partial class BaseCombatWeapon : BaseEntity
 	private const float _autoReloadDelay = 0.1f;
 	/// <summary>
 	/// Is the gun currently SPECIFICALLY holstered (and not just unavailable to shoot)
+	/// PS: this is used for the "full holster" when weapon switching
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public bool IsHolstered { get; protected set; }
+	[Property, ReadOnly, Feature( "Debug" )]
+	public bool IsHolstered
+	{
+		get;
+		protected set
+		{
+			if ( field == value ) return;
+			field = value;
+
+			if ( value is true )
+			{
+				switch ( Owner.Player.HolsterOwner )
+				{
+					case BasePlayer.HolsterType.None:
+						break;
+					case BasePlayer.HolsterType.Weapon:
+						Owner.Player.HandleWeaponInventory();
+						break;
+					case BasePlayer.HolsterType.Camera:
+						break;
+					case BasePlayer.HolsterType.Action:
+						break;
+					case BasePlayer.HolsterType.Speical:
+						break;
+				}
+			}
+		}
+	} = true;
 	/// <summary>
 	/// Is attack blocked (mid reload, mid draw)
 	/// </summary>
@@ -372,8 +400,12 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// Holster the weapon.
 	/// Needs to be public because other stuff can force us to put down the weapon
 	/// </summary>
-	public virtual void Holster()
+	public virtual void Holster( BasePlayer.HolsterType type = BasePlayer.HolsterType.Weapon, bool force = false )
 	{
+		if ( !force && Owner.Player.HolsterOwner != BasePlayer.HolsterType.None && Owner.Player.HolsterOwner != type ) return; // has to be not None and the same thing (None is default, so we have to force through it)
+
+		Owner.Player.HolsterOwner = type; // new owner
+
 		Owner.Player?.SetAllAnimgraphParams( "b_equipped", false );
 
 		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = false;
