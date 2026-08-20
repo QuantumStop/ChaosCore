@@ -64,11 +64,9 @@
       {
         "__type": "Sandbox.Bloom",
         "__guid": "4ad4cb4f-a957-40d2-8a0e-ebd5cb129aa9",
-        "__enabled": false,
+        "__enabled": true,
         "Flags": 0,
         "__version": 1,
-        "Filter": "Bilinear",
-        "Gamma": 2.2,
         "Mode": "Additive",
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
@@ -76,7 +74,7 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "Strength": 0.1,
+        "Strength": 0.25,
         "Threshold": 0,
         "Tint": "1,1,1,1"
       },
