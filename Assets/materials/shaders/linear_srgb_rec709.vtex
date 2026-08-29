@@ -2,7 +2,7 @@
   "Images": null,
   "Sequences": [
     {
-      "Source": "materials/shaders/textures/arri_logc4_rec709.exr",
+      "Source": "materials/shaders/textures/linear_srgb_rec709.exr",
       "IsLooping": true,
       "FlipBook": false,
       "Columns": 0,
@@ -11,7 +11,7 @@
     }
   ],
   "InputColorSpace": "SRGB",
-  "OutputFormat": "RGBA32323232F",
+  "OutputFormat": "RGBA16161616F",
   "OutputColorSpace": "Linear",
   "OutputMipAlgorithm": "None",
   "OutputTypeString": "2D"
