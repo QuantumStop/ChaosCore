@@ -60,4 +60,6 @@ public class BaseUsable : BaseEntity, Component.IPressable
 
 	public virtual bool Pressing( IPressable.Event press ) => !press.Source.Components.TryGet<BasePlayer>( out var basePlayer ) || basePlayer.LifeState != LifeState.Dead;
 
+	public virtual void Look( IPressable.Event e ) { }
+
 }

@@ -1,5 +1,4 @@
 using System;
-using Sandbox.Internal;
 
 namespace Core;
 
@@ -22,7 +21,7 @@ public class BaseWeaponItem : BaseItem
 #if IGNIS
 	[DebugExpose( group: "BaseWeaponItem" )]
 #endif
-	[Property, ReadOnly] public bool WasDropped { get; set; } = false;
+	[Property, ReadOnly, Feature( "Debug" )] public bool WasDropped { get; set; } = false;
 	public Vector3 PositionImpulse { get; set; }
 	public Vector3 AngularImpulse { get; set; }
 
@@ -74,6 +73,34 @@ public class BaseWeaponItem : BaseItem
 	[Property, ReadOnly, Feature( "Debug" )] private float _counter = 0;
 	[Property, ReadOnly, Feature( "Debug" )] private bool _isPressing = false;
 
+	/// <summary>Is this weapon in a slot that's occupied by the person attempting pickup</summary>
+	[Property, ReadOnly, Feature( "Debug" )]
+	public bool SlotTaken()
+	{
+		if ( !LastOwner.IsValid() || OverrideSlotOccupancy ) return false;
+
+		// stomp the pickup if slot is occupied, so we can do the Pressing
+		foreach ( var weapon in LastOwner.WeaponList )
+		{
+			if ( (weapon.WeaponData?.Bucket == Data?.Bucket) && (weapon.WeaponData?.Position == Data?.Position) && (weapon.WeaponData != Data) )
+			{
+				SlotTakenBy = weapon.WeaponData;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>Who is it taken by</summary>
+	[Property, ReadOnly, Feature( "Debug" )] public WeaponParse SlotTakenBy { get; private set; }
+
+	/// <summary>
+	/// A hack to force the replacement in cases where we definitely know we want to replace, i.e. external giving (so no player input)
+	/// This is rarely used, we should be preferring the default logic (aka false).
+	/// </summary>
+	public bool OverrideSlotOccupancy { get; set; } = false;
+
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
@@ -91,6 +118,13 @@ public class BaseWeaponItem : BaseItem
 	{
 		base.Pressing( press );
 
+		press.Source.Components.TryGet<BasePlayer>( out var Activator );
+		if ( Activator.LifeState == LifeState.Dead ) return false;
+
+		LastOwner = Activator;
+
+		if ( !SlotTaken() ) return false;
+
 		_isPressing = true;
 
 		if ( _counter < PickupTime )
@@ -98,47 +132,30 @@ public class BaseWeaponItem : BaseItem
 
 		if ( _counter == PickupTime )
 		{
-			press.Source.Components.TryGet<BasePlayer>( out var Activator );
+			var weapon = Activator.GiveWeaponByName( Data.ResourceName, null, false, this );
 
-			var damn = Activator.WeaponList.ToList();
+			if ( !weapon.IsValid() ) return false;
 
-			foreach ( var weapons in damn )
-			{
-				if ( (weapons.WeaponData?.Bucket == Data?.Bucket) && (weapons.WeaponData?.Position == Data?.Position) )
-				{
-					var weapon = Activator.GiveWeaponByName( Data.ResourceName, null, false, this );
+			base.OnPickup( Activator );
 
-					if ( !weapon.IsValid() || Activator.LifeState == LifeState.Dead )
-						return false;
+			weapon.Owner = new BaseCombatWeapon.WeaponOwner( Activator );
 
-					base.OnPickup( Activator );
+			weapon.PrimaryAmmoLoaded = InternalAmmoCountPrimary;
+			weapon.WasOnTheGround = true;
 
-					weapon.PrimaryAmmoLoaded = InternalAmmoCountPrimary;
-					weapon.WasOnTheGround = true;
-
-					Activator.SwitchToWeapon( weapon );
-					DestroyItem();
-				}
-			}
+			Activator.SwitchToWeapon( weapon );
+			DestroyItem();
 		}
 
 		return true;
 	}
 
-	/// <summary>
-	/// Horrible, horrible hack to know if we need to pre-call FirstSetup() on a given baseweapon
-	/// </summary>
+	/// <summary>Horrible, horrible hack to know if we need to pre-call FirstSetup() on a given baseweapon</summary>
 	public bool NeedsWarmingUp { get; set; } = false;
 
 	public override void OnPickup( BasePlayer Activator = null )
 	{
-		if ( Activator.LifeState == LifeState.Dead ) // Ghosts can attempt to pick up items, but we won't let them actually do it
-			return;
-
-		foreach ( var weapons in Activator.WeaponList )
-		{
-			if ( (weapons.WeaponData?.Bucket == Data?.Bucket) && (weapons.WeaponData?.Position == Data?.Position) && (weapons.WeaponData.ResourceName != Data.ResourceName) ) return;
-		}
+		if ( Activator.LifeState == LifeState.Dead || SlotTaken() ) return; // Ghosts can attempt to pick up items, but we won't let them actually do it
 
 		var weapon = Activator.GiveWeaponByName( Data.ResourceName, null, false, this );
 
@@ -159,4 +176,18 @@ public class BaseWeaponItem : BaseItem
 		Activator.SwitchToWeapon( weapon );
 		DestroyItem();
 	}
+
+	public override void Look( IPressable.Event e )
+	{
+		if ( !SlotTaken() ) return;
+
+		e.Source.Components.TryGet<BasePlayer>( out var Activator );
+		if ( Activator.LifeState == LifeState.Dead ) return;
+
+		DebugOverlay.ScreenText( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.55f ), $"[Hold {Input.GetButtonOrigin( "Use" )}] {ResolvePrintName( SlotTakenBy )} -> {ResolvePrintName( Data )}" );
+		if ( _counter > 0 ) DebugOverlay.ScreenText( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.575f ), $"{MathF.Truncate( _counter / PickupTime * 100 )}%" );
+	}
+
+	/// <summary>500 null checks to get proper printable weapon name</summary><returns>Either the name or placeholder</returns>
+	public static string ResolvePrintName( WeaponParse data ) => !data.IsValid() || string.IsNullOrWhiteSpace( data.Name ) ? "Unnamed Weapon" : data.Name;
 }

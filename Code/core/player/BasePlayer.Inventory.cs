@@ -107,15 +107,16 @@ public partial class BasePlayer
 					// which defeats the purpose for having staged reloads at all and also is annoying
 					// In an ideal world the animgraph could be redone to support transitioning into the holster,
 					// but this is easier and you probably want faster switching for this anyway
-
-					// THIS IS FUCKED I DONT KNOW WHY
-					if ( CurrentWeapon.IsValid() && CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() && !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading ) CurrentWeapon?.Holster();
-					else
-						HandleWeaponInventory(); // animationless switch
+					// Also so much fucking support for weapons with no viewmodel which is really a dev only thing
+					if ( _holsterOrActionCheck ) CurrentWeapon?.Holster();
+					else ApplyWeaponSwitch(); // animationless switch
 				}
 			}
 		}
 	}
+
+	/// <summary>Most holster actions want very specific state so we can just reuse it for all of them</summary>
+	protected bool _holsterOrActionCheck => CurrentWeapon.IsValid() && CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() && !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading;
 
 	// --- Weapon HUD/Selection ---
 	[ConVar( "hud_showemptyweaponslots", Help = "Show empty weapon slots in selection HUD." )] public static bool HudShowEmptyWeaponSlots { get; set; } = false;
@@ -247,7 +248,7 @@ public partial class BasePlayer
 	public void DropWeapon( BaseCombatWeapon weapon, bool switchtonew = true )
 	{
 		GameObject WeaponObject = Scene.CreateObject();
-		WeaponObject.Name = weapon.WeaponData.ResourceName + " (" + weapon.WeaponData.Name + ")";
+		WeaponObject.Name = $"{weapon.WeaponData.ResourceName} ({weapon.WeaponData.Name})";
 
 		var tr = Scene.Trace.Ray( Controller.AimRay, 48 )
 			.IgnoreGameObjectHierarchy( GameObject )
@@ -257,8 +258,7 @@ public partial class BasePlayer
 
 		WeaponObject.WorldPosition = tr.EndPosition;
 
-		if ( DebugDropRay )
-			DebugOverlay.Trace( tr, 15, true );
+		if ( DebugDropRay ) DebugOverlay.Trace( tr, 15, true );
 
 		var item = WeaponObject.Components.Create<BaseWeaponItem>( false );
 		item.Data = weapon.WeaponData;
@@ -266,7 +266,8 @@ public partial class BasePlayer
 		item.WasDropped = true;
 		item.Enabled = true;
 
-		item.PositionImpulse = Controller.Head.LocalRotation.Angles().WithPitch( -25 ).Forward * 250 * item.Physics.Mass;
+		item.PositionImpulse = GetEyeAngles().WithPitch( -25 ).Forward * 250 * item.Physics.Mass;
+		item.AngularImpulse = Vector3.Random * 25 * item.Physics.Mass;
 
 		RemoveWeapon( weapon, switchtonew );
 		if ( !switchtonew ) CurrentWeapon = null;
@@ -281,12 +282,9 @@ public partial class BasePlayer
 		if ( CurrentWeapon.IsValid() && CurrentWeapon == weapon )
 			return;
 
-		if ( DebugSkipHolster ) CurrentWeapon?.Holster(); // call holster anyway since it disables the component, we never see it
+		CurrentWeapon?.Holster(); // call holster anyway since it disables the component, we never see it
 
 		if ( CurrentWeapon.IsValid() && CurrentWeapon.HasUsableAmmo() ) LastWeapon = CurrentWeapon;
-
-		// if holster was skipped due to whatever circumstances, the "old" weapon component isnt disabled which is usually not good
-		if ( CurrentWeapon.IsValid() && !CurrentWeapon.IsHolstered && CurrentWeapon.Enabled ) CurrentWeapon.Enabled = false;
 
 		CurrentWeapon = weapon;
 		ViewmodelVisible = true;
@@ -296,14 +294,10 @@ public partial class BasePlayer
 		WeaponGameObject.Name = "Viewmodel " + "(" + weapon.WeaponData.Name + ")";
 	}
 
-	/// <summary>
-	/// Skip holster delay when switching weapons.
-	/// </summary>
+	/// <summary>Skip holster delay when switching weapons.</summary>
 	[ConVar( "debug_holster_switch", ConVarFlags.Cheat, Help = "Skip holster delay when switching weapons." )] public static bool DebugSkipHolster { get; set; } = false;
 
-	/// <summary>
-	/// Public accessor to WeaponSwitch, which also decides if we want the holster delay or not
-	/// </summary>
+	/// <summary>Public accessor to WeaponSwitch, which also decides if we want the holster delay or not</summary>
 	/// <param name="weapon"></param>
 	public void SwitchToWeapon( BaseCombatWeapon weapon )
 	{
@@ -312,9 +306,9 @@ public partial class BasePlayer
 	}
 
 	/// <summary>This is so you can have delayed weapon switching for holster animations</summary>
-	public void HandleWeaponInventory()
+	public void ApplyWeaponSwitch()
 	{
-		if ( WeaponToEquip.IsValid() ) // this used to be way longer but now its just this
+		if ( WeaponToEquip.IsValid() ) // this used to be way longer (due to being in OnUpdate) but now its just this
 		{
 			// the only time we want to call the internal function directly, or we will be stuck in a loop
 			// where SwitchToWeapon will be calling this fucking thing over and over
@@ -323,25 +317,23 @@ public partial class BasePlayer
 		}
 	}
 
-	/// <summary>
-	/// What kind of holstering was activated
-	/// </summary>
+	/// <summary>What kind of holstering was activated</summary>
 	[Property, ReadOnly, Feature( "Debug" )] public HolsterType HolsterOwner { get; set; }
 
 	public enum HolsterType
 	{
 		/// <summary>Anything can become the next owner</summary>
 		None,
-		/// <summary>Weapon switching, or other directly weapon related </summary>
+		/// <summary>Weapon switching, or other directly weapon related</summary>
 		Weapon,
-		/// <summary>Something was done to the camera, which needed to holster the gun </summary>
+		/// <summary>Something was done to the camera, which needed to holster the gun</summary>
 		Camera,
 		/// <summary>Some sort of action was performed (usually player doing something)</summary>
 		Action,
 		/// <summary>Player picked up a physics object (separate from action just in case)</summary>
 		Pickup,
 		/// <summary>Something not covered by other categories</summary>
-		Speical
+		Special
 	}
 
 	/// <summary>
@@ -357,7 +349,10 @@ public partial class BasePlayer
 		return null;
 	}
 
-	public void GiveWeaponItemByName( string name, string param )
+	/// <summary>ConVar 'give weapon_name'</summary>
+	/// <param name="name">weapon_name</param>
+	/// <param name="param">Additional parameter to consider</param>
+	public void GiveItemWeaponByName( string name, string param )
 	{
 		if ( !string.IsNullOrEmpty( name ) )
 		{
@@ -370,21 +365,19 @@ public partial class BasePlayer
 			var weapon = itemobj.Components.Create<BaseWeaponItem>( false );
 			weapon.Data = gun;
 
-			if ( param == "nofirstequip" || param == "noeq" )
-				weapon.SkipFirstEquipAnim = true;
+			if ( param == "nofirstequip" || param == "noeq" ) weapon.SkipFirstEquipAnim = true;
 
-			weapon.PickUp = true;
+			weapon.OverrideSlotOccupancy = true;
 			weapon.LastOwner = this;
+			weapon.PickUp = true;
 			weapon.Enabled = true;
 		}
 	}
 
-	/// <summary>
-	/// Remove a given weapon, if we have it
-	/// </summary>
+	/// <summary>Remove a given weapon, if we have it</summary>
 	/// <param name="name">Full Type name of the weapon</param>
 	/// <param name="switchtonew">Do we switch to the new weapon?</param>
-	public void RemoveWeaponByName( string name, bool switchtonew = true ) => RemoveWeapon( GetWeaponByName( name ), switchtonew );
+	public void RemoveItemWeaponByName( string name, bool switchtonew = true ) => RemoveWeapon( GetWeaponByName( name ), switchtonew );
 
 	/// <summary>
 	/// Remove a given weapon, if we have it
@@ -410,9 +403,7 @@ public partial class BasePlayer
 			weapon.Destroy();
 	}
 
-	/// <summary>
-	/// Find best weapon besides current one, in case we need to switch away
-	/// </summary>
+	/// <summary>Find best weapon besides current one, in case we need to switch away</summary>
 	/// <returns>New weapon</returns>
 	public static BaseCombatWeapon BestNextWeapon( BaseCombatWeapon oldWeapon )
 	{
@@ -435,7 +426,7 @@ public partial class BasePlayer
 
 	public int AddReserveAmmo( string ammoname, int amount, bool onlycheck = false )
 	{
-		//		returns amount left over if not all ammo can fit
+		//	returns amount left over if not all ammo can fit
 		if ( amount <= 0 )
 			return 0;
 

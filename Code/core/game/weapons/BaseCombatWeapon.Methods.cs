@@ -53,7 +53,7 @@ public partial class BaseCombatWeapon
 	{
 		if ( WeaponData.IgnoreAmmo ) return true;
 
-		return HasLoadedAmmo() || (BasePlayer.Local.GetReserveAmmo( WeaponData.PrimaryAmmoType?.ResourceName ) > 0) || (BasePlayer.Local.GetReserveAmmo( WeaponData.SecondaryAmmoType?.ResourceName ) > 0);
+		return HasLoadedAmmo() || (Owner.Player.GetReserveAmmo( WeaponData.PrimaryAmmoType?.ResourceName ) > 0) || (Owner.Player.GetReserveAmmo( WeaponData.SecondaryAmmoType?.ResourceName ) > 0);
 	}
 	/// <summary>
 	/// Does this weapon use primary attack?

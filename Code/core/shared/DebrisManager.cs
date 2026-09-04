@@ -146,7 +146,6 @@ public class DebrisManager : BaseEntity
 
 		GameObject decalobject = Instance.Scene.CreateObject();
 
-		if ( GameManagerSystem.Rules.IsOnline ) decalobject.NetworkSpawn();
 
 		var decal = decalobject.Components.Create<Decal>();
 		decal.Transient = true; // abide by maxdecals command but doesnt seem to work
@@ -206,28 +205,7 @@ public class DebrisManager : BaseEntity
 				Log.Warning( $"No valid particles on this surface or {baseSurface}. Falling back to default particles for {surface}." );
 		}
 
-		GameObject prefabObject = bulletEffects ?? baseBulletEffects;
-
-		/*
-				// Now we can support overriding legacy particles! In the future we might not even need this
-				// TODO: In a year(!) check if this is even needed, but otherwise neat failsafe
-				if ( Path.GetExtension( prefabPath ) != Path.GetExtension( ".prefab" ) )
-				{
-					if ( ShowSurfaceDebug )
-						Log.Warning( $"Failed to load this particles: {prefabPath}. Not supported {Path.GetExtension( prefabPath )} format is being used! Replacing with override particle on {surface}!" );
-
-					prefabObject = PrefabScene.GetPrefab( defaultPrefabPath );
-				}
-		*/
-		// Texture texture          = null;
-		// g_tColor reliance is kind of annoying here :( Not that it works rn.
-		// TODO: This is trying to get a texture from the mat to apply to the particle. Not working, not bieng done. Need to evaluate if plausible
-		// if ( material .IsValid() && ( texture = material.GetTexture( "g_tColor" )) .IsValid()  && texture.IsValid() ) 
-		// { 
-		//	var prefabParticleRender     = prefabObject?.GetComponent<ParticleSpriteRenderer>();
-		// 	prefabParticleRender.Texture = texture;
-		// }
-
+		GameObject prefabObject = bulletEffects ?? baseBulletEffects ?? baseSurface.GetBaseSurface().PrefabCollection.BulletImpact;
 
 		Rotation rotation = (-normal).EulerAngles.ToRotation();
 		GameObject particleObject = prefabObject.Clone( position, rotation );
@@ -239,8 +217,6 @@ public class DebrisManager : BaseEntity
 				particle.Tint = color;
 			}
 		}
-
-		if ( GameManagerSystem.Rules.IsOnline ) particleObject.NetworkSpawn();
 
 		IncreaseAmount( particleObject );
 
@@ -289,8 +265,6 @@ public class DebrisManager : BaseEntity
 
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.TracerEffect?.ResourcePath ?? defaultTracerPath );
 		GameObject tracer = prefabObject.Clone( position, muzzleForward.EulerAngles );
-
-		if ( GameManagerSystem.Rules.IsOnline ) tracer.NetworkSpawn();
 
 		tracer.SetParent( GameObject );
 		tracer.Tags.Add( "debris" );
@@ -373,46 +347,16 @@ public class DebrisManager : BaseEntity
 		return prefabObject;
 	}
 
-	public GameObject CreateMuzzleflashObject( WeaponParse weapon, GameObject muzzleObject )
-	{
-		// Default fall backs for muzzleflash
-		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
-		GameObject prefabObject = GameObject.GetPrefab( weapon?.MuzzleFlashEffect?.ResourcePath ?? defaultMuzzleflashPath );
-
-		if ( prefabObject is null )
-			return null;
-
-		Vector3 spawnPos = muzzleObject.WorldPosition;
-		Rotation spawnRot = muzzleObject.WorldRotation;
-
-		GameObject muzzleflashObj = prefabObject.Clone( spawnPos, spawnRot );
-
-		if ( GameManagerSystem.Rules.IsOnline ) muzzleflashObj.NetworkSpawn();
-
-		muzzleflashObj.WorldPosition = spawnPos;
-		muzzleflashObj.WorldRotation = spawnRot;
-		muzzleflashObj.Tags.Add( "debris" );
-		muzzleflashObj.Name = "muzzleflash_particle_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() )
-						.Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
-
-		IncreaseAmount( muzzleflashObj );
-		GameObject.Name = "Debris Manager (" + TrackedDebris + ")";
-
-		return muzzleflashObj;
-	}
-
-	public static GameObject CreateViewMuzzleflashObject( WeaponParse weapon, Vector3 muzzlePos, Rotation muzzleRot, GameObject muzzleObject )
+	[Rpc.Broadcast]
+	public static void CreateMuzzleflashObject( WeaponParse weapon, Vector3 muzzlePos, Rotation muzzleRot, GameObject muzzleObject )
 	{
 		// Default fallback for muzzleflash
 		string defaultMuzzleflashPath = "prefabs/game/particles/weapons/weapon_muzzleflash.prefab";
 		GameObject prefabObject = GameObject.GetPrefab( weapon?.MuzzleFlashEffect?.ResourcePath ?? defaultMuzzleflashPath );
 
-		if ( prefabObject is null )
-			return null;
+		if ( !prefabObject.IsValid() ) return;
 
-		GameObject muzzleflashObj = prefabObject.Clone( position: muzzlePos, rotation: muzzleRot, parent: muzzleObject, scale: 1f );
-
-		if ( GameManagerSystem.Rules.IsOnline ) muzzleflashObj.NetworkSpawn();
+		GameObject muzzleflashObj = prefabObject.Clone( muzzleObject, muzzlePos, muzzleRot, 1f );
 
 		muzzleflashObj.WorldPosition = muzzlePos;
 		muzzleflashObj.WorldRotation = muzzleRot;
@@ -422,8 +366,6 @@ public class DebrisManager : BaseEntity
 
 		IncreaseAmount( muzzleflashObj );
 		Instance.GameObject.Name = "Debris Manager (" + Instance.TrackedDebris + ")";
-
-		return muzzleflashObj;
 	}
 
 	[Rpc.Broadcast]
@@ -441,7 +383,6 @@ public class DebrisManager : BaseEntity
 		}
 
 		GameObject casingObject = prefabObject.Clone( position, rotation );
-		if ( GameManagerSystem.Rules.IsOnline ) casingObject.NetworkSpawn();
 
 		casingObject.SetParent( GameObject );
 		casingObject.Tags.Add( "debris" );

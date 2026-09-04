@@ -167,6 +167,8 @@ public class BaseDoor : BaseUsable
 #if FMOD
 	protected EventInstance _moveSND { get; set; }
 #endif
+
+
 	protected void MoveSound()
 	{
 #if FMOD

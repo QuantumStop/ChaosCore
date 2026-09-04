@@ -98,25 +98,22 @@ public partial class BaseCombatWeapon : BaseEntity
 			if ( field == value ) return;
 			field = value;
 
-			if ( value is true )
-			{
-				switch ( Owner.Player.HolsterOwner )
-				{
-					case BasePlayer.HolsterType.None:
-						break;
-					case BasePlayer.HolsterType.Weapon:
-						Owner.Player.HandleWeaponInventory();
-						break;
-					case BasePlayer.HolsterType.Camera:
-						break;
-					case BasePlayer.HolsterType.Action:
-						break;
-					case BasePlayer.HolsterType.Speical:
-						break;
-				}
-			}
+			if ( value is true ) HolsterAction();
 		}
 	} = true;
+
+	/// <summary>What happens when the holster finishes, per each kind of holster reason there can be</summary>
+	protected virtual void HolsterAction()
+	{
+		switch ( Owner.Player.HolsterOwner )
+		{
+			default:
+				break;
+			case BasePlayer.HolsterType.Weapon:
+				Owner.Player?.ApplyWeaponSwitch();
+				break;
+		}
+	}
 	/// <summary>
 	/// Is attack blocked (mid reload, mid draw)
 	/// </summary>
@@ -620,18 +617,12 @@ public partial class BaseCombatWeapon : BaseEntity
 
 	}
 
-	/// <summary>
-	/// We need to know what kind of owner this gun has, because we don't have BaseCombatCharacter
-	/// </summary>
+	/// <summary>We need to know what kind of owner this gun has, because we don't have BaseCombatCharacter</summary>
 	public readonly struct WeaponOwner
 	{
-		/// <summary>
-		/// If the owner is a Player, this has it
-		/// </summary>
+		/// <summary>If the owner is a Player, this has it</summary>
 		public readonly BasePlayer Player;
-		/// <summary>
-		/// If the owner is an NPC, this has it
-		/// </summary>
+		/// <summary>If the owner is an NPC, this has it</summary>
 		public readonly AIController NPC;
 
 		public WeaponOwner( BasePlayer player ) => Player = player;

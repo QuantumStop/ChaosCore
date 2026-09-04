@@ -10,12 +10,12 @@ partial class BasePlayer
 	/// </summary>
 	/// <param name="name">Name of thing to give</param>
 	/// <param name="parameter">Additional parameters</param>
-	[ConCmd( "give" )]
+	[ConCmd( "give", ConVarFlags.Cheat, Help = "Give the player a certain item like a weapon or a healthkit" )]
 	public static void CmdGive( string name, string parameter = null )
 	{
 		if ( name.StartsWith( "weapon" ) )
 		{
-			Local?.GiveWeaponItemByName( name, parameter );
+			Local?.GiveItemWeaponByName( name, parameter );
 		}
 		else if ( name.StartsWith( "ammo" ) )
 		{
@@ -71,7 +71,7 @@ partial class BasePlayer
 	{
 		if ( name.StartsWith( "weapon" ) )
 		{
-			Local.RemoveWeaponByName( name );
+			Local.RemoveItemWeaponByName( name );
 		}
 		else if ( name.StartsWith( "ammo" ) )
 		{

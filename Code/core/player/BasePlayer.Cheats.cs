@@ -15,12 +15,13 @@ public partial class BasePlayer
 		.IgnoreGameObjectHierarchy( Local.GameObject )
 		.WithoutTags( "trigger" )
 		.HitTriggers()
+		.UseHitPosition()
 		.Run();
 
 		if ( tr.Hit )
 		{
 			GameObject entcreate = Local.Scene.CreateObject();
-			entcreate.WorldPosition = tr.EndPosition;
+			entcreate.WorldPosition = tr.HitPosition + tr.HitPosition.Normal * 32;
 			entcreate.Components.Create( GlobalGameNamespace.TypeLibrary.GetType( entname ) );
 #if FMOD
 			FMODSound.Play( "event:/Player/HUD/LessonStart" );

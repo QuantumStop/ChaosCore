@@ -9,10 +9,10 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	[ConVar( "mat_fullbright" )]
 	public static SceneCameraDebugMode Fullbright
 	{
-		get => field = Current.Scene.Camera.DebugMode;
+		get => Current?.Scene?.Camera?.DebugMode ?? SceneCameraDebugMode.Normal;
 		set
 		{
-			if ( value == field || !Current.Scene.IsValid() ) return;
+			if ( !Current.Scene.IsValid() || value == Current.Scene.Camera.DebugMode ) return;
 
 			Current.Scene.Camera.DebugMode = value;
 		}

@@ -73,10 +73,20 @@ public class BaseItem : BaseUsable
 	/// </summary>
 	protected virtual void AddEffects() { }
 
-	/// <summary>
-	/// Who was the last one to touch it
-	/// </summary>
-	public BasePlayer LastOwner { get; set; }
+	/// <summary>Who was the last one to touch it</summary>
+	[Property, Feature( "Debug" ), ReadOnly]
+	public BasePlayer LastOwner
+	{
+		get;
+		set
+		{
+			if ( field == value ) return;
+			field = value;
+			OwnerChanged();
+		}
+	}
+
+	protected virtual void OwnerChanged() { }
 
 	protected override void OnFixedUpdate()
 	{
@@ -86,7 +96,6 @@ public class BaseItem : BaseUsable
 			OnPickup( LastOwner );
 	}
 
-	//	public override bool Press( IPressable.Event e ) { base.Press( e ); OnPickup(); return true; }
 	/// <summary>
 	/// When picked up (succefully)
 	/// </summary>

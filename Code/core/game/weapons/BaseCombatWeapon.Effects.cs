@@ -84,7 +84,7 @@ public partial class BaseCombatWeapon
 
 		// TODO: In the future will have own muzzleflash particle component we can pass stuff to.
 		// Seems nicer than just having a prefab only, particles should be scaleable per our need
-		DebrisManager.CreateViewMuzzleflashObject( WeaponData, adjustedTransform.Position, adjustedTransform.Rotation, attachmentObj );
+		DebrisManager.CreateMuzzleflashObject( WeaponData, adjustedTransform.Position, adjustedTransform.Rotation, attachmentObj );
 
 		// stay parented
 		delete_go.Parent = attachmentObj;

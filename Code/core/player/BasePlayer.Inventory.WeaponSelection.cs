@@ -5,7 +5,6 @@ using FMODSbox;
 #endif
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 partial class BasePlayer
 {
