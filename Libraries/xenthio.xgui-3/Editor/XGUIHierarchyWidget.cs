@@ -4,6 +4,7 @@ using Sandbox.UI;
 using System;
 using System.Collections.Generic;
 using XGUI.XGUIEditor;
+using TreeView = Editor.TreeView;
 
 class XGUIHierarchyWidget : Widget
 {
@@ -36,7 +37,6 @@ class XGUIHierarchyWidget : Widget
 
 	private void BuildTreeForMarkupNodeRecursive( MarkupNode node, TreeNode parentTreeNode, TreeView treeView )
 	{
-
 		string displayName = $"{node.TagName}";
 		if ( node.Attributes.TryGetValue( "class", out var cls ) && !string.IsNullOrWhiteSpace( cls ) ) displayName += $" .{cls.Split( ' ' )[0]}";
 		if ( node.Attributes.TryGetValue( "id", out var id ) && !string.IsNullOrWhiteSpace( id ) ) displayName += $" #{id}";
