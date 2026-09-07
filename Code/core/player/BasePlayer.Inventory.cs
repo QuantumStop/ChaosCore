@@ -426,24 +426,22 @@ public partial class BasePlayer
 
 	public int AddReserveAmmo( string ammoname, int amount, bool onlycheck = false )
 	{
-		//	returns amount left over if not all ammo can fit
-		if ( amount <= 0 )
-			return 0;
+		// returns amount left over if not all ammo can fit
+		if ( amount <= 0 ) return 0;
 
 		var ammoRef = GetReserveAmmoReference( ammoname );
+
 		if ( ammoRef is null )
 		{
 			ammoRef = new PlayerAmmoReserve { AmmoType = ammoname };
 			AmmoReserveList.Add( ammoRef );
 		}
 
-		if ( !onlycheck )
-			ammoRef.ReserveAmmo += amount;
+		if ( !onlycheck ) ammoRef.ReserveAmmo += amount;
 
 		var overflow = ammoRef.ReserveAmmo - Math.Clamp( ammoRef.ReserveAmmo + (onlycheck ? amount : 0), 0, AmmoInfo.GetAmmoData( ammoname ).MaxAmmo );
 
-		if ( !onlycheck )
-			ammoRef.ReserveAmmo -= overflow;
+		if ( !onlycheck ) ammoRef.ReserveAmmo -= overflow;
 
 		return overflow;
 	}
