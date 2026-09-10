@@ -289,7 +289,7 @@
 								fade_in_time = 0.2
 								fade_out_time = 0.2
 								looping = false
-								delta = false
+								delta = true
 								worldSpace = false
 								hidden = false
 								anim_markup_ordered = false
@@ -320,7 +320,7 @@
 								fade_in_time = 0.2
 								fade_out_time = 0.2
 								looping = false
-								delta = false
+								delta = true
 								worldSpace = false
 								hidden = false
 								anim_markup_ordered = false
@@ -351,7 +351,7 @@
 								fade_in_time = 0.2
 								fade_out_time = 0.2
 								looping = false
-								delta = false
+								delta = true
 								worldSpace = false
 								hidden = false
 								anim_markup_ordered = false
@@ -382,7 +382,7 @@
 								fade_in_time = 0.2
 								fade_out_time = 0.2
 								looping = false
-								delta = false
+								delta = true
 								worldSpace = false
 								hidden = false
 								anim_markup_ordered = false
@@ -413,7 +413,7 @@
 								fade_in_time = 0.2
 								fade_out_time = 0.2
 								looping = false
-								delta = false
+								delta = true
 								worldSpace = false
 								hidden = false
 								anim_markup_ordered = false
@@ -482,7 +482,7 @@
 								fade_in_time = 0.2
 								fade_out_time = 0.2
 								looping = false
-								delta = false
+								delta = true
 								worldSpace = false
 								hidden = false
 								anim_markup_ordered = false
@@ -634,7 +634,7 @@
 									{
 										_class = "AnimSubtract"
 										anim_name = "bindPose_delta"
-										frame = 0
+										frame = 50
 									},
 								]
 								activity_name = ""
@@ -1357,7 +1357,6 @@
 							{
 								_class = "WeightList"
 								name = "gun_main"
-								disabled = true
 								default_weight = 0.0
 								weights = 
 								[
@@ -1653,6 +1652,7 @@
 		model_archetype = ""
 		primary_associated_entity = ""
 		anim_graph_name = ""
+		skeleton_name = "animation/skeleton/viewmodel.skel"
 		base_model_name = ""
 	}
 }

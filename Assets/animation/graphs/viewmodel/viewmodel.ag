@@ -8,7 +8,7 @@
         "Output": "Result"
       },
       "Identifier": "5b5ff561-0ab4-4ef5-8a1a-d4aad16e2ec8",
-      "Position": "960,-624",
+      "Position": "960,-708",
       "HandleOffsets": {}
     },
     {
@@ -67,7 +67,7 @@
       },
       "Overrides": [],
       "Identifier": "c6b0e66e-defd-4100-8913-04614821a18d",
-      "Position": "84,-1080",
+      "Position": "108,-1080",
       "HandleOffsets": {}
     },
     {
@@ -159,7 +159,7 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "Idle",
+                            "AnimationName": "animation/anims/viewmodel/glock/idle.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
@@ -229,7 +229,7 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "@Idle_Empty_only_arms",
+                            "AnimationName": "animation/anims/viewmodel/glock/idle_empty_only_arms.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
@@ -526,7 +526,7 @@
                   "Output": null
                 },
                 "DefaultVariationData": {
-                  "AnimationName": "Draw",
+                  "AnimationName": "animation/anims/viewmodel/glock/draw.anim",
                   "SpeedMultiplier": 1,
                   "StartSyncEventOffset": 0
                 },
@@ -549,7 +549,7 @@
                   "Output": null
                 },
                 "DefaultVariationData": {
-                  "AnimationName": "First_Draw",
+                  "AnimationName": "animation/anims/viewmodel/glock/first_draw.anim",
                   "SpeedMultiplier": 1,
                   "StartSyncEventOffset": 0
                 },
@@ -696,13 +696,13 @@
                   "Output": null
                 },
                 "DefaultVariationData": {
-                  "AnimationName": "Holster",
+                  "AnimationName": "animation/anims/viewmodel/glock/holster.anim",
                   "SpeedMultiplier": 1,
                   "StartSyncEventOffset": 0
                 },
                 "Overrides": [],
                 "Identifier": "c82b8368-dcad-4c58-8c55-d52c8548fbd8",
-                "Position": "120,0",
+                "Position": "72,0",
                 "HandleOffsets": {}
               }
             ]
@@ -749,7 +749,7 @@
                   "Output": "Result"
                 },
                 "Identifier": "fb5f1868-744f-4b56-ac35-74d1d16c5ab2",
-                "Position": "336,-12",
+                "Position": "444,-12",
                 "HandleOffsets": {}
               },
               {
@@ -763,7 +763,7 @@
                 "FixedTime": 1,
                 "UseFramesAsInput": false,
                 "DefaultVariationData": {
-                  "AnimationName": "Holster"
+                  "AnimationName": "animation/anims/viewmodel/glock/holster.anim"
                 },
                 "Overrides": [],
                 "Identifier": "d32381aa-ccda-4219-b2d3-db4c7316ad4c",
@@ -854,13 +854,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "Idle_To_Low",
+                            "AnimationName": "animation/anims/viewmodel/glock/idle_to_low.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "c1babd99-453a-403b-86bf-75d833796b70",
-                          "Position": "120,0",
+                          "Position": "60,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -924,13 +924,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "Low",
+                            "AnimationName": "animation/anims/viewmodel/glock/low.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "898fe722-884b-4471-9e62-81dba77df82e",
-                          "Position": "192,0",
+                          "Position": "120,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -1956,7 +1956,7 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Fire1",
+                                      "AnimationName": "animation/anims/viewmodel/glock/fire1.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
@@ -1987,7 +1987,7 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Fire3",
+                                      "AnimationName": "animation/anims/viewmodel/glock/fire3.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
@@ -2091,13 +2091,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Fire2",
+                                      "AnimationName": "animation/anims/viewmodel/glock/fire2.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "393a4a4d-fb1e-48eb-a247-278fac04371a",
-                                    "Position": "132,0",
+                                    "Position": "72,0",
                                     "HandleOffsets": {}
                                   },
                                   {
@@ -2114,13 +2114,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Fire4",
+                                      "AnimationName": "animation/anims/viewmodel/glock/fire4.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "f096e30b-e0d8-4679-b8fb-8ff9e4727a05",
-                                    "Position": "132,84",
+                                    "Position": "72,84",
                                     "HandleOffsets": {}
                                   },
                                   {
@@ -2226,13 +2226,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Dry_Fire",
+                                      "AnimationName": "animation/anims/viewmodel/glock/dry_fire.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "f9a9f492-8929-4f46-990f-c3b1e1d88e41",
-                                    "Position": "168,0",
+                                    "Position": "96,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -2296,13 +2296,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Fire_Last",
+                                      "AnimationName": "animation/anims/viewmodel/glock/fire_last.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "ba28f577-7542-4ea1-a026-6be3c1c0fb8e",
-                                    "Position": "156,0",
+                                    "Position": "96,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -3023,7 +3023,7 @@
                                     "ParameterIdentifier": "b752be6a-e944-4091-9f15-2a8732e9fcc7",
                                     "ParameterName": "weapon_attack_variation",
                                     "Identifier": "76ffa006-9f80-4dd5-a497-3e467e58a104",
-                                    "Position": "60,-60",
+                                    "Position": "24,-60",
                                     "HandleOffsets": {}
                                   },
                                   {
@@ -3279,13 +3279,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Dry_Fire",
+                                      "AnimationName": "animation/anims/viewmodel/glock/dry_fire.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "92e040f6-16c1-4487-9afa-8b7efe6bc522",
-                                    "Position": "168,0",
+                                    "Position": "84,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -3349,13 +3349,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Fire_Last",
+                                      "AnimationName": "animation/anims/viewmodel/glock/fire_last.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "ca74ef8a-35fd-4bdf-8211-b238a7c378f9",
-                                    "Position": "156,0",
+                                    "Position": "120,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -5810,13 +5810,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Reload_Empty_V2",
+                                      "AnimationName": "animation/anims/viewmodel/glock/reload_empty_v2.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "c4b38e25-26da-496e-8031-542f00c5d118",
-                                    "Position": "120,0",
+                                    "Position": "48,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -5880,13 +5880,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Reload_Empty_V2_magin",
+                                      "AnimationName": "animation/anims/viewmodel/glock/reload_empty_v2_magin.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "cb9f963d-feb8-419b-a3b0-1379574e1fa5",
-                                    "Position": "132,0",
+                                    "Position": "36,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -5950,13 +5950,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Reload_Empty_V2_boltrelease",
+                                      "AnimationName": "animation/anims/viewmodel/glock/reload_empty_v2_boltrelease.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "63af8f2f-1df3-4eee-b731-a163de550b9d",
-                                    "Position": "180,0",
+                                    "Position": "24,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -6579,7 +6579,7 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Reload",
+                                      "AnimationName": "animation/anims/viewmodel/glock/reload.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
@@ -6649,13 +6649,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Reload_magin",
+                                      "AnimationName": "animation/anims/viewmodel/glock/reload_magin.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "24c5c644-2c67-470a-bfc2-be1d603c9da7",
-                                    "Position": "132,0",
+                                    "Position": "48,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -6719,13 +6719,13 @@
                                       "Output": null
                                     },
                                     "DefaultVariationData": {
-                                      "AnimationName": "Reload_Empty_V2_boltrelease",
+                                      "AnimationName": "animation/anims/viewmodel/glock/reload_empty_v2_boltrelease.anim",
                                       "SpeedMultiplier": 1,
                                       "StartSyncEventOffset": 0
                                     },
                                     "Overrides": [],
                                     "Identifier": "875abb6f-2539-41e5-b29b-395456ddbb21",
-                                    "Position": "180,0",
+                                    "Position": "-12,0",
                                     "HandleOffsets": {}
                                   }
                                 ]
@@ -7738,7 +7738,7 @@
                   "Output": "Result"
                 },
                 "Identifier": "2bd98f94-4afd-498b-8459-55614d7f1360",
-                "Position": "396,0",
+                "Position": "216,0",
                 "HandleOffsets": {}
               },
               {
@@ -7755,7 +7755,7 @@
                   "Output": null
                 },
                 "DefaultVariationData": {
-                  "AnimationName": "Idle_Empty_delta",
+                  "AnimationName": "animation/anims/viewmodel/glock/idle_empty_delta.anim",
                   "SpeedMultiplier": 1,
                   "StartSyncEventOffset": 0
                 },
@@ -7780,11 +7780,19 @@
                   "Output": null
                 },
                 "BoneMask": {
-                  "Identifier": null,
-                  "Output": null
+                  "Identifier": "24308e50-dbaa-4e3c-b61c-91387a065841",
+                  "Output": "Mask"
                 },
                 "Identifier": "f43ac727-239a-4d54-a1da-6edbb960bcd4",
                 "Position": "396,0",
+                "HandleOffsets": {}
+              },
+              {
+                "_class": "BoneMaskNode",
+                "BoneName": "gun_empty",
+                "DefaultWeight": 1,
+                "Identifier": "24308e50-dbaa-4e3c-b61c-91387a065841",
+                "Position": "216,48",
                 "HandleOffsets": {}
               }
             ],
@@ -7797,7 +7805,7 @@
           "Events": [],
           "TimedEvents": [],
           "TransitionOrder": [],
-          "Position": "160,-0",
+          "Position": "160,0",
           "Graph": {
             "Version": 1,
             "nodes": [
@@ -7973,7 +7981,7 @@
               }
             ],
             "Identifier": "966fc54d-b7eb-4fcf-a706-ed9181d04c63",
-            "Position": "400,0",
+            "Position": "504,0",
             "HandleOffsets": {}
           }
         ],
@@ -8063,13 +8071,13 @@
                   "Output": null
                 },
                 "DefaultVariationData": {
-                  "AnimationName": "Walk_delta",
+                  "AnimationName": "animation/anims/viewmodel/glock/walk_delta.anim",
                   "SpeedMultiplier": 1,
                   "StartSyncEventOffset": 0
                 },
                 "Overrides": [],
                 "Identifier": "19579dcd-bd7d-4310-84c6-ebb1f45b6e35",
-                "Position": "-72,0",
+                "Position": "-204,0",
                 "HandleOffsets": {}
               },
               {
@@ -8141,13 +8149,13 @@
                   "Output": null
                 },
                 "DefaultVariationData": {
-                  "AnimationName": "Sprint",
+                  "AnimationName": "animation/anims/viewmodel/glock/sprint.anim",
                   "SpeedMultiplier": 1,
                   "StartSyncEventOffset": 0
                 },
                 "Overrides": [],
                 "Identifier": "3fdfa89f-d105-4210-b50a-7d2c70eb6105",
-                "Position": "-36,0",
+                "Position": "-144,0",
                 "HandleOffsets": {}
               },
               {
@@ -8217,7 +8225,7 @@
                   "Output": null
                 },
                 "Identifier": "f58f56ec-5632-4496-b7a1-ed289bb5a8dc",
-                "Position": "400,0",
+                "Position": "396,0",
                 "HandleOffsets": {}
               }
             ]
@@ -8264,7 +8272,7 @@
                   "Output": null
                 },
                 "Identifier": "b16ecf30-4c4c-4628-8a95-4d244a742bb7",
-                "Position": "400,0",
+                "Position": "396,0",
                 "HandleOffsets": {}
               }
             ]
@@ -8915,7 +8923,7 @@
                         {
                           "_class": "PoseResultNode",
                           "Pose": {
-                            "Identifier": "a471ba10-5434-48cd-9130-d05c67ba83aa",
+                            "Identifier": "0bb2ce29-ae58-42c7-9196-bbd80e6c224e",
                             "Output": "Result"
                           },
                           "Identifier": "dd8c4e1d-7c4d-4ef0-a89f-4291bccd6bda",
@@ -8933,11 +8941,11 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_Roll_Right"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_roll_left.anim"
                           },
                           "Overrides": [],
-                          "Identifier": "a471ba10-5434-48cd-9130-d05c67ba83aa",
-                          "Position": "132,0",
+                          "Identifier": "0bb2ce29-ae58-42c7-9196-bbd80e6c224e",
+                          "Position": "-84,12",
                           "HandleOffsets": {}
                         }
                       ]
@@ -8952,7 +8960,7 @@
                         {
                           "_class": "PoseResultNode",
                           "Pose": {
-                            "Identifier": "76e4397e-eeb4-456b-9098-13ae44d4a7c8",
+                            "Identifier": "bfffa6dc-98ae-4a94-a300-e1f9298df9d4",
                             "Output": "Result"
                           },
                           "Identifier": "4e7e795e-0019-4dda-a09f-2f1b90403cfc",
@@ -8970,11 +8978,11 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_Roll_Left"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_roll_right.anim"
                           },
                           "Overrides": [],
-                          "Identifier": "76e4397e-eeb4-456b-9098-13ae44d4a7c8",
-                          "Position": "60,0",
+                          "Identifier": "bfffa6dc-98ae-4a94-a300-e1f9298df9d4",
+                          "Position": "-36,12",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9007,7 +9015,7 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "bindPose_delta"
+                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim"
                           },
                           "Overrides": [],
                           "Identifier": "512c4b9e-e3cb-45e3-bc7a-f396d69343dd",
@@ -9056,7 +9064,7 @@
                 },
                 "Points": [
                   {
-                    "Name": "Up",
+                    "Name": "Backwards",
                     "Value": 180,
                     "Graph": {
                       "Version": 1,
@@ -9082,18 +9090,18 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Up"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_backwards.anim"
                           },
                           "Overrides": [],
                           "Identifier": "1590a26c-fdf1-4af4-bf2c-22ab46b324f7",
-                          "Position": "192,0",
+                          "Position": "24,0",
                           "HandleOffsets": {}
                         }
                       ]
                     }
                   },
                   {
-                    "Name": "Down",
+                    "Name": "Forward",
                     "Value": -180,
                     "Graph": {
                       "Version": 1,
@@ -9119,11 +9127,11 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Backwards"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_forward.anim"
                           },
                           "Overrides": [],
                           "Identifier": "f60144c9-cc40-4c8e-9e92-36385127d998",
-                          "Position": "84,0",
+                          "Position": "0,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9156,11 +9164,11 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "bindPose_delta"
+                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim"
                           },
                           "Overrides": [],
                           "Identifier": "118928d0-f718-4d32-b653-0b35c99001cc",
-                          "Position": "204,0",
+                          "Position": "-48,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9276,13 +9284,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_Up",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_up.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "2a64821a-010c-4fc0-90ab-bf26a2a17175",
-                          "Position": "168,0",
+                          "Position": "0,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9322,13 +9330,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_UpLeft",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_upleft.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "a4e8c821-a026-4446-befa-d5b6d1cbd6ec",
-                          "Position": "132,0",
+                          "Position": "-24,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9368,13 +9376,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_UpRight",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_upright.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "80a57f33-d527-4273-b365-0cc82712006e",
-                          "Position": "132,0",
+                          "Position": "-12,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9414,13 +9422,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "bindPose_delta",
+                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "6f9ca446-446f-4fc1-abaa-fc8250d0cd27",
-                          "Position": "192,0",
+                          "Position": "-84,-36",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9432,7 +9440,7 @@
                   },
                   {
                     "Name": "",
-                    "Position": "-120,8",
+                    "Position": "-120,0",
                     "Graph": {
                       "Version": 1,
                       "nodes": [
@@ -9460,13 +9468,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_Right",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_right.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "a675baa2-f940-4320-9889-d114f8cd91d6",
-                          "Position": "168,0",
+                          "Position": "-36,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9506,13 +9514,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_Left",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_left.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "fc995696-32d6-4201-8f07-d4799ddf8e5c",
-                          "Position": "72,0",
+                          "Position": "24,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9552,13 +9560,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_DownRight",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_downright.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "4bfb7e96-3efa-4b00-8ac4-03f1c7ffce18",
-                          "Position": "144,0",
+                          "Position": "-12,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9598,13 +9606,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_DownLeft",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_downleft.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "a2b5fe6d-2617-4ec3-872a-934363b1714b",
-                          "Position": "132,0",
+                          "Position": "-72,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9644,13 +9652,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Orientation_Down",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_down.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "1988319d-9730-4366-8e51-faf0b38e2a52",
-                          "Position": "180,0",
+                          "Position": "0,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9717,13 +9725,13 @@
                 "RemapRangeStart": 0,
                 "RemapRangeEnd": 1,
                 "FixedTime": 0,
-                "UseFramesAsInput": false,
+                "UseFramesAsInput": true,
                 "DefaultVariationData": {
-                  "AnimationName": "bindPose_delta"
+                  "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim"
                 },
                 "Overrides": [],
                 "Identifier": "b6cc6350-f86a-4e4b-a9e7-07cce84ff01e",
-                "Position": "-720,-516",
+                "Position": "-840,-516",
                 "HandleOffsets": {}
               },
               {
@@ -9758,14 +9766,6 @@
                 "OnlySampleBaseRootMotion": true,
                 "Identifier": "f52b0885-e85d-4626-86d2-bb7e2ad00c7b",
                 "Position": "108,-12",
-                "HandleOffsets": {}
-              },
-              {
-                "_class": "BoneMaskNode",
-                "BoneName": "arm_left",
-                "DefaultWeight": 1,
-                "Identifier": "e9532840-cb28-4101-869c-8aad03edd836",
-                "Position": "-720,168",
                 "HandleOffsets": {}
               },
               {
@@ -9809,13 +9809,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Up",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_up.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "40ac4810-3e34-4426-905e-e82c8cba0027",
-                          "Position": "168,0",
+                          "Position": "72,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9855,13 +9855,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_UpLeft",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_upleft.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "5f5d5fdc-0d4a-4046-9f6d-c35c35346764",
-                          "Position": "132,0",
+                          "Position": "-12,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9901,13 +9901,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_UpRight",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_upright.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "f5e9aef2-c984-446d-92a5-b98b697d9791",
-                          "Position": "132,0",
+                          "Position": "-12,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9947,13 +9947,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "bindPose_delta",
+                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "6614c253-ee9b-4222-b86c-fd8065afeff7",
-                          "Position": "192,0",
+                          "Position": "-72,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -9993,13 +9993,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Right",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_right.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "40651581-fa16-4237-a3f1-a78a102631b3",
-                          "Position": "168,0",
+                          "Position": "24,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -10039,7 +10039,7 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Left",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_left.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
@@ -10085,13 +10085,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_DownRight",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_downright.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "de766485-c3d1-4b58-a9cb-2706a99add10",
-                          "Position": "144,0",
+                          "Position": "-36,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -10131,13 +10131,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_DownLeft",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_downleft.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "e0188583-182b-4c87-b770-cc8958389fab",
-                          "Position": "132,0",
+                          "Position": "12,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -10149,7 +10149,7 @@
                   },
                   {
                     "Name": "",
-                    "Position": "-0,-90",
+                    "Position": "0,-90",
                     "Graph": {
                       "Version": 1,
                       "nodes": [
@@ -10177,13 +10177,13 @@
                             "Output": null
                           },
                           "DefaultVariationData": {
-                            "AnimationName": "WeaponOffset_Down",
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_down.anim",
                             "SpeedMultiplier": 1,
                             "StartSyncEventOffset": 0
                           },
                           "Overrides": [],
                           "Identifier": "19707819-66a5-4cc8-ac83-9d2b8712af1c",
-                          "Position": "180,0",
+                          "Position": "48,0",
                           "HandleOffsets": {}
                         }
                       ]
@@ -10474,6 +10474,7 @@
     }
   ],
   "Model": "models/weapons/viewmodel_glock.vmdl",
+  "Skeleton": "animation/skeleton/viewmodel.skel",
   "parameters": [
     {
       "Identifier": "a7874511-dc9f-4a69-898a-fdcec9a8ea91",

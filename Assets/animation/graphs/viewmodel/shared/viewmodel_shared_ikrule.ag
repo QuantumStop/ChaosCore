@@ -2,13 +2,23 @@
   "Version": 1,
   "nodes": [
     {
+      "_class": "PoseResultNode",
+      "Pose": {
+        "Identifier": "0b0da969-13f0-4658-9c54-052a5d1c3dc0",
+        "Output": "Result"
+      },
+      "Identifier": "ec5915c2-852e-4fc1-9858-aa8faf148723",
+      "Position": "648,144",
+      "HandleOffsets": {}
+    },
+    {
       "_class": "TwoBoneIKNode",
       "Input": {
         "Identifier": null,
         "Output": null
       },
       "EffectorTarget": {
-        "Identifier": "1c7026bf-8bcf-4cce-b535-4650c2f32b60",
+        "Identifier": "e4111354-3e19-45c2-9a86-46ec582a6360",
         "Output": "Target"
       },
       "Enable": {
@@ -23,18 +33,18 @@
         "BlendTime": 0
       },
       "Overrides": [],
-      "Identifier": "57fcce3b-c7a7-4e02-83bb-f496644669da",
-      "Position": "120,-240",
+      "Identifier": "70edcb30-1602-4e31-b185-eeb070d550f9",
+      "Position": "-12,144",
       "HandleOffsets": {}
     },
     {
       "_class": "TwoBoneIKNode",
       "Input": {
-        "Identifier": "57fcce3b-c7a7-4e02-83bb-f496644669da",
+        "Identifier": "70edcb30-1602-4e31-b185-eeb070d550f9",
         "Output": "Result"
       },
       "EffectorTarget": {
-        "Identifier": "1b94ae2f-97d6-4124-bb36-64b8303fc10e",
+        "Identifier": "5f4fc0bf-7fd1-42e8-897e-4068c225f5d3",
         "Output": "Target"
       },
       "Enable": {
@@ -49,32 +59,22 @@
         "BlendTime": 0
       },
       "Overrides": [],
-      "Identifier": "3e02e201-5f05-4ec5-8bfe-758395400be0",
-      "Position": "336,-156",
-      "HandleOffsets": {}
-    },
-    {
-      "_class": "ConstBoneTargetNode",
-      "Bone": "Hand_R_To_Gun_IKRule",
-      "Identifier": "1b94ae2f-97d6-4124-bb36-64b8303fc10e",
-      "Position": "-252,-132",
+      "Identifier": "0b0da969-13f0-4658-9c54-052a5d1c3dc0",
+      "Position": "432,144",
       "HandleOffsets": {}
     },
     {
       "_class": "ConstBoneTargetNode",
       "Bone": "Hand_L_To_Gun_IKRule",
-      "Identifier": "1c7026bf-8bcf-4cce-b535-4650c2f32b60",
-      "Position": "-252,-216",
+      "Identifier": "e4111354-3e19-45c2-9a86-46ec582a6360",
+      "Position": "-264,192",
       "HandleOffsets": {}
     },
     {
-      "_class": "PoseResultNode",
-      "Pose": {
-        "Identifier": "3e02e201-5f05-4ec5-8bfe-758395400be0",
-        "Output": "Result"
-      },
-      "Identifier": "ec5915c2-852e-4fc1-9858-aa8faf148723",
-      "Position": "660,-156",
+      "_class": "ConstBoneTargetNode",
+      "Bone": "Hand_R_To_Gun_IKRule",
+      "Identifier": "5f4fc0bf-7fd1-42e8-897e-4068c225f5d3",
+      "Position": "180,192",
       "HandleOffsets": {}
     }
   ],

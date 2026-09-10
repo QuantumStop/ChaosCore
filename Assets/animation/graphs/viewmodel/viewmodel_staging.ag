@@ -1,0 +1,112 @@
+{
+  "Version": 1,
+  "nodes": [
+    {
+      "_class": "PoseResultNode",
+      "Pose": {
+        "Identifier": "c1647d8b-d24c-47d1-9301-61569dfa2a7f",
+        "Output": "Result"
+      },
+      "Identifier": "1f5185d9-568c-4c23-a5bf-dc8d054ac8f6",
+      "Position": "1200,-156",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "AnimationClipNode",
+      "Loop": true,
+      "SampleRootMotion": true,
+      "GraphEvents": [],
+      "PlayInReverse": {
+        "Identifier": null,
+        "Output": null
+      },
+      "ResetTime": {
+        "Identifier": null,
+        "Output": null
+      },
+      "DefaultVariationData": {
+        "AnimationName": "animation/anims/viewmodel/glock/staging/weaponoffset_orientation.anim",
+        "SpeedMultiplier": 1,
+        "StartSyncEventOffset": 0
+      },
+      "Overrides": [],
+      "Identifier": "138b1ea3-0c3f-4fff-8197-2b993d58510c",
+      "Position": "-312,-12",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "AnimationClipNode",
+      "Loop": true,
+      "SampleRootMotion": true,
+      "GraphEvents": [],
+      "PlayInReverse": {
+        "Identifier": null,
+        "Output": null
+      },
+      "ResetTime": {
+        "Identifier": null,
+        "Output": null
+      },
+      "DefaultVariationData": {
+        "AnimationName": "animation/anims/viewmodel/glock/staging/idle.anim",
+        "SpeedMultiplier": 1,
+        "StartSyncEventOffset": 0
+      },
+      "Overrides": [],
+      "Identifier": "61357218-c08d-400e-86cf-4c37360d6d46",
+      "Position": "-312,-156",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "LocalLayerNode",
+      "Input": {
+        "Identifier": "138b1ea3-0c3f-4fff-8197-2b993d58510c",
+        "Output": "Result"
+      },
+      "Weight": {
+        "Identifier": null,
+        "Output": null
+      },
+      "RootMotionWeight": {
+        "Identifier": null,
+        "Output": null
+      },
+      "BoneMask": {
+        "Identifier": null,
+        "Output": null
+      },
+      "BlendMode": "Additive",
+      "IsSynchronized": false,
+      "IgnoreEvents": false,
+      "Identifier": "a5c3a073-9302-496b-b73d-7665c7bb7fdc",
+      "Position": "132,-12",
+      "HandleOffsets": {}
+    },
+    {
+      "_class": "LayerBlendNode",
+      "Base": {
+        "Identifier": "61357218-c08d-400e-86cf-4c37360d6d46",
+        "Output": "Result"
+      },
+      "Layers": [
+        {
+          "Identifier": "a5c3a073-9302-496b-b73d-7665c7bb7fdc",
+          "Output": "Layer"
+        }
+      ],
+      "OnlySampleBaseRootMotion": true,
+      "Identifier": "c1647d8b-d24c-47d1-9301-61569dfa2a7f",
+      "Position": "408,-156",
+      "HandleOffsets": {}
+    }
+  ],
+  "Model": "models/weapons/viewmodel_glock_staging.vmdl",
+  "Skeleton": "animation/skeleton/viewmodel_staging.skel",
+  "parameters": [],
+  "virtualParameters": [],
+  "PreviewAttachments": [
+    {
+      "Model": "models/weapons/viewmodel_hand.vmdl"
+    }
+  ]
+}

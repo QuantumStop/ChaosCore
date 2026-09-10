@@ -1272,11 +1272,11 @@
 							{
 								m_nodeID = 
 								{
-									m_id = 682078408
+									m_id = 357924213
 								}
 								m_outputID = 
 								{
-									m_id = 1252720132
+									m_id = 1369573891
 								}
 							}
 						},
@@ -1686,11 +1686,11 @@
 					{
 						m_nodeID = 
 						{
-							m_id = 357924213
+							m_id = 819097464
 						}
 						m_outputID = 
 						{
-							m_id = 1369573891
+							m_id = 2121522664
 						}
 					}
 					m_ikChainName = "arm_left"
@@ -3167,7 +3167,7 @@
 	}
 	m_previewModels = 
 	[
-		"models/weapons/viewmodel_glock.vmdl",
+		"animation/skeleton/viewmodel_glock.vmdl",
 	]
 	m_boneMergeModels = 
 	[
