@@ -87,6 +87,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 
 	protected virtual void OnStart()
 	{
+		ResolveSceneType();
 		InitScene();
 
 		DecideGameRules();
