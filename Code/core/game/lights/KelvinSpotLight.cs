@@ -1,13 +1,17 @@
 ﻿using System;
 namespace Core;
 
+[PresetTarget( "KelvinSpotLight", Name = "Kelvin Spot Light", Icon = "light_mode", Category = "Rendering", IncludeAll = true )]
+
 [Category( "Light" )]
 [Icon( "light_mode" )]
 [EditorHandle( "" )]
 
 public class KelvinSpotLight : SpotLight
-{
-	[Property, Header( "Mode" )]
+{    
+	[Property, PresetSelector, Header( "Mode" )] public GenericPresetResource Preset { get; set; }
+
+	[Property]
 	public LightUnits.ColorMode ColorMode
 	{
 		get;
@@ -39,6 +43,7 @@ public class KelvinSpotLight : SpotLight
 
 	[Space]
 	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.ColorTemperature )] public LightUnits.TemperatureMode TemperatureMode { get; set; } = LightUnits.TemperatureMode.Kelvin;
+	
 	[Property, ShowIf( nameof( IsKelvin ), true ), Range( 1000, 20000 ), Step( 50 ), Header( "Temperature" )]
 	public float KelvinTemperature
 	{
@@ -52,13 +57,7 @@ public class KelvinSpotLight : SpotLight
 			}
 		}
 	} = 6500f;
-	[Property, ShowIf( nameof( IsKelvin ), true )] LightUnits.ColorPresets ColorPreset { get; set; } = LightUnits.ColorPresets.NeutralWhite;
-	[Button, ShowIf( nameof( IsKelvin ), true )]
-	void ApplyPreset()
-	{
-		KelvinTemperature = (float)ColorPreset;
-		Dirty();
-	}
+
 
 	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), Header( "Temperature" )]
 	public float MiredTemperature

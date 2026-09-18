@@ -40,27 +40,32 @@
 				{
 					<div class="vanity-text" style="@GetTextBlockStyle(ch)">
 						@{
-							var lines = ch.Text.Split('\n');
-							var totalCharCount = ch.Text.Count(c => c != '\n');
+							var lines = GetTextLines(ch);
+							var totalCharCount = lines.Sum(line => string.IsNullOrEmpty(line) ? 0 : line.Length);
 							int globalCharIndex = 0;
 
-							foreach (var line in lines)
+							for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
 							{
-								<div class="vanity-line">
-									@foreach (var c in line)
-									{
-										var delay = (totalCharCount > 1)
-										? (ch.ScanTime / (totalCharCount - 1)) * globalCharIndex
-										: 0;
+								var line = lines[lineIndex];
 
-										<span class="vanity-char char-@globalCharIndex" style="
-						                    animation-delay: @($"{delay:0.00}s");
-						                    animation-name: scan-in;
-						                    animation-duration: 0.4s;
-						                    animation-fill-mode: forwards;
-						                ">@c</span>;
-										globalCharIndex++;
-									}
+								if (string.IsNullOrEmpty(line))
+									continue;
+
+								<div class="vanity-line">
+									<span class="vanity-line-text">
+										@if (ch.Effect == "scanout")
+										{
+											foreach (var c in line)
+											{
+												<span class="vanity-char char-@globalCharIndex" style="@GetScanCharStyle(ch, globalCharIndex, totalCharCount)">@c</span>
+												globalCharIndex++;
+											}
+										}
+										else
+										{
+											@line
+										}
+									</span>
 								</div>
 							}
 						}

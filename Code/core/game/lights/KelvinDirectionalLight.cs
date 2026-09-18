@@ -1,13 +1,16 @@
 ﻿using System;
 namespace Core;
 
+[PresetTarget( "KelvinDirlLight", Name = "Kelvin Direcitonal Light", Icon = "light_mode", Category = "Rendering", IncludeAll = true )]
+
 [Category( "Light" )]
 [Icon( "light_mode" )]
 [EditorHandle( "" )]
-
 public class KelvinDirectionalLight : DirectionalLight
 {
-	[Property, Header( "Mode" )]
+	[Property, PresetSelector, Header( "Mode" )] public GenericPresetResource Preset { get; set; }
+
+	[Property]
 	public LightUnits.ColorMode ColorMode
 	{
 		get;
@@ -52,13 +55,8 @@ public class KelvinDirectionalLight : DirectionalLight
 			}
 		}
 	} = 6500f;
-	[Property, ShowIf( nameof( IsKelvin ), true )] LightUnits.ColorPresets ColorPreset { get; set; } = LightUnits.ColorPresets.NeutralWhite;
-	[Button, ShowIf( nameof( IsKelvin ), true )]
-	void ApplyPreset()
-	{
-		KelvinTemperature = (float)ColorPreset;
-		Dirty();
-	}
+
+	[Property, Hide, PresetSelector( "light_color" )] public GenericPresetResource ColorPresetTemplate { get; set; }
 
 	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), Header( "Temperature" )]
 	public float MiredTemperature

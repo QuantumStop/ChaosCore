@@ -48,7 +48,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 #if IGNIS
 	[DebugExpose]
 #endif
-	[ShowIf( nameof( b_ShowTriggerItems ), true ), ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems;
+	[ShowIf( nameof( b_ShowTriggerItems ), true ), ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems = new();
 
 	/// <summary>
 	/// The entity specifying the point to which entities should be teleported. Usually either a info_teleport_destination or info_target.
@@ -74,6 +74,8 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 #endif
 	[Title( "Rotation Offset" ), Property] public bool b_RotationOffset { get; set; }
 
+	[Property, Title( "Soften Velocity" )] public bool b_SoftenVelocity { get; set; } = false;
+
 	[Property]
 	private bool _isEnabled
 	{
@@ -93,6 +95,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 	protected override void OnStart()
 	{
+		inTriggerItems ??= new();
 		_isEnabled = !b_StartDisabled;
 	}
 
@@ -116,24 +119,96 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 			return;
 		}
 
-		if ( inTriggerItems is null && isDebug || inTriggerItems.Count == 0 && isDebug )
+		if ( (inTriggerItems is null || inTriggerItems.Count == 0) && isDebug )
 		{
 			Log.Warning( "trigger_teleport: No items in trigger to teleport!" );
 			return;
 		}
 
+		if ( inTriggerItems is null )
+			return;
+
 		foreach ( var item in inTriggerItems )
 		{
 			if ( !item.IsValid() ) continue;
 
-			item.WorldPosition = RemoteDestination.WorldPosition;
+			var player = item.Components.Get<BasePlayer>( FindMode.EverythingInSelfAndChildren );
+			var sourceRotation = GetTeleportRotation( item, player );
+
+			item.WorldPosition = GetTeleportPosition( item );
+			SoftenVelocity( item );
 
 			if ( !b_RotationOffset )
-				return;
+				continue;
 
-			item.WorldRotation = RemoteDestination.WorldRotation;
+			SetTeleportRotation( item, player, sourceRotation );
 		}
 
+	}
+
+	private Vector3 GetTeleportPosition( GameObject item )
+	{
+		if ( !LocalDestinationLandmark.IsValid() )
+			return RemoteDestination.WorldPosition;
+
+		var localOffset = (item.WorldPosition - LocalDestinationLandmark.WorldPosition) * LocalDestinationLandmark.WorldRotation.Inverse;
+		return RemoteDestination.WorldPosition + localOffset * RemoteDestination.WorldRotation;
+	}
+
+	private Rotation GetTeleportRotation( GameObject item, BasePlayer player )
+	{
+		if ( player.IsValid() && player.Controller.IsValid() )
+			return player.Controller.EyeAngles.ToRotation();
+
+		return item.WorldRotation;
+	}
+
+	private Rotation GetTeleportRotationTarget( Rotation sourceRotation )
+	{
+		if ( !LocalDestinationLandmark.IsValid() )
+			return RemoteDestination.WorldRotation;
+
+		var localRotation = LocalDestinationLandmark.WorldRotation.Inverse * sourceRotation;
+		return RemoteDestination.WorldRotation * localRotation;
+	}
+
+	private void SetTeleportRotation( GameObject item, BasePlayer player, Rotation sourceRotation )
+	{
+		var targetRotation = GetTeleportRotationTarget( sourceRotation );
+
+		if ( player.IsValid() && player.Controller.IsValid() )
+		{
+			player.Controller.LocalEyeAngles = targetRotation.Angles();
+
+			if ( player.Controller.Head.IsValid() )
+				player.Controller.Head.WorldRotation = targetRotation;
+
+			return;
+		}
+
+		item.WorldRotation = targetRotation;
+	}
+
+	private void SoftenVelocity( GameObject item )
+	{
+		if ( !b_SoftenVelocity )
+			return;
+
+		if ( item.Components.Get<BasePlayer>( FindMode.EverythingInSelfAndChildren ) is { } player && player.IsValid() )
+		{
+			if ( player.Movement.IsValid() )
+			{
+				player.Movement.Velocity = Vector3.Lerp( player.Movement.Velocity, Vector3.Zero, 1f );
+				player.Movement.BaseVelocity = Vector3.Lerp( player.Movement.BaseVelocity, Vector3.Zero, 1f );
+				player.Movement.WishVelocity = Vector3.Lerp( player.Movement.WishVelocity, Vector3.Zero, 1f );
+			}
+		}
+
+		foreach ( var rigidbody in item.Components.GetAll<Rigidbody>( FindMode.EverythingInSelfAndChildren ) )
+		{
+			rigidbody.Velocity = Vector3.Lerp( rigidbody.Velocity, Vector3.Zero, 1f );
+			rigidbody.AngularVelocity = Vector3.Lerp( rigidbody.AngularVelocity, Vector3.Zero, 1f );
+		}
 	}
 
 	public void OnTriggerExit( Collider activator )

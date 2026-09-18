@@ -1,0 +1,11 @@
+{
+  "PresetType": "game_text",
+  "PresetMode": "default",
+  "PresetName": "GameText_Chapter",
+  "PresetIcon": "text_fields",
+  "PresetDescription": null,
+  "SourceAssetPath": "presets/gametext_chapter.preset",
+  "PayloadJson": "{\"MessageText\":{\"Text\":\"\\u0022WE DON\\u0022T GO TO RAVENHOLM\\u0022\",\"TextColor\":\"0.83721,0.83721,0.83721,0.89\",\"FontName\":\"Roboto Mono\",\"FontSize\":30,\"FontWeight\":500,\"FontItalic\":false,\"FontVariantNumeric\":\"Normal\",\"LineHeight\":0,\"LetterSpacing\":0,\"WordSpacing\":0,\"FilterMode\":\"Point\",\"FontSmooth\":\"Auto\",\"Outline\":{\"Enabled\":false,\"Size\":0,\"Color\":\"0,0,0,0\"},\"Shadow\":{\"Enabled\":false,\"Size\":0,\"Color\":\"0,0,0,0\",\"Offset\":\"0,0\"},\"OutlineUnder\":{\"Enabled\":false,\"Size\":0,\"Color\":\"0,0,0,0\"},\"ShadowUnder\":{\"Enabled\":false,\"Size\":0,\"Color\":\"0,0,0,0\",\"Offset\":\"0,0\"}},\"CurrentEFfect\":\"TEXTEFFECT_SCANOUT\",\"TextAlignment\":\"TEXTALIGNMENT_CENTER\",\"Channel\":\"Channel2\",\"ZIndex\":1,\"Recipient\":\"Everyone\",\"SpecificPlayer\":null,\"PosX\":0.5,\"PosY\":0.65,\"FadeInTime\":0.5,\"FadeOutTime\":0.5,\"HoldTime\":2,\"ScanTime\":1,\"ScanFlashTime\":0.35,\"ScanFlashDelay\":0.1,\"ScanColorFX\":\"1,0.61395,0.22791,1\",\"TargetName\":null,\"InternalID\":null,\"OnKilled\":null,\"SerializedGuid\":null,\"OnComponentEnabled\":null,\"OnComponentStart\":null,\"OnComponentUpdate\":null,\"OnComponentFixedUpdate\":null,\"OnComponentDisabled\":null,\"OnComponentDestroy\":null}",
+  "__references": [],
+  "__version": 0
+}

@@ -1,5 +1,4 @@
 using System;
-using Sandbox.Rendering;
 namespace Core;
 
 public class Crosshair : Component
@@ -349,7 +348,7 @@ public class Crosshair : Component
 
 	private static void DrawBar( Vector2 barCenter, Vector2 barSize, Color mainColor, Color outlineColor, bool hasOutline, float outlineThickness )
 	{
-		HudPainter playerhud = BasePlayer.Local.Controller.Camera.Hud;
+		using var playerhud = BasePlayer.Local.Controller.Camera.BeginHud();
 
 		// Pixel-align the center
 		Vector2 pixelCenter = new( MathF.Floor( barCenter.x ) + 0.5f, MathF.Floor( barCenter.y ) + 0.5f );
@@ -360,33 +359,41 @@ public class Crosshair : Component
 			Vector2 outlineSize = barSize + new Vector2( outlineThickness * 2f );
 			Vector2 outlinePos = pixelCenter - outlineSize * 0.5f;
 
-			playerhud.DrawRect( new Rect( outlinePos, outlineSize ), outlineColor );
+			playerhud.Fill = outlineColor;
+			playerhud.Stroke = Stroke.None;
+			playerhud.Rect( new Rect( outlinePos, outlineSize ) );
 		}
 
 		// Inner bar
 		Vector2 barPos = pixelCenter - barSize * 0.5f;
-		playerhud.DrawRect( new Rect( barPos, barSize ), mainColor );
+		playerhud.Fill = mainColor;
+		playerhud.Stroke = Stroke.None;
+		playerhud.Rect( new Rect( barPos, barSize ) );
 	}
 
 	private static void DrawDotWithOutline( Vector2 center, float dotRadius, Color mainColor, Color outlineColor, bool hasOutline, float outlineThickness )
 	{
-		HudPainter playerhud = BasePlayer.Local.Controller.Camera.Hud;
+		using var playerhud = BasePlayer.Local.Controller.Camera.BeginHud();
 
 		// Pixel-align for sharp rendering
 		Vector2 pixelCenter = new( MathF.Floor( center.x ) + 0.5f, MathF.Floor( center.y ) + 0.5f );
 
 		if ( hasOutline )
 		{
-			playerhud.DrawCircle( pixelCenter, dotRadius + outlineThickness, outlineColor );
+			playerhud.Fill = outlineColor;
+			playerhud.Stroke = Stroke.None;
+			playerhud.Circle( pixelCenter, dotRadius + outlineThickness );
 		}
 
-		playerhud.DrawCircle( pixelCenter, dotRadius, mainColor );
+		playerhud.Fill = mainColor;
+		playerhud.Stroke = Stroke.None;
+		playerhud.Circle( pixelCenter, dotRadius );
 	}
 
 	private static void DrawCircleCrosshairArc( Vector2 center, float radius, float thickness, Color mainColor, Color outlineColor, int segments = 64,
 	float alphaMultiplier = 1f, float startAngle = 0f, float endAngle = MathF.Tau, float angleOffset = 0f, Color? gradientColor = null )
 	{
-		var hud = BasePlayer.Local.Controller.Camera.Hud;
+		using var hud = BasePlayer.Local.Controller.Camera.BeginHud();
 
 		startAngle += angleOffset;
 		endAngle += angleOffset;
@@ -411,7 +418,8 @@ public class Crosshair : Component
 				Vector2 next = center + new Vector2( MathF.Cos( angle ), MathF.Sin( angle ) ) * outerRadius;
 
 				Color col = outlineColor.WithAlpha( outlineColor.a * alphaMultiplier );
-				hud.DrawLine( last, next, outerThickness, col );
+				hud.Stroke = Stroke.Solid( col, outerThickness );
+				hud.Line( last, next );
 
 				last = next;
 			}
@@ -431,7 +439,8 @@ public class Crosshair : Component
 					? Color.Lerp( mainColor, gradientColor.Value, t ).WithAlpha( mainColor.a * alphaMultiplier )
 					: mainColor.WithAlpha( mainColor.a * alphaMultiplier );
 
-				hud.DrawLine( last, next, thickness, col );
+				hud.Stroke = Stroke.Solid( col, thickness );
+				hud.Line( last, next );
 				last = next;
 			}
 		}
@@ -440,7 +449,7 @@ public class Crosshair : Component
 
 	private static void DrawSimpleCrosshair()
 	{
-		var playerhud = BasePlayer.Local.Controller.Camera.Hud;
+		using var playerhud = BasePlayer.Local.Controller.Camera.BeginHud();
 
 		Vector2 center = Screen.Size * 0.5f;
 		Vector2 pixelCenter = new(
@@ -454,11 +463,14 @@ public class Crosshair : Component
 
 		float spacing = 10f;
 
-		playerhud.DrawRect( new Rect( pixelCenter, dotSize ), dotColor );
+		playerhud.Fill = dotColor;
+		playerhud.Stroke = Stroke.None;
 
-		playerhud.DrawRect( new Rect( pixelCenter + Vector2.Up * spacing, dotSize ), dotColor );
-		playerhud.DrawRect( new Rect( pixelCenter + Vector2.Down * spacing, dotSize ), dotColor );
-		playerhud.DrawRect( new Rect( pixelCenter + Vector2.Left * spacing, dotSize ), dotColor );
-		playerhud.DrawRect( new Rect( pixelCenter + Vector2.Right * spacing, dotSize ), dotColor );
+		playerhud.Rect( new Rect( pixelCenter, dotSize ) );
+
+		playerhud.Rect( new Rect( pixelCenter + Vector2.Up * spacing, dotSize ) );
+		playerhud.Rect( new Rect( pixelCenter + Vector2.Down * spacing, dotSize ) );
+		playerhud.Rect( new Rect( pixelCenter + Vector2.Left * spacing, dotSize ) );
+		playerhud.Rect( new Rect( pixelCenter + Vector2.Right * spacing, dotSize ) );
 	}
 }

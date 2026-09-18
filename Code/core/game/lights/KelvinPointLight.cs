@@ -1,6 +1,7 @@
 ﻿using System;
-using Sandbox.UI;
 namespace Core;
+
+[PresetTarget( "KelvinPointLight", Name = "Kelvin Point Light", Icon = "light_mode", Category = "Rendering", IncludeAll = true )]
 
 [Category( "Light" )]
 [Icon( "light_mode" )]
@@ -8,7 +9,9 @@ namespace Core;
 
 public class KelvinPointLight : PointLight
 {
-	[Property, Header( "Mode" )]
+	[Property, PresetSelector, Header( "Mode" )] public GenericPresetResource Preset { get; set; }
+
+	[Property]
 	public LightUnits.ColorMode ColorMode
 	{
 		get;
@@ -54,12 +57,7 @@ public class KelvinPointLight : PointLight
 		}
 	} = 6500f;
 	[Property, ShowIf( nameof( IsKelvin ), true )] LightUnits.ColorPresets ColorPreset { get; set; } = LightUnits.ColorPresets.NeutralWhite;
-	[Button, ShowIf( nameof( IsKelvin ), true )]
-	void ApplyPreset()
-	{
-		KelvinTemperature = (float)ColorPreset;
-		Dirty();
-	}
+
 
 	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), Header( "Temperature" )]
 	public float MiredTemperature

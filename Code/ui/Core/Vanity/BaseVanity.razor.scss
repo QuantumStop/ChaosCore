@@ -6,20 +6,18 @@ BaseVanity {
     height: 100%;
 
     .vanity-text {
+        display: flex;
         flex-direction: column;
-        white-space: pre;
+        white-space: pre-wrap;
 
         .vanity-line {
-            flex-wrap: wrap;
+            display: flex;
 
-            .vanity-word {
+            .vanity-line-text {
+                display: inline;
 
                 .vanity-char {
-                    opacity: 0;
-                }
-
-                .space {
-                    width: 0.3em;
+                    display: inline;
                 }
             }
         }
@@ -40,23 +38,6 @@ BaseVanity {
             animation: fade-out 0.5s forwards;
         }
     }
-
-
-    // --------------------------------------
-    // SCANOUT EFFECT
-    // --------------------------------------
-
-
-    .scanout {
-        .vanity-char {
-            opacity: 0;
-        }
-
-        &:outro .vanity-char {
-            animation: fade-out 0.3s forwards;
-        }
-    }
-
 
     // --------------------------------------
     // SCREEN FADE EFFECT
