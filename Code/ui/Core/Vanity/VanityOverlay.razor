@@ -1,0 +1,27 @@
+@inherits BaseVanityOverlay
+@namespace Core
+
+@if ( VanityAPI.ActiveChannels.Count > 0 )
+{
+	@foreach ( VanityChannel channel in VanityAPI.ActiveChannels.Values )
+	{
+		switch ( channel.Content )
+		{
+			case VanityContent.Text:
+				<VanityText Channel="@channel" />
+				break;
+
+			case VanityContent.Color:
+				<VanityColor Channel="@channel" />
+				break;
+
+			case VanityContent.Texture:
+				<VanityTexture Channel="@channel" />
+				break;
+
+			case VanityContent.Custom:
+				<VanityCustom Channel="@channel" />
+				break;
+		}
+	}
+}

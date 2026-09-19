@@ -1,20 +1,22 @@
 {
-  "ViewmodelHands": "models/first_person/v_first_person_arms_human.vmdl",
+  "ViewmodelHands": "models/weapons/viewmodel_hand.vmdl",
   "BodyModel": null,
   "HudEntries": [
     {
-      "RazorPath": "..\\Code\\UI\\Core\\Vanity\\BaseVanity.razor",
+      "RazorPath": "..\\Code\\UI\\Core\\Vanity\\VanityOverlay.razor",
       "RequireSuitToDraw": false
     },
     {
       "RazorPath": "..\\Code\\UI\\SDK\\HUD\\ChaosChatOverlay.razor",
       "RequireSuitToDraw": false
+    },
+    {
+      "RazorPath": "..\\Code\\ui\\SDK\\HUD\\ChaosHUD.razor",
+      "RequireSuitToDraw": false
     }
   ],
   "PlayerData": [],
   "Faction": "PLAYER",
-  "__references": [
-    "facepunch.v_first_person_arms_human#205798"
-  ],
+  "__references": [],
   "__version": 0
 }

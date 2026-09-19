@@ -1,0 +1,63 @@
+@inherits Panel
+@namespace Core
+
+@using Sandbox.UI
+
+@if ( Channel is not null )
+{
+	<root style="@VanityAPI.GetRootStyle( Channel )">
+
+		<div class="vanity-content" style="@VanityAPI.GetTextBlockStyle( Channel )">
+			@{
+				int globalCharIndex = 0;
+
+				for ( int lineIndex = 0; lineIndex < Channel.Lines.Length; lineIndex++ )
+				{
+					string line = Channel.Lines[lineIndex];
+
+					<div class="vanity-line">
+						<span class="vanity-line-text">
+
+							@if ( Channel.Effect is VanityScanOutEffect scan )
+							{
+								foreach ( char c in line )
+								{
+									<span class="vanity-char char-@globalCharIndex" style="@VanityAPI.GetScanCharStyle(
+											Channel,
+											globalCharIndex,
+											Channel.TotalCharacterCount
+										  )">
+										@c
+									</span>
+
+									globalCharIndex++;
+								}
+							}
+							else
+							{
+								@line
+							}
+
+						</span>
+					</div>
+				}
+			}
+		</div>
+		}
+
+	</root>
+}
+
+@code
+{
+	[Parameter] public VanityChannel Channel { get; set; }
+
+	public override void Tick()
+	{
+		if ( Channel is null )
+			return;
+
+		if ( VanityAPI.RequiresContinuousUpdate( Channel ) )
+			StateHasChanged();
+	}
+}

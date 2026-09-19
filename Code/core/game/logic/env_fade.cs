@@ -28,24 +28,29 @@ public class ui_fade : BaseEntity
 	/// </summary>
 	[Property, Title( "Z-Index" )] public int ZIndex { get; set; } = 1;
 
+	[Property] public VanitySlot Channel { get; set; }
+
+	[Property] public VanityRecipient Recipient { get; set; } = VanityRecipient.Everyone;
+
+	[Property, ShowIf( nameof( Recipient ), VanityRecipient.Specific )]
+	public BasePlayer SpecificPlayer { get; set; }
 
 	/// <summary>
 	/// Fired when the fade has begun.
 	/// </summary>
 	[Property, Group( "Outputs" )] public ChaosOutput OnBeginFade { get; set; }
 
-
 	/// <summary>
 	/// Screen fades from the specified color instead of to it.
 	/// </summary>
-	[Group( "SpawnFlags" ), Property, Order( 2 )] public bool FadeFrom { get; set; } = false;
-
+	[Group( "SpawnFlags" ), Property, Order( 2 )]
+	public bool FadeFrom { get; set; } = false;
 
 	/// <summary>
 	/// Fade remains indefinitely until another fade deactivates it.
 	/// </summary>
-	[Group( "SpawnFlags" ), Property, Order( 2 )] public bool StayOut { get; set; } = false;
-
+	[Group( "SpawnFlags" ), Property, Order( 2 )]
+	public bool StayOut { get; set; } = false;
 
 	/// <summary>
 	/// Creates a new vanity channel based on this component's properties.
@@ -54,51 +59,133 @@ public class ui_fade : BaseEntity
 	{
 		return new VanityChannel
 		{
-			Id = $"Vanity_{TargetName}",
-			Effect = "fade",
-			BackgroundColor = FadeColor,
+			Slot = Channel,
+			Content = VanityContent.Color,
 
-			// Fade-in vs fade-out direction
-			FadeInTime = FadeFrom ? 0f : Duration,
-			HoldTime = StayOut ? 99999f : HoldFade, // long hold for permanent fade
-			FadeOutTime = FadeFrom ? Duration : (StayOut ? 0f : Duration),
+			Effect = new VanityFadeEffect
+			{
+				// FadeFrom means we're fading from the solid color back out.
+				// StayOut means fade into the color and remain there.
+				// Otherwise fade in, hold, then fade back out.
+				Direction = FadeFrom ? VanityDirection.Out : StayOut
+					? VanityDirection.In
+					: VanityDirection.InOut,
+
+				FadeInTime = FadeFrom ? 0f : Duration,
+				HoldTime = HoldFade,
+				FadeOutTime = FadeFrom || !StayOut ? Duration : 0f
+			},
+
+			BackgroundColor = FadeColor,
 			IsDrawPermanent = StayOut,
-			FadeFrom = FadeFrom,
 			ZIndex = ZIndex
 		};
 	}
-
 
 	/// <summary>
 	/// Start the screen fade.
 	/// </summary>
 	public BaseEntity Fade( BaseEntity activator = null )
 	{
-		VanityChannel channel = BuildChannel();
+		if ( !VanityAPI.TryGetTargetSteamId(
+			Recipient,
+			SpecificPlayer,
+			activator,
+			out var targetSteamId
+		) )
+		{
+			return activator;
+		}
 
-		BasePlayer.Local?
-			.HUDGameObject?
-			.GetComponent<VanityUI>()?
-			.UpdateChannel( channel.Id, channel );
+		if ( Networking.IsHost )
+		{
+			FadeRpc( targetSteamId );
+		}
+		else
+		{
+			if ( targetSteamId != 0 && Connection.Local.SteamId != targetSteamId )
+				return activator;
 
-		return activator ?? null;
+			FadeLocal();
+		}
+
+		OnBeginFade?.Invoke( this );
+
+		return activator;
 	}
+
+	[Rpc.Broadcast( NetFlags.HostOnly )]
+	private void FadeRpc( ulong targetSteamId )
+	{
+		if ( targetSteamId != 0 && Connection.Local.SteamId != targetSteamId )
+			return;
+
+		FadeLocal();
+	}
+
+	private void FadeLocal() => VanityAPI.Show( BuildChannel() );
 
 
 	/// <summary>
-	/// Start the screen fade.
+	/// Start the screen fade in the opposite direction.
 	/// </summary>
 	public BaseEntity FadeReverse( BaseEntity activator = null )
 	{
-		VanityChannel channel = BuildChannel();
+		if ( !VanityAPI.TryGetTargetSteamId(
+			Recipient,
+			SpecificPlayer,
+			activator,
+			out var targetSteamId
+		) )
+		{
+			return activator;
+		}
 
-		BasePlayer.Local?
-			.HUDGameObject?
-			.GetComponent<VanityUI>()?
-			.UpdateChannel( channel.Id, channel );
+		if ( Networking.IsHost )
+		{
+			FadeReverseRpc( targetSteamId );
+		}
+		else
+		{
+			if ( targetSteamId != 0 && Connection.Local.SteamId != targetSteamId )
+				return activator;
 
-		return null;
+			FadeReverseLocal();
+		}
+
+		OnBeginFade?.Invoke( this );
+
+		return activator;
 	}
 
+	[Rpc.Broadcast( NetFlags.HostOnly )]
+	private void FadeReverseRpc( ulong targetSteamId )
+	{
+		if ( targetSteamId != 0 && Connection.Local.SteamId != targetSteamId )
+			return;
 
+		FadeReverseLocal();
+	}
+
+	private void FadeReverseLocal()
+	{
+		VanityChannel channel = BuildChannel();
+
+		if ( channel.Effect is not VanityFadeEffect fade )
+			return;
+
+		fade.Direction = fade.Direction switch
+		{
+			VanityDirection.In => VanityDirection.Out,
+			VanityDirection.Out => VanityDirection.In,
+			_ => fade.Direction
+		};
+
+		(fade.FadeInTime, fade.FadeOutTime) =
+			(fade.FadeOutTime, fade.FadeInTime);
+
+		channel.IsDrawPermanent = false;
+
+		VanityAPI.Show( channel );
+	}
 }

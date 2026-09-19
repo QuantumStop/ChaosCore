@@ -1,0 +1,32 @@
+@inherits Panel
+@namespace Core
+
+@using Sandbox.UI
+
+@if ( Channel is not null )
+{
+	<root style="@VanityAPI.GetRootStyle( Channel )">
+
+		<div class="vanity-channel @Channel.Effect">
+
+			<div class="vanity-content"/>
+
+		</div>
+
+	</root>
+}
+
+@code
+@code
+{
+	[Parameter] public VanityChannel Channel { get; set; }
+
+	public override void Tick()
+	{
+		if ( Channel is null )
+			return;
+
+		if ( VanityAPI.RequiresContinuousUpdate( Channel ) )
+			StateHasChanged();
+	}
+}
