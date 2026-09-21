@@ -401,7 +401,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( !force && Owner.Player.HolsterOwner != BasePlayer.HolsterType.None && Owner.Player.HolsterOwner != type ) return; // has to be not None and the same thing (None is default, so we have to force through it)
 
-		Owner.Player.HolsterOwner = type; // new owner
+		Owner.Player?.HolsterOwner = type; // new owner
 
 		Owner.Player?.SetAllAnimgraphParams( "b_equipped", false );
 

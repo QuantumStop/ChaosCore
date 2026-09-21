@@ -3,7 +3,7 @@ namespace Core;
 public abstract class BasePawn : BaseEntity
 {
 	public static BasePawn Local { get; private set; }
-	[Property, ReadOnly, Sync( SyncFlags.FromHost )] public Client Owner { get; set; }
+	[Property, ReadOnly, Sync( SyncFlags.FromHost ), Feature( "Debug" )] public Client Owner { get; set; }
 	/// <summary>
 	/// Are we possessing this pawn right now? (Clientside)
 	/// </summary>
@@ -75,9 +75,7 @@ public abstract class BasePawn : BaseEntity
 		}
 	}
 
-	/// <summary>
-	/// Possess this pawn as client's "Main Pawn" (primarily for player spawning)
-	/// </summary>
+	/// <summary>Possess this pawn as client's "Main Pawn" (primarily for player spawning)</summary>
 	public void AsMain( Client owner )
 	{
 		Owner = owner;

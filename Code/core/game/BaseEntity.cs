@@ -59,7 +59,12 @@ public class BaseEntity : BaseCustomSerialize
 
 	#region EditorVis Block
 
-	public string EditorVis => GetEditorVis(); // Extension so we can get the VIS in other places
+	/// <summary>Extention so we can get the VIS in other places</summary>
+	public string EditorVis => GetEditorVis();
+	/// <summary>Color of the VIS, if we want to tint it based on whatever, ONLY FOR MODELS (would be weird for sprite icons)</summary>
+	/// <returns>Color tint for the Gizmo</returns>
+	protected virtual Color GetEditorVisColor() => Color.White;
+
 	protected virtual string GetEditorVis()
 	{
 		string className = GetType().Name.ToLowerInvariant();
@@ -88,7 +93,7 @@ public class BaseEntity : BaseCustomSerialize
 
 	protected virtual void EntityDefaultGizmo( string editorVis, bool isModel )
 	{
-		Gizmo.Draw.Color = Color.White;
+		Gizmo.Draw.Color = GetEditorVisColor();
 		if ( isModel )
 		{
 			if ( !Scene.IsEditor && GetComponent<ModelRenderer>().IsValid() && _initialized )

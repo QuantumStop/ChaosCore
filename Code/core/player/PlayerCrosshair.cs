@@ -5,43 +5,35 @@ public class Crosshair : Component
 {
 	public static Crosshair PlayerCrosshair { get; set; }
 	public CrosshairData WeaponCrosshair { get; set; }
-	private float CrosshairScale;
-	private float CrosshairWidth;
-	private float CrosshairGapX;
-	private float CrosshairGapY;
+	private float _crosshairScale;
+	private float _crosshairWidth;
+	private float _crosshairGapX;
+	private float _crosshairGapY;
 
-	private Color CrosshairColor { get; set; } = Color.White;
-	private Color CrosshairDotColor { get; set; } = Color.White;
-	private Color CrosshairOutlineColor { get; set; } = Color.Black;
+	private Color _crosshairColor { get; set; } = Color.White;
+	private Color _crosshairDotColor { get; set; } = Color.White;
+	private Color _crosshairOutlineColor { get; set; } = Color.Black;
 
-	private bool HasDot { get; set; } = false;
-	private bool DotHasOutline { get; set; } = false;
+	private bool _hasDot { get; set; } = false;
+	private bool _dotHasOutline { get; set; } = false;
 
-	private bool CrosshairHasOutline { get; set; } = true;
-	private float CrosshairLength;
-	private float CrosshairOutlineThickness;
+	private bool _crosshairHasOutline { get; set; } = true;
+	private float _crosshairLength;
+	private float _crosshairOutlineThickness;
 
-	private float smoothedSpeed = 0f;
+	private float _smoothedSpeed = 0f;
 
-	private bool _hideCrosshair => BasePlayer.Local.IsHUDElementHidden( BasePlayer.HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR | BasePlayer.HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD );
+	private static bool _hideCrosshair => BasePlayer.Local.IsHUDElementHidden( BasePlayer.HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR | BasePlayer.HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD );
 
-	protected override void OnStart()
-	{
-		PlayerCrosshair = this;
-	}
+	protected override void OnStart() => PlayerCrosshair = this;
 
-	protected virtual Vector2 CalculateCenter( Vector2 screen )
-	{
-		return screen * 0.5f;
-	}
+	protected virtual Vector2 CalculateCenter( Vector2 screen ) => screen * 0.5f;
 
 	protected override void OnUpdate()
 	{
-		if ( !BasePlayer.Local.IsValid() )
-			return;
+		if ( !BasePlayer.Local.IsValid() ) return;
 
-		if ( _hideCrosshair )
-			return;
+		if ( _hideCrosshair ) return;
 
 		Vector2 center = CalculateCenter( Screen.Size );
 
@@ -70,20 +62,20 @@ public class Crosshair : Component
 			WeaponCrosshair = weapon?.WeaponData?.WeaponCrosshair;
 			CrosshairType = WeaponCrosshair.WeaponCrosshairType;
 
-			CrosshairScale = WeaponCrosshair.CrosshairScale;
-			CrosshairWidth = WeaponCrosshair.CrosshairWidth;
-			CrosshairGapX = WeaponCrosshair.CrosshairGapX;
-			CrosshairGapY = WeaponCrosshair.CrosshairGapY;
-			CrosshairLength = WeaponCrosshair.CrosshairLength;
-			CrosshairColor = WeaponCrosshair.CrosshairColor;
-			CrosshairDotColor = WeaponCrosshair.CrosshairDotColor;
-			CrosshairOutlineColor = WeaponCrosshair.CrosshairOutlineColor;
+			_crosshairScale = WeaponCrosshair.CrosshairScale;
+			_crosshairWidth = WeaponCrosshair.CrosshairWidth;
+			_crosshairGapX = WeaponCrosshair.CrosshairGapX;
+			_crosshairGapY = WeaponCrosshair.CrosshairGapY;
+			_crosshairLength = WeaponCrosshair.CrosshairLength;
+			_crosshairColor = WeaponCrosshair.CrosshairColor;
+			_crosshairDotColor = WeaponCrosshair.CrosshairDotColor;
+			_crosshairOutlineColor = WeaponCrosshair.CrosshairOutlineColor;
 
-			HasDot = WeaponCrosshair.CrosshairHasDot;
-			DotHasOutline = WeaponCrosshair.CrosshairDotOutline;
+			_hasDot = WeaponCrosshair.CrosshairHasDot;
+			_dotHasOutline = WeaponCrosshair.CrosshairDotOutline;
 
-			CrosshairHasOutline = WeaponCrosshair.CrosshairHasOutline;
-			CrosshairOutlineThickness = WeaponCrosshair.CrosshairOutlineThickness;
+			_crosshairHasOutline = WeaponCrosshair.CrosshairHasOutline;
+			_crosshairOutlineThickness = WeaponCrosshair.CrosshairOutlineThickness;
 
 			//-- end block --//
 
@@ -117,34 +109,34 @@ public class Crosshair : Component
 			float userScale;
 
 			if ( CrosshairType == WeaponCrosshairType.CROSSHAIR_CROSS_A || CrosshairType == WeaponCrosshairType.CROSSHAIR_CROSS_B || CrosshairType == WeaponCrosshairType.CROSSHAIR_DOT )
-				userScale = CrosshairScale / 2;
+				userScale = _crosshairScale / 2;
 			else
-				userScale = CrosshairScale;
+				userScale = _crosshairScale;
 
 			float finalScale = resolutionScale * userScale;
 
 
 			// Apply this scale factor to crosshair elements to maintain consistency across aspect ratios
-			float scaledGapX = CrosshairGapX;
-			float scaledGapY = CrosshairGapY;
+			float scaledGapX = _crosshairGapX;
+			float scaledGapY = _crosshairGapY;
 
 
 			// TODO: Need to handle no ammo somehow eventually
 			// hasAmmo = !player.HasweaponTag( "no_ammo" );
 
 			float rawSpeed = BasePlayer.Local.Movement.Velocity.Length;
-			smoothedSpeed = smoothedSpeed.LerpTo( rawSpeed, Time.Delta * 5f );
+			_smoothedSpeed = _smoothedSpeed.LerpTo( rawSpeed, Time.Delta * 5f );
 
 			float basefreq = 0f;
 			float freq;
 
-			float gapX = CrosshairGapX * finalScale * aspectScale;  // Might come in handy
+			float gapX = _crosshairGapX * finalScale * aspectScale;  // Might come in handy
 
 
 			// --- Customization appliance
-			float length = CrosshairLength * finalScale * 0.5f;
+			float length = _crosshairLength * finalScale * 0.5f;
 			float width = MathF.Max( WeaponCrosshair.CrosshairWidth * finalScale, 1f );
-			float outlineThickness = MathF.Max( CrosshairOutlineThickness * finalScale, 1f );
+			float outlineThickness = MathF.Max( _crosshairOutlineThickness * finalScale, 1f );
 
 
 			// --- Recoil modifier
@@ -156,7 +148,7 @@ public class Crosshair : Component
 
 			if ( !hasAmmo )
 			{
-				CrosshairColor = Color.Red;
+				_crosshairColor = Color.Red;
 				linesTarget *= 0.25f;
 			}
 
@@ -181,9 +173,9 @@ public class Crosshair : Component
 					DrawBar(
 						pixelCenter - normRight * (scaledGapX + length * 0.5f),
 						horizSize,
-						CrosshairColor,
-						CrosshairOutlineColor,
-						CrosshairHasOutline,
+						_crosshairColor,
+						_crosshairOutlineColor,
+						_crosshairHasOutline,
 						outlineThickness
 					);
 
@@ -192,9 +184,9 @@ public class Crosshair : Component
 					DrawBar(
 						pixelCenter + normRight * (scaledGapX + length * 0.5f),
 						horizSize,
-						CrosshairColor,
-						CrosshairOutlineColor,
-						CrosshairHasOutline,
+						_crosshairColor,
+						_crosshairOutlineColor,
+						_crosshairHasOutline,
 						outlineThickness
 					);
 
@@ -202,9 +194,9 @@ public class Crosshair : Component
 					DrawBar(
 						pixelCenter - normUp * (scaledGapY + length * 0.5f),
 						vertSize,
-						CrosshairColor,
-						CrosshairOutlineColor,
-						CrosshairHasOutline,
+						_crosshairColor,
+						_crosshairOutlineColor,
+						_crosshairHasOutline,
 						outlineThickness
 					);
 
@@ -212,22 +204,22 @@ public class Crosshair : Component
 					DrawBar(
 						pixelCenter + normUp * (scaledGapY + length * 0.5f),
 						vertSize,
-						CrosshairColor,
-						CrosshairOutlineColor,
-						CrosshairHasOutline,
+						_crosshairColor,
+						_crosshairOutlineColor,
+						_crosshairHasOutline,
 						outlineThickness
 					);
 
 				}
 
-				if ( HasDot )
+				if ( _hasDot )
 				{
 					DrawDotWithOutline(
 						center,
 						width * 1f,
-						CrosshairDotColor,
-						CrosshairOutlineColor,
-						DotHasOutline,
+						_crosshairDotColor,
+						_crosshairOutlineColor,
+						_dotHasOutline,
 						outlineThickness
 					);
 				}
@@ -260,7 +252,7 @@ public class Crosshair : Component
 					float thickness = segment.CrosshairCircleThickness; // Single thickness for both inner and outer parts
 					int segments = segment.CrosshairCircleSegments;
 					Color mainColor = segment.CrosshairCircleColor;
-					Color outlineColor = CrosshairHasOutline ? CrosshairOutlineColor : mainColor;
+					Color outlineColor = _crosshairHasOutline ? _crosshairOutlineColor : mainColor;
 
 					// Apply animation and angle adjustments
 					float timeOffsetRadians = WorldTime.Now * segment.AnimationSpeed;
@@ -289,15 +281,15 @@ public class Crosshair : Component
 					);
 				}
 
-				if ( HasDot )
+				if ( _hasDot )
 				{
 					DrawDotWithOutline(
 						pixelCenter,
 						ringSize,
-						CrosshairColor,
-						CrosshairOutlineColor,
-						CrosshairHasOutline,
-						CrosshairOutlineThickness
+						_crosshairColor,
+						_crosshairOutlineColor,
+						_crosshairHasOutline,
+						_crosshairOutlineThickness
 					);
 				}
 			}
@@ -315,14 +307,14 @@ public class Crosshair : Component
 				DrawDotWithOutline(
 					pixelCenter,
 					ringSize,
-					CrosshairColor,
-					CrosshairOutlineColor,
-					CrosshairHasOutline,
-					CrosshairOutlineThickness
+					_crosshairColor,
+					_crosshairOutlineColor,
+					_crosshairHasOutline,
+					_crosshairOutlineThickness
 				);
 			}
 
-			freq = smoothedSpeed * basefreq * 2;
+			freq = _smoothedSpeed * basefreq * 2;
 			freq.Clamp( 0, 12.5f );
 
 			mainAlpha.LerpTo( alphaTarget, Time.Delta * 30f );
@@ -458,7 +450,7 @@ public class Crosshair : Component
 		);
 
 		// Actual 1x1 pixel sized "dots"
-		Vector2 dotSize = new( 1f, 1f );
+		Vector2 dotSize = new( 0.75f, 0.75f );
 		Color dotColor = Color.White;
 
 		float spacing = 10f;

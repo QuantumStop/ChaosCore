@@ -120,7 +120,7 @@ public partial class BasePlayer
 	[Property, Feature( "Debug" ), ReadOnly] protected float _fovStart { get; set; }
 	[Property, Feature( "Debug" ), ReadOnly] protected float _fovTime { get; set; }
 
-	protected virtual float GetFOV()
+	public virtual float GetFOV()
 	{
 		float fFOV = (_fovTarget <= 0) ? DefaultFOV : _fovTarget;
 

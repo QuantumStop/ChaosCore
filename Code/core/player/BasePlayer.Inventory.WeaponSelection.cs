@@ -15,7 +15,7 @@ partial class BasePlayer
 	private TimeSince _timeSinceLastScroll;
 	private const float _scrollCooldown = 0.075f;
 #if !FMOD
-	SoundHandle WeaponSelectHandle;
+	private SoundHandle _weaponSelectHandle;
 #endif
 	private void DebugWeaponSelectionState()
 	{
@@ -437,7 +437,7 @@ partial class BasePlayer
 		}
 	}
 
-	private void MoveToNextNonEmptyBucket( int direction )
+	protected void MoveToNextNonEmptyBucket( int direction )
 	{
 		var buckets = GetAllSortedBuckets();
 
@@ -499,7 +499,7 @@ partial class BasePlayer
 		}
 	}
 
-	protected async void ConfirmWeaponSelection( List<List<BaseCombatWeapon>> buckets )
+	protected virtual async void ConfirmWeaponSelection( List<List<BaseCombatWeapon>> buckets )
 	{
 		Input.ReleaseAction( "Attack1" );
 		Input.Clear( "Attack1" );
@@ -553,8 +553,8 @@ partial class BasePlayer
 
 		if ( !string.IsNullOrEmpty( soundName ) )
 		{
-			WeaponSelectHandle?.Stop( 0.1f ); // cut off previous sound first, as the engine doesnt have voice stealing
-			WeaponSelectHandle = Sound.Play( soundName );
+			_weaponSelectHandle?.Stop( 0.1f ); // cut off previous sound first, as the engine doesnt have voice stealing
+			_weaponSelectHandle = Sound.Play( soundName );
 		}
 	}
 #endif

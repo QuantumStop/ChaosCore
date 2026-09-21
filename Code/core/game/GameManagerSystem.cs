@@ -70,8 +70,10 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 	protected virtual void OnUpdate()
 	{
 		UpdateWorldTime();
-
-		if ( Input.Pressed( "Pause" ) ) TogglePause();
+#if IGNIS || STANDALONE
+		if ( Input.Pressed( "Pause" ) )
+			TogglePause();
+#endif
 
 		Rules?.GameFrame();
 

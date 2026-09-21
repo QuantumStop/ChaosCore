@@ -83,11 +83,11 @@ public partial class GameProp
 		}
 	} = 10f;
 
-	private void OnMassChange() => _rigidbody?.MassOverride = OverrideMass ? NewMass : 0;
+	protected void OnMassChange() => _rigidbody?.MassOverride = OverrideMass ? NewMass : 0;
 
-	private ModelHitboxes _modelHitboxes { get; set; }
+	protected ModelHitboxes _modelHitboxes { get; set; }
 
-	void CreatePhysicsComponent()
+	protected virtual void CreatePhysicsComponent()
 	{
 		if ( Model.Physics is null || Model.Physics.Parts.Count == 0 )
 		{
@@ -145,7 +145,7 @@ public partial class GameProp
 		CreateRagdollPhysicsComponent();
 	}
 
-	private void CreateRagdollPhysicsComponent()
+	protected void CreateRagdollPhysicsComponent()
 	{
 		_modelPhysics = Components.GetOrCreate<ModelPhysics>();
 		_modelPhysics.Model = Model;
@@ -156,7 +156,7 @@ public partial class GameProp
 		AddProcedural( _modelPhysics );
 	}
 
-	private void DestroyRagdollPhysicsComponent()
+	protected void DestroyRagdollPhysicsComponent()
 	{
 		_modelPhysics ??= Components.Get<ModelPhysics>();
 
@@ -178,10 +178,9 @@ public partial class GameProp
 	}
 
 	[Rpc.Broadcast]
-	private void NetworkSetRagdollActive( bool active, bool copyCurrentPose )
+	protected void NetworkSetRagdollActive( bool active, bool copyCurrentPose )
 	{
-		if ( !IsProxy )
-			return;
+		if ( !IsProxy ) return;
 
 		RagdollActive = active;
 		ApplyRagdollState( copyCurrentPose );

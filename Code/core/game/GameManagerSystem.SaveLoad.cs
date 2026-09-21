@@ -18,15 +18,21 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	{
 		if ( Rules is SingleplayerRules sp && sp.CanSaveLoad )
 		{
+#if IGNIS || STANDALONE
 			if ( !string.IsNullOrEmpty( _lastSaveName ) )
 				LoadGame( _lastSaveName );
 			else
+#endif
 			{
 				Log.Warning( "No save has been loaded or created this session. Restarting regularly." );
 				RestartLevel();
 			}
 		}
-		else Log.Warning( "Level reloading is not allowed!" );
+		else
+		{
+			Log.Warning( "Level reloading is not allowed!" );
+			RestartLevel();
+		}
 	}
 
 	[ConCmd( "scene" )] public static void CmdScene( string mapname, string parameter1 = "" ) => ChangeLevel( mapname, parameter1 );
@@ -94,11 +100,13 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	// TODO: We need to do this better, this sucks, but it's best I can provide atm.
 	private static void HandleSaveLoadInput()
 	{
+#if IGNIS || STANDALONE
 		if ( Input.Pressed( "quick_save" ) )
 			QuickSave();
 
 		if ( Input.Pressed( "quick_save" ) )
 			QuickLoad();
+#endif
 	}
 
 	private static bool TrySaveGame( string savename, string title )
@@ -166,7 +174,9 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		LoadGame( $"{GetSaveFilePrefix()}-quick-{slot:00}" );
 	}
 
+#if IGNIS || STANDALONE
 	private static string _lastSaveName;
+#endif
 
 	[ConCmd( "load" )]
 	public static async void LoadGame( string savename )

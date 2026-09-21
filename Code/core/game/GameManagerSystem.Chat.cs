@@ -1,6 +1,5 @@
 namespace Core;
 
-using Sandbox.Network;
 using Sandbox.Platform;
 
 public abstract partial class GameManagerSystem : GameObjectSystem, IChatEvent
@@ -50,8 +49,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem, IChatEvent
 
 	public static void SendChatHistorySnapshot( Connection target )
 	{
-		if ( !Networking.IsHost || !target.IsActive )
-			return;
+		if ( !Networking.IsHost || !target.IsActive ) return;
 
 		BeginChatHistorySnapshot( target.SteamId );
 

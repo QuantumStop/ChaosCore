@@ -62,9 +62,9 @@ public abstract partial class GameManagerSystem
 	protected void UpdateWorldTime()
 	{
 		var previousWorldTime = CurrentWorldTime;
-		
+
 		CurrentWorldTime = MathF.Max( 0f, Time.Now + WorldTimeOffset );
-		CurrentWorldDelta = MathF.Max( 0f, CurrentWorldTime - previousWorldTime );			
+		CurrentWorldDelta = MathF.Max( 0f, CurrentWorldTime - previousWorldTime );
 	}
 
 	protected void ApplySceneTimeScale()

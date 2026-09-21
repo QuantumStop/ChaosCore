@@ -9,9 +9,9 @@ using System;
 public partial class BasePlayer
 {
 	/// <summary> Player health </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public float Health = 100;
+	[Property, ReadOnly, Feature( "Debug" ), Sync] public float Health { get; set; } = 100;
 	/// <summary> Player armor </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public float Armour = 0;
+	[Property, ReadOnly, Feature( "Debug" ), Sync] public float Armour { get; set; } = 0;
 	/// <summary>
 	/// Does the player have suit on
 	/// </summary>
@@ -19,7 +19,7 @@ public partial class BasePlayer
 	/// <summary>
 	/// Are we alive or are we dead, or a secret third thing
 	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public LifeState LifeState = LifeState.Alive;
+	[Property, ReadOnly, Feature( "Debug" ), Sync] public LifeState LifeState { get; set; } = LifeState.Alive;
 
 	/// <summary> Returns true if player is underwater. </summary>
 	public bool IsUnderwater => WaterLevel == WaterLvl.Full;
@@ -220,7 +220,7 @@ public partial class BasePlayer
 		// anything in the world, all of it should be self explanatory
 		LockPlayer();
 
-		Local.SetFOV( this, 0, 0.2f, 0, true );
+		SetFOV( this, 0, 0.2f, 0, true );
 
 		Controller.HeadHeight = 24;
 
@@ -380,6 +380,7 @@ public partial class BasePlayer
 	/// <param name="fade">Fade out time</param>
 	/// <param name="pos">Position</param>
 
+	[Rpc.Broadcast]
 	public void PlayPickupSteal( string name, int channel = 0, Vector3 pos = default, float fade = 0.1f )
 	{
 		switch ( channel )
@@ -387,20 +388,20 @@ public partial class BasePlayer
 			default:
 				_pickupHandleA?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
 				_pickupHandleA = Sound.Play( name );
-				if ( IsPossessedLocally ) _pickupHandleA.SpacialBlend = 0;
-				else _pickupHandleA.Position = pos; // if someone else picked up an item, play it at the position
+				if ( !IsProxy ) _pickupHandleA.SpacialBlend = 0;
+				_pickupHandleA.Position = pos; // if someone else picked up an item, play it at the position
 				break;
 			case 1:
 				_pickupHandleB?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
 				_pickupHandleB = Sound.Play( name );
-				if ( IsPossessedLocally ) _pickupHandleB.SpacialBlend = 0;
-				else _pickupHandleB.Position = pos; // if someone else picked up an item, play it at the position
+				if ( !IsProxy ) _pickupHandleB.SpacialBlend = 0;
+				_pickupHandleB.Position = pos; // if someone else picked up an item, play it at the position
 				break;
 			case 2:
 				_pickupHandleC?.Stop( fade ); // cut off previous sound first, as the engine doesnt have voice stealing
 				_pickupHandleC = Sound.Play( name );
-				if ( IsPossessedLocally ) _pickupHandleC.SpacialBlend = 0;
-				else _pickupHandleC.Position = pos; // if someone else picked up an item, play it at the position
+				if ( !IsProxy ) _pickupHandleC.SpacialBlend = 0;
+				_pickupHandleC.Position = pos; // if someone else picked up an item, play it at the position
 				break;
 		}
 	}

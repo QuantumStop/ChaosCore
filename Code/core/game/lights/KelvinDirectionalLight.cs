@@ -109,6 +109,7 @@ public class KelvinDirectionalLight : DirectionalLight
 			}
 		}
 	} = 1;
+#if PI
 	/// <summary>
 	/// Due to how stuff is supossed to be rendered, the diffuse is intended to be darker by a factor of PI, which may not be desirable if WYSIWYG color values are expected. 
 	/// This compensates the brightness automatically, if desired. 
@@ -127,6 +128,11 @@ public class KelvinDirectionalLight : DirectionalLight
 			}
 		}
 	} = true;
+	private float _resultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
+#else
+	private float _resultBrightness => Brightness;
+#endif
+#endif
 	/// <summary>
 	/// Does the brightness of the sun affect brightness of the sky?
 	/// </summary>
@@ -144,12 +150,7 @@ public class KelvinDirectionalLight : DirectionalLight
 		}
 	} = true;
 
-#if PI
-	private float ResultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
-#else
-	private float ResultBrightness => Brightness;
-#endif
-#endif
+
 	[Property, Hide, Space] new Color SkyColor { get; set; } = Color.Black.WithAlpha( 0 );
 
 	/// <summary>
@@ -170,7 +171,7 @@ public class KelvinDirectionalLight : DirectionalLight
 			KelvinTemperature = LightUnits.MiredToKelvin( MiredTemperature );
 		}
 
-		LightColor = RGB_Color * ResultBrightness;
+		LightColor = RGB_Color * _resultBrightness;
 
 #if !PLU
 		Scene.RenderAttributes.Set( "SunLux", AffectsSky ? Brightness : 1.0f );

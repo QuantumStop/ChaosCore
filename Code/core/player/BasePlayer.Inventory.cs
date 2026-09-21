@@ -25,7 +25,7 @@ public partial class BasePlayer
 		return GlobalGameNamespace.TypeLibrary.GetType( key );
 	}
 
-	private static bool TryResolveWeaponDataAndType( string name, out WeaponParse data, out TypeDescription type )
+	protected static bool TryResolveWeaponDataAndType( string name, out WeaponParse data, out TypeDescription type )
 	{
 		data = WeaponParse.GetWeaponData( name );
 		type = ResolveWeaponTypeDescription( data );
@@ -33,18 +33,14 @@ public partial class BasePlayer
 		return data.IsValid() && type is not null;
 	}
 
-	// It is probably better to store inventory shit on the player itself, thats how S1 does it
-	// the original inventory had gameobject->list conversion but why not do it straight up
-	// I keep saying "How S1 does it" not because we are going for full recreation but because it's a game that has shipped
-	/// <summary>
-	/// List of all weapons on the player
-	/// </summary>
-	[Property, ReadOnly, Feature( "Weapons" )] public List<BaseCombatWeapon> WeaponList = [];
+
+	/// <summary>List of all weapons on the player</summary>
+	[Property, ReadOnly, Feature( "Weapons" ), Sync] public NetList<BaseCombatWeapon> WeaponList { get; set; } = [];
 
 	/// <summary>
 	/// List of all reserve ammo components on the player
 	/// </summary>
-	[Property, ReadOnly, Feature( "Weapons" ), InlineEditor] public List<PlayerAmmoReserve> AmmoReserveList = [];
+	[Property, ReadOnly, Feature( "Weapons" ), InlineEditor, Sync] public NetList<PlayerAmmoReserve> AmmoReserveList { get; set; } = [];
 	/// <summary>
 	/// Viewmodel GameObject
 	/// </summary>
@@ -52,7 +48,7 @@ public partial class BasePlayer
 	/// <summary>
 	/// Current weapon
 	/// </summary>
-	[Property, Feature( "Weapons" ), Header( "Weapon States" ), ReadOnly]
+	[Property, Feature( "Weapons" ), Header( "Weapon States" ), ReadOnly, Sync]
 	public BaseCombatWeapon CurrentWeapon
 	{
 		get;
@@ -139,9 +135,7 @@ public partial class BasePlayer
 	/// </summary>
 	[Property, Hide] public bool AllowWeaponModelChange { get; set; } = true;
 
-	/// <summary>
-	/// Current weapon has changed, handle the swap
-	/// </summary>
+	/// <summary>Current weapon has changed, handle the swap</summary>
 	private void OnCurrentWeaponChange()
 	{
 		if ( AllowWeaponModelChange )
@@ -176,7 +170,7 @@ public partial class BasePlayer
 	/// <param name="param">Additional params</param>
 	/// <param name="switchto">Switch to that weapon?</param>
 	/// <param name="item">Optional weapon item</param>
-	public BaseCombatWeapon GiveWeaponByName( string name, string param, bool switchto = true, BaseWeaponItem item = null )
+	public virtual BaseCombatWeapon GiveWeaponByName( string name, string param, bool switchto = true, BaseWeaponItem item = null )
 	{
 		if ( !TryResolveWeaponDataAndType( name, out var data, out var weaponType ) )
 			return null;
@@ -185,7 +179,7 @@ public partial class BasePlayer
 			return null;
 
 		var weaponSnapshot = new BaseCombatWeapon[WeaponList.Count];
-		WeaponList.CopyTo( weaponSnapshot );
+		WeaponList.CopyTo( weaponSnapshot, 0 );
 
 		// Check if the weapon is already in the inventory
 		foreach ( var weapon in weaponSnapshot )
@@ -213,7 +207,7 @@ public partial class BasePlayer
 #if FMOD
 							FMODSound.Play( "event:/Common/AmmoPickup" );
 #else
-							Local.PlayPickupSteal( "ammo_pickup", 0, WorldPosition );
+							PlayPickupSteal( "ammo_pickup", 0, WorldPosition );
 #endif
 							item.DecreaseInternalMag( ammocount );
 
@@ -245,7 +239,7 @@ public partial class BasePlayer
 
 	[ConVar( "debug_weapon_drop_ray" )] public static bool DebugDropRay { get; set; } = false;
 
-	public void DropWeapon( BaseCombatWeapon weapon, bool switchtonew = true )
+	public virtual void DropWeapon( BaseCombatWeapon weapon, bool switchtonew = true, float force = 1 )
 	{
 		GameObject WeaponObject = Scene.CreateObject();
 		WeaponObject.Name = $"{weapon.WeaponData.ResourceName} ({weapon.WeaponData.Name})";
@@ -266,11 +260,13 @@ public partial class BasePlayer
 		item.WasDropped = true;
 		item.Enabled = true;
 
-		item.PositionImpulse = GetEyeAngles().WithPitch( -25 ).Forward * 250 * item.Physics.Mass;
+		item.PositionImpulse = GetEyeAngles().WithPitch( -25 ).Forward * 250 * force * item.Physics.Mass;
 		item.AngularImpulse = Vector3.Random * 25 * item.Physics.Mass;
 
 		RemoveWeapon( weapon, switchtonew );
 		if ( !switchtonew ) CurrentWeapon = null;
+
+		if ( GameManagerSystem.Rules.IsOnline ) WeaponObject.NetworkSpawn();
 	}
 
 	/// <summary>
@@ -279,8 +275,7 @@ public partial class BasePlayer
 	/// <param name="weapon">Weapon in question</param>
 	protected virtual void WeaponSwitch( BaseCombatWeapon weapon )
 	{
-		if ( CurrentWeapon.IsValid() && CurrentWeapon == weapon )
-			return;
+		if ( CurrentWeapon.IsValid() && CurrentWeapon == weapon ) return;
 
 		CurrentWeapon?.Holster(); // call holster anyway since it disables the component, we never see it
 
@@ -291,17 +286,20 @@ public partial class BasePlayer
 
 		CurrentWeapon?.Draw();
 
-		WeaponGameObject.Name = "Viewmodel " + "(" + weapon.WeaponData.Name + ")";
+		WeaponGameObject.Name = "Viewmodel " + "(" + (CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData.Name : "Disarmed") + ")";
 	}
 
 	/// <summary>Skip holster delay when switching weapons.</summary>
-	[ConVar( "debug_holster_switch", ConVarFlags.Cheat, Help = "Skip holster delay when switching weapons." )] public static bool DebugSkipHolster { get; set; } = false;
+	[ConVar( "debug_holster_switch", ConVarFlags.Cheat, Help = "Invert the choice of holster delay when switching weapons from whatever was decided to the opposite" )] public static bool DebugSkipHolster { get; set; } = false;
+	protected virtual bool _switchFullHolster => true;
+
+	private bool DecideHolster() => DebugSkipHolster ? !_switchFullHolster : _switchFullHolster; // the convar now inverts the selected behavior
 
 	/// <summary>Public accessor to WeaponSwitch, which also decides if we want the holster delay or not</summary>
 	/// <param name="weapon"></param>
 	public void SwitchToWeapon( BaseCombatWeapon weapon )
 	{
-		if ( !DebugSkipHolster ) WeaponToEquip = weapon;
+		if ( DecideHolster() ) WeaponToEquip = weapon;
 		else WeaponSwitch( weapon );
 	}
 
@@ -390,7 +388,6 @@ public partial class BasePlayer
 
 		if ( CurrentWeapon == weapon && WeaponList.Count > 0 ) // if we are removing the weapon we are currently holding
 		{
-			var index = WeaponList.IndexOf( CurrentWeapon );
 			WeaponList.Remove( weapon );
 			if ( switchtonew ) SwitchToWeapon( BestNextWeapon( weapon ) );
 		}

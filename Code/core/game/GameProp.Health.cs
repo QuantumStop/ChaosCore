@@ -137,13 +137,13 @@ public partial class GameProp
 		}
 	}
 
-	public void Break( DamageInfo damage = null )
+	public virtual void Break( DamageInfo damage = null )
 	{
 		OnBreak( damage );
 		Kill( this );
 	}
 
-	void OnBreak( DamageInfo damage = null )
+	protected void OnBreak( DamageInfo damage = null )
 	{
 		OnPropBreak?.Invoke( null );
 

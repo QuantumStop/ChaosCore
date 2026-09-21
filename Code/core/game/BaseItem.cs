@@ -125,6 +125,7 @@ public class BaseItem : BaseUsable
 	/// <summary>
 	/// Properly destroy the item with extra stuff we want (instead of just calling GameObject.Destroy())
 	/// </summary>
+	[Rpc.Broadcast]
 	public void DestroyItem()
 	{
 		if ( GameObject.IsValid() ) Kill();

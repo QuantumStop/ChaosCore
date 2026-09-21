@@ -67,10 +67,10 @@ public class BaseAmmoItem : BaseItem
 #if FMOD
 		FMODSound.Play( GetPickupSound() );
 #else
-		BasePlayer.Local.PlayPickupSteal( GetPickupSound(), SoundStealChannel(), WorldPosition );
+		Activator.PlayPickupSteal( GetPickupSound(), SoundStealChannel(), WorldPosition );
 #endif
 
-		BasePlayer.Local.AddReserveAmmo( AmmoData.ResourceName, FillMax ? 10000 : _amount ? Amount : AmmoData.DefaultAmmo );
+		Activator.AddReserveAmmo( AmmoData.ResourceName, FillMax ? 10000 : _amount ? Amount : AmmoData.DefaultAmmo );
 
 		DestroyItem();
 	}

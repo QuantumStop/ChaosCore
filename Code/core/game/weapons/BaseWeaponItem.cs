@@ -9,7 +9,7 @@ public class BaseWeaponItem : BaseItem
 #if IGNIS
 	[DebugExpose( group: "BaseWeaponItem", DisplayMember = "ResourcePath" )]
 #endif
-	[Property, Title( "Weapon Data" )] public WeaponParse Data { get; set; }
+	[Property, Title( "Weapon Data" ), Sync] public WeaponParse Data { get; set; }
 #if IGNIS
 	[DebugExpose( group: "BaseWeaponItem" )]
 #endif
@@ -70,12 +70,12 @@ public class BaseWeaponItem : BaseItem
 
 	public const float PickupTime = 0.3f;
 
-	[Property, ReadOnly, Feature( "Debug" )] private float _counter = 0;
-	[Property, ReadOnly, Feature( "Debug" )] private bool _isPressing = false;
+	[Property, ReadOnly, Feature( "Debug" )] protected float _counter = 0;
+	[Property, ReadOnly, Feature( "Debug" )] protected bool _isPressing = false;
 
 	/// <summary>Is this weapon in a slot that's occupied by the person attempting pickup</summary>
 	[Property, ReadOnly, Feature( "Debug" )]
-	public bool SlotTaken()
+	public virtual bool SlotTaken()
 	{
 		if ( !LastOwner.IsValid() || OverrideSlotOccupancy ) return false;
 
@@ -127,8 +127,7 @@ public class BaseWeaponItem : BaseItem
 
 		_isPressing = true;
 
-		if ( _counter < PickupTime )
-			_counter += Time.Delta;
+		if ( _counter < PickupTime ) _counter += Time.Delta;
 
 		if ( _counter == PickupTime )
 		{

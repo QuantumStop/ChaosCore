@@ -1,6 +1,5 @@
 ﻿using System;
 using Core;
-using Sandbox.Internal;
 using XMovement;
 
 public partial class PlayerController : PlayerWalkControllerComplex

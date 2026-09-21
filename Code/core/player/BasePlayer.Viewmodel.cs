@@ -43,7 +43,7 @@ public partial class BasePlayer
 	/// There are certain moments when we don't want to calculate sway etc (mostly for code exception reasons),
 	/// this determines when we want that
 	/// </summary>
-	private bool _allowSway => ViewmodelVisible && WantSway;
+	protected bool _allowSway => ViewmodelVisible && WantSway;
 	public bool WantSway { get; set; } = true;
 
 	/// <summary>

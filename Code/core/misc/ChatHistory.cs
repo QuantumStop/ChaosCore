@@ -119,10 +119,7 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 		Changed?.Invoke();
 	}
 
-	public static float GetAge( ChatEntry entry )
-	{
-		return MathF.Max( 0f, GameManagerSystem.WorldNow - entry.CreatedAt );
-	}
+	public static float GetAge( ChatEntry entry ) => MathF.Max( 0f, GameManagerSystem.WorldNow - entry.CreatedAt );
 
 	static void LogEntry( ChatEntry entry )
 	{
@@ -138,10 +135,7 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 		logger.Info( $"{entry.Name}: {entry.Message}" );
 	}
 
-	static bool IsSystemEntry( ChatEntry entry )
-	{
-		return string.Equals( entry.ExtraClass, "system", StringComparison.OrdinalIgnoreCase );
-	}
+	static bool IsSystemEntry( ChatEntry entry ) => string.Equals( entry.ExtraClass, "system", StringComparison.OrdinalIgnoreCase );
 
 	bool ContainsEntry( int id )
 	{

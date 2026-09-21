@@ -54,14 +54,14 @@ public partial class GameProp
 #if IGNIS
 	[DebugExpose]
 #endif
-	private ModelRenderer _modelRenderer { get; set; }
+	protected ModelRenderer _modelRenderer { get; set; }
 	/*
 		[Property, ReadOnly, Feature( "Debug" ), Title( "Procedural Components" ), Order( 50 )]
 		private List<Component> _proceduralComponentsDebug { get; set; } = [];
 	*/
-	List<Component> _proceduralComponents { get; set; }
-	private bool _hasRigidbody => Components.Get<Rigidbody>().IsValid();
-	private Rigidbody _rigidbody { get; set; }
+	protected List<Component> _proceduralComponents { get; set; }
+	protected bool _hasRigidbody => Components.Get<Rigidbody>().IsValid();
+	protected Rigidbody _rigidbody { get; set; }
 
 	[Rpc.Broadcast]
 	public void ClearProcedurals()
@@ -99,7 +99,7 @@ public partial class GameProp
 	}
 
 	[Rpc.Broadcast]
-	private void UpdateComponents()
+	protected void UpdateComponents()
 	{
 		if ( Model.IsValid() )
 		{

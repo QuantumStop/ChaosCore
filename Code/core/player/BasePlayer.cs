@@ -328,7 +328,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		CalculateFOV();
 
-		HandleLastSelected();
 		if ( _allowSway ) ViewmodelUpdate();
 	}
 
@@ -341,6 +340,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		CheckWaterLevel();
 		HandleWeaponSelection();
 		WantsSprint();
+
+		HandleLastSelected();
 
 		if ( _allowSway ) ViewmodelFixedUpdate();
 		UpdateFallDamage();
@@ -461,6 +462,11 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	{
 		UpdateBodyVisibility();
 		EnsureHudEntries();
+#if !FMOD
+		var list = Controller.Head.Components.GetOrCreate<AudioListener>();
+		list.Enabled = true;
+		list.UseCameraDirection = false;
+#endif
 	}
 
 	protected override void OnDePossess()
@@ -468,5 +474,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		UpdateBodyVisibility();
 		SetHudEntriesEnabled( false );
 		SetHudRootEnabled( false );
+#if !FMOD
+		Controller.Head.Components.GetOrCreate<AudioListener>().Enabled = false;
+#endif
 	}
 }
