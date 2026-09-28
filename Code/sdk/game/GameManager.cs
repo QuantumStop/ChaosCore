@@ -10,7 +10,7 @@ public partial class SDKGameManager : GameManagerSystem, IPlayerEvents
 
 	public static new SDKGameManager Current => GameManagerSystem.Current as SDKGameManager;
 
-	protected override void DecideGameRules() => Rules = new SDKRulesSP();
+	protected override void DecideGameRules() => Rules = new SDKRulesMP();
 
 	protected override void OnStart()
 	{
