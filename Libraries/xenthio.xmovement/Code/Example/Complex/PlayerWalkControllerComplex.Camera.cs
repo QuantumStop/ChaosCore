@@ -20,6 +20,7 @@ public partial class PlayerWalkControllerComplex : Component
 	{
 		FirstPerson,
 		ThirdPerson,
+		Isometric,
 		Manual,
 	}
 

@@ -18,7 +18,17 @@ public partial class BasePlayer
 	public Angles GetEyeAngles() => Controller.EyeAngles;
 	public Vector3 GetEyePos() => Controller.Head.WorldPosition;
 	public Vector3 GetEyeForward() => Controller.Head.WorldRotation.Forward;
-	public Transform GetEyeTransform() => Controller.Head.Transform.World;
+	public Transform GetEyeTransform()
+	{
+		if ( Controller is PlayerController { IsIsometricCamera: true } playerController )
+		{
+			var aimRay = playerController.AimRay;
+			return new Transform( aimRay.Position, Rotation.LookAt( aimRay.Forward, Vector3.Up ) );
+		}
+
+		return Controller.Head.Transform.World;
+	}
+
 	public Vector3 GetPos() => WorldPosition;
 
 	[Flags]
@@ -181,6 +191,8 @@ public partial class BasePlayer
 
 	public virtual void UpdateBodyVisibility()
 	{
+		var isIsometricCamera = Controller is PlayerController playerController && playerController.IsIsometricCamera;
+
 		if ( !IsPossessedLocally )
 		{
 			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
@@ -201,7 +213,7 @@ public partial class BasePlayer
 					//	Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath}  PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
 				}
 			}
-			if ( Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
+			if ( (Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson || isIsometricCamera) && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
 			{
 				foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 				{

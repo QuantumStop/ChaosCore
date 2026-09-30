@@ -1,5 +1,6 @@
-﻿using System;
-using Core;
+﻿namespace Core;
+
+using System;
 using XMovement;
 
 public partial class PlayerController : PlayerWalkControllerComplex
@@ -17,15 +18,49 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		}
 	}
 
+	public override Ray AimRay
+	{
+		get
+		{
+			if ( IsIsometricCamera && TryGetIsometricCursorAimPoint( out var cursorAimPoint ) )
+			{
+				var direction = (cursorAimPoint - Head.WorldPosition).Normal;
+				if ( direction.Length > 0.001f )
+					return new Ray( Head.WorldPosition, direction );
+			}
+
+			return base.AimRay;
+		}
+	}
+
+	/// <summary>
+	/// Keeps the base controller update intact, but routes camera, 
+	/// look and movement through isometric helpers while we're in Isometric mode.
+	/// </summary>
 	protected override void OnUpdate()
 	{
 		if ( Scene.IsEditor ) return;
 
 		if ( AllowMovement )
 		{
-			if ( _ownerPawn?.IsControlledLocally is true ) UpdateCamera();
+			if ( IsIsometricCamera )
+			{
+				DoEyeLook();
 
-			DoEyeLook();
+				if ( _ownerPawn?.IsControlledLocally is true && !UpdateIsometricCameraToggle() )
+					UpdateIsometricCamera();
+			}
+			else
+			{
+				if ( _ownerPawn?.IsControlledLocally is true )
+				{
+					ResetBaseCameraProjection();
+					if ( !UpdateIsometricCameraToggle() )
+						UpdateCamera();
+				}
+				
+				DoEyeLook();
+			}
 
 			if ( _ownerPawn?.IsControlledLocally is true )
 			{
@@ -45,7 +80,37 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void BuildWishVelocity()
 	{
-		if ( _ownerPawn?.IsControlledLocally is true ) base.BuildWishVelocity();
+		if ( _ownerPawn?.IsControlledLocally is not true ) 
+			return;
+
+		if ( !IsIsometricCamera )
+		{
+			base.BuildWishVelocity();
+			return;
+		}
+
+		var wishMove = Input.AnalogMove;
+
+		if ( wishMove.Length < 0.001f )
+		{
+			Controller.WishVelocity = Vector3.Zero;
+			return;
+		}
+
+		var rot = GetIsometricMovementRotation();
+		var wishDirection = wishMove.Normal * rot;
+		Controller.WishVelocity = wishDirection.Normal * GetWishSpeed();
+	}
+
+	public override void DoNoclipMove()
+	{
+		if ( !IsIsometricCamera )
+		{
+			base.DoNoclipMove();
+			return;
+		}
+
+		DoIsometricNoclipMove();
 	}
 
 	protected override void OnFixedUpdate()
@@ -134,9 +199,16 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	{
 		if ( _ownerPawn?.IsControlledLocally is true )
 		{
-			LocalEyeAngles += HandleInvert( Input.AnalogLook ) * AimSensitivity * AimSensitivityScale;
-
-			LocalEyeAngles = LocalEyeAngles.WithPitch( LocalEyeAngles.pitch.Clamp( -89f, 89f ) );
+			if ( IsIsometricCamera )
+			{
+				DoIsometricLook();
+				LocalEyeAngles = LocalEyeAngles.WithPitch( 0f );
+			}
+			else
+			{
+				LocalEyeAngles += HandleInvert( Input.AnalogLook ) * AimSensitivity * AimSensitivityScale;
+				LocalEyeAngles = LocalEyeAngles.WithPitch( LocalEyeAngles.pitch.Clamp( -89f, 89f ) );
+			}
 		}
 
 		if ( _ownerPawn?.IsPossessedLocally is true ) PositionHead();

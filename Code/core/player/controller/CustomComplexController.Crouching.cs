@@ -1,4 +1,6 @@
-﻿using System;
+﻿namespace Core;
+
+using System;
 using XMovement;
 
 public partial class PlayerController : PlayerWalkControllerComplex
