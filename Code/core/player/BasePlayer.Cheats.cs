@@ -52,6 +52,16 @@ public partial class BasePlayer
 		Local.Controller.Camera.RenderExcludeTags.Add( "thirdperson" );
 
 	}
+
+	[ConCmd( "hurtme", ConVarFlags.Cheat )]
+	public static void Hurt( int amount )
+	{
+		var dmg = new CoreDamageInfo( Local.GameObject, Local.GameObject, amount );
+		dmg.Tags.Add( "bullet" );
+
+		Local.OnDamage( dmg );
+	}
+
 	[ConVar( "ch_infinite_ammo", ConVarFlags.Cheat )] public static int InfiniteAmmoMode { get; set; } = 0;
 
 	public static bool InfiniteAmmo => InfiniteAmmoMode > 0;
