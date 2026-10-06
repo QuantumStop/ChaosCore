@@ -277,6 +277,11 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	{
 		if ( _ownerPawn?.IsPossessedLocally is false ) return;
 
+		// Inherit the head rotation and discard offsets left by the previous view.
+		// This fixes third person retaining roll from first person, making it widely offset when toggled.
+		if ( Camera.IsValid() && (CameraMode == CameraModes.FirstPerson || CameraMode == CameraModes.ThirdPerson) )
+			Camera.LocalRotation = Rotation.Identity;
+
 		if ( _ownerPawn is BasePlayer basePlayer )
 		{
 			basePlayer?.UpdateBodyVisibility();

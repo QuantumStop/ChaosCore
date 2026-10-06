@@ -482,14 +482,17 @@ public partial class PlayerController
 		if ( _wasUsingIsometricCamera )
 		{
 			Camera.Orthographic = CameraMode == CameraModes.Manual && _orthographicBeforeIsometric;
+			
+			// Reset the isometric rotation only once when we return to a head relative camera.
+			// Previously was done every frame and that overrode recoil and any camera shake, no longer the case!
+			if ( CameraMode != CameraModes.Manual )
+				Camera.LocalRotation = Rotation.Identity;
+
 			ResetIsometricZoomState();
 			_wasUsingIsometricCamera = false;
 		}
 		else if ( CameraMode != CameraModes.Manual )
 			Camera.Orthographic = false;
-
-		if ( CameraMode != CameraModes.Manual )
-			Camera.LocalRotation = Rotation.Identity;
 	}
 
 	/// <summary>

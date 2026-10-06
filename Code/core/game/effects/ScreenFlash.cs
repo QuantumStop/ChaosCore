@@ -5,7 +5,7 @@ namespace Core;
 
 [Category( "Post Processing" )]
 [Icon( "flash_on" )]
-public sealed class ScreenFlash : BasePostProcess<ScreenFlash>, Component.ExecuteInEditor
+public sealed class ScreenFlash : BasePostProcess<ScreenFlash>
 {
 	public static ScreenFlash Instance { get; set; }
 
@@ -24,11 +24,23 @@ public sealed class ScreenFlash : BasePostProcess<ScreenFlash>, Component.Execut
 	[Button]
 	void KingdomeCome() => Set( Color.White, 1f );
 
-	public static void Set( Color color, float FadeOutSpeed )
+	protected override void OnStart()
+	{
+		base.OnStart();
+
+		// Make sure we never actually get NaN, that we can get due to the fact our instance is static.
+		// This fixes screen becoming white on a scene load/game reload.
+		_strength = float.IsFinite( _strength ) ? _strength : 0f;
+		_fadeOutSpeed = float.IsFinite( _fadeOutSpeed ) && _fadeOutSpeed > 0f
+			? _fadeOutSpeed
+			: 1f;
+	}
+
+	public static void Set( Color color, float FadeOutSpeed, float strength = 1f )
 	{
 		if ( EffectEnabled )
 		{
-			Instance._strength = 1f;
+			Instance._strength = strength;
 			Instance._flashColor = color;
 			Instance._fadeOutSpeed = FadeOutSpeed;
 		}
@@ -37,12 +49,14 @@ public sealed class ScreenFlash : BasePostProcess<ScreenFlash>, Component.Execut
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
-		if ( EffectEnabled ) _strength = Math.Max( _strength - Time.Delta / _fadeOutSpeed, 0f );
+
+		if ( EffectEnabled ) _strength = Math.Max( _strength - WorldTime.Delta / _fadeOutSpeed, 0f );
 	}
 
 	public override void Render()
 	{
 		if ( _strength.AlmostEqual( 0 ) ) return;
+
 
 		Attributes.Set( "screen_flash_strength", Easing.QuadraticInOut( _strength ) );
 		Attributes.Set( "screen_flash_color", _flashColor );

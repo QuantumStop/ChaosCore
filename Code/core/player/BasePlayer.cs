@@ -328,7 +328,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		CalculateFOV();
 
-		if ( _allowSway ) ViewmodelUpdate();
+		ViewmodelUpdate();
 	}
 
 	override protected void OnFixedUpdate()
@@ -343,7 +343,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		HandleLastSelected();
 
-		if ( _allowSway ) ViewmodelFixedUpdate();
+		ViewmodelFixedUpdate();
 		UpdateFallDamage();
 	}
 

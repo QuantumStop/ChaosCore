@@ -47,7 +47,7 @@ public static class CameraEffects
 	public static void Push( CameraEffect effect, float initialTriggerTime = -1f, float initialRampTime = 0f )
 	{
 		if ( IsForceDisabled ) return;
-
+		
 		activeEffects.Add( new ActiveEffect
 		{
 			Data = effect,
@@ -182,7 +182,7 @@ public static class CameraEffects
 		{
 			if ( !e.Data.RampPerPulse )
 			{
-				e.RampTime += Time.Delta;
+				e.RampTime += WorldTime.Delta;
 				e.RampTime = Math.Clamp( e.RampTime, 0f, e.Data.RampSpeed );
 			}
 
@@ -190,11 +190,11 @@ public static class CameraEffects
 		}
 		else
 		{
-			e.HoldTimer += Time.Delta;
+			e.HoldTimer += WorldTime.Delta;
 
 			if ( e.HoldTimer > e.Data.ResetThreshold )
 			{
-				e.RampTime -= Time.Delta;
+				e.RampTime -= WorldTime.Delta;
 				e.RampTime = Math.Max( e.RampTime, 0f );
 			}
 		}
@@ -213,7 +213,7 @@ public static class CameraEffects
 
 			float recoilImpulse = Game.Random.Float( 6f, 8f ) * strength * e.RollDirection * e.Data.RollStrength;
 			e.TargetRoll = Math.Clamp( recoilImpulse, -maxRollAngle, maxRollAngle );
-			e.CurrentRoll = MoveTowards( e.CurrentRoll, e.TargetRoll, rollSpeed * Time.Delta );
+			e.CurrentRoll = MoveTowards( e.CurrentRoll, e.TargetRoll, rollSpeed * WorldTime.Delta );
 
 			camera.WorldRotation *= Rotation.From( new Angles( 0f, 0f, e.CurrentRoll ) );
 		}
@@ -233,11 +233,11 @@ public static class CameraEffects
 	{
 		if ( e.DelayTimer < e.Data.Delay )
 		{
-			e.DelayTimer = Math.Min( e.DelayTimer + Time.Delta, e.Data.Delay );
+			e.DelayTimer = Math.Min( e.DelayTimer + WorldTime.Delta, e.Data.Delay );
 			return false;
 		}
 
-		e.Timer += Time.Delta;
+		e.Timer += WorldTime.Delta;
 
 		if ( e.Timer >= e.Data.Duration )
 			return true;
@@ -272,7 +272,7 @@ public static class CameraEffects
 		camera.WorldRotation *= Rotation.From( delta );
 
 		// Decay trauma over time
-		trauma = Math.Max( trauma - Time.Delta * 0.5f, 0f );
+		trauma = Math.Max( trauma - WorldTime.Delta * 0.5f, 0f );
 
 		return false;
 	}

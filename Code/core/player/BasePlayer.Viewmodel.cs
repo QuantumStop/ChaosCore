@@ -174,15 +174,19 @@ public partial class BasePlayer
 
 	protected virtual void ViewmodelFixedUpdate()
 	{
-		SetAllAnimgraphParams( "f_walking", Local.Movement.Velocity.Length / (Local.Controller.IsRunning ? 320 : 190) );
-		SetAllAnimgraphParams( "f_timesincewishsprint", (Local.Controller as PlayerController).TimeSinceWishSprint() );
-		SetAllAnimgraphParams( "f_wishsprint", (Local.Controller as PlayerController).WishSprint() );
-		SetAllAnimgraphParams( "b_sprint", Local.Controller.IsRunning );
-		SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
-		SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
-		SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
-		SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
-		SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
+		if ( _allowSway )
+		{
+			SetAllAnimgraphParams( "f_walking", Local.Movement.Velocity.Length / (Local.Controller.IsRunning ? 320 : 190) );
+			SetAllAnimgraphParams( "f_timesincewishsprint", (Local.Controller as PlayerController).TimeSinceWishSprint() );
+			SetAllAnimgraphParams( "f_wishsprint", (Local.Controller as PlayerController).WishSprint() );
+			SetAllAnimgraphParams( "b_sprint", Local.Controller.IsRunning );
+			SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
+			SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
+			SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
+			SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
+			SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
+		}
+		
 		ApplyInertia();
 		ApplyVelocity();
 
@@ -191,7 +195,9 @@ public partial class BasePlayer
 
 	protected virtual void ViewmodelUpdate()
 	{
-		UpdateViewmodelOffset();
+		if ( _allowSway )
+			UpdateViewmodelOffset();
+
 		CameraEffects.Update( Local.Controller.Camera, Local.CurrentWeapon?.LastAttackTime );
 	}
 
@@ -480,15 +486,23 @@ public partial class BasePlayer
 	/// <summary> The current roll we're applying to our camera from bobbing</summary>
 	/// Field 'BaseViewmodel.currentBobRoll' is never assigned to, and will always have its default value 0
 	//	private float currentBobRoll;
-
 	private void UpdateViewBob()
 	{
 		if ( Local.LifeState == LifeState.Dead )
 			return;
 
-
 		if ( !(Local?.Controller).IsValid() || !Local.Controller.Camera.IsValid() )
 			return;
+
+		// Only first person owns the head relative camera transform used by our viewbob,
+		// this fixes jittery aim when we're in isometric mode.
+		if ( Local.Controller.CameraMode != XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson )
+		{
+			_bobTime = 0f;
+			_boblerpFactor = 0f;
+			_currentStrafeRoll = 0f;
+			return;
+		}
 
 		bool isOnGround = (Local?.Controller).Controller.IsOnGround;
 		Vector3 velocity = (Local?.Controller).Controller.Velocity;
@@ -507,9 +521,6 @@ public partial class BasePlayer
 
 		float bobStrength = (Velocity2D < 50f) ? 0f : BobAmplitudeCurve.Evaluate( speedNorm );
 		float frequency = (Velocity2D < 50f) ? 0f : BobFrequencyCurve.Evaluate( speedNorm );
-
-		//	Log.Info( $"camera.WorldPos: {camera.WorldPosition}" );
-		//	Log.Info( $"headPos: {headPos}" );
 
 		// Sync camera and head position
 		Local.Controller.Camera.WorldPosition = headPos;

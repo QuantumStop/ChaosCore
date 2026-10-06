@@ -10,7 +10,9 @@ public partial class Player : BasePlayer
 	{
 		base.OnFixedUpdate();
 
-		if ( Halo2Crosshair ) Local.Controller.Camera.GameObject.LocalRotation *= new Angles( -9, 0, 0 );
+		// This should only work in first person mode, as it will break aiming otherwise!
+		if ( Halo2Crosshair && Controller.CameraMode == XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson  ) 
+			Local.Controller.Camera.GameObject.LocalRotation *= new Angles( -9, 0, 0 );
 	}
 
 	[Property, ReadOnly, Feature( "Debug" )] public override bool HasSuit => true;

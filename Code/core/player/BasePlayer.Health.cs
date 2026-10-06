@@ -67,6 +67,30 @@ public partial class BasePlayer
 		Full
 	}
 
+	/// <summary>
+	/// How severe our damage was relative to expected Health.
+	/// </summary>
+	public enum DamageSeverity
+	{
+		None,
+		/// <summary>
+		/// This but a scratch
+		/// </summary>
+		Minor,
+		/// <summary>
+		/// This is visible damage now
+		/// </summary>
+		Medium,
+		/// <summary>
+		/// One could survive this, potentially
+		/// </summary>
+		Major,
+		/// <summary>
+		/// Literal dealth
+		/// </summary>
+		Terminal
+	}
+
 	[Property, ReadOnly, Feature( "Debug" )]
 	public WaterLvl WaterLevel
 	{
@@ -182,7 +206,7 @@ public partial class BasePlayer
 		//		TODO: haptic feedback
 		//		TODO: Reset damage time countdown for each type of time based damage player just sustained
 
-		//	Display any effect associate with this damage type
+		//	Display any effect associate with this damage type and pass solved DamageSeverity to scale said effect
 		DamageEffect( dmginfo );
 
 		//		apply velocity to the player
@@ -240,20 +264,28 @@ public partial class BasePlayer
 	{
 		if ( dmginfo.Tags.IsEmpty ) return;
 
+		var (severity, severityFactor) = GetDamageSeverity( dmginfo.Damage );
+
 		float t = Math.Clamp( dmginfo.Damage / 100f, 0f, 1f );
+
+		// Based on raw damage
 		float strength = MathX.Lerp( 0.5f, 4f, t );
 		float duration = MathX.Lerp( 0.1f, 0.6f, t );
+
+		// Based on authored severity
+		float severityStrength = MathX.Lerp( 0.5f, 4f, severityFactor );
+		float severityDuration = MathX.Lerp( 0.1f, 1f, severityFactor );
 
 		foreach ( var effect in dmginfo.Tags )
 		{
 			switch ( effect )
 			{
 				case DamageTypes.DMG_CRUSH:
-					ScreenFlash.Set( Color.Red, 1.0f );
+					ScreenFlash.Set( Color.Red, 1.0f, severityFactor );
 					CameraEffects.AddShake( strength, duration, frequency: 6f, shakePitch: true, shakeYaw: true, shakeRoll: true );
 					break;
 				case DamageTypes.DMG_DROWN:
-					ScreenFlash.Set( Color.Blue, 1.0f );
+					ScreenFlash.Set( Color.Blue, 1.0f, severityFactor );
 					CameraEffects.AddShake( strength * 0.5f, duration * 2f, frequency: 2f, shakePitch: true, shakeYaw: false, shakeRoll: true );
 #if FMOD
 					FMODSound.Play( "event:/Player/PainDrown" );
@@ -262,7 +294,7 @@ public partial class BasePlayer
 #endif
 					break;
 				case DamageTypes.DMG_PLASMA:
-					ScreenFlash.Set( Color.Cyan, 1.0f );
+					ScreenFlash.Set( Color.Cyan, 1.0f, severityFactor );
 					CameraEffects.AddShake( strength, duration, frequency: 15f, shakePitch: true, shakeYaw: false, shakeRoll: false );
 #if FMOD
 					FMODSound.Play( "event:/Player/PainBurn" );
@@ -271,6 +303,7 @@ public partial class BasePlayer
 #endif
 					break;
 				case DamageTypes.DMG_BULLET:
+					ScreenFlash.Set( Color.Red, 1f, severityFactor );
 					CameraEffects.AddTrauma( t * 0.4f );
 					// Sharp directional punch toward hit origin
 					CameraEffects.AddShake( strength * 1.2f, duration * 0.2f, frequency: 16f, shakePitch: true, shakeYaw: true, shakeRoll: false, sourcePosition: dmginfo.Position );
@@ -283,7 +316,8 @@ public partial class BasePlayer
 #endif
 					break;
 				case DamageTypes.DMG_FALL:
-					CameraEffects.AddShake( strength, duration * 1.5f, frequency: 3f, shakePitch: true, shakeYaw: false, shakeRoll: true );
+					ScreenFlash.Set( Color.Red, 1f, severityDuration * 1.25f );
+					CameraEffects.AddShake( severityStrength, severityDuration * 0.6f, frequency: 8f, shakePitch: true, shakeYaw: true, shakeRoll: false );
 #if FMOD
 					FMODSound.Play( "event:/Player/PainFall" );
 #else
@@ -368,6 +402,22 @@ public partial class BasePlayer
 			Controller.EnableUse = true;
 			Controller.EnableLadders = true;
 		}
+	}
+
+	/// <summary>
+	/// Outputs both the type of the current damage severity and it's normalized strength
+	/// </summary>
+	/// <param name="damage">The current passed damage, typically dmginfo.Damage</param>
+	protected virtual (DamageSeverity Severity, float Strength) GetDamageSeverity( float damage )
+	{
+		return damage switch
+		{
+			<= 0 => (DamageSeverity.None, 0f),
+			< 15 => (DamageSeverity.Minor, 0.25f),
+			< 30 => (DamageSeverity.Medium, 0.5f),
+			< 70 => (DamageSeverity.Major, 0.75f),
+			_ => (DamageSeverity.Terminal, 1f),
+		};
 	}
 
 #if !FMOD
