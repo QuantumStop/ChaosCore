@@ -16,7 +16,7 @@
     "OwnerTransfer": 1,
     "Components": [
       {
-        "__type": "PlayerController",
+        "__type": "Core.PlayerController",
         "__guid": "2bc68ce9-5044-4dd1-8823-2bd40130fdc7",
         "__enabled": true,
         "Flags": 0,
@@ -52,6 +52,7 @@
         "CrouchSpeed": 63.27,
         "DefaultSpeed": 190,
         "EnableCrouching": true,
+        "EnableIsometricZoom": true,
         "EnableJumping": true,
         "EnableLadders": true,
         "EnableNoclipping": true,
@@ -69,6 +70,57 @@
         "HeadHeight": 64,
         "HeadTracker": null,
         "Height": 72,
+        "IsometricCameraCollisionRadius": 16,
+        "IsometricCameraDistance": 1200,
+        "IsometricCameraMaxCollisionDistance": 4096,
+        "IsometricCameraSurfaceClearance": 24,
+        "IsometricLookAction": "Attack2",
+        "IsometricLookMode": "MoveDirection",
+        "IsometricLookRequiresAction": true,
+        "IsometricMoveLookCursorOverride": true,
+        "IsometricMoveLookTurnCurve": [
+          {
+            "x": 0,
+            "y": 0,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          },
+          {
+            "x": 0.12,
+            "y": 1,
+            "in": 0,
+            "out": 0,
+            "mode": "Mirrored"
+          }
+        ],
+        "IsometricMoveMode": "Compass",
+        "IsometricOffset": "-320,-320,320",
+        "IsometricOrthographicHeight": 512,
+        "IsometricToggleMode": "ThirdPerson",
+        "IsometricZoomMaxOrthographicHeight": 800,
+        "IsometricZoomMinOrthographicHeight": 200,
+        "IsometricZoomSteps": 4,
+        "IsometricZoomTransitionCurve": {
+          "rangex": "0,0.200000018",
+          "rangey": "-1.1920929E-07,0.999999881",
+          "frames": [
+            {
+              "x": 0,
+              "y": 0,
+              "in": -2.1434398,
+              "out": 2.1434398,
+              "mode": "Mirrored"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "in": 0.75048804,
+              "out": -0.75048804,
+              "mode": "Mirrored"
+            }
+          ]
+        },
         "JumpAction": "Jump",
         "JumpPower": 160,
         "LadderTag": "ladder",
@@ -355,7 +407,6 @@
           "go": "b3fa3354-ca11-4766-872e-a11f24f38c83",
           "component_type": "CameraComponent"
         },
-        "PickupController": "ControlJoint",
         "PickupState": {
           "GameObject": null,
           "Body": null,
@@ -381,9 +432,6 @@
         "PositionInSelectedBucket": 0,
         "ProximityLeanFactor": 40,
         "ProximityThreshold": 0.55,
-        "ReducedInfluenceAngularForceScale": 2,
-        "ReducedInfluenceAngularVelocityDamping": 18,
-        "ReducedInfluenceForceScale": 20,
         "RollLerpSpeed": 6,
         "RotationRollIntensity": 0.25,
         "SelectedBucket": -1,
@@ -399,7 +447,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 20942.217
+          "Relative": 18591.389
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -497,6 +545,19 @@
             "ZIndex": 100
           },
           {
+            "__type": "Core.VanityOverlay",
+            "__guid": "f3146ef0-d1eb-49d0-b3ee-0339c34f6d3c",
+            "__enabled": true,
+            "Flags": 0,
+            "ActiveChannels": {},
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null
+          },
+          {
             "__type": "SDK.CanvasPlayerStatus",
             "__guid": "fc148ceb-bf30-407f-baa9-b09a8eff32df",
             "__enabled": true,
@@ -517,89 +578,6 @@
             },
             "SuitRequired": false,
             "UseScreenPanelLayout": true
-          },
-          {
-            "__type": "Core.VanityOverlay",
-            "__guid": "f3146ef0-d1eb-49d0-b3ee-0339c34f6d3c",
-            "__enabled": true,
-            "Flags": 0,
-            "ActiveChannels": {
-              "Channel2": {
-                "Slot": "Channel2",
-                "Content": "Text",
-                "PosX": 0.5,
-                "PosY": 0.65,
-                "ZIndex": 1,
-                "StartTime": 30.71277,
-                "IsDrawPermanent": false,
-                "TextScope": {
-                  "Text": "\"WE DON\"T GO TO RAVENHOLM\"",
-                  "TextColor": "0.83721,0.83721,0.83721,0.89",
-                  "FontName": "Roboto Mono",
-                  "FontSize": 30,
-                  "FontWeight": 500,
-                  "FontItalic": false,
-                  "FontVariantNumeric": "Normal",
-                  "LineHeight": 0,
-                  "LetterSpacing": 0,
-                  "WordSpacing": 0,
-                  "FilterMode": "Point",
-                  "FontSmooth": "Auto",
-                  "Outline": {
-                    "Enabled": false,
-                    "Size": 0,
-                    "Color": "0,0,0,0"
-                  },
-                  "Shadow": {
-                    "Enabled": false,
-                    "Size": 0,
-                    "Color": "0,0,0,0",
-                    "Offset": "0,0"
-                  },
-                  "OutlineUnder": {
-                    "Enabled": false,
-                    "Size": 0,
-                    "Color": "0,0,0,0"
-                  },
-                  "ShadowUnder": {
-                    "Enabled": false,
-                    "Size": 0,
-                    "Color": "0,0,0,0",
-                    "Offset": "0,0"
-                  }
-                },
-                "Lines": [
-                  "\"WE DON\"T GO TO RAVENHOLM\""
-                ],
-                "TotalCharacterCount": 26,
-                "Alignment": "Center",
-                "ScanTime": 1,
-                "ScanFlashTime": 0.35,
-                "ScanFlashDelay": 0.1,
-                "ScanColor": "1,0.61395,0.22791,1",
-                "Effect": "ScanOut",
-                "Direction": "InOut",
-                "LoopMode": "None",
-                "BlendMode": "Normal",
-                "Axis": "None",
-                "Intensity": 1,
-                "Speed": 1,
-                "Amount": 1,
-                "Frequency": 1,
-                "FadeInTime": 0.5,
-                "HoldTime": 2,
-                "FadeOutTime": 0.5,
-                "BackgroundColor": "0,0,0,0",
-                "Texture": null,
-                "CustomType": null
-              }
-            },
-            "OnComponentDestroy": null,
-            "OnComponentDisabled": null,
-            "OnComponentEnabled": null,
-            "OnComponentFixedUpdate": null,
-            "OnComponentStart": null,
-            "OnComponentUpdate": null
           }
         ],
         "Children": []
@@ -632,10 +610,17 @@
               "go": "f57a7a30-a821-4603-952e-2a394a53830c",
               "component_type": "SkinnedModelRenderer"
             },
+            "ChestSize": 0.5,
+            "ChinSize": 0,
             "Clothing": [],
+            "EyeAlign": 0.5,
+            "EyeColor": 0,
+            "HeadShape": 0.5,
             "ManualAge": 0.5,
-            "ManualHeight": 1,
+            "ManualHeight": 0.5,
             "ManualTint": 0.5,
+            "NeckSize": 0,
+            "NoseSize": 0,
             "OnComponentDestroy": null,
             "OnComponentDisabled": null,
             "OnComponentEnabled": null,
@@ -644,6 +629,7 @@
             "OnComponentUpdate": null,
             "RemoveUnownedItems": false,
             "Source": "OwnerConnection",
+            "WaistSize": 0.5,
             "WorkshopItems": []
           }
         ],
@@ -675,6 +661,7 @@
             "BoneMergeTarget": null,
             "CreateAttachments": false,
             "CreateBoneObjects": false,
+            "DeformationMode": "Normal",
             "LodOverride": null,
             "MaterialGroup": "default",
             "MaterialOverride": null,
@@ -691,11 +678,16 @@
             "OnComponentStart": null,
             "OnComponentUpdate": null,
             "Parameters": {
-              "bools": {},
-              "ints": {},
-              "floats": {},
-              "vectors": {},
-              "rotations": {}
+              "bools": {
+                "ik.hand_left.enabled": false,
+                "ik.hand_right.enabled": false,
+                "ik.foot_left.enabled": false,
+                "ik.foot_right.enabled": false
+              },
+              "floats": {
+                "scale_height": 1,
+                "scale_heel": 0
+              }
             },
             "PlaybackRate": 1,
             "RenderOptions": {
@@ -716,7 +708,7 @@
         ],
         "Children": [
           {
-            "__guid": "e603e55a-3f2c-4094-991d-0abd0675a32e",
+            "__guid": "ff418b9c-2ca4-4ee1-b024-45aa4e04d501",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - y_front_pants_white",
@@ -733,7 +725,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "3bb915e0-e214-44bc-9fd0-bd7c67835113",
+                "__guid": "e382aa5f-59cf-4763-a99f-01cba77b863e",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -746,6 +738,7 @@
                 },
                 "CreateAttachments": false,
                 "CreateBoneObjects": false,
+                "DeformationMode": "Normal",
                 "LodOverride": null,
                 "MaterialGroup": null,
                 "MaterialOverride": null,
@@ -761,13 +754,7 @@
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null,
-                "Parameters": {
-                  "bools": {},
-                  "ints": {},
-                  "floats": {},
-                  "vectors": {},
-                  "rotations": {}
-                },
+                "Parameters": {},
                 "PlaybackRate": 1,
                 "RenderOptions": {
                   "GameLayer": true,
@@ -1061,6 +1048,18 @@
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null
+              },
+              {
+                "__type": "Core.FogOfWarPostProcess",
+                "__guid": "90c53ee6-571b-4af9-9f2c-796ad70e2cec",
+                "__enabled": true,
+                "Flags": 0,
+                "OnComponentDestroy": null,
+                "OnComponentDisabled": null,
+                "OnComponentEnabled": null,
+                "OnComponentFixedUpdate": null,
+                "OnComponentStart": null,
+                "OnComponentUpdate": null
               }
             ],
             "Children": []
@@ -1091,6 +1090,7 @@
                 "BoneMergeTarget": null,
                 "CreateAttachments": true,
                 "CreateBoneObjects": true,
+                "DeformationMode": "Normal",
                 "LodOverride": null,
                 "MaterialGroup": null,
                 "MaterialOverride": null,
@@ -1103,13 +1103,7 @@
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null,
-                "Parameters": {
-                  "bools": {},
-                  "ints": {},
-                  "floats": {},
-                  "vectors": {},
-                  "rotations": {}
-                },
+                "Parameters": {},
                 "PlaybackRate": 1,
                 "RenderOptions": {
                   "GameLayer": false,
@@ -1141,6 +1135,7 @@
                 },
                 "CreateAttachments": true,
                 "CreateBoneObjects": false,
+                "DeformationMode": "Normal",
                 "LodOverride": null,
                 "MaterialGroup": null,
                 "MaterialOverride": null,
@@ -1153,13 +1148,7 @@
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null,
-                "Parameters": {
-                  "bools": {},
-                  "ints": {},
-                  "floats": {},
-                  "vectors": {},
-                  "rotations": {}
-                },
+                "Parameters": {},
                 "PlaybackRate": 1,
                 "RenderOptions": {
                   "GameLayer": false,
