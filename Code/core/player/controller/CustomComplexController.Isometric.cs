@@ -346,7 +346,7 @@ public partial class PlayerController
 		return true;
 	}
 
-	private bool TryGetIsometricCursorRay( out Ray ray )
+	internal bool TryGetIsometricCursorRay( out Ray ray )
 	{
 		ray = default;
 

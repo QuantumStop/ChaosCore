@@ -184,7 +184,9 @@ public partial class BasePlayer
 			return;
 		}
 
-		var tr = Scene.Trace.Ray( Controller?.AimRay ?? default, 100f )
+		var tr = Controller is PlayerController { IsIsometricCamera: true } isometricController
+			? TraceIsometricPickup( isometricController, 100f )
+			: Scene.Trace.Ray( Controller?.AimRay ?? default, 100f )
 			.IgnoreGameObjectHierarchy( GameObject )
 			.WithoutTags( "trigger", "water", "held_prop", "player" )
 			.HitTriggers()
@@ -201,6 +203,55 @@ public partial class BasePlayer
 #endif
 	}
 
+	private SceneTraceResult TraceIsometricPickup( PlayerController controller, float reach )
+	{
+		if ( !controller.TryGetIsometricCursorRay( out var cursorRay ) ) return default;
+		
+		SceneTraceResult closest = default;
+
+		// The camera ray can hit a cutaway roof first. We first gather prop candidates,
+		// then use physical reach and line of sight from the player to decide if we can get em.
+		var candidates = Scene.Trace.Ray( cursorRay, 8192f )
+			.IgnoreGameObjectHierarchy( GameObject )
+			.WithoutTags( "trigger", "water", "held_prop", "player" )
+			.HitTriggers()
+			.RunAll();
+
+		var origin = controller.Head.WorldPosition;
+		var closestDistance = float.MaxValue;
+		
+		foreach ( var candidate in candidates )
+		{
+			if ( !candidate.Hit || !candidate.GameObject.IsValid() || candidate.Distance >= closestDistance ) 
+				continue;
+
+			if ( !TryFindPickupRigidbody( candidate, out var body ) || !body.MotionEnabled ) 
+				continue;
+			
+			var delta = candidate.HitPosition - origin;
+			var distance = delta.Length;
+			
+			if ( distance > reach || distance <= 0.001f ) 
+				continue;
+
+			var reachable = Scene.Trace.Ray( origin, origin + delta.Normal * MathF.Min( distance + 1f, reach ) )
+				.IgnoreGameObjectHierarchy( GameObject )
+				.WithoutTags( "trigger", "water", "held_prop", "player" )
+				.HitTriggers()
+				.Run();
+
+			if ( !reachable.Hit || !reachable.GameObject.IsValid() ) 
+				continue;
+
+			if ( !TryFindPickupRigidbody( reachable, out var reachedBody ) || reachedBody != body ) 
+				continue;
+
+			closest = reachable;
+			closestDistance = candidate.Distance;
+		}
+
+		return closest;
+	}
 
 	private void TryPickup( SceneTraceResult tr )
 	{
