@@ -76,15 +76,12 @@ float CutawayFloorMask( float3 positionWs, float3 normalWs )
 {
 	float up = saturate( dot( normalize( normalWs ), float3( 0.0f, 0.0f, 1.0f ) ) );
 
-	float orientationMask = smoothstep(
-		saturate( g_flCutawayFloorThreshold ),
-		min( saturate( g_flCutawayFloorThreshold ) + 0.15f, 1.0f ),
-		up
-	);
+	float orientationMask = smoothstep( saturate( g_flCutawayFloorThreshold ), 
+		min( saturate( g_flCutawayFloorThreshold ) + 0.15f, 1.0f ), up );
 
 	float tolerance = max( g_flCutawayFloorHeightTolerance, 0.001f );
 
-	// Protect floors below the feet at any distance, including during jumps and on stairs.
+	// Protect floors below the feet at any distance.
 	// Tolerance only extends protection above the feet, while higher roofs remain cuttable.
 	float heightAboveFeet = positionWs.z - g_flCutawayPlayerFloorZ;
 
@@ -198,7 +195,8 @@ float CutawayCookieShapeMask( float3 localPosition, float feather, float noiseOf
 
 	float2 uv = CutawayCookieUv( localPosition );
 
-	if ( g_flCutawayCookieTiling >= 0.5f ) uv = frac( uv );
+	if ( g_flCutawayCookieTiling >= 0.5f ) 
+		uv = frac( uv );
 	else if ( CutawayUvInside01( uv ) < 0.5f )
 		return 0.0f;
 
@@ -230,7 +228,10 @@ float CutawayNoise( float2 screenPosition )
 float CutawayOpeningMask( float3 localPosition, float2 sizeScale, bool shellDepth )
 {
 	float3 shapePosition = localPosition;
-	if ( !shellDepth ) shapePosition.z = 0.0f;
+	
+	if ( !shellDepth ) 
+		shapePosition.z = 0.0f;
+
 	float noiseOffset = CutawayNoiseOffset( localPosition );
 	float distance = CutawaySignedDistance( shapePosition, sizeScale ) + noiseOffset;
 	float feather = max( max( g_flCutawayFeather, fwidth( distance ) ), 0.001f );
@@ -239,14 +240,17 @@ float CutawayOpeningMask( float3 localPosition, float2 sizeScale, bool shellDept
 	// Scale the cookie with the same opening as the shell, including outside peeking.
 	float3 cookiePosition = localPosition;
 	cookiePosition.xy /= max( abs( sizeScale ), float2( 0.001f, 0.001f ) );
+	
 	if ( g_flCutawayShape >= 1.5f )
 		return volumeMask * CutawayCookieShapeMask( cookiePosition, feather, noiseOffset );
+
 	return volumeMask * CutawayCookieMask( cookiePosition );
 }
 
 float2 InteriorOpeningScale()
 {
 	float peek = saturate( g_flInteriorPeekEnabled ) * (1.0f - saturate( g_flCutawayViewBlend ));
+	
 	return lerp( float2( 1.0f, 1.0f ), float2( g_flInteriorPeekSizeScale, g_flInteriorPeekSizeScale ), peek );
 }
 
@@ -254,12 +258,16 @@ float InteriorDepthMask( float3 positionWs )
 {
 	float3 segment = g_vCutawayEndWs - g_vCutawayStartWs;
 	float segmentLength = length( segment );
-	if ( segmentLength <= 0.001f ) return 0.0f;
+	
+	if ( segmentLength <= 0.001f ) 
+		return 0.0f;
+	
 	float3 direction = segment / segmentLength;
 	float depth = dot( positionWs - g_vCutawayHitWs, direction );
-	// Admit the camera-side faces of thicker walls without changing the facade opening.
+
 	depth -= max( g_flInteriorPeekWallThickness, 0.0f );
 	float softness = max( max( g_flCutawayFeather * max( g_flInteriorPeekFogSoftness, 0.001f ), fwidth( depth ) ), 0.001f );
+
 	return 1.0f - smoothstep( -softness, softness, depth );
 }
 
@@ -269,17 +277,20 @@ float InteriorDistanceMask( float3 positionWs )
 	float distance = length( positionWs.xy - g_vCutawayStartWs.xy );
 	float radius = max( g_flInteriorVisibleRadius, 0.0f );
 	float fade = max( max( g_flInteriorFade, fwidth( distance ) ), 0.001f );
+
 	return smoothstep( radius, radius + fade, distance );
 }
 
 float InteriorPeekVolumeMask( float3 positionWs )
 {
-	if ( g_flCutawayEnabled < 0.5f || g_flInteriorPeekEnabled < 0.5f ) return 0.0f;
+	if ( g_flCutawayEnabled < 0.5f || g_flInteriorPeekEnabled < 0.5f ) 
+		return 0.0f;
+
 	float segmentLength;
 	float3 localPosition = CutawayLocalPosition( positionWs, segmentLength );
 	float opening = CutawayOpeningMask( localPosition, InteriorOpeningScale(), false );
 	
-	// Interior receiving surfaces can lie behind the target. Their peek and fog
+	// Interior receiving surfaces can be behind the target. Their peek and fog
 	// use InteriorDepthMask rather than the shell's rounded depth extent.
 	return saturate( opening * (1.0f - saturate( g_flCutawayViewBlend )) * g_flCutawayStrength );
 }
@@ -293,43 +304,45 @@ float InteriorPeekMask( float3 positionWs )
 void ApplyInteriorPeekReveal( float3 positionWs, float2 screenPosition )
 {
 	// Show the whole receiving surface when inspecting masks, rather than its dither survivors.
-	if ( g_flSpatialDirectorDebug > 3.5f && g_flSpatialDirectorDebug < 5.5f ) return;
+	if ( g_flSpatialDirectorDebug > 3.5f && g_flSpatialDirectorDebug < 5.5f ) 
+		return;
 
-	if ( g_flInteriorPeekBlock >= 0.5f ) return;
+	if ( g_flInteriorPeekBlock >= 0.5f ) 
+		return;
 
 	float reveal = saturate( g_flInteriorPeekReveal );
 
-	if ( reveal >= 0.999f ) return;
+	if ( reveal >= 0.999f ) 
+		return;
 
 	float peekMask = InteriorPeekMask( positionWs );
 
-	if ( peekMask <= 0.001f ) return;
+	if ( peekMask <= 0.001f ) 
+		return;
 
 	float hidden = peekMask * (1.0f - reveal );
 
 	if ( WorldOcclusion_ShouldClip( hidden, screenPosition / max( g_flCutawayDitherScale, 0.001f ), g_flCutawayDitherAmount ) )
-	{
 		clip( -1.0f );
-	}
 }
 
 void ApplyCutaway( float3 positionWs, float3 normalWs, float2 screenPosition, float4 vertexPaint, bool cutawaySurface, bool cutawayVertexMask )
 {
-	if (!cutawaySurface )
+	if ( !cutawaySurface )
 		return;
 
-	if (g_flCutawayIgnore > 0.5f || g_flCutawayEnabled < 0.5f )
+	if ( g_flCutawayIgnore > 0.5f || g_flCutawayEnabled < 0.5f )
 		return;
 
-	if (cutawayVertexMask && CutawayIgnoreFromPaint( vertexPaint ) > 0.5f )
+	if ( cutawayVertexMask && CutawayIgnoreFromPaint( vertexPaint ) > 0.5f )
 		return;
 
 	// Floors/terrain still participate in dimming and fog,
 	// but we don't destructively clip holes through upward facing surfaces.
-	if (CutawayFloorMask( positionWs, normalWs ) > 0.95f )
+	if ( CutawayFloorMask( positionWs, normalWs ) > 0.95f )
 		return;
 
-	if (InteriorFromPaint( vertexPaint ) > 0.5f )
+	if ( InteriorFromPaint( vertexPaint ) > 0.5f )
 	{
 		// Interior visibility has its own peek controls. Facade clipping must not
 		// erase receiving walls simply because they fall within the shell opening.
@@ -339,11 +352,13 @@ void ApplyCutaway( float3 positionWs, float3 normalWs, float2 screenPosition, fl
 
 	float strength = saturate( g_flCutawayStrength );
 
-	if (strength <= 0.0001f ) return;
+	if ( strength <= 0.0001f ) 
+		return;
 
 	float nearTarget = max( g_flCutawayNearTarget, 0.0f );
 
-	if (length( g_vCutawayEndWs - g_vCutawayStartWs ) <= nearTarget ) return;
+	if ( length( g_vCutawayEndWs - g_vCutawayStartWs ) <= nearTarget ) 
+		return;
 
 	float interiorPeek = InteriorShellFromPaint( vertexPaint ) * saturate( g_flInteriorPeekEnabled ) * (1.0f - saturate( g_flCutawayViewBlend ));
 
@@ -358,9 +373,7 @@ void ApplyCutaway( float3 positionWs, float3 normalWs, float2 screenPosition, fl
 	float cutAmount = saturate( opening * strength * saturate( seeThrough ) );
 
 	if (WorldOcclusion_ShouldClip( cutAmount, screenPosition / max( g_flCutawayDitherScale, 0.001f ), g_flCutawayDitherAmount ))
-	{
 		clip( -1.0f );
-	}
 }
 
 float InteriorDimMask( float3 positionWs, float4 vertexPaint )
@@ -373,17 +386,19 @@ float InteriorDimMask( float3 positionWs, float4 vertexPaint )
 
 	// Outside interiors stay dim, distance shading applies when inside.
 	float distanceMask = lerp( 1.0f, InteriorDistanceMask( positionWs ), saturate( g_flCutawayViewBlend ) );
+	
 	return distanceMask * saturate( g_flInteriorDimAmount );
 }
 
 float InteriorExteriorDimMask( float4 vertexPaint )
 {
-	if (g_flInteriorExteriorDim <= 0.001f ) return 0.0f;
-
-	if (CutawayIgnoreFromPaint( vertexPaint ) > 0.5f )
+	if ( g_flInteriorExteriorDim <= 0.001f ) 
 		return 0.0f;
 
-	if (InteriorFromPaint( vertexPaint ) > 0.5f )
+	if ( CutawayIgnoreFromPaint( vertexPaint ) > 0.5f )
+		return 0.0f;
+
+	if ( InteriorFromPaint( vertexPaint ) > 0.5f )
 		return 0.0f;
 
 	return saturate( g_flInteriorExteriorDim * g_flCutawayViewBlend );
@@ -418,6 +433,7 @@ float InteriorInsideFogMask( float3 positionWs, float2 screenPosition, float4 ve
 		return 0.0f;
 
 	float insideBlend = saturate( g_flCutawayViewBlend );
+	
 	if ( insideBlend <= 0.001f )
 		return 0.0f;
 

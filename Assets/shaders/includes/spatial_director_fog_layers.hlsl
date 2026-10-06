@@ -36,7 +36,8 @@ float2 SpatialDirector_ProjectToPlane( float3 positionWs, float planeHeight, flo
 {
 	float3 rayDirection = normalize( g_vFogCameraForward );
 
-	if ( abs( rayDirection.z ) <= 0.0001f ) return fallbackPosition;
+	if ( abs( rayDirection.z ) <= 0.0001f ) 
+		return fallbackPosition;
 
 	float t = (planeHeight - positionWs.z ) / rayDirection.z;
 
@@ -76,7 +77,8 @@ float SpatialDirector_FogDetailSample( float3 positionWs, float3 originWs )
 
 float SpatialDirector_FogDetailOffset( float3 positionWs, float3 originWs, float mask )
 {
-	if ( mask <= 0.001f || g_flFogDetailEnabled < 0.5f ) return 0.0f;
+	if ( mask <= 0.001f || g_flFogDetailEnabled < 0.5f ) 
+		return 0.0f;
 
 	float detail = SpatialDirector_FogDetailSample( positionWs, originWs );
 
@@ -85,11 +87,13 @@ float SpatialDirector_FogDetailOffset( float3 positionWs, float3 originWs, float
 
 float SpatialDirector_CloudMask( float3 positionWs, float3 originWs, float fogMask )
 {
-	if ( g_flFogCloudEnabled < 0.5f || fogMask <= 0.001f ) return 0.0f;
+	if ( g_flFogCloudEnabled < 0.5f || fogMask <= 0.001f ) 
+		return 0.0f;
 
 	float outsideBlend = 1.0f - saturate( g_flFogViewBlend );
 
-	if ( outsideBlend <= 0.001f ) return 0.0f;
+	if ( outsideBlend <= 0.001f ) 
+		return 0.0f;
 
 	float2 worldPosition = SpatialDirector_CloudPosition( positionWs, originWs );
 

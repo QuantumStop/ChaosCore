@@ -93,11 +93,12 @@ float WorldOcclusion_ValueNoise( float2 p )
 
 // Cheap fallback world-space procedural noise.
 //
-// This is intentionally still XY-based because it is only a fallback.
+// This is intentionally XY-based because it's only fallback.
 
 float WorldOcclusion_GetNoise( float3 worldPosition, float noiseScale )
 {
-	if ( noiseScale <= 0.0001f ) return 0.5f;
+	if ( noiseScale <= 0.0001f ) 
+		return 0.5f;
 
 	return WorldOcclusion_ValueNoise( worldPosition.xy * noiseScale );
 }
@@ -131,9 +132,7 @@ void WorldOcclusion_GetTriplanarUVs( float3 worldPosition, float worldSize, floa
 	float3 p = worldPosition * scale;
 
 	uvX = p.zy + offset;
-
 	uvY = p.xz + offset;
-
 	uvZ = p.xy + offset;
 }
 
@@ -151,11 +150,9 @@ float WorldOcclusion_TriplanarSample( Texture2D textureInput, SamplerState sampl
 	float3 weights = WorldOcclusion_TriplanarWeights( worldNormal, sharpness );
 
 	float sampleX = textureInput.SampleLevel( samplerInput, uvX, 0 ).r;
-
 	float sampleY = textureInput.SampleLevel( samplerInput, uvY, 0 ).r;
-
 	float sampleZ = textureInput.SampleLevel( samplerInput, uvZ, 0 ).r;
-
+	
 	return sampleX * weights.x + sampleY * weights.y + sampleZ * weights.z;
 }
 
@@ -173,11 +170,9 @@ float3 WorldOcclusion_TriplanarSampleRGB( Texture2D textureInput, SamplerState s
 	float3 weights = WorldOcclusion_TriplanarWeights( worldNormal, sharpness );
 
 	float3 sampleX = textureInput.SampleLevel( samplerInput, uvX, 0 ).rgb;
-
 	float3 sampleY = textureInput.SampleLevel( samplerInput, uvY, 0 ).rgb;
-
 	float3 sampleZ = textureInput.SampleLevel( samplerInput, uvZ, 0 ).rgb;
-
+	
 	return sampleX * weights.x + sampleY * weights.y + sampleZ * weights.z;
 }
 
@@ -186,7 +181,6 @@ float3 WorldOcclusion_TriplanarSampleRGB( Texture2D textureInput, SamplerState s
 float WorldOcclusion_Bayer4x4( int2 pixel )
 {
 	int x = pixel.x & 3;
-
 	int y = pixel.y & 3;
 
 	static const float Bayer[16] =
@@ -227,14 +221,8 @@ float WorldOcclusion_ScreenTextureDither( Texture2D textureInput, SamplerState s
 	return textureInput.SampleLevel( samplerInput, screenUv * max( tiling, 0.001f ), 0 ).r;
 }
 
-float WorldOcclusion_WorldTextureDither(
-	Texture2D textureInput,
-	SamplerState samplerInput,
-	float3 worldPosition,
-	float3 worldNormal,
-	float worldSize,
-	float sharpness,
-	float2 offset )
+float WorldOcclusion_WorldTextureDither( Texture2D textureInput, SamplerState samplerInput, float3 worldPosition, 
+	float3 worldNormal, float worldSize, float sharpness, float2 offset )
 {
 	return WorldOcclusion_TriplanarSample( textureInput, samplerInput, worldPosition, worldNormal, worldSize, sharpness, offset );
 }
@@ -250,7 +238,7 @@ float WorldOcclusion_BlendDither( float screenDither, float worldDither, float w
 }
 
 // Mask edge helpers:
-
+//
 // 0 at completely clear / completely hidden.
 // 1 around the 0.5 transition.
 
@@ -284,7 +272,8 @@ float WorldOcclusion_ApplySoftDither( float mask, float dither, float strength )
 {
 	strength = saturate( strength );
 
-	if ( strength <= 0.0001f ) return mask;
+	if ( strength <= 0.0001f ) 
+		return mask;
 
 	float edge = WorldOcclusion_EdgeFactor( mask );
 
@@ -382,10 +371,8 @@ bool WorldOcclusion_ShouldClip( float occlusion, float2 screenPosition, float di
 	ditherStrength = saturate( ditherStrength );
 
 	if ( ditherStrength <= 0.0001f )
-	{
 		return occlusion >= 0.5f;
-	}
-
+	
 	float ditherThreshold = WorldOcclusion_DitherThreshold( screenPosition );
 
 	float threshold = lerp( 0.5f, ditherThreshold, ditherStrength );
@@ -409,17 +396,14 @@ bool WorldOcclusion_ShouldClipCustom( float occlusion, float ditherThreshold, fl
 void WorldOcclusion_Clip( float occlusion, float2 screenPosition, float ditherStrength )
 {
 	if ( WorldOcclusion_ShouldClip( occlusion, screenPosition, ditherStrength ) )
-	{
 		clip( -1 );
-	}
 }
 
 void WorldOcclusion_ClipCustom( float occlusion, float ditherThreshold, float ditherStrength )
 {
 	if ( WorldOcclusion_ShouldClipCustom( occlusion, ditherThreshold, ditherStrength ) )
-	{
 		clip( -1 );
-	}
+	
 }
 
 // Color application
