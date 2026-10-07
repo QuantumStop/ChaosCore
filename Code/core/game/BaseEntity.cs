@@ -1,6 +1,7 @@
 namespace Core;
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 [Hide]
@@ -65,10 +66,18 @@ public class BaseEntity : BaseCustomSerialize
 	/// <returns>Color tint for the Gizmo</returns>
 	protected virtual Color GetEditorVisColor() => Color.White;
 
+	private static readonly Dictionary<Type, string> _defaultEditorVisuals = [];
+	private static readonly Dictionary<string, (string path, bool isModel, float recheckAt)> _resolvedEditorVisuals = [];
+	private static readonly Dictionary<string, Texture> _editorTextures = [];
+
 	protected virtual string GetEditorVis()
 	{
-		string className = GetType().Name.ToLowerInvariant();
-		return $"resource/editor/{className}.vtex";
+		var type = GetType();
+		if ( _defaultEditorVisuals.TryGetValue( type, out var path ) )
+			return path;
+
+		string className = type.Name.ToLowerInvariant();
+		return _defaultEditorVisuals[type] = $"resource/editor/{className}.vtex";
 	}
 
 	/// <summary>
@@ -133,23 +142,57 @@ public class BaseEntity : BaseCustomSerialize
 		}
 
 		// Texture sprite renderblock & fallback
-		Texture texture = Texture.Load( editorVis );
+		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, _entityGizmoSize - 3 );
+		Gizmo.Hitbox.BBox( bbox );
+
+		if ( !_editorTextures.TryGetValue( editorVis, out var texture ) || texture is null || !texture.IsValid )
+		{
+			texture = Texture.Load( editorVis );
+			_editorTextures[editorVis] = texture;
+		}
 		float spriteSize = Gizmo.IsHovered
 			? float.Lerp( _entityGizmoSize - 2, value2: _entityGizmoSize, 0.5f + MathF.Sin( WorldTime.Now * 2f ) * 0.5f )
 			: _entityGizmoSize;
 
-		BBox bbox = BBox.FromPositionAndSize( Vector3.Zero, _entityGizmoSize - 3 );
-		Gizmo.Hitbox.BBox( bbox );
 		Gizmo.Draw.Sprite( Vector3.Zero, spriteSize, texture );
+
+		if ( !Gizmo.IsSelected && !Gizmo.IsHovered )
+			return;
 
 		Gizmo.Draw.Color = Gizmo.IsSelected
 			? Color.Yellow
-			: Gizmo.IsHovered
-				? Color.White.WithAlpha( PulseAlpha() )
-				: Color.White;
+			: Color.White.WithAlpha( PulseAlpha() );
 
-		if ( Gizmo.IsSelected || Gizmo.IsHovered )
-			Gizmo.Draw.LineBBox( bbox );
+		DrawSpriteOutline( spriteSize );
+	}
+
+	/// <summary>
+	/// Draws a camera facing 2D outline for our entities, primarily icons.
+	/// </summary>
+	private static void DrawSpriteOutline( float spriteSize )
+	{
+		// We now do 8 vertices instead of how we've used to do a 3D box with 24 of em, 
+		// saves us some performance and makes it closer to how it'd look in Hammer.
+
+		// Use unit scale, regardless of entity scale.		
+		var position = Gizmo.Transform.PointToWorld( Vector3.Zero );
+		using ( Gizmo.Scope( "SpriteOutline" ) )
+		{
+			Gizmo.Transform = new Transform( position, Gizmo.Camera.Rotation, 1f );
+			Gizmo.Draw.IgnoreDepth = true;
+			Gizmo.Draw.LineThickness = 2f;
+
+			float halfSize = spriteSize * 0.5f + 1f;
+			var a = new Vector3( 0, -halfSize, -halfSize );
+			var b = new Vector3( 0, halfSize, -halfSize );
+			var c = new Vector3( 0, halfSize, halfSize );
+			var d = new Vector3( 0, -halfSize, halfSize );
+
+			Gizmo.Draw.Line( a, b );
+			Gizmo.Draw.Line( b, c );
+			Gizmo.Draw.Line( c, d );
+			Gizmo.Draw.Line( d, a );
+		}
 	}
 
 	private bool ShouldDrawGizmo( bool isModel )
@@ -169,10 +212,20 @@ public class BaseEntity : BaseCustomSerialize
 		if ( string.IsNullOrEmpty( path ) )
 			return (null, false);
 
+		// Share resolution across instances, but periodically notice added/removed assets.
+		// Keep calling GetEditorVis so property related overrides can change immediately.
+		
+		float now = RealTime.Now;
+		
+		if ( _resolvedEditorVisuals.TryGetValue( path, out var cached ) && now < cached.recheckAt )
+			return (cached.path, cached.isModel);
+
+		string requestedPath = path;
 		if ( !FileSystem.Mounted.FileExists( path ) && !FileSystem.Mounted.FileExists( path + "_c" ) )
 			path = "resource/editor/obsolete.vtex";
 
 		bool isModel = path.EndsWith( ".vmdl" );
+		_resolvedEditorVisuals[requestedPath] = (path, isModel, now + 5f);
 		return (path, isModel);
 	}
 
