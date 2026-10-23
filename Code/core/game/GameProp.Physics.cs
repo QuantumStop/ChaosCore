@@ -46,7 +46,7 @@ public partial class GameProp
 	[Sync]
 	[Group( "Physics Properties" )]
 	[Property, Order( 13 )]
-	[ShowIf( nameof( IsStatic ), false )]
+	[ShowIf( nameof( IsRagdoll ), true )]
 	public bool RagdollActive { get; set; } = true;
 
 #if IGNIS
@@ -237,5 +237,7 @@ public partial class GameProp
 			body.PhysicsBody.ApplyAngularImpulse( af );
 		}
 	}
+
+	public bool IsRagdoll => Model.Physics.Parts.Count > 1 && !IsStatic;
 
 }

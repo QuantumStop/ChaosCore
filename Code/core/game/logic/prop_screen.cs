@@ -137,7 +137,10 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 		base.OnDestroy();
 		ClearVideo();
 	}
-	public void PlayVideo()
+
+	public void PlayVideo() => PlayVideo( _videoPath );
+
+	public void PlayVideo( string videoPath )
 	{
 		if ( Type == VideoType.File )
 		{
@@ -145,13 +148,16 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 
 			if ( _videoPlayer is not null )
 			{
-				var whatvid = string.IsNullOrEmpty( _videoPath ) ? _editorVideo : _videoPath;
+				var whatvid = string.IsNullOrEmpty( videoPath ) ? _editorVideo : videoPath;
+#if FMOD
+				if ( !Scene.IsEditor ) _videoPlayer?.OnLoaded += PlayFMODSound;
+#endif
+
 				_videoPlayer?.Play( FileSystem.Mounted, whatvid );
 
-				_videoPlayer.Repeat = Scene.IsEditor || ShouldLoop;
+				_videoPlayer?.Repeat = Scene.IsEditor || ShouldLoop;
 #if FMOD
-				_videoPlayer.Muted = Scene.IsEditor || UseFMODSound || ShouldBeMuted;
-				if ( !Scene.IsEditor ) PlayFMODSound();
+				_videoPlayer?.Muted = Scene.IsEditor || UseFMODSound || ShouldBeMuted;
 #else
 				_videoPlayer.Muted = Scene.IsEditor || ShouldBeMuted;
 #endif

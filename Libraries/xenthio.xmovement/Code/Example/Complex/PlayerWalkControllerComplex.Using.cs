@@ -78,13 +78,15 @@ public partial class PlayerWalkControllerComplex : Component
 			.WithoutTags( "trigger" )
 			.Run();
 
-		IPressable pressable = default;
-
 		if ( tr.GameObject.IsValid() )
-			tr.GameObject.Components.TryGet<Component.IPressable>( out pressable, FindMode.EverythingInSelfAndParent );
-
-		if ( pressable is not null && pressable.CanPress( new IPressable.Event() { Ray = AimRay, Source = this } ) )
-			return pressable as Component;
+		{
+			// if we have multiple IPressable components on one thing, filter out the ones that can't press and do the first match of those who can
+			foreach ( var press in tr.GameObject.Components.GetAll<IPressable>( FindMode.EverythingInSelfAndParent ) )
+			{
+				if ( press is not null && press.CanPress( new IPressable.Event() { Ray = AimRay, Source = this } ) )
+					return press as Component;
+			}
+		}
 
 		return null;
 	}

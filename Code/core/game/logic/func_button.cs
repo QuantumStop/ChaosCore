@@ -378,7 +378,7 @@ public class func_button : BaseUsable, Component.IPressable
 	{
 		activator = null;
 
-		if ( !press.Source.Components.TryGet<BasePlayer>( out activator ) || activator?.LifeState == LifeState.Dead )
+		if ( !press.Source.Components.TryGet( out activator ) || activator?.LifeState == LifeState.Dead )
 			return false;
 
 		return true;
@@ -391,7 +391,7 @@ public class func_button : BaseUsable, Component.IPressable
 		if ( !source.IsValid() )
 			return false;
 
-		if ( !source.Components.TryGet<BasePlayer>( out activator ) || activator?.LifeState == LifeState.Dead )
+		if ( !source.Components.TryGet( out activator ) || activator?.LifeState == LifeState.Dead )
 			return false;
 
 		return true;
