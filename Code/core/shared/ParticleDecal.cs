@@ -20,7 +20,7 @@ public class ParticleDecal : Particle.BaseListener
 	private bool _hasCachedCollisionLock;
 	private CollisionLock _cachedCollisionLock;
 	private bool _lastPassedFilters = true;
-	private string _lastStatus = "created";
+	private DecalStatus _lastStatus = DecalStatus.Created;
 	private string _lastHitObjectName = "<none>";
 	private Vector3 _lastLockedPosition;
 	private Vector3 _lastLockedNormal = Vector3.Up;
@@ -69,7 +69,7 @@ public class ParticleDecal : Particle.BaseListener
 		_hasCachedCollisionLock = false;
 		_cachedCollisionLock = default;
 		_lastPassedFilters = true;
-		_lastStatus = "enabled";
+		_lastStatus = DecalStatus.Enabled;
 		_lastHitObjectName = "<none>";
 		_lastLockedPosition = Vector3.Zero;
 		_lastLockedNormal = Vector3.Up;
@@ -292,7 +292,7 @@ public class ParticleDecal : Particle.BaseListener
 
 		if ( p.HitTime <= 0 || p.HitNormal.LengthSquared < 0.0001f )
 		{
-			_lastStatus = "waiting_for_collision";
+			_lastStatus = DecalStatus.WaitingForCollision;
 			_lastPassedFilters = false;
 			_lastHitObjectName = "<none>";
 			return false;
@@ -300,7 +300,7 @@ public class ParticleDecal : Particle.BaseListener
 
 		if ( !ignoreDieOnCollisionBlock && ShouldBlockByDieOnCollision( p ) )
 		{
-			_lastStatus = "blocked_by_die_on_collision";
+			_lastStatus = DecalStatus.BlockedByDieOnCollision;
 			_lastPassedFilters = false;
 			_lastHitObjectName = "<particle_hit>";
 			return false;
@@ -332,7 +332,7 @@ public class ParticleDecal : Particle.BaseListener
 		{
 			if ( !PassesTagFilters( hitTrace.GameObject ) )
 			{
-				_lastStatus = "blocked_by_tag_filter";
+				_lastStatus = DecalStatus.BlockedByTagFilter;
 				_lastPassedFilters = false;
 				return false;
 			}
@@ -351,7 +351,7 @@ public class ParticleDecal : Particle.BaseListener
 			lockData.StickToHitObject = true;
 		}
 
-		_lastStatus = lockData.StickToHitObject ? "locked_following_object" : "locked_world";
+		_lastStatus = lockData.StickToHitObject ? DecalStatus.LockedFollowingObject : DecalStatus.LockedWorld;
 		_lastPassedFilters = true;
 		return true;
 	}
@@ -372,7 +372,7 @@ public class ParticleDecal : Particle.BaseListener
 
 		if ( !trace.Hit || trace.Normal.LengthSquared < 0.0001f )
 		{
-			_lastStatus = "disable_fallback_no_hit";
+			_lastStatus = DecalStatus.DisableFallbackNoHit;
 			_lastPassedFilters = false;
 			_lastHitObjectName = "<none>";
 			return false;
@@ -382,7 +382,7 @@ public class ParticleDecal : Particle.BaseListener
 
 		if ( !PassesTagFilters( trace.GameObject ) )
 		{
-			_lastStatus = "disable_fallback_blocked_by_tag_filter";
+			_lastStatus = DecalStatus.DisableFallbackBlockedByTagFilter;
 			_lastPassedFilters = false;
 			return false;
 		}
@@ -398,7 +398,7 @@ public class ParticleDecal : Particle.BaseListener
 			lockData.LocalNormal = hitObjectTx.NormalToLocal( lockData.Normal ).Normal;
 			lockData.StickToHitObject = true;
 		}
-		_lastStatus = "disable_fallback_locked";
+		_lastStatus = DecalStatus.DisableFallbackLocked;
 		_lastPassedFilters = true;
 		return true;
 	}
@@ -680,6 +680,30 @@ public class ParticleDecal : Particle.BaseListener
 		{
 			_renderer.ClearDebugState( _debugKey );
 		}
+	}
+
+	public enum DecalStatus
+	{
+		/// <summary>Created but not yet enabled</summary>
+		Created,
+		/// <summary>Created and enabled</summary>
+		Enabled,
+		/// <summary>Listener enabled and waiting for a valid collision</summary>
+		WaitingForCollision,
+		/// <summary>Collision ignored because the particle would die on impact</summary>
+		BlockedByDieOnCollision,
+		/// <summary>Collision rejected by include/exclude tag filters</summary>
+		BlockedByTagFilter,
+		/// <summary>Locked to a moving GameObject</summary>
+		LockedFollowingObject,
+		/// <summary>Locked to the static world</summary>
+		LockedWorld,
+		/// <summary>Disable fallback trace found no surface</summary>
+		DisableFallbackNoHit,
+		/// <summary>Disable fallback trace was rejected by tag filters</summary>
+		DisableFallbackBlockedByTagFilter,
+		/// <summary>Locked using the disable fallback trace</summary>
+		DisableFallbackLocked
 	}
 }
 #endif

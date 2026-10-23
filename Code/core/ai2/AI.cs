@@ -942,22 +942,15 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	void SpawnBlood( Vector3 vecDir, DamageInfo dmginfo )
 	{
 #if IGNIS
-		Vector3 bloodDir;
-		bloodDir = vecDir.Normal;
-		if ( _bleeder is null )
+		if ( !_bleeder.IsValid() )
 		{
 			_bleeder = CreateBleederEntity();
 			_bleeder.Parent = GameObject;
 		}
-		else
-		{
-			float strength = Math.Clamp( dmginfo.Damage * 25f, 20f, 400f );
+		float strength = Math.Clamp( dmginfo.Damage * 25f, 20f, 400f );
 
-			var particle = _bleeder.GetComponent<ParticleEffect>();
-			var particleDecal = _bleeder.GetComponent<ParticleDecalRenderer>();
+		_bleeder.GetComponent<ParticleEffect>().Emit( dmginfo.Position, Time.Delta );
 
-			particle.Emit( dmginfo.Position, Time.Delta );
-		}
 #endif
 	}
 

@@ -160,8 +160,7 @@ public class BaseWeaponItem : BaseItem
 
 		if ( NeedsWarmingUp ) weapon.ForceFirstSetup();
 
-		if ( weapon.WeaponData.HasPrimaryAmmoType && FillReserveAmmoForWeapon )
-			Activator.AddReserveAmmo( weapon.WeaponData.PrimaryAmmoType.ResourceName, 10000 );
+		if ( weapon.WeaponData.HasPrimaryAmmoType && FillReserveAmmoForWeapon ) Activator.AddReserveAmmo( weapon.WeaponData.PrimaryAmmoType.ResourceName, 10000 );
 
 		Activator.SwitchToWeapon( weapon );
 		DestroyItem();

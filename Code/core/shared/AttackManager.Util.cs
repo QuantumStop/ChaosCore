@@ -104,7 +104,6 @@ partial class AttackManager
 		}
 
 		coreDamageInfo.Damage = ScaleDamage( coreDamageInfo.Damage, attack.Last.Hitbox, area );
-
 		foreach ( var candamage in attack.Last.GameObject.Components.GetAll<Component.IDamageable>( FindMode.EverythingInSelfAndAncestors ) ) candamage.OnDamage( coreDamageInfo );
 
 		// Create all the effects
@@ -124,7 +123,7 @@ partial class AttackManager
 		NpcSoundManager.AddSound( NpcSoundManager.SoundType.SOUND_GUNFIRE, transform.Position, coreDamageInfo.Inflictor );
 	}
 
-	public static float ScaleDamage( float damage, Hitbox hitbox, DamageArea area ) => hitbox is null || !hitbox.Tags.Any() ? 1
+	public static float ScaleDamage( float damage, Hitbox hitbox, DamageArea area ) => hitbox is null || !hitbox.Tags.Any() ? damage
 			: hitbox.Tags.FirstOrDefault() switch
 			{
 				"head" => damage * area.Head,

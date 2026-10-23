@@ -106,17 +106,13 @@ public abstract class BaseItem : BaseUsable
 #if FMOD
 		FMODSound.Play( GetPickupSound() );
 #else
-		BasePlayer.Local.PlayPickupSteal( GetPickupSound(), SoundStealChannel(), WorldPosition );
+		Activator?.PlayPickupSteal( GetPickupSound(), SoundStealChannel(), WorldPosition );
 #endif
 	}
-	/// <summary>
-	/// Used to know if OnPickup() should even be fired, per entity
-	/// </summary>
+	/// <summary>Used to know if OnPickup() should even be fired, per entity</summary>
 	/// <returns></returns>
 	protected virtual bool PickupCheck() => true;
-	/// <summary>
-	/// When item is forcefully removed (not when killed or spent)
-	/// </summary>
+	/// <summary>When item is forcefully removed (not when killed or spent)</summary>
 	public virtual void OnRemove( BasePlayer Activator = null ) { }
 	/// <summary>Properly destroy the item with extra stuff we want including broadcasting (instead of just calling GameObject.Destroy())</summary>
 	[Rpc.Broadcast]

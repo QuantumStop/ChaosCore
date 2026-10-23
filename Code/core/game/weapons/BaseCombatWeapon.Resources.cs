@@ -35,7 +35,7 @@ public class WeaponParse : GameResource
 	[Category( "Features" ), Order( 2 ), Header( "Muzzle Light" ), ShowIf( nameof( _hasBullets ), true )] public Texture MuzzleLightCookie { get; set; } = Texture.Load( "materials/cookies/muzzle_light01.tif" );
 	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.05f, 1.0f ), Step( 0.05f )] public float MuzzleLightTime { get; set; } = 0.1f;
 	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 1.0f, 90.0f ), Step( 1 )] public float MuzzleLightFOV { get; set; } = 60f;
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.1f, 10.0f ), Step( 0.1f )] public float MuzzleLightBrightness { get; set; } = 2;
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.1f, 10.0f ), Step( 0.1f )] public float MuzzleLightBrightness { get; set; } = 1;
 
 	[Header( "Muzzle Effects" )]
 	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true )] public PrefabFile MuzzleFlashEffect { get; set; }
