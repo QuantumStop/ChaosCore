@@ -28,9 +28,7 @@ public partial class BaseCombatWeapon
 		return adjusted;
 	}
 
-	/// <summary>
-	/// Easy way to get world transform of the attachment as an attachment object, if there is one
-	/// </summary>
+	/// <summary>Easy way to get world transform of the attachment as an attachment object, if there is one</summary>
 	/// <returns>Attachment object of the muzzle, and fov scaled transform if applicable</returns>
 	public static GameObject GetWeaponAttachObject( BaseEntity owner, string name, out Transform muzzleTransform )
 	{
@@ -114,7 +112,7 @@ public partial class BaseCombatWeapon
 
 		if ( !sound.IsValid() ) return;
 
-		var snd = IsFirstperson() ? FMODSound.Play( sound ) : FMODSound.Play( sound, GetMuzzleAttachObject( Owner.Player.IsValid() ? Owner.Player : Owner.NPC, "muzzle", out Transform attachmentObj ) );
+		var snd = IsFirstperson() ? FMODSound.Play( sound ) : FMODSound.Play( sound, GetWeaponAttachObject( Owner.Player.IsValid() ? Owner.Player : Owner.NPC, "muzzle", out Transform attachmentObj ) );
 		if ( WeaponData.WantNearEmptySound ) FMODSound.SetParameter( snd, "parameter:/Weapons/MagPercent", (float)PrimaryAmmoLoaded / WeaponData.PrimaryAmmoCapacity );
 #else
 		var sounds = IsFirstperson() ? primary ? WeaponData.AttackSoundsPrimary : WeaponData.AttackSoundsSecondary : primary ? WeaponData.AttackSoundPrimaryThirdPerson : WeaponData.AttackSoundSecondaryThirdPerson;

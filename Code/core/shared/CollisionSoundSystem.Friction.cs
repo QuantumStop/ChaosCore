@@ -24,9 +24,9 @@ public partial class CollisionSoundSystem
 		public EventInstance Instance;
 		public string MaterialName;
 		public FMODEventResource ScrapePath;
-		public FMODEventResource PlayingScrapePath;
+		//	public FMODEventResource PlayingScrapePath;
 		public string PlayingMaterialName;
-		public float BaseVolume;
+		//	public float BaseVolume;
 		public float Volume;
 		public float TargetVolume;
 		public Vector3 Position;
@@ -175,7 +175,7 @@ public partial class CollisionSoundSystem
 			|| string.IsNullOrWhiteSpace( voice.MaterialName ) )
 				voice.TargetVolume = 0.0f;
 
-			if ( voice.PlayingMaterialName != voice.MaterialName && voice.PlayingScrapePath != voice.ScrapePath )
+			if ( voice.PlayingMaterialName != voice.MaterialName /*&& voice.PlayingScrapePath != voice.ScrapePath*/ )
 			{
 				if ( voice.Instance.isValid() && !FMODSound.IsPlaying( voice.Instance ) ) playing--;
 
@@ -204,7 +204,7 @@ public partial class CollisionSoundSystem
 					if ( !voice.PlaybackFailed ) Log.Warning( $"Couldn't play scrape sound {voice.MaterialName}" );
 					voice.PlaybackFailed = true;
 				}
-				else if ( voice.BaseVolume * voice.TargetVolume <= _scrapeStartVolume )
+				else if ( /*voice.BaseVolume*/ 1 * voice.TargetVolume <= _scrapeStartVolume )
 				{
 					FMODSound.Stop( voice.Instance );
 				}
@@ -218,7 +218,7 @@ public partial class CollisionSoundSystem
 			}
 			if ( voice.Instance.isValid() )
 			{
-				voice.Instance.setVolume( voice.BaseVolume );
+				voice.Instance.setVolume( /*voice.BaseVolume*/ 1 );
 
 				if ( !starting )
 				{

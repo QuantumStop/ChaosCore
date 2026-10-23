@@ -86,12 +86,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 			}
 		}
 
-#if FMOD
-		var listener = Controller.Camera.Components.GetOrCreate<StudioListener>();
-		listener.NonRigidbodyVelocity = false;
-		listener.SetRigidbody( Controller.Controller.PhysicsBodyRigidbody );
-#endif
-
 		CheckPrefabSetup();
 	}
 
@@ -436,7 +430,12 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	{
 		UpdateBodyVisibility();
 		EnsureHudEntries();
-#if !FMOD
+#if FMOD
+		var listener = Controller.Camera.Components.GetOrCreate<StudioListener>();
+		listener.Enabled = true;
+		listener.NonRigidbodyVelocity = false;
+		listener.SetRigidbody( Controller.Controller.PhysicsBodyRigidbody );
+#else
 		var list = Controller.Head.Components.GetOrCreate<AudioListener>();
 		list.Enabled = true;
 		list.UseCameraDirection = false;
@@ -448,7 +447,9 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		UpdateBodyVisibility();
 		SetHudEntriesEnabled( false );
 		SetHudRootEnabled( false );
-#if !FMOD
+#if FMOD
+		var listener = Controller.Camera.Components.GetOrCreate<StudioListener>().Enabled = false;
+#else
 		Controller.Head.Components.GetOrCreate<AudioListener>().Enabled = false;
 #endif
 	}

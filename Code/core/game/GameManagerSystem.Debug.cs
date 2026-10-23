@@ -1,5 +1,6 @@
 namespace Core;
 
+using System;
 using AI;
 
 public abstract partial class GameManagerSystem : GameObjectSystem
