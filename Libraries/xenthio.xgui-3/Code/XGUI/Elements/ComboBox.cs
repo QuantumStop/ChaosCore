@@ -13,11 +13,11 @@ namespace XGUI;
 public class ComboBox : Button
 {
 
-	XGUIPopup Pane;
+	XGUIPopup _pane;
 	/// <summary>
 	/// The icon of an arrow pointing down on the right of the element.
 	/// </summary>
-	protected IconPanel DropdownIndicator;
+	protected IconPanel _dropdownIndicator;
 
 	/// <summary>
 	/// Called when the value has been changed,
@@ -34,7 +34,7 @@ public class ComboBox : Button
 	/// </summary>
 	public List<Option> Options { get; set; } = [];
 
-	Option selected;
+	Option _selected;
 
 	object _value;
 	int _valueHash;
@@ -75,22 +75,22 @@ public class ComboBox : Button
 	/// </summary>
 	public Option Selected
 	{
-		get => selected;
+		get => _selected;
 		set
 		{
-			if ( selected == value ) return;
+			if ( _selected == value ) return;
 
-			selected = value;
+			_selected = value;
 
-			if ( selected != null )
+			if ( _selected != null )
 			{
-				Value = $"{selected.Value}";
-				Icon = selected.Icon;
-				Text = selected.Title;
+				Value = $"{_selected.Value}";
+				Icon = _selected.Icon;
+				Text = _selected.Title;
 
 				ValueChanged?.Invoke( Value.ToString() );
 				CreateEvent( "onchange" );
-				CreateValueEvent( "value", selected?.Value );
+				CreateValueEvent( "value", _selected?.Value );
 			}
 		}
 	}
@@ -98,17 +98,12 @@ public class ComboBox : Button
 	public ComboBox()
 	{
 		AddClass( "selector" );
-		DropdownIndicator = Add.Icon( "u", "selector_indicator" );
+		_dropdownIndicator = Add.Icon( "u", "selector_indicator" );
 	}
 
 	public ComboBox( Panel parent ) : this()
 	{
 		Parent = parent;
-	}
-
-	public override void SetPropertyObject( string name, object value )
-	{
-		base.SetPropertyObject( name, value );
 	}
 
 	/// <summary>
@@ -159,10 +154,10 @@ public class ComboBox : Button
 	public void Open()
 	{
 		IsOpen = true;
-		Pane = new XGUIPopup( this, XGUIPopup.PositionMode.BelowStretch, 0.0f );
-		Pane.Focus();
+		_pane = new XGUIPopup( this, XGUIPopup.PositionMode.BelowStretch, 0.0f );
+		_pane.Focus();
 
-		Pane.AddClass( "flat-top" );
+		_pane.AddClass( "flat-top" );
 		if ( BuildOptions != null )
 		{
 			Options = BuildOptions.Invoke();
@@ -170,7 +165,7 @@ public class ComboBox : Button
 
 		foreach ( var option in Options )
 		{
-			var o = Pane.AddOption( option.Title, option.Icon, () => Select( option ) );
+			var o = _pane.AddOption( option.Title, option.Icon, () => Select( option ) );
 			if ( Selected != null && option.Value == Selected.Value )
 			{
 				o.AddClass( "active" );
@@ -180,10 +175,10 @@ public class ComboBox : Button
 
 	public void Close()
 	{
-		if ( Pane != null )
+		if ( _pane != null )
 		{
-			Pane.Delete();
-			Pane = null;
+			_pane.Delete();
+			_pane = null;
 		}
 		Focus();
 		IsOpen = false;
@@ -196,7 +191,7 @@ public class ComboBox : Button
 	{
 		if ( !triggerChange )
 		{
-			selected = option;
+			_selected = option;
 
 			if ( option != null )
 			{
@@ -219,24 +214,21 @@ public class ComboBox : Button
 	{
 		Select( Options.FirstOrDefault( x => string.Equals( x.Value.ToString(), value, StringComparison.OrdinalIgnoreCase ) ), triggerChange );
 	}
-	string Override = null;
+	string _override = null;
 	public override void Tick()
 	{
 		base.Tick();
 
-		SetClass( "open", Pane != null && !Pane.IsDeleting );
-		SetClass( "active", Pane != null && !Pane.IsDeleting );
+		SetClass( "open", _pane != null && !_pane.IsDeleting );
+		SetClass( "active", _pane != null && !_pane.IsDeleting );
 
-		if ( Pane != null )
-		{
-			Pane.Style.Width = Box.Rect.Width * ScaleFromScreen;
-		}
+		_pane?.Style.Width = Box.Rect.Width * ScaleFromScreen;
 	}
 	public override void SetProperty( string name, string value )
 	{
 		if ( name == "default" )
 		{
-			Override = value;
+			_override = value;
 			return;
 		}
 		base.SetProperty( name, value );
@@ -256,7 +248,7 @@ public class ComboBox : Button
 				o.Icon = child.GetAttribute( "icon", null );
 
 				Options.Add( o );
-				if ( Override == child.GetAttribute( "value", o.Title ) )
+				if ( _override == child.GetAttribute( "value", o.Title ) )
 				{
 					Select( o, true );
 				}

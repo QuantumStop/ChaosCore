@@ -26,7 +26,7 @@ public class ScentEmitter
 #if IGNIS
 	[SaveRestore]
 #endif
-	public BaseEntity? SourceEnt { get; set; }
+	public BaseEntity SourceEnt { get; set; }
 
 #if IGNIS
 	[SaveRestore]
@@ -43,13 +43,9 @@ public class ScentEmitter
 
 	public void Tick()
 	{
-		if ( SourceEnt.IsValid() )
-		{
-			Position = SourceEnt.WorldPosition;
-		}
+		if ( SourceEnt.IsValid() ) Position = SourceEnt.WorldPosition;
 
-		if ( DecayRate > 0f )
-			Intensity = MathF.Max( 0f, Intensity - DecayRate * Time.Delta );
+		if ( DecayRate > 0f ) Intensity = MathF.Max( 0f, Intensity - DecayRate * Time.Delta );
 	}
 
 	public bool IsExpired => DecayRate > 0f && Intensity <= 0f;
@@ -57,12 +53,7 @@ public class ScentEmitter
 
 public class AIScentManager : GameObjectSystem<AIScentManager>
 {
-	public AIScentManager( Scene scene ) : base( scene )
-	{
-
-		Listen( Stage.PhysicsStep, 0, TickAll, "AIScentManager TickAll" );
-
-	}
+	public AIScentManager( Scene scene ) : base( scene ) => Listen( Stage.PhysicsStep, 0, TickAll, "AIScentManager TickAll" );
 	private readonly List<ScentEmitter> _emitters = new();
 	public IReadOnlyList<ScentEmitter> All => _emitters;
 
@@ -76,8 +67,7 @@ public class AIScentManager : GameObjectSystem<AIScentManager>
 		for ( int i = _emitters.Count - 1; i >= 0; i-- )
 		{
 			_emitters[i].Tick();
-			if ( _emitters[i].IsExpired )
-				_emitters.RemoveAt( i );
+			if ( _emitters[i].IsExpired ) _emitters.RemoveAt( i );
 		}
 	}
 }

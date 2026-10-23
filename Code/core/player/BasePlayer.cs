@@ -58,6 +58,9 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		if ( PlayerCfg.IsValid() && PlayerCfg.ViewmodelHands.IsValid() ) ViewmodelHands.Model = GetViewmodelHands();
 
 		if ( !ViewmodelWeapon.IsValid() || !IsPossessedLocally || !CurrentWeapon.IsValid() ) ViewmodelVisible = false;
+		if ( !CurrentWeapon.IsValid() || IsPossessedLocally ) WorldmodelVisible = false;
+
+		if ( GameManagerSystem.Rules.IsOnline ) WeaponGameObject?.NetworkSpawn( Owner.Connection );
 
 		EnsureHudEntries();
 
@@ -98,14 +101,12 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	private void SetHudRootEnabled( bool enabled )
 	{
-		if ( !HUDGameObject.IsValid() )
-			return;
+		if ( !HUDGameObject.IsValid() ) return;
 
 		HUDGameObject.Enabled = enabled;
 
-		var screenPanel = HUDGameObject.Components.Get<ScreenPanel>();
-		if ( screenPanel.IsValid() )
-			screenPanel.Enabled = enabled;
+		var screenPanel = HUDGameObject.Components.GetOrCreate<ScreenPanel>();
+		if ( screenPanel.IsValid() ) screenPanel.Enabled = enabled;
 	}
 
 	private void EnsureHudEntries()
@@ -226,9 +227,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 			return;
 		}
 #if FMOD
-		SolveNullStringsInSurface( tr.Surface, out var surfstring );
-		var soundEvent = foot == 0 ? "event:/Physics/StepLeft" : "event:/Physics/StepRight";
-		FootSound( soundEvent, GameObject, surfstring );
+		var soundEvent = foot == 0 ? tr.Surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.FootLeft ) : tr.Surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.FootRight );
+		FootSound( soundEvent, GameObject, SolveSurfaceParameter( tr.Surface ) );
 #else
 		var left = tr.Surface.SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().GetBaseSurface().SoundCollection.FootLeft ?? tr.Surface.GetBaseSurface().GetBaseSurface().GetBaseSurface().SoundCollection.FootLeft;
 		var right = tr.Surface.SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().GetBaseSurface().SoundCollection.FootRight ?? tr.Surface.GetBaseSurface().GetBaseSurface().GetBaseSurface().SoundCollection.FootRight;
@@ -248,13 +248,11 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	}
 #if FMOD
-	/// <summary>
-	/// A helper function to play a footstep sound the proper way that hopefully wont shit the bed
-	/// </summary>
+	/// <summary>A helper function to play a footstep sound the proper way that hopefully wont shit the bed</summary>
 	/// <param name="path">Event string</param>
 	/// <param name="obj">GameObject to play this on</param>
 	/// <param name="surfstring">Surface string (fmod only)</param>
-	static public void FootSound( string path, GameObject obj, string surfstring = null )
+	static public void FootSound( FMODEventResource path, GameObject obj, string surfstring = null )
 	{
 		var handle = FMODSound.Create( path );
 		var newsnd = SolveFootstepSoundOverrides( surfstring );
@@ -266,12 +264,9 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		handle.setVolume( FootstepVolume );
 
 		FMODSound.Play( handle, obj );
-
 	}
 #else
-	/// <summary>
-	/// A helper function to play a footstep sound the proper way that hopefully wont shit the bed
-	/// </summary>
+	/// <summary>A helper function to play a footstep sound the proper way that hopefully wont shit the bed</summary>
 	/// <param name="path">Event</param>
 	/// <param name="obj">GameObject to play this on</param>
 	static public void FootSound( SoundEvent path, GameObject obj )
@@ -282,49 +277,26 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 #endif
 
 #if FMOD
-	static public void SolveNullStringsInSurface( Surface surface, out string surfstring )
-	{
-		surfstring = string.IsNullOrWhiteSpace( surface?.SoundCollection.SurfaceParameter ) ?
-		(string.IsNullOrWhiteSpace( surface?.GetBaseSurface()?.SoundCollection.SurfaceParameter ) ?
-		(string.IsNullOrWhiteSpace( surface?.GetBaseSurface()?.GetBaseSurface()?.SoundCollection.SurfaceParameter ) ?
-		(string.IsNullOrWhiteSpace( surface?.GetBaseSurface()?.GetBaseSurface()?.GetBaseSurface()?.SoundCollection.SurfaceParameter ) ? null :
-			surface?.GetBaseSurface()?.GetBaseSurface()?.GetBaseSurface()?.SoundCollection.SurfaceParameter) :
-			surface?.GetBaseSurface()?.GetBaseSurface()?.SoundCollection.SurfaceParameter) :
-			surface?.GetBaseSurface()?.SoundCollection.SurfaceParameter) :
-			surface?.SoundCollection.SurfaceParameter;
-	}
+	/// <summary>Find the surface parameter in the surface resource inheritance chain, 4 resources deep</summary>
+	/// <param name="surface">Resource to check</param>
+	/// <returns>Surface name parameter, if no string was given in any of the resourcs, this gives a null which is useful for checks</returns>
+	static public string SolveSurfaceParameter( Surface surface ) => surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SurfaceParameter );
 
-	/// <summary>
-	/// Certain conditions force specific sounds, primarily being in water
-	/// </summary>
+	/// <summary>Certain conditions force specific sounds, primarily being in water</summary>
 	/// <param name="basesurface">The "proper" surface if this isnt water</param>
 	/// <returns>Result surface to sound</returns>
-	protected static string SolveFootstepSoundOverrides( string basesurface )
+	protected static string SolveFootstepSoundOverrides( string basesurface ) => Local.WaterLevel switch
 	{
-		return Local.WaterLevel switch
-		{
-			WaterLvl.Feet => "Slosh",
-			WaterLvl.Waist or WaterLvl.Full => "Wade",
-			_ => basesurface,
-		};
-	}
-
-	static public bool IsNullOrEmptyOrNotEvent( string input )
-	{
-		if ( string.IsNullOrWhiteSpace( input ) )
-			return true;
-
-		if ( !input.StartsWith( "event:/" ) )
-			return true;
-
-		return false;
-	}
+		WaterLvl.Feet => "Slosh",
+		WaterLvl.Waist or WaterLvl.Full => "Wade",
+		_ => basesurface,
+	};
 #endif
 	static public float FootstepVolume { get; set; } = 0.33333f; // this is like -9.5db which is eh
 
 	override protected void OnUpdate()
 	{
-		if ( !IsControlledLocally ) return;
+		if ( !IsPossessedLocally ) return;
 
 		CalculateFOV();
 
@@ -335,6 +307,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	{
 		UpdatePickupPhysics();
 
+		if ( IsPossessedLocally ) ViewmodelFixedUpdate();
+
 		if ( !IsControlledLocally ) return;
 
 		CheckWaterLevel();
@@ -343,7 +317,6 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 		HandleLastSelected();
 
-		ViewmodelFixedUpdate();
 		UpdateFallDamage();
 	}
 
@@ -451,11 +424,12 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	protected virtual void CheckPrefabSetup()
 	{
-		if ( !Movement.IsValid() ) Log.Error( "Player is missing Movement!" );
-		if ( !Controller.IsValid() ) Log.Error( "Player is missing PlayerController!" );
-		if ( !PickupTrigger.IsValid() ) Log.Error( "Player is missing the Pickup Trigger!" );
-		if ( !HUDGameObject.IsValid() ) Log.Error( "HUD GameObject is missing!" );
-		if ( !PawnCamera.IsValid() ) Log.Error( "Pawn is missing a camera component! (or a reference to it)" );
+		if ( !Movement.IsValid() ) Log.Error( "Player is missing Movement component! (or a reference to it)" );
+		if ( !Controller.IsValid() ) Log.Error( "Player is missing xMovement PlayerController component! (or a reference to it)" );
+		if ( !PickupTrigger.IsValid() ) Log.Error( "Player is missing the Pickup Trigger! (or a reference to it)" );
+		if ( !HUDGameObject.IsValid() ) Log.Error( "Player is missing a HUD GameObject! (or a reference to it)" );
+		if ( !PawnCamera.IsValid() ) Log.Error( "Pawn is missing a Camera component! (or a reference to it)" );
+		if ( !WorldModelRenderer.IsValid() ) Log.Error( "Player is missing the Worldmodel Skinned Renderer! (or a reference to it)" );
 	}
 
 	protected override void OnPossess()

@@ -3,7 +3,7 @@ namespace Core;
 
 public class Crosshair : Component
 {
-	public static Crosshair PlayerCrosshair { get; set; }
+	public static Crosshair Instance { get; set; }
 	public CrosshairData WeaponCrosshair { get; set; }
 	private float _crosshairScale;
 	private float _crosshairWidth;
@@ -23,15 +23,23 @@ public class Crosshair : Component
 
 	private float _smoothedSpeed = 0f;
 
-	private static bool _hasIsometricCursorPosition;
+	protected static bool _hasIsometricCursorPosition;
 	private static Vector2 _isometricCursorPosition;
 	private static Vector2 _lastRawIsometricMousePosition;
 
 	private static bool _hideCrosshair => BasePlayer.Local.IsHUDElementHidden( BasePlayer.HIDEHUD_FLAGS.HIDEHUD_CROSSHAIR | BasePlayer.HIDEHUD_FLAGS.HIDEHUD_PLAYERDEAD );
 
-	protected override void OnStart() => PlayerCrosshair = this;
+	protected override void OnStart()
+	{ if ( !IsProxy ) Instance = this; }
 
-	protected virtual Vector2 CalculateCenter( Vector2 screen ) => CalculateDefaultCenter( screen );
+	protected virtual Vector2 CalculateCenter( Vector2 screen )
+	{
+		if ( BasePlayer.Local?.Controller is PlayerController playerController && playerController.IsIsometricCamera )
+			return CalculateIsometricCursorPosition( screen );
+
+		_hasIsometricCursorPosition = false;
+		return screen * 0.5f;
+	}
 
 	protected override void OnUpdate()
 	{
@@ -442,16 +450,6 @@ public class Crosshair : Component
 		}
 	}
 
-
-	protected static Vector2 CalculateDefaultCenter( Vector2 screen )
-	{
-		if ( BasePlayer.Local?.Controller is PlayerController playerController && playerController.IsIsometricCamera )
-			return CalculateIsometricCursorPosition( screen );
-
-		_hasIsometricCursorPosition = false;
-		return screen * 0.5f;
-	}
-
 	public static Vector2 CalculateIsometricCursorPosition( Vector2 screen )
 	{
 		var raw = Mouse.Position;
@@ -475,14 +473,14 @@ public class Crosshair : Component
 		return _isometricCursorPosition;
 	}
 
-	private static Vector2 ClampToScreen( Vector2 position, Vector2 screen ) => new( position.x.Clamp( 0f, MathF.Max( screen.x, 0f ) ), 
+	private static Vector2 ClampToScreen( Vector2 position, Vector2 screen ) => new( position.x.Clamp( 0f, MathF.Max( screen.x, 0f ) ),
 		position.y.Clamp( 0f, MathF.Max( screen.y, 0f ) ) );
-	
+
 	private static void DrawSimpleCrosshair()
 	{
 		using var playerhud = BasePlayer.Local.Controller.Camera.BeginHud();
 
-		Vector2 center = CalculateDefaultCenter( Screen.Size );
+		Vector2 center = Instance.CalculateCenter( Screen.Size );
 		Vector2 pixelCenter = new( MathF.Floor( center.x ) + 0.5f, MathF.Floor( center.y ) + 0.5f );
 
 		// Actual 1x1 pixel sized "dots"

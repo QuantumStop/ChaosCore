@@ -2,9 +2,7 @@
 
 public class CoreDamageInfo : DamageInfo
 {
-	/// <summary>
-	/// Physical force of the damage, usually applied as a push
-	/// </summary>
+	/// <summary>Physical force of the damage, usually applied as a push</summary>
 	public Vector3 Force { get; set; }
 	/// <summary>
 	/// Angular hysical force of the damage, usually applied when something is
@@ -12,9 +10,7 @@ public class CoreDamageInfo : DamageInfo
 	/// </summary>
 	public Vector3 AngularForce { get; set; } = Vector3.Zero;
 	public Vector3 ReportedPosition { get; set; }
-	/// <summary>
-	/// The damage amount before difficulty level adjustments are made, used to get uniform damage forces
-	/// </summary>
+	/// <summary>The damage amount before difficulty level adjustments are made, used to get uniform damage forces</summary>
 	public float BaseDamage { get; set; }
 	/// <summary>
 	/// The weapon or rocket (or player) that is dealing the damage.
@@ -22,13 +18,9 @@ public class CoreDamageInfo : DamageInfo
 	/// For projectile weapons, the projectile is the Inflictior, and this contains the weapon that created the projectile
 	/// </summary>
 	public GameObject Inflictor { get; set; }
-	/// <summary>
-	/// What ammo was used to damage
-	/// </summary>
+	/// <summary>What ammo was used to damage</summary>
 	public AmmoInfo Ammo { get; set; }
-	/// <summary>
-	/// The actual weapon class
-	/// </summary>
+	/// <summary>The actual weapon class</summary>
 	public BaseCombatWeapon BaseCombatWeapon { get; set; }
 
 	// a bunch of overloads to pass shit to the class
@@ -39,7 +31,7 @@ public class CoreDamageInfo : DamageInfo
 		Position = Vector3.Zero;
 		ReportedPosition = Vector3.Zero;
 		Damage = 0f;
-		BaseDamage = 0f;
+		BaseDamage = Damage;
 	}
 
 	public CoreDamageInfo( GameObject inflictor, GameObject attacker, float damage )

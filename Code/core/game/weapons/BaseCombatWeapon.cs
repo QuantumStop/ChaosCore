@@ -10,16 +10,12 @@ using Core.AI;
 public partial class BaseCombatWeapon : BaseEntity
 {
 	protected override string GetEditorVis() => null;
-	/// <summary>
-	/// Who has this weapon? We use the funny WeaponOwner struct which has the casts built in, so you don't have to if (Owner is BasePlayer) every time
-	/// </summary>
-	[Property, ReadOnly, Feature( "Debug" )] public WeaponOwner Owner { get; set; }
+	/// <summary>Who has this weapon? We use the funny WeaponOwner struct which has the casts built in, so you don't have to if (Owner is BasePlayer) every time</summary>
+	[Property, ReadOnly, Feature( "Debug" ), Sync] public WeaponOwner Owner { get; set; }
 	[Property, ReadOnly, Feature( "Debug" )] public WeaponParse WeaponData { get; set; }
 	public BaseCombatWeapon() => WeaponData = WeaponParse.GetWeaponData( GetType().Name );
 
-	/// <summary>
-	/// Primary amount WITH chambered bullet
-	/// </summary>
+	/// <summary>Primary amount WITH chambered bullet</summary>
 	[Property, Header( "Primary" ), Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )]
 	public int PrimaryAmmoLoaded
 	{
@@ -33,57 +29,32 @@ public partial class BaseCombatWeapon : BaseEntity
 			}
 		}
 	}
-	/// <summary>
-	/// Primary amount of chambered bullets
-	/// </summary>
+	/// <summary>Primary amount of chambered bullets</summary>
 	[Property, Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )] public int PrimaryAmmoInChamber { get; set; }
-	/// <summary>
-	/// Secondary amount WITH chambered bullet
-	/// </summary>
+	/// <summary>Secondary amount WITH chambered bullet</summary>
 	[Property, ReadOnly, Header( "Secondary" ), Feature( "Debug" ), ShowIf( nameof( UsesSecondary ), true )] public int SecondaryAmmoLoaded { get; set; }
-
-	/// <summary>
-	/// Is the weapon ready to fire? (most likely in idle animation)
-	/// </summary>
+	/// <summary>Is the weapon ready to fire? (most likely in idle animation)</summary>
 	[Property, ReadOnly, Header( "Stats" ), Feature( "Debug" )] public bool ReadyToFire { get; protected set; } = false;
 	[Property, ReadOnly, Feature( "Debug" )] public bool FirstEquip { get; set; } = true;
 	[Property, ReadOnly, Feature( "Debug" )] public bool MagOut { get; set; } = false;
-	/// <summary>
-	/// Reload one by one, instead of by mag (shotguns, rifles)
-	/// </summary>
+	/// <summary>Reload one by one, instead of by mag (shotguns, rifles)</summary>
 	[Property, ReadOnly, Feature( "Debug" )] protected virtual bool _reloadsSingly => WeaponData.ReloadsSingly;
-	/// <summary>
-	/// This should've been OnStart
-	/// </summary>
+	/// <summary>This should've been OnStart</summary>
 	[Property, ReadOnly, Feature( "Debug" )] public bool DoFirstSetup { get; protected set; } = true;
 	[Property, ReadOnly, Feature( "Debug" )] public bool WasOnTheGround { get; set; } = false;
-	/// <summary>
-	/// How many shots were fired in quick succession (consequitive shots)
-	/// </summary>
+	/// <summary>How many shots were fired in quick succession (consequitive shots)</summary>
 	[Property, ReadOnly, Feature( "Debug" )] protected int _shotsFired { get; set; }
-	/// <summary>
-	/// When was the last time we did any kind of attack
-	/// </summary>	
+	/// <summary>When was the last time we did any kind of attack</summary>	
 	[Property, ReadOnly, Feature( "Debug" )] public float LastAttackTime { get; set; }
-	/// <summary>
-	/// When is the next primary shot
-	/// </summary>
+	/// <summary>When is the next primary shot</summary>
 	[Property, ReadOnly, Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )] protected float _nextPrimaryAttack { get; set; }
-	/// <summary>
-	/// When is the next secondary shot
-	/// </summary>
+	/// <summary>When is the next secondary shot</summary>
 	[Property, ReadOnly, Feature( "Debug" ), ShowIf( nameof( UsesSecondary ), true )] protected float _nextSecondaryAttack { get; set; }
-	/// <summary>
-	/// When is the next dry fire click
-	/// </summary>
+	/// <summary>When is the next dry fire click</summary>
 	[Property, ReadOnly, Feature( "Debug" ), ShowIf( nameof( UsesPrimary ), true )] protected float _nextEmptyAttack { get; set; }
-	/// <summary>
-	/// How much time has this spent being empty
-	/// </summary>
+	/// <summary>How much time has this spent being empty</summary>
 	[Property, ReadOnly, Feature( "Debug" )] private float _gunEmptyTime { get; set; } = 0f;
-	/// <summary>
-	/// Delay between being empty and start of reload
-	/// </summary>
+	/// <summary>Delay between being empty and start of reload</summary>
 	private const float _autoReloadDelay = 0.1f;
 	/// <summary>
 	/// Is the gun currently SPECIFICALLY holstered (and not just unavailable to shoot)
@@ -114,21 +85,13 @@ public partial class BaseCombatWeapon : BaseEntity
 				break;
 		}
 	}
-	/// <summary>
-	/// Is attack blocked (mid reload, mid draw)
-	/// </summary>
+	/// <summary>Is attack blocked (mid reload, mid draw)</summary>
 	[Property, ReadOnly, Feature( "Debug" )] protected bool _disallowAttack { get; set; } = false;
-	/// <summary>
-	/// Non-empty reload has one less stage - no bolt pull/slide release
-	/// </summary>
+	/// <summary>Non-empty reload has one less stage - no bolt pull/slide release</summary>
 	[Property, ReadOnly, Feature( "Debug" )] private int _reloadStageAmount => WeaponData.StageAmount - (PrimaryAmmoLoaded > 0 ? 1 : 0);
-	/// <summary>
-	/// Is current stage last? Technically a useless check due to instantly resetting to 0 after reaching last
-	/// </summary>
+	/// <summary>Is current stage last? Technically a useless check due to instantly resetting to 0 after reaching last</summary>
 	[Property, ReadOnly, Feature( "Debug" )] private bool _isLastStage => _currentReloadStage >= _reloadStageAmount;
-	/// <summary>
-	/// Is the gun empty
-	/// </summary>
+	/// <summary>Is the gun empty</summary>
 	[Property, ReadOnly, Feature( "Debug" )]
 	private bool _gunEmpty
 	{
@@ -142,17 +105,11 @@ public partial class BaseCombatWeapon : BaseEntity
 			}
 		}
 	} = false;
-	/// <summary>
-	/// Used to track whether we are storing a staged reloading state
-	/// </summary>
+	/// <summary>Used to track whether we are storing a staged reloading state</summary>
 	[Property, ReadOnly, Feature( "Debug" )] protected bool _inStagedReload => _currentReloadStage > 0;
-	/// <summary>
-	/// Is this weapon currently reloading (stage agnostic, some don't care)
-	/// </summary>
+	/// <summary>Is this weapon currently reloading (stage agnostic, some don't care)</summary>
 	[Property, ReadOnly, Feature( "Debug" )] public bool IsReloading { get; protected set; }
-	/// <summary>
-	/// What stage of reloading I'm on
-	/// </summary>
+	/// <summary>What stage of reloading I'm on</summary>
 	[Property, ReadOnly, Feature( "Debug" )]
 	protected int _currentReloadStage
 	{
@@ -202,8 +159,8 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( UsesPrimary() ) _nextPrimaryAttack = WorldTime.Now;
 		if ( UsesSecondary() ) _nextSecondaryAttack = WorldTime.Now;
 
-		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = true;
-		if ( !WeaponData.WeaponViewmodel.IsValid() ) IsHolstered = false;
+		if ( !GetViewmodel().IsValid() ) ReadyToFire = true;
+		if ( !GetViewmodel().IsValid() ) IsHolstered = false;
 	}
 
 	protected override void OnStart()
@@ -221,9 +178,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		WasOnTheGround = false;
 	}
 
-	/// <summary>
-	/// Use this to setup your custom data instead of overriding OnStart and having to do base.OnStart() etc etc
-	/// </summary>
+	/// <summary>Use this to setup your custom data instead of overriding OnStart and having to do base.OnStart() etc etc</summary>
 	protected virtual void SetupCustomData() { }
 
 	protected virtual void FirstSetup()
@@ -391,7 +346,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		Owner.Player?.SetAllAnimgraphParams( "b_equipped", true );
 
 		Enabled = true;
-		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = true;
+		if ( !GetViewmodel().IsValid() ) ReadyToFire = true;
 	}
 	/// <summary>
 	/// Holster the weapon.
@@ -405,7 +360,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		Owner.Player?.SetAllAnimgraphParams( "b_equipped", false );
 
-		if ( !WeaponData.WeaponViewmodel.IsValid() ) ReadyToFire = false;
+		if ( !GetViewmodel().IsValid() ) ReadyToFire = false;
 		Enabled = false;    // very important to disable the holstered gun component
 	}
 
@@ -452,7 +407,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
 
-		AttackSound( Owner.Player.IsPossessedLocally );
+		AttackSound();
 
 		if ( !BasePlayer.NoReload )
 		{
@@ -568,22 +523,18 @@ public partial class BaseCombatWeapon : BaseEntity
 
 				IsReloading = true;
 
-				if ( !WeaponData.WeaponViewmodel.IsValid() )
-					FinishReload();
+				if ( !GetViewmodel().IsValid() ) FinishReload();
 			}
 		}
 		else
 		{
-			if ( !UsesSecondary() )
-				return;
+			if ( !UsesSecondary() ) return;
 
 			if ( !BasePlayer.InfiniteAmmo )
 			{
-				if ( SecondaryAmmoLoaded >= GetSecondaryCapacity() + 1 )
-					return;
+				if ( SecondaryAmmoLoaded >= GetSecondaryCapacity() + 1 ) return;
 
-				if ( Owner.Player?.GetReserveAmmo( GetSecondaryAmmoType() ) <= 0 )
-					return;
+				if ( Owner.Player?.GetReserveAmmo( GetSecondaryAmmoType() ) <= 0 ) return;
 			}
 		}
 

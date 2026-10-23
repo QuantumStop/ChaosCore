@@ -1,6 +1,6 @@
 namespace Core;
 
-[Description( "A in-world portal that connects two parts of the world togher in a seamless way" )]
+/// <summary>A in-world portal that connects two parts of the world togher in a seamless way</summary>
 [Icon( "chip_extraction" )]
 public class func_world_portal : BaseEntity
 {

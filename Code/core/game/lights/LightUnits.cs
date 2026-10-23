@@ -30,40 +30,62 @@ public class LightUnits
 
 	public enum SunBrightnessPresets
 	{
-		[Description( "1 lx" ), Icon( "dark_mode" )] Moon = 1,
-		[Description( "5 000 lx" ), Icon( "wb_twilight" )] LowSun = 5000,
-		[Description( "20 000 lx" ), Icon( "cloud" )] Cloudy = 20000,
-		[Description( "100 000 lx" ), Icon( "sunny" )] Noon = 100000,
+		/// <summary>1 lx</summary>
+		[Icon( "dark_mode" )] Moon = 1,
+		/// <summary>5 000 lx</summary>
+		[Icon( "wb_twilight" )] LowSun = 5000,
+		/// <summary>20 000 lx</summary>
+		[Icon( "cloud" )] Cloudy = 20000,
+		/// <summary>100 000 lx</summary>
+		[Icon( "sunny" )] Noon = 100000,
 	}
 
 	public enum LumenBrightnessPresets
 	{
-		[Description( "12 lm" ), Icon( "cake" )] CandleLight = 12,
-		[Description( "300 lm" ), Icon( "floor_lamp" )] DecorativeLight = 300,
-		[Description( "1000 lm" ), Icon( "scene_light" )] InteriorLight = 1000,
-		[Description( "10000 lm" ), Icon( "wall_lamp" )] ExteriorLight = 10000
+		/// <summary>12 lm</summary>
+		[Icon( "cake" )] CandleLight = 12,
+		/// <summary>300 lm</summary>
+		[Icon( "floor_lamp" )] DecorativeLight = 300,
+		/// <summary>1000 lm</summary>
+		[Icon( "scene_light" )] InteriorLight = 1000,
+		/// <summary>10000 lm</summary>
+		[Icon( "wall_lamp" )] ExteriorLight = 10000
 	}
 
 	public enum ColorPresets
 	{
-		[Description( "1700K" ), Icon( "fireplace" )] Match = 1700,
-		[Description( "1830K" ), Icon( "cake" )] Candle = 1830,
-		[Description( "2500K" ), Icon( "wb_twilight" )] SunSunrise = 2500,
-		[Description( "2900K" ), Icon( "wb_iridescent" )] TungstenLampA = 2900,
-		[Description( "3200K" ), Icon( "wb_iridescent" )] FluorescentLights = 3200,
-		[Description( "4000K" ), Icon( "wb_incandescent" )] TungstenLampB = 4000,
-		[Description( "5000K" ), Icon( "light_mode" )] SunNoon = 5000,
-		[Description( "5600K" ), Icon( "wb_sunny" )] Daylight = 5600,
-		[Description( "6000K" ), Icon( "contrast" )] NeutralWhite = 6500,
-		[Description( "7000K" ), Icon( "wb_shade" )] OutdoorShade = 7000,
-		[Description( "7500K" ), Icon( "foggy" )] Overcast = 7500,
-		[Description( "9000K" ), Icon( "cloud" )] PartlyCloudy = 9000
+		/// <summary>1700K</summary>
+		[Icon( "fireplace" )] Match = 1700,
+		/// <summary>1830K</summary>
+		[Icon( "cake" )] Candle = 1830,
+		/// <summary>2500K</summary>
+		[Icon( "wb_twilight" )] SunSunrise = 2500,
+		/// <summary>2900K</summary>
+		[Icon( "wb_iridescent" )] TungstenLampA = 2900,
+		/// <summary>3200K</summary>
+		[Icon( "wb_iridescent" )] FluorescentLights = 3200,
+		/// <summary>4000K</summary>
+		[Icon( "wb_incandescent" )] TungstenLampB = 4000,
+		/// <summary>5000K</summary>
+		[Icon( "light_mode" )] SunNoon = 5000,
+		/// <summary>5600K</summary>
+		[Icon( "wb_sunny" )] Daylight = 5600,
+		/// <summary>6000K</summary>
+		[Icon( "contrast" )] NeutralWhite = 6500,
+		/// <summary>7000K</summary>
+		[Icon( "wb_shade" )] OutdoorShade = 7000,
+		/// <summary>7500K</summary>
+		[Icon( "foggy" )] Overcast = 7500,
+		/// <summary>9000K</summary>
+		[Icon( "cloud" )] PartlyCloudy = 9000
 	}
 
 	public enum ColorMode
 	{
-		[Description( "Use regular RGB picker" ), Icon( "wb_auto" )] Color,
-		[Description( "Use light temperature to determine color" ), Icon( "wb_incandescent" )] ColorTemperature
+		/// <summary>Use regular RGB picker</summary>
+		[Icon( "wb_auto" )] Color,
+		/// <summary>Use light temperature to determine color</summary>
+		[Icon( "wb_incandescent" )] ColorTemperature
 	}
 
 	public enum LightUnit
@@ -91,7 +113,9 @@ public class LightUnits
 
 	public enum TemperatureMode
 	{
-		[Description( "Conventional way to determine temperature" ), Icon( "wb_auto" )] Kelvin,
-		[Description( "More linear spread of temperature colors. PS: Inverted" ), Icon( "wb_incandescent" )] Mired
+		/// <summary>Conventional way to determine temperature</summary>
+		[Icon( "wb_auto" )] Kelvin,
+		/// <summary>More linear spread of temperature colors. PS: Inverted</summary>
+		[Icon( "wb_incandescent" )] Mired
 	}
 }

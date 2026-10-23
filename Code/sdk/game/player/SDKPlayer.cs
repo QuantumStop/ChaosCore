@@ -11,8 +11,7 @@ public partial class Player : BasePlayer
 		base.OnFixedUpdate();
 
 		// This should only work in first person mode, as it will break aiming otherwise!
-		if ( Halo2Crosshair && Controller.CameraMode == XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson  ) 
-			Local.Controller.Camera.GameObject.LocalRotation *= new Angles( -9, 0, 0 );
+		if ( Halo2Crosshair && Controller.CameraMode == XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson ) Local.Controller.Camera.GameObject.LocalRotation *= new Angles( -9, 0, 0 );
 	}
 
 	[Property, ReadOnly, Feature( "Debug" )] public override bool HasSuit => true;
@@ -25,13 +24,12 @@ public partial class Player : BasePlayer
 		WorldInput?.LeftMouseAction = "use";
 	}
 
-	protected override void OnDisabled()
-	{
-		WorldInput?.Enabled = false;
-	}
+	protected override void OnDisabled() => WorldInput?.Enabled = false;
 
 	protected override void OnUpdate()
 	{
+		if ( LifeState == LifeState.Alive ) AnimatePlayerModel();
+
 		base.OnUpdate();
 
 		CalculateBob();

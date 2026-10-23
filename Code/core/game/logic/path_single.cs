@@ -2,7 +2,7 @@ namespace Core;
 
 using System;
 
-[Description( "Node of a Path." )]
+/// <summary>Node of a Path.</summary>
 [Icon( "polyline" )]
 [Title( "Path" )]
 public class PathSingle : BaseEntity, Component.ExecuteInEditor

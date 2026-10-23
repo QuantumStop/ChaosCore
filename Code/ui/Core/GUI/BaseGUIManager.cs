@@ -38,8 +38,10 @@ public abstract partial class BaseGUIManager : GameObjectSystem
 
 	private GameObject _hostObject;
 	private bool _ownsHostObject;
+#if IGNIS
 	private bool _lastDevUIWantsInput;
 	private int _lastConsoleToggleSerial;
+#endif
 	private bool _waitingForXguiComponentReady;
 	private bool _waitingForPanelReady;
 	private bool _hasEnsuredXguiRoot;

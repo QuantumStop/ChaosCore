@@ -4,8 +4,8 @@ using FMODSbox;
 namespace Core;
 
 
-[Hide]
-public class BaseItem : BaseUsable
+/// <summary>On-ground items intended to be picked up by the player, and until then usually a real physics object</summary>
+public abstract class BaseItem : BaseUsable
 {
 	[Property, Group( "Outputs" ), Order( 100 ), Title( "On Pickup" )] public ChaosOutput OnPickupOutput { get; set; }
 #if IGNIS
@@ -50,8 +50,7 @@ public class BaseItem : BaseUsable
 	{
 		base.OnEnabled();
 
-		if ( PickUp )
-			return;
+		if ( PickUp ) return;
 
 		Mesh = Components.GetOrCreate<ModelRenderer>();
 		Mesh.Model = Model.Load( GetModel() );
@@ -62,15 +61,12 @@ public class BaseItem : BaseUsable
 		Physics = Components.GetOrCreate<Rigidbody>();
 		Physics.Tags.Add( "item" );
 
-		if ( IsStatic() )
-			Physics.MotionEnabled = false;
+		if ( IsStatic() ) Physics.MotionEnabled = false;
 
 		AddEffects();
 	}
 
-	/// <summary>
-	/// Used to add additional effects so we don't need to use prefabs for it
-	/// </summary>
+	/// <summary>Used to add additional effects so we don't need to use prefabs for it</summary>
 	protected virtual void AddEffects() { }
 
 	/// <summary>Who was the last one to touch it</summary>
@@ -122,14 +118,14 @@ public class BaseItem : BaseUsable
 	/// When item is forcefully removed (not when killed or spent)
 	/// </summary>
 	public virtual void OnRemove( BasePlayer Activator = null ) { }
-	/// <summary>
-	/// Properly destroy the item with extra stuff we want (instead of just calling GameObject.Destroy())
-	/// </summary>
+	/// <summary>Properly destroy the item with extra stuff we want including broadcasting (instead of just calling GameObject.Destroy())</summary>
 	[Rpc.Broadcast]
 	public void DestroyItem()
 	{
 		if ( GameObject.IsValid() ) Kill();
 	}
+	/// <summary>Ask the owner to transmit the DestroyItem to everyone</summary>
+	[Rpc.Owner] public void RequestDestroy() => DestroyItem();
 
 	/// <summary>
 	/// We started the pickup FixedUpdate, because we cant just trigger it once, it has to be occasionally checked

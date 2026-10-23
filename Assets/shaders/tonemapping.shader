@@ -1,6 +1,6 @@
 MODES
 {
-    Forward();
+	Forward();
 }
 
 COMMON
@@ -10,13 +10,13 @@ COMMON
 
 struct VertexInput
 {
-    float3 vPositionOs : POSITION;
-    float2 vTexCoord : TEXCOORD0;
+	float3 vPositionOs : POSITION;
+	float2 vTexCoord : TEXCOORD0;
 };
 
 struct PixelInput
 {
-    float2 vTexCoord : TEXCOORD0;
+	float2 vTexCoord : TEXCOORD0;
 
 	#if ( PROGRAM == VFX_PROGRAM_VS )
 		float4 vPositionPs : SV_Position;
@@ -29,32 +29,32 @@ struct PixelInput
 
 VS
 {
-    PixelInput MainVs( VertexInput i )
-    {
-        PixelInput o;
-        
-        o.vPositionPs = float4( i.vPositionOs.xy, 0.0f, 1.0f );
-        o.vTexCoord = i.vTexCoord;
-        return o;
-    }
+	PixelInput MainVs( VertexInput i )
+	{
+		PixelInput o;
+		
+		o.vPositionPs = float4( i.vPositionOs.xy, 0.0f, 1.0f );
+		o.vTexCoord = i.vTexCoord;
+		return o;
+	}
 }
 
 PS
 {	
 	#include "oklab.hlsl"
-    Texture2D LookupTexture < Attribute( "LookupTexture" ); >;	
+	Texture2D LookupTexture < Attribute( "LookupTexture" ); >;	
 	SamplerState LookupTexture_sampler < Filter( POINT ); AddressU( CLAMP ); AddressV( CLAMP );   >;
 
 	float ExpoBias		< Attribute( "TonemapBias" ); >;
 	float Gamma			< Attribute( "GammaResult" ); >;
 	float SatBlend		< Attribute( "SatBlend" ); >;
-      
+	
 	Texture2D g_tColorBuffer   < Attribute( "ColorBuffer" );  	SrgbRead( true ); >;
 	SamplerState Sampler < Filter(POINT); AddressU(WRAP); AddressV(WRAP); >;
 	
 	#define scalemin 1
 	
-	void apply_chart(in float3 image, out float3 gradedCol)
+	void apply_chart(inout float3 image)
 	{
 		const float2 iResolution = float2(4096, 64);	// float2(4096, 64); resolution of the LUT
 		
@@ -62,7 +62,7 @@ PS
 		const float3 bias = float3(0.5, 0.5, 0.0) / iResolution.y;
 		
 		float3 lookup = saturate(image) * scale + bias;
-	 
+	
 		float slice = lookup.z * iResolution.y;	
 		float sliceFrac = frac(slice);	
 		float sliceIdx = slice - sliceFrac;
@@ -76,7 +76,7 @@ PS
 		// slice interpolation
 		lookup.x += 1.0 / iResolution.y * iResolution.x / iResolution.x;
 		float3 col1 = Tex2DLevelS( LookupTexture, LookupTexture_sampler, lookup.xy, 0 ).xyz;
-		gradedCol = col0 + (col1 - col0) * sliceFrac;
+		image = col0 + (col1 - col0) * sliceFrac;
 	}
 // unity	
 	struct ParamsLogC
@@ -89,7 +89,7 @@ PS
 		float e; 
 		float f;
 	};
-	 
+	
 	static const ParamsLogC LogC =
 	{
 		0.010591, // cut
@@ -103,7 +103,7 @@ PS
 	
 	float3 LinearToLogC(float3 x)
 	{
-		return (x > LogC.cut) ? LogC.c * log10(LogC.a * x + LogC.b) + LogC.d : LogC.e * x + LogC.f;
+		return select(x > LogC.cut, LogC.c * log10(LogC.a * x + LogC.b) + LogC.d, LogC.e * x + LogC.f);
 	}
 	
 	float3 LogCToLinear(float3 x)
@@ -142,8 +142,8 @@ PS
 
 	float3 vibrance(in float3 c, in float v) 
 	{
-    	float luma = dot(float3(0.212656f, 0.715158f, 0.072186f), c.rgb);
-    	return luma.xxx + v.xxx * (c - luma.xxx);
+		float luma = dot(float3(0.212656f, 0.715158f, 0.072186f), c.rgb);
+		return luma.xxx + v.xxx * (c - luma.xxx);
 	}
 
 	RenderState( DepthWriteEnable, false );
@@ -179,37 +179,37 @@ PS
 
 	float OklabSat			< Attribute( "OklabSat" ); Default(1.0); >;
 	
-    float4 MainPs( PixelInput i ) : SV_Target0
-    {
-        float4 initcolor = g_tColorBuffer.Sample( Sampler, i.vTexCoord ).rgba;
+	float4 MainPs( PixelInput i ) : SV_Target0
+	{
+		float4 initcolor = g_tColorBuffer.Sample( Sampler, i.vTexCoord ).rgba;
 		float3 intermediateColor = initcolor.rgb;
 		
 		intermediateColor *= g_flToneMapScalarLinear;
 		intermediateColor *= ExpoBias;
 
-		intermediateColor = LinearToLogC(intermediateColor);			// convert to LogC
+		intermediateColor = LinearToLogC( intermediateColor );			// convert to LogC
 #if D_SAT
-		float3 BW = MakeMask(intermediateColor);
-		BW = pow(BW, SatBlend);
+		float3 BW = MakeMask( intermediateColor );
+		BW = pow( BW, SatBlend );
 
-		float3 saturated = LRGBtoOKLCH(intermediateColor);
+		float3 saturated = LRGBtoOKLCH( intermediateColor );
 		saturated.y *= OklabSat;
-		saturated = OKLCHtoLRGB(saturated);
+		saturated = OKLCHtoLRGB( saturated );
 	//	intermediateColor = BW;
-		intermediateColor = lerp(intermediateColor, saturated, BW);
+		intermediateColor = lerp( intermediateColor, saturated, BW );
 #endif
-		apply_chart(intermediateColor, intermediateColor);				// apply LUT, sRGB baked in
+		apply_chart( intermediateColor );				// apply LUT, sRGB baked in
 
 		// incredibly cursed
 
 #if D_GAMMA > 0
-		intermediateColor = pow(intermediateColor, Gamma);			// bullshit the gamma from 2.4 to no gamma
+		intermediateColor = pow( intermediateColor, Gamma );			// bullshit the gamma from 2.4 to no gamma
 #if D_GAMMA == 2
-		intermediateColor = accurateSRGBToLinear(intermediateColor);
+		intermediateColor = accurateSRGBToLinear( intermediateColor );
 #endif
 #endif
 
 		intermediateColor.xyz += IGN( i.vPositionSs.xy );
-		return float4(intermediateColor, initcolor.w);
-    }
+		return float4( intermediateColor, initcolor.w );
+	}
 }

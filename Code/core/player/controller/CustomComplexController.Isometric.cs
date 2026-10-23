@@ -264,14 +264,14 @@ public partial class PlayerController
 	private void FaceIsometricMoveDirection()
 	{
 		var wishMove = Input.AnalogMove;
-		
-		if ( wishMove.Length < 0.001f ) 
+
+		if ( wishMove.Length < 0.001f )
 			return;
 
 		var wishDirection = wishMove.Normal * new Angles( 0f, GetIsometricCompassYaw(), 0f ).ToRotation();
 		wishDirection = wishDirection.WithZ( 0f );
-		
-		if ( wishDirection.Length < 0.001f ) 
+
+		if ( wishDirection.Length < 0.001f )
 			return;
 
 		var targetRotation = Rotation.LookAt( wishDirection.Normal, Vector3.Up );
@@ -306,7 +306,7 @@ public partial class PlayerController
 
 		if ( elapsed >= transitionTime )
 			_isometricMoveLookTurnActive = false;
-		
+
 	}
 
 	/// <summary>
@@ -339,7 +339,7 @@ public partial class PlayerController
 		if ( MathF.Abs( ray.Forward.z ) < 0.001f ) return false;
 
 		var distance = (Head.WorldPosition.z - ray.Position.z) / ray.Forward.z;
-		if ( distance < 0f ) 
+		if ( distance < 0f )
 			return false;
 
 		worldPosition = ray.Position + ray.Forward * distance;
@@ -482,17 +482,15 @@ public partial class PlayerController
 		if ( _wasUsingIsometricCamera )
 		{
 			Camera.Orthographic = CameraMode == CameraModes.Manual && _orthographicBeforeIsometric;
-			
+
 			// Reset the isometric rotation only once when we return to a head relative camera.
 			// Previously was done every frame and that overrode recoil and any camera shake, no longer the case!
-			if ( CameraMode != CameraModes.Manual )
-				Camera.LocalRotation = Rotation.Identity;
+			if ( CameraMode != CameraModes.Manual ) Camera.LocalRotation = Rotation.Identity;
 
 			ResetIsometricZoomState();
 			_wasUsingIsometricCamera = false;
 		}
-		else if ( CameraMode != CameraModes.Manual )
-			Camera.Orthographic = false;
+		else if ( CameraMode != CameraModes.Manual ) Camera.Orthographic = false;
 	}
 
 	/// <summary>

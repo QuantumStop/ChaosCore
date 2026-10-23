@@ -15,7 +15,7 @@ partial class BasePlayer
 	{
 		if ( name.StartsWith( "weapon" ) )
 		{
-			Local?.GiveItemWeaponByName( name, parameter );
+			Local?.GiveWeaponItemByName( name, parameter );
 		}
 		else if ( name.StartsWith( "ammo" ) )
 		{
@@ -71,7 +71,7 @@ partial class BasePlayer
 	{
 		if ( name.StartsWith( "weapon" ) )
 		{
-			Local.RemoveItemWeaponByName( name );
+			Local.RemoveWeapon( name );
 		}
 		else if ( name.StartsWith( "ammo" ) )
 		{

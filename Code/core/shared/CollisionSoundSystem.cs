@@ -1,5 +1,5 @@
 ﻿#if FMOD
-namespace Sandbox;
+namespace Core;
 
 using FMODSbox;
 using System;
@@ -8,15 +8,18 @@ using System;
 /// This system exists to collect pending collision sounds and filter them into a unique set, to avoid
 /// unnesssary sounds playing, when they're going to be making the same sound anyway.
 /// </summary>
-public class CollisionSoundSystem : GameObjectSystem<CollisionSoundSystem>, ISceneCollisionEvents
+public partial class CollisionSoundSystem : GameObjectSystem<CollisionSoundSystem>, ISceneCollisionEvents, IScenePhysicsEvents
 {
-	record struct PendingSound( Surface Surface, Vector3 Position, float Speed, bool Networked );
+	private record struct PendingSound( Surface Surface, Vector3 Position, float Speed, bool Networked );
 
-	private readonly List<PendingSound> Pending = [];
+	private readonly List<PendingSound> _pending = [];
 
 	public CollisionSoundSystem( Scene scene ) : base( scene )
 	{
 		Listen( Stage.FinishUpdate, 100, ProcessQueue, "CollisionSoundSystem Queue" );
+#if IGNIS
+		Listen( Stage.FinishUpdate, 110, UpdateFriction, "CollisionSoundSystem Friction" );
+#endif
 	}
 
 	/// <summary>
@@ -55,20 +58,20 @@ public class CollisionSoundSystem : GameObjectSystem<CollisionSoundSystem>, ISce
 		if ( surface is null ) return;
 
 		// If we have more than 4, remove any that are slower/less significant
-		if ( Pending.Count > 4 && Pending.RemoveAll( x => x.Speed < speed ) == 0 )
+		if ( _pending.Count > 4 && _pending.RemoveAll( x => x.Speed < speed ) == 0 )
 			return;
 
 		// check for redundancies
-		for ( int i = 0; i < Pending.Count; i++ )
+		for ( int i = 0; i < _pending.Count; i++ )
 		{
-			if ( Pending[i].Surface.Index != surface.Index ) continue;
-			if ( Pending[i].Speed >= speed ) return;
+			if ( _pending[i].Surface.Index != surface.Index ) continue;
+			if ( _pending[i].Speed >= speed ) return;
 
-			Pending[i] = new PendingSound( surface, position, speed, networked );
+			_pending[i] = new PendingSound( surface, position, speed, networked );
 			return;
 		}
 
-		Pending.Add( new PendingSound( surface, position, speed, networked ) );
+		_pending.Add( new PendingSound( surface, position, speed, networked ) );
 	}
 
 	public void AddShapeCollision( PhysicsShape shape, Surface surface, in PhysicsContact contact, bool networked )
@@ -76,17 +79,15 @@ public class CollisionSoundSystem : GameObjectSystem<CollisionSoundSystem>, ISce
 		AddShapeCollision( shape, surface, contact.Point, MathF.Abs( contact.NormalSpeed ), networked );
 	}
 
-	RealTimeSince lastRan = 0;
+	private RealTimeSince _lastRan = 0;
 
-	/// <summary>
-	/// Create the pending sounds
-	/// </summary>
-	void ProcessQueue()
+	/// <summary>Create the pending sounds</summary>
+	private void ProcessQueue()
 	{
-		if ( lastRan < 0.05f ) return;
-		lastRan = 0;
+		if ( _lastRan < 0.05f ) return;
+		_lastRan = 0;
 
-		foreach ( var pending in Pending )
+		foreach ( var pending in _pending )
 		{
 			if ( pending.Surface is null ) continue;
 
@@ -100,7 +101,7 @@ public class CollisionSoundSystem : GameObjectSystem<CollisionSoundSystem>, ISce
 			}
 		}
 
-		Pending.Clear();
+		_pending.Clear();
 	}
 
 	[Rpc.Broadcast( NetFlags.Unreliable )]
@@ -112,30 +113,29 @@ public class CollisionSoundSystem : GameObjectSystem<CollisionSoundSystem>, ISce
 		PlayCollisionSound( surface, pos, speed );
 	}
 
-	/// <summary>
-	/// Play a collision sound based on this shape's surface. Can return null if sound is invalid, or too quiet to play.
-	/// </summary>
+	/// <summary>Play a collision sound based on this shape's surface. Can return null if sound is invalid, or too quiet to play.</summary>
 	static private FMOD.Studio.EventInstance PlayCollisionSound( Surface surface, Vector3 position, float speed = 320.0f )
 	{
 		float volume = speed / 1000.0f;
 		if ( volume > 1.0f ) volume = 1.0f;
 		if ( volume < 0.001f ) return FMODSound.Null();
 
-		var sound = "event:/Physics/ImpactHard";
-
-		if ( speed < 200f )
-			sound = "event:/Physics/ImpactSoft";
+		var sound = SolveSurfaceImpactSoftness( surface, speed < 200f );
 
 		var s = FMODSound.Play( sound, position );
 		s.setVolume( 0.5f );
 
-		var surf = surface?.SoundCollection.SurfaceParameter;
+		var surf = BasePlayer.SolveSurfaceParameter( surface );
 
-		if ( !string.IsNullOrWhiteSpace( surf ) )
-			FMODSound.SetParameter( s, "parameter:/Physics/MaterialType", surf );
+		if ( !string.IsNullOrWhiteSpace( surf ) ) FMODSound.SetParameter( s, "parameter:/Physics/MaterialType", surf );
 
 		return s;
 	}
 
+	/// <summary>Get the working impact event path, depending on the surface inheritance chain and the intended softness</summary>
+	/// <param name="surface">Surface</param>
+	/// <param name="soft">Are we looking for soft or rough</param>
+	/// <returns>Event path or null</returns>
+	private static FMODEventResource SolveSurfaceImpactSoftness( Surface surface, bool soft ) => soft ? surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.ImpactSoft ) : surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.ImpactHard );
 }
 #endif

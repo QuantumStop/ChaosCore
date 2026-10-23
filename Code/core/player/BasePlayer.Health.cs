@@ -127,9 +127,7 @@ public partial class BasePlayer
 #endif
 	}
 
-	/// <summary>
-	/// No damage whatsoever
-	/// </summary>
+	/// <summary> No damage whatsoever</summary>
 	public static bool God { get; set; } = false;
 
 	[ConCmd( "god" )]
@@ -158,17 +156,19 @@ public partial class BasePlayer
 		Controller.Controller.Velocity += amount;
 	}
 
-	/// <summary>
-	/// Deal damage to player
-	/// </summary>
+	/// <summary>Deal damage to player, route it through a function where we can actually call RPC because of the in keyword</summary>
 	/// <param name="dmginfo">Damage Information</param>
-	public void OnDamage( in DamageInfo dmginfo )
-	{
-		if ( dmginfo.Damage == 0f || God || LifeState == LifeState.Dead )    //	early out if no damage or in god mode or dead
-			return;
+	public void OnDamage( in DamageInfo dmginfo ) => OnDamage( dmginfo );
 
-		if ( dmginfo.Tags.Has( "fall" ) && Local.WaterLevel > 0 ) // cant die from fall if fall in water (although really the velocity slowdown should already do it for us)
-			return;
+	/// <summary>Deal damage to this player</summary>
+	/// <param name="dmginfo">Damage information</param>
+	[Rpc.Owner]
+	protected virtual void OnDamage( DamageInfo dmginfo )
+	{
+		if ( dmginfo is null ) return;
+
+		if ( dmginfo.Damage == 0f || God || LifeState == LifeState.Dead ) return;  // early out if no damage or in god mode or dead
+		if ( dmginfo.Tags.Has( "fall" ) && Local.WaterLevel > 0 ) return; // cant die from fall if fall in water (although really the velocity slowdown should already do it for us)
 
 		if ( dmginfo.Damage < 0 )
 		{
@@ -200,8 +200,7 @@ public partial class BasePlayer
 			dmginfo.Damage = flNew;
 		}
 
-		DamageInfo dmginfoTemp = dmginfo; // doesnt allow me to pass an "in" variable
-		Scene.RunEvent<IPlayerEvents>( x => x.OnTookDamage( this, dmginfoTemp ) );
+		Scene.RunEvent<IPlayerEvents>( x => x.OnTookDamage( this, dmginfo ) );
 
 		//		TODO: haptic feedback
 		//		TODO: Reset damage time countdown for each type of time based damage player just sustained
@@ -210,8 +209,7 @@ public partial class BasePlayer
 		DamageEffect( dmginfo );
 
 		//		apply velocity to the player
-		if ( dmginfo is CoreDamageInfo coreDamageInfo )
-			Punch( coreDamageInfo.Force.WithZ( Math.Max( 0f, coreDamageInfo.Force.z ) ) );
+		if ( dmginfo is CoreDamageInfo coreDamageInfo ) Punch( coreDamageInfo.Force.WithZ( Math.Max( 0f, coreDamageInfo.Force.z ) ) );
 
 		Health -= dmginfo.Damage;
 		Health = Math.Clamp( Health, Buddha ? 1 : 0, 100 );
@@ -256,9 +254,7 @@ public partial class BasePlayer
 		ScreenFlash.Set( Color.Red, 50 );
 	}
 
-	/// <summary>
-	/// Show damage screen effects
-	/// </summary>
+	/// <summary>Show damage screen effects</summary>
 	/// <param name="dmginfo">Damage information</param>
 	protected virtual void DamageEffect( DamageInfo dmginfo )
 	{

@@ -9,14 +9,8 @@ public partial class PlayerWalkControllerComplex : Component
 	[Sync] public Angles LocalEyeAngles { get; set; }
 	public Angles EyeAngles
 	{
-		get
-		{
-			return LocalEyeAngles + GameObject.LocalRotation.Angles();
-		}
-		set
-		{
-			LocalEyeAngles = value - GameObject.LocalRotation.Angles();
-		}
+		get => LocalEyeAngles + GameObject.LocalRotation.Angles();
+		set => LocalEyeAngles = value - GameObject.LocalRotation.Angles();
 	}
 
 	/// <summary>

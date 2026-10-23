@@ -6,7 +6,7 @@ public enum PathType { Generic, StaticCable, Rope, Trajectory, PathCorner }
 public enum InterpolationMode { Linear, Spline }
 public enum TextureOrientation { Horizontal, Vertical } // U && V along paths
 
-[Description( "A path." )]
+/// <summary>A path.</summary>
 [Icon( "polyline" )]
 [Title( "Path" )]
 public class PathTrack : BaseEntity, Component.ExecuteInEditor
@@ -41,7 +41,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		}
 	} = InterpolationMode.Linear;
 
-	[Property, Feature( "Debug" )] public List<GameObject> pathPoints = []; // Store GameObjects as path points
+	[Property, Feature( "Debug" )] public List<GameObject> PathPoints = []; // Store GameObjects as path points
 	private Dictionary<GameObject, Vector3> _lastKnownPositions = [];
 	private HashSet<GameObject> _knownPathPoints = [];
 
@@ -196,7 +196,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 			}
 		}
 	} = true;
-	bool isDirty = true;
+	bool _isDirty = true;
 	private List<Vector3> _splinePoints = [];
 
 	public SceneCamera EditorCamera;
@@ -225,7 +225,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 	private void Dirty()
 	{
-		isDirty = true;
+		_isDirty = true;
 
 		switch ( CurrentInterpolation )
 		{
@@ -255,28 +255,29 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 	private void UpdatePath()
 	{
-		if ( !isDirty ) return;
+		if ( !_isDirty ) return;
 
 		_splinePoints.Clear();
 
-		if ( pathPoints.Count < 2 )
+		if ( PathPoints.Count < 2 )
 			return;
 
 		float scaledSpacing = Spacing / 1000f;
 
 		if ( CurrentInterpolation == InterpolationMode.Linear )
 		{
-			foreach ( var point in pathPoints )
+			foreach ( var point in PathPoints )
 				_splinePoints.Add( point.WorldPosition );
 		}
 		else if ( CurrentInterpolation == InterpolationMode.Spline )
 		{
-			var extendedPoints = new List<Vector3>();
-
-			extendedPoints.Add( pathPoints[0].WorldPosition ); // duplicate first point
-			foreach ( var point in pathPoints )
+			var extendedPoints = new List<Vector3>
+			{
+				PathPoints[0].WorldPosition // duplicate first point
+			};
+			foreach ( var point in PathPoints )
 				extendedPoints.Add( point.WorldPosition );
-			extendedPoints.Add( pathPoints[^1].WorldPosition ); // duplicate last point
+			extendedPoints.Add( PathPoints[^1].WorldPosition ); // duplicate last point
 
 			for ( int i = 0; i < extendedPoints.Count - 3; i++ )
 			{
@@ -299,7 +300,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		// Generate cable mesh if type is StaticCable or Rope
 		if ( CurrentPathType == PathType.StaticCable || CurrentPathType == PathType.Rope )
 		{
-			if ( Game.IsEditor && _splinePoints.Count >= 2 && lodCheckTimer > 0.2f )
+			if ( Game.IsEditor && _splinePoints.Count >= 2 && _lodCheckTimer > 0.2f )
 			{
 				var cameraPosition = Scene.Camera.WorldPosition;
 				GenerateCableMesh( cameraPosition );
@@ -316,7 +317,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 			_cableObject = null;
 		}
 
-		isDirty = false;
+		_isDirty = false;
 	}
 
 	public void RefreshPathPoints()
@@ -330,15 +331,15 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		// Detect if any points were added or removed
 		if ( !currentSet.SetEquals( _knownPathPoints ) )
 		{
-			pathPoints = currentPoints;
+			PathPoints = currentPoints;
 			_knownPathPoints = currentSet;
 
 			// Track last known positions
 			_lastKnownPositions.Clear();
-			foreach ( var point in pathPoints )
+			foreach ( var point in PathPoints )
 				_lastKnownPositions[point] = point.WorldPosition;
 
-			isDirty = true;
+			_isDirty = true;
 		}
 	}
 
@@ -346,7 +347,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 	{
 		bool anyMoved = false;
 
-		foreach ( var point in pathPoints )
+		foreach ( var point in PathPoints )
 		{
 			var current = point.WorldPosition;
 
@@ -359,20 +360,20 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 		if ( anyMoved )
 		{
-			isDirty = true;
+			_isDirty = true;
 		}
 	}
 
 
 	// CLamping update time for gizmo.drawtext/anything else we need to update
-	private Dictionary<GameObject, (Vector3 position, string label)> textCache = new();
-	private bool isTextCacheDirty = true;
+	private Dictionary<GameObject, (Vector3 position, string label)> _textCache = [];
+	private bool _isTextCacheDirty = true;
 
-	private TimeSince timeSinceLastTextDraw = 0;
-	private const float textDrawInterval = 0.0026f; // seconds (200ms)
+	private TimeSince _timeSinceLastTextDraw = 0;
+	private const float _textDrawInterval = 0.0026f; // seconds (200ms)
 
-	private float lodCheckTimer = 0f;
-	private int previousLODLevel = -1;
+	private float _lodCheckTimer = 0f;
+	private int _previousLODLevel = -1;
 
 
 	protected override void DrawGizmos()
@@ -386,7 +387,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		RefreshPathPoints();
 		CheckForMovedPoints();
 
-		if ( isDirty )
+		if ( _isDirty )
 		{
 			UpdatePath(); // Only rebuild if really needed
 			InvalidateTextCache();
@@ -395,11 +396,11 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		Gizmo.Draw.LineThickness = 2.5f;
 
 		bool isPathSelected = Gizmo.IsSelected;
-		GameObject selectedPoint = pathPoints.FirstOrDefault( point => point.GetComponent<PathSingle>()?.IsSelected == true );
+		GameObject selectedPoint = PathPoints.FirstOrDefault( point => point.GetComponent<PathSingle>()?.IsSelected == true );
 
 
 		// Draw path point handles (sprites)
-		foreach ( var point in pathPoints )
+		foreach ( var point in PathPoints )
 		{
 			var pos = point.WorldPosition + Vector3.Up * 0.4f;
 			float dist = (pos - Gizmo.Camera.Position).Length;
@@ -414,7 +415,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		{
 			Gizmo.Draw.LineThickness = 2.5f;
 
-			var selectedPoints = pathPoints
+			var selectedPoints = PathPoints
 				.Where( p =>
 				{
 					var ps = p.Components.Get<PathSingle>();
@@ -422,8 +423,8 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				} )
 				.ToList();
 
-			int firstSelectedIndex = selectedPoints.Count > 0 ? pathPoints.IndexOf( selectedPoints.First() ) : -1;
-			int lastSelectedIndex = selectedPoints.Count > 0 ? pathPoints.IndexOf( selectedPoints.Last() ) : -1;
+			int firstSelectedIndex = selectedPoints.Count > 0 ? PathPoints.IndexOf( selectedPoints.First() ) : -1;
+			int lastSelectedIndex = selectedPoints.Count > 0 ? PathPoints.IndexOf( selectedPoints.Last() ) : -1;
 
 			if ( firstSelectedIndex >= 0 && lastSelectedIndex >= 0 && lastSelectedIndex < firstSelectedIndex )
 			{
@@ -437,7 +438,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				var b = _splinePoints[i + 1];
 				Color lineColor = Color.White;
 
-				bool shouldDrawText = timeSinceLastTextDraw > textDrawInterval;
+				bool shouldDrawText = _timeSinceLastTextDraw > _textDrawInterval;
 
 				if ( isPathSelected )
 				{
@@ -446,10 +447,10 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 						lineColor = Color.Yellow;
 
 						// Only rebuild the text cache when it's dirty
-						if ( isTextCacheDirty )
+						if ( _isTextCacheDirty )
 							RebuildTextCache();
 
-						foreach ( var kvp in textCache )
+						foreach ( var kvp in _textCache )
 						{
 							Gizmo.Draw.Color = Color.White;
 							Gizmo.Draw.Text( kvp.Value.label, new Transform( kvp.Value.position, Rotation.Identity ), font: "Roboto", size: 12f );
@@ -460,12 +461,12 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				{
 					foreach ( var sp in selectedPoints )
 					{
-						int index = pathPoints.IndexOf( sp );
+						int index = PathPoints.IndexOf( sp );
 						if ( index == -1 ) continue;
 
-						Vector3 curr = pathPoints[index].WorldPosition;
-						Vector3? prev = index > 0 ? pathPoints[index - 1].WorldPosition : (Vector3?)null;
-						Vector3? next = index < pathPoints.Count - 1 ? pathPoints[index + 1].WorldPosition : (Vector3?)null;
+						Vector3 curr = PathPoints[index].WorldPosition;
+						Vector3? prev = index > 0 ? PathPoints[index - 1].WorldPosition : (Vector3?)null;
+						Vector3? next = index < PathPoints.Count - 1 ? PathPoints[index + 1].WorldPosition : (Vector3?)null;
 
 						// Fade white -> yellow near prev
 						if ( prev.HasValue && IsInSegment( a, b, prev.Value, curr ) )
@@ -485,21 +486,21 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 				}
 
 				if ( shouldDrawText )
-					timeSinceLastTextDraw = 0;
+					_timeSinceLastTextDraw = 0;
 
 				Gizmo.Draw.Color = lineColor;
 				Gizmo.Draw.Line( a, b );
 			}
 
-			if ( Game.IsEditor && _splinePoints.Count >= 2 && lodCheckTimer > 0.2f )
+			if ( Game.IsEditor && _splinePoints.Count >= 2 && _lodCheckTimer > 0.2f )
 			{
 				Vector3 cameraPos = Gizmo.Camera.Position;
 				float distance = _splinePoints.Min( p => Vector3.DistanceBetween( p, cameraPos ) );
 				int lodLevel = GetLODLevel( distance );
 
-				if ( lodLevel != previousLODLevel )
+				if ( lodLevel != _previousLODLevel )
 				{
-					previousLODLevel = lodLevel;
+					_previousLODLevel = lodLevel;
 					GenerateCableMesh( cameraPos );
 				}
 			}
@@ -510,12 +511,12 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 	protected override void OnFixedUpdate()
 	{
-		lodCheckTimer += Time.Delta;
-		if ( lodCheckTimer < 0.2f ) // check every 200ms
+		_lodCheckTimer += Time.Delta;
+		if ( _lodCheckTimer < 0.2f ) // check every 200ms
 			return;
 
 
-		lodCheckTimer = 0f;
+		_lodCheckTimer = 0f;
 
 		Vector3 cameraPos =
 			Scene.IsEditor && EditorCamera is not null ? EditorCamera.Position :
@@ -525,9 +526,9 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		float distance = _splinePoints.Min( p => Vector3.DistanceBetween( p, cameraPos ) );
 		int lodLevel = GetLODLevel( distance );
 
-		if ( lodLevel != previousLODLevel )
+		if ( lodLevel != _previousLODLevel )
 		{
-			previousLODLevel = lodLevel;
+			_previousLODLevel = lodLevel;
 			GenerateCableMesh( cameraPos );
 
 		}
@@ -536,27 +537,27 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 
 	private void InvalidateTextCache()
 	{
-		isTextCacheDirty = true;
+		_isTextCacheDirty = true;
 	}
 
 	private void RebuildTextCache()
 	{
 		// Only rebuild the cache if it's marked dirty
-		if ( isTextCacheDirty )
+		if ( _isTextCacheDirty )
 		{
-			textCache.Clear();
+			_textCache.Clear();
 
-			foreach ( var point in pathPoints )
+			foreach ( var point in PathPoints )
 			{
 				if ( !point.IsValid() ) continue;
 
 				Vector3 pos = point.WorldPosition + Vector3.Up * 4f;
 				string label = point.Name?.Replace( "PathPoint_", "" ) ?? "";
 
-				textCache[point] = (pos, label);
+				_textCache[point] = (pos, label);
 			}
 
-			isTextCacheDirty = false; // After rebuilding, set it to false
+			_isTextCacheDirty = false; // After rebuilding, set it to false
 		}
 	}
 
@@ -802,8 +803,7 @@ public class PathTrack : BaseEntity, Component.ExecuteInEditor
 		if ( _splinePoints is null || _splinePoints.Count < 3 )
 			return _splinePoints;
 
-		List<Vector3> lodPoints = new();
-		lodPoints.Add( _splinePoints[0] );
+		List<Vector3> lodPoints = [_splinePoints[0]];
 
 		for ( int i = 1; i < _splinePoints.Count - 1; i++ )
 		{

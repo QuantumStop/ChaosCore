@@ -9,19 +9,20 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 {
 	public enum TonemappingMode
 	{
-		[Description( "AgX, LogC3" )]
+		/// <summary>AgX, LogC3</summary>
 		Saturated,
-		[Description( "Saturated LogC4, LogC3" )]
+		/// <summary>Saturated LogC4, LogC3</summary>
 		NeutralAlt,
-		[Description( value: "LogC4 LUT, LogC3" )]
+		/// <summary>LogC4 LUT, LogC3</summary>
 		Neutral,
-		[Description( "Regular Rec709 with nothing, LogC3" )]
+		/// <summary>Regular Rec709 with nothing, LogC3</summary>
 		Linear,
-		[Description( "Any LUT with LogC3" )]
+		/// <summary>Any LUT with LogC3</summary>
 		Custom
 	}
 
-	[Property, Description( "Change this depending on the mini-game" )]
+	/// <summary>Change this depending on the mini-game</summary>
+	[Property]
 	public TonemappingMode Mode { get; set; } = TonemappingMode.Neutral;
 
 	private float _gammaPre { get; set; } = 2.4f;
@@ -30,8 +31,8 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 	private float _oklab { get; set; } = 1.25f;
 	private float _satBlend { get; set; } = 0.6f;
 
-	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] float GammaIn { get; set; } = 2.4f;
-	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] float GammaOut { get; set; } = 2.2f;
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] private float _gammaIn { get; set; } = 2.4f;
+	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 1, 3 ), Step( 0.1f )] private float _gammaOut { get; set; } = 2.2f;
 
 	private Texture _lookupTexture { get; set; } = Texture.White;
 
@@ -39,14 +40,10 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 	private Texture _customLUT { get; set; } = Texture.White;
 	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0.1f, 2 )]
 	private float _exposureBias { get; set; } = 1.0f;
-	/// <summary>
-	/// How much to saturate using the oklab method (instead of HSV)
-	/// </summary>
+	/// <summary>How much to saturate using the oklab method (instead of HSV)</summary>
 	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0.0f, 2 )]
 	private float _oklabSaturation { get; set; } = 2f;
-	/// <summary>
-	/// Instead of just applying saturation straight up, we blend based on OkLab brightness, which allows to saturate only certain parts of the image, instead of all of it, this adjusts contrast of the mask, with 0 meaning "just use the saturated image"
-	/// </summary>
+	/// <summary>Instead of just applying saturation straight up, we blend based on OkLab brightness, which allows to saturate only certain parts of the image, instead of all of it, this adjusts contrast of the mask, with 0 meaning "just use the saturated image"</summary>
 	[Property, ShowIf( nameof( Mode ), TonemappingMode.Custom ), Range( 0f, 2 )]
 	private float _oklabLumaBlend { get; set; } = 0.8f;
 
@@ -90,8 +87,8 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 				break;
 			case TonemappingMode.Custom:
 				_bias = _exposureBias;
-				_gammaPre = GammaIn;
-				_gammaPost = GammaOut;
+				_gammaPre = _gammaIn;
+				_gammaPost = _gammaOut;
 				_oklab = _oklabSaturation;
 				_satBlend = _oklabLumaBlend;
 				Attributes.SetCombo( "D_SAT", 1 );  // use the oklch saturation
@@ -112,9 +109,7 @@ public class Tonemapper : BasePostProcess<Tonemapper>, Component.ExecuteInEditor
 
 	private static Material _shader = Material.FromShader( "tonemapping.shader" );
 
-	/// <summary>
-	/// Calculate resulting gamma bias, instead of using two separate gammas and calculating each
-	/// </summary>
+	/// <summary>Calculate resulting gamma bias, instead of using two separate gammas and calculating each</summary>
 	/// <param name="In">Original gamma of the LUT (if its something stupid like 2.4 instead of sRGB)</param>
 	/// <param name="Out">The gamma we want to get</param>
 	/// <returns></returns>

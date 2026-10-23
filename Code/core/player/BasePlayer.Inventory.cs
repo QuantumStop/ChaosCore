@@ -10,8 +10,7 @@ public partial class BasePlayer
 {
 	private static string GetWeaponTypeLibraryKey( WeaponParse data )
 	{
-		if ( data is null )
-			return null;
+		if ( data is null ) return null;
 
 		return data.ResourceName?.ToString()?.ToLowerInvariant();
 	}
@@ -19,37 +18,35 @@ public partial class BasePlayer
 	private static TypeDescription ResolveWeaponTypeDescription( WeaponParse data )
 	{
 		var key = GetWeaponTypeLibraryKey( data );
-		if ( string.IsNullOrWhiteSpace( key ) )
-			return null;
+		if ( string.IsNullOrWhiteSpace( key ) ) return null;
 
 		return GlobalGameNamespace.TypeLibrary.GetType( key );
 	}
 
-	protected static bool TryResolveWeaponDataAndType( string name, out WeaponParse data, out TypeDescription type )
+	protected static bool TryResolveWeaponTypeDescription( WeaponParse data, out TypeDescription type )
 	{
-		data = WeaponParse.GetWeaponData( name );
 		type = ResolveWeaponTypeDescription( data );
-
-		return data.IsValid() && type is not null;
+		return type is not null;
 	}
 
+	protected static bool TryResolveWeaponData( string indata, out WeaponParse data )
+	{
+		data = WeaponParse.GetWeaponData( indata );
+		return data.IsValid();
+	}
 
 	/// <summary>List of all weapons on the player</summary>
 	[Property, ReadOnly, Feature( "Weapons" ), Sync] public NetList<BaseCombatWeapon> WeaponList { get; set; } = [];
 
-	/// <summary>
-	/// List of all reserve ammo components on the player
-	/// </summary>
+	/// <summary>List of all reserve ammo components on the player</summary>
 	[Property, ReadOnly, Feature( "Weapons" ), InlineEditor, Sync] public NetList<PlayerAmmoReserve> AmmoReserveList { get; set; } = [];
-	/// <summary>
-	/// Viewmodel GameObject
-	/// </summary>
-	[Property, Feature( "Weapons" ), Header( "GameObjects" )] public GameObject WeaponGameObject => ViewmodelWeaponObject;
-	/// <summary>
-	/// Current weapon
-	/// </summary>
+	/// <summary>Inventory GameObject weapons/items are stored on</summary>
+	[Property, Feature( "Weapons" ), Header( "GameObjects" )] public GameObject WeaponGameObject { get; set; }
+
+#nullable enable // nullable so we can send a null into OnCurrentWeaponChange, otherwise the setter is never trigered
+	/// <summary>Current weapon</summary>
 	[Property, Feature( "Weapons" ), Header( "Weapon States" ), ReadOnly, Sync]
-	public BaseCombatWeapon CurrentWeapon
+	public BaseCombatWeapon? CurrentWeapon
 	{
 		get;
 		protected set
@@ -61,9 +58,9 @@ public partial class BasePlayer
 			}
 		}
 	}
-	/// <summary>
-	/// Current weapon crosshair
-	/// </summary>
+#nullable disable
+
+	/// <summary>Current weapon crosshair</summary>
 	[Property, Feature( "Weapons" ), Header( "Weapon States" ), ReadOnly]
 	public Crosshair CurrentCrosshair
 	{
@@ -78,9 +75,7 @@ public partial class BasePlayer
 		}
 	}
 	[Property, Feature( "Weapons" ), ReadOnly] public BaseCombatWeapon LastWeapon { get; set; }
-	/// <summary>
-	/// Weapon soon to be equipped
-	/// </summary>
+	/// <summary>Weapon soon to be equipped</summary>
 	[Property, Feature( "Weapons" ), ReadOnly]
 	public BaseCombatWeapon WeaponToEquip
 	{
@@ -112,7 +107,7 @@ public partial class BasePlayer
 	}
 
 	/// <summary>Most holster actions want very specific state so we can just reuse it for all of them</summary>
-	protected bool _holsterOrActionCheck => CurrentWeapon.IsValid() && CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() && !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading;
+	protected bool _holsterOrActionCheck => CurrentWeapon.IsValid() && CurrentWeapon.GetViewmodel().IsValid() && !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading;
 
 	// --- Weapon HUD/Selection ---
 	[ConVar( "hud_showemptyweaponslots", Help = "Show empty weapon slots in selection HUD." )] public static bool HudShowEmptyWeaponSlots { get; set; } = false;
@@ -128,55 +123,56 @@ public partial class BasePlayer
 	[Property, ReadOnly, Feature( "Inventory" )] protected List<List<BaseCombatWeapon>> _cachedBuckets = [];
 	[Property, ReadOnly, Feature( "Inventory" )] protected int _lastInventoryHash = 0;
 
-	private GameObject _muzzleattachment => ViewmodelWeapon?.GetAttachmentObject( "muzzle" );
-
-	/// <summary>
-	/// Can the model be changed when we are switching, or something else is using the model
-	/// </summary>
+	/// <summary>Can the model be changed when we are switching, or something else is using the model</summary>
 	[Property, Hide] public bool AllowWeaponModelChange { get; set; } = true;
 
 	/// <summary>Current weapon has changed, handle the swap</summary>
+	[Rpc.Broadcast]
 	private void OnCurrentWeaponChange()
 	{
 		if ( AllowWeaponModelChange )
-			SetAllWeaponModels( CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData?.WeaponViewmodel : null );
+		{
+			SetAllWeaponViewmodels( CurrentWeapon.IsValid() ? CurrentWeapon.GetViewmodel() : null );
+			if ( !IsPossessedLocally ) WorldmodelVisible = CurrentWeapon.IsValid(); // the weaponswitch where "real" visibility setting is is not transmitted so we have to make due elsewhere, like here (only for proxies)
+			SetAllWeaponWorldmodels( CurrentWeapon.IsValid() ? CurrentWeapon.GetWorldmodel() : null );
+		}
 
+		GameObject _muzzleattachment = BaseCombatWeapon.GetWeaponAttachObject( this, "muzzle", out _ );
 		if ( _muzzleattachment.IsValid() ) CurrentWeapon?.ClearEffects( _muzzleattachment );
 	}
 
-	/// <summary>
-	/// Force ownership on evey child BaseCombatWeapon to be Player's
-	/// </summary>
+	/// <summary>Force ownership on every BaseCombatWeapon player has to be the player's again</summary>
 	public void RestoreWeaponOwnership()
 	{
-		foreach ( var weapon in GetComponentsInChildren<BaseCombatWeapon>( true ) )
+		foreach ( var weapon in WeaponList )
 		{
-			if ( !weapon.IsValid() )
-				continue;
+			if ( !weapon.IsValid() ) continue;
 
 			weapon.Owner = new BaseCombatWeapon.WeaponOwner( this );
 		}
 	}
 
-	/// <summary>
-	/// Force a weapon model refresh back to the one we are holding
-	/// </summary>
+	/// <summary>Force a weapon model refresh back to the one we are holding</summary>
 	public void ForceWeaponChange() => OnCurrentWeaponChange();
 
-	/// <summary>
-	/// Add AND equip a weapon
-	/// </summary>
+	/// <summary>Add AND equip a weapon (string version)</summary>
 	/// <param name="name">Weapon name</param>
 	/// <param name="param">Additional params</param>
 	/// <param name="switchto">Switch to that weapon?</param>
 	/// <param name="item">Optional weapon item</param>
-	public virtual BaseCombatWeapon GiveWeaponByName( string name, string param, bool switchto = true, BaseWeaponItem item = null )
-	{
-		if ( !TryResolveWeaponDataAndType( name, out var data, out var weaponType ) )
-			return null;
+	public virtual BaseCombatWeapon GiveWeapon( string name, string param, bool switchto = true, BaseWeaponItem item = null )
+	=> GiveWeapon( WeaponParse.GetWeaponData( name ), param, switchto, item );
 
-		if ( !WeaponGameObject.IsValid() )
-			return null;
+	/// <summary>Add AND equip a weapon (WeaponParse version, so you can transfer changed data more easily)</summary>
+	/// <param name="data">Weapon data</param>
+	/// <param name="param">Additional params</param>
+	/// <param name="switchto">Switch to that weapon?</param>
+	/// <param name="item">Optional weapon item</param>
+	public virtual BaseCombatWeapon GiveWeapon( WeaponParse data, string param, bool switchto = true, BaseWeaponItem item = null )
+	{
+		if ( !data.IsValid() || !TryResolveWeaponTypeDescription( data, out var weaponType ) ) return null;
+
+		if ( !WeaponGameObject.IsValid() ) return null;
 
 		var weaponSnapshot = new BaseCombatWeapon[WeaponList.Count];
 		WeaponList.CopyTo( weaponSnapshot, 0 );
@@ -228,8 +224,9 @@ public partial class BasePlayer
 		var wpnobj = WeaponGameObject.Components.Create( weaponType, false ) as BaseCombatWeapon;
 		wpnobj.WeaponData = data;
 
-		if ( param == "nofirstequip" || param == "noeq" )
-			wpnobj.FirstEquip = false;
+		if ( param == "nofirstequip" || param == "noeq" ) wpnobj.FirstEquip = false;
+
+		if ( GameManagerSystem.Rules.IsOnline ) wpnobj.Network.Refresh();
 
 		WeaponList.Add( wpnobj );
 		if ( switchto ) SwitchToWeapon( wpnobj );
@@ -239,6 +236,7 @@ public partial class BasePlayer
 
 	[ConVar( "debug_weapon_drop_ray" )] public static bool DebugDropRay { get; set; } = false;
 
+	[Rpc.Owner]
 	public virtual void DropWeapon( BaseCombatWeapon weapon, bool switchtonew = true, float force = 1 )
 	{
 		GameObject WeaponObject = Scene.CreateObject();
@@ -264,14 +262,11 @@ public partial class BasePlayer
 		item.AngularImpulse = Vector3.Random * 25 * item.Physics.Mass;
 
 		RemoveWeapon( weapon, switchtonew );
-		if ( !switchtonew ) CurrentWeapon = null;
 
 		if ( GameManagerSystem.Rules.IsOnline ) WeaponObject.NetworkSpawn();
 	}
 
-	/// <summary>
-	/// Switch to specified weapon, if called directly instead of SwitchToWeapon, skips the holster (if any)
-	/// </summary>
+	/// <summary>Switch to specified weapon, if called directly instead of SwitchToWeapon, skips the holster (if any)</summary>
 	/// <param name="weapon">Weapon in question</param>
 	protected virtual void WeaponSwitch( BaseCombatWeapon weapon )
 	{
@@ -282,11 +277,12 @@ public partial class BasePlayer
 		if ( CurrentWeapon.IsValid() && CurrentWeapon.HasUsableAmmo() ) LastWeapon = CurrentWeapon;
 
 		CurrentWeapon = weapon;
-		ViewmodelVisible = true;
+		ViewmodelVisible = weapon.IsValid();
+		WorldmodelVisible = weapon.IsValid();
 
 		CurrentWeapon?.Draw();
 
-		WeaponGameObject.Name = "Viewmodel " + "(" + (CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData.Name : "Disarmed") + ")";
+		ViewmodelWeaponObject.Name = "Viewmodel " + "(" + (CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData.Name : "Disarmed") + ")";
 	}
 
 	/// <summary>Skip holster delay when switching weapons.</summary>
@@ -350,16 +346,16 @@ public partial class BasePlayer
 	/// <summary>ConVar 'give weapon_name'</summary>
 	/// <param name="name">weapon_name</param>
 	/// <param name="param">Additional parameter to consider</param>
-	public void GiveItemWeaponByName( string name, string param )
+	public virtual void GiveWeaponItemByName( string name, string param )
 	{
 		if ( !string.IsNullOrEmpty( name ) )
 		{
-			if ( !ResourceLibrary.TryGet<WeaponParse>( "scripts/weapons/" + name + ".wpn", out var gun ) )
-				return;
+			if ( !TryResolveWeaponData( name, out var gun ) ) return;
 
 			var itemobj = Scene.CreateObject();
 			itemobj.Name = name.ToLowerInvariant();
 			itemobj.WorldPosition = WorldPosition + Vector3.Up * 10f;
+
 			var weapon = itemobj.Components.Create<BaseWeaponItem>( false );
 			weapon.Data = gun;
 
@@ -368,6 +364,9 @@ public partial class BasePlayer
 			weapon.OverrideSlotOccupancy = true;
 			weapon.LastOwner = this;
 			weapon.PickUp = true;
+
+			if ( GameManagerSystem.Rules.IsOnline ) itemobj.NetworkSpawn();
+
 			weapon.Enabled = true;
 		}
 	}
@@ -375,29 +374,27 @@ public partial class BasePlayer
 	/// <summary>Remove a given weapon, if we have it</summary>
 	/// <param name="name">Full Type name of the weapon</param>
 	/// <param name="switchtonew">Do we switch to the new weapon?</param>
-	public void RemoveItemWeaponByName( string name, bool switchtonew = true ) => RemoveWeapon( GetWeaponByName( name ), switchtonew );
+	public void RemoveWeapon( string name, bool switchtonew = true ) => RemoveWeapon( GetWeaponByName( name ), switchtonew );
 
-	/// <summary>
-	/// Remove a given weapon, if we have it
-	/// </summary>
+	/// <summary>Remove a given weapon, if we have it</summary>
 	/// <param name="weapon">BaseCombatWeapon of the weapon</param>
 	/// <param name="switchtonew">Do we switch to a weapon we have left?</param>
-	public void RemoveWeapon( BaseCombatWeapon weapon, bool switchtonew = true )
+	[Rpc.Owner]
+	public virtual void RemoveWeapon( BaseCombatWeapon weapon, bool switchtonew = true )
 	{
 		if ( !weapon.IsValid() ) return;
 
 		if ( CurrentWeapon == weapon && WeaponList.Count > 0 ) // if we are removing the weapon we are currently holding
 		{
 			WeaponList.Remove( weapon );
-			if ( switchtonew ) SwitchToWeapon( BestNextWeapon( weapon ) );
+			SwitchToWeapon( switchtonew ? BestNextWeapon( weapon ) : null );
 		}
 		else
 		{
 			WeaponList.Remove( weapon ); // just remove it and nothing else
 		}
 
-		if ( weapon.IsValid() )
-			weapon.Destroy();
+		if ( weapon.IsValid() ) weapon.DestroyNetwork();
 	}
 
 	/// <summary>Find best weapon besides current one, in case we need to switch away</summary>

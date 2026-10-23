@@ -1,21 +1,21 @@
 using Core;
 using System;
 
+/// <summary>Create path objects or primitives</summary>
 [EditorTool( "path.tool" )]
 [Title( "Path Tool" )]
 [Icon( "polyline" )]
 [Group( "3" )]
-[Description( "Create path objects or primitives" )]
 
 public sealed class PathTool : EditorTool
 {
-	[Hide] private List<GameObject> pathPoints = new();
+	[Hide] private List<GameObject> _pathPoints = [];
 
-	public PathType currentPathType = PathType.Generic;
-	public InterpolationMode currentInterpolation = InterpolationMode.Linear;
+	public PathType CurrentPathType = PathType.Generic;
+	public InterpolationMode CurrentInterpolation = InterpolationMode.Linear;
 
-	private GameObject pathObject;
-	private PathTrack pathTrack;
+	private GameObject _pathObject;
+	private PathTrack _pathTrack;
 
 	public override void OnEnabled()
 	{
@@ -60,33 +60,33 @@ public sealed class PathTool : EditorTool
 			}
 		}
 
-		if ( !pathTrack.IsValid() ) return;
-		pathTrack.CurrentPathType = currentPathType;
-		pathTrack.CurrentInterpolation = currentInterpolation;
+		if ( !_pathTrack.IsValid() ) return;
+		_pathTrack.CurrentPathType = CurrentPathType;
+		_pathTrack.CurrentInterpolation = CurrentInterpolation;
 	}
 
 	private void AddPathPoint( Vector3 position )
 	{
 		var pointObject = Scene.CreateObject();
-		pointObject.Name = "PathPoint_" + pathPoints.Count;
+		pointObject.Name = "PathPoint_" + _pathPoints.Count;
 		// Add a small offset to the position (e.g., 0.1 units above the hit point)
 		pointObject.WorldPosition = position + new Vector3( 0, 0, 0.6f );
 
 		pointObject.Flags = GameObjectFlags.Hidden;
 		pointObject?.AddComponent<PathSingle>();
 
-		pathPoints.Add( pointObject );
+		_pathPoints.Add( pointObject );
 
-		if ( !pathTrack.IsValid() )
+		if ( !_pathTrack.IsValid() )
 		{
-			pathObject = Scene.CreateObject();
-			pathObject.Name = $"Path_{Random.Shared.Next( 1, 1001 )}";
-			pathTrack = pathObject.Components.Create<PathTrack>();
+			_pathObject = Scene.CreateObject();
+			_pathObject.Name = $"Path_{Random.Shared.Next( 1, 1001 )}";
+			_pathTrack = _pathObject.Components.Create<PathTrack>();
 		}
 
-		pointObject?.SetParent( pathObject, true );
+		pointObject?.SetParent( _pathObject, true );
 
-		pathTrack.RefreshPathPoints();
+		_pathTrack.RefreshPathPoints();
 	}
 
 }

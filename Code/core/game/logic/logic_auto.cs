@@ -1,8 +1,8 @@
 
 namespace Core;
 
+/// <summary>Logic that runs immediately after certain game event. Usually immediately when a map starts.</summary>
 [Icon( "auto" )]
-[Description( "Logic that runs immediately after certain game event. Usually immediately when a map starts." )]
 public class logic_auto : BaseEntity
 {
 	public new delegate void ChaosOutput( logic_auto activator );

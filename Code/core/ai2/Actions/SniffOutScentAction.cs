@@ -20,8 +20,8 @@ public class SniffOutScentAction : AIAction
 
 	private DetectedScent? _trackedScent;
 	private float _lastLegIntensity;
-	private float _bestSampleIntensity;
-	private Vector3 _bestSampleDirection;
+	private float _bestSampleIntensity { get; set; }
+	//	private Vector3 _bestSampleDirection;
 	private int _samplesTaken;
 	private const int _samplesPerSearch = 3;
 	private const float _searchSpreadDegrees = 70f;
@@ -62,7 +62,6 @@ public class SniffOutScentAction : AIAction
 		_stateTimer = WorldTime.Now + _sniffDuration;
 		agent.Agent.Stop();
 
-
 		agent.BodyModel.Set( "b_SniffAir", true );
 
 		if ( _trackedScent.HasValue )
@@ -80,7 +79,6 @@ public class SniffOutScentAction : AIAction
 			FoundScentSource = true;
 			return;
 		}
-
 
 		EnterSearching( agent );
 	}
@@ -176,21 +174,11 @@ public class SniffOutScentAction : AIAction
 		return best;
 	}
 
-	public override bool IsDone()
-	{
-		return FoundScentSource;
-	}
+	public override bool IsDone() => FoundScentSource;
 
-	public override bool IsFailed()
-	{
-		return !_trackedScent.HasValue;
-	}
+	public override bool IsFailed() => !_trackedScent.HasValue;
 
-	public override bool CheckProceduralPrecondition( AIController agent )
-	{
-
-		return !Owner.WorldState.Get( AIFacts.HasEnemy );
-	}
+	public override bool CheckProceduralPrecondition( AIController agent ) => !Owner.WorldState.Get( AIFacts.HasEnemy );
 
 	public override void OnExit( AIController agent )
 	{

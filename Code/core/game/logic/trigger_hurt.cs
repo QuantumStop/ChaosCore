@@ -2,6 +2,7 @@ using Sandbox.Diagnostics;
 
 namespace Core;
 
+/// <summary>Trigger volume that can cause damage to everything that can recieve it</summary>
 [Icon( "crisis_alert" )]
 public class trigger_hurt : BaseTrigger
 {
@@ -9,14 +10,14 @@ public class trigger_hurt : BaseTrigger
 	/// When expected to damage more than 100 props at the same time as physics calculation at that
 	/// range is unrealistic with this entity trying to hurt as many of those at the same time otherwise.
 	/// </summary>
-	[Property, Title( "Expensive Debris Cleanup" )] public bool b_OptimizePhys { get; set; } = false;
+	[Property, Title( "Expensive Debris Cleanup" )] public bool OptimizePhys { get; set; } = false;
 
 	/// <summary>
 	/// The amount of damage done to entities that touch this trigger. The damage is done every half-second. 
 	/// See also 'Damage Model' for extra details on how damage can be dealt.
 	/// </summary>
 	[Property, Order( 3 )] public float Damage { get; set; } = 10f;
-	private const float newDamageRate = 2;
+	private const float _newDamageRate = 2;
 
 	/// <summary>
 	/// Maximum damage dealt per second. This field is only used if you select the Doubling w/Forgiveness damage model, via the spawnflag.
@@ -27,26 +28,26 @@ public class trigger_hurt : BaseTrigger
 	/// Default is equivalent to Source 1. By default hurts the player using DefaulRate
 	/// If we tick AlwaysThinkEveryFrame (expensive!), we hurt the player evey frame in specific scenarios 
 	/// </summary>
-	public float Rate => AlwaysThinkEveryFrame ? ExpensiveRate : DefaultRate;
+	public float Rate => AlwaysThinkEveryFrame ? _expensiveRate : _defaultRate;
 	public IEnumerable<Prop> CleanUp;
 
 
-	private const float DefaultRate = 0.5f;
-	private const float ExpensiveRate = 0.016f;
+	private const float _defaultRate = 0.5f;
+	private const float _expensiveRate = 0.016f;
 
-	private float RealTimer { get; set; } = 0;
-	private bool isRealTimer { get; set; } = true;
+	private float _realTimer { get; set; } = 0;
+	private bool _isRealTimer { get; set; } = true;
 
-	private float cleanupTimer = 0f;
-	private const float CleanupInterval = 5f; // every 5 seconds
+	private float _cleanupTimer = 0f;
+	private const float _cleanupInterval = 5f; // every 5 seconds
 
-	private float cleanupCooldown = 0f;
-	private const float CleanupRate = 0.25f; // once every 0.25 seconds
+	private float _cleanupCooldown = 0f;
+	private const float _cleanupRate = 0.25f; // once every 0.25 seconds
 
 	public override bool IsTouchable => true;
 
-	private Dictionary<GameObject, float> lastDamageTime = new();
-	private Dictionary<GameObject, float> damagePerTarget = new();
+	private Dictionary<GameObject, float> _lastDamageTime = [];
+	private Dictionary<GameObject, float> _damagePerTarget = [];
 
 	public enum DamageModel
 	{
@@ -54,7 +55,7 @@ public class trigger_hurt : BaseTrigger
 		DoublingWithForgiveness
 	}
 
-	[Property, Order( 5 )] public DamageTagSet _DamageType { get; set; }
+	[Property, Order( 5 )] public DamageTagSet DamageType { get; set; }
 
 	/// <summary>
 	/// How damage is dealt. Normal always does the specified amount of damage each half second. 
@@ -62,75 +63,69 @@ public class trigger_hurt : BaseTrigger
 	/// Forgiveness means that if the toucher gets out of the trigger the damage will reset to the specified value. 
 	/// Good for making triggers that are deadly over time without having to cause massive damage on each touch.
 	/// </summary>
-	[Property, Order( 6 )] public DamageModel _DamageModel { get; set; }
+	[Property, Order( 6 )] public DamageModel damageModel { get; set; }
 
-	/// <summary>
-	/// When doubling with forgiveness, how many seconds the trigger must go without hurting anything before the damage is reset.
-	/// </summary>
+	/// <summary>When doubling with forgiveness, how many seconds the trigger must go without hurting anything before the damage is reset.</summary>
 	[Property, Order( 7 )] public float ForgivenessDelay { get; set; } = 3;
 
-	/// <summary>
-	/// Should the damaged entity receive no physics force from this trigger.
-	/// </summary>
+	/// <summary>Should the damaged entity receive no physics force from this trigger.</summary>
 	[Property, Order( 8 )] public bool ZeroDamageForce { get; set; } = false;
 
 	[Property, Order( 9 )] public Vector3 DamageForceOverride { get; set; }
 
-	/// <summary>
-	/// Normally triggers think every half second, in some cases you may need to request it to damage every frame. This is expensive!
-	/// </summary>
+	/// <summary>Normally triggers think every half second, in some cases you may need to request it to damage every frame. This is expensive!</summary>
 	[Property, Order( 10 )] public bool AlwaysThinkEveryFrame { get; set; } = false;
 #if IGNIS
 	[DebugExpose]
 #endif
-	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Title( "RealTime has passed: " ), Property] public float f_RealTimer => isDebug ? RealTimer : 0;
+	[ShowIf( nameof( IsDebug ), false ), Feature( "Debug" ), Title( "RealTime has passed: " ), Property] public float RealTimer => IsDebug ? _realTimer : 0;
 
-	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Title( "TimeSince last damaged: " ), Property] public bool b_RealTimer => isDebug && isRealTimer;
+	[ShowIf( nameof( IsDebug ), false ), Feature( "Debug" ), Title( "TimeSince last damaged: " ), Property] public bool IsRealTimer => IsDebug && _isRealTimer;
 #if IGNIS
 	[DebugExpose]
 #endif
-	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Title( "Last Damage Dealt:" ), Property, ReadOnly] public float lastDamageValue = 0f;
+	[ShowIf( nameof( IsDebug ), false ), Feature( "Debug" ), Title( "Last Damage Dealt:" ), Property, ReadOnly] public float LastDamageValue = 0f;
 
 
-	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Property, ReadOnly] public int Mintime;
-	[ShowIf( nameof( isDebug ), false ), Feature( "Debug" ), Property, ReadOnly] public int MaxTime;
+	[ShowIf( nameof( IsDebug ), false ), Feature( "Debug" ), Property, ReadOnly] public int Mintime;
+	[ShowIf( nameof( IsDebug ), false ), Feature( "Debug" ), Property, ReadOnly] public int MaxTime;
 
 	protected override void OnStart()
 	{
 		base.OnStart();
 
-		isRealTimer = false;
+		_isRealTimer = false;
 	}
 
 	protected override void OnFixedUpdate()
 	{
-		if ( !isEnabled || !isRealTimer )
+		if ( !IsEnabled || !_isRealTimer )
 			return;
 
-		RealTimer += Time.Delta;
+		_realTimer += Time.Delta;
 
 		// Run damage logic only on proper tick rate
-		if ( RealTimer >= Rate )
+		if ( _realTimer >= Rate )
 		{
-			RealTimer = 0;
+			_realTimer = 0;
 			TryHurt();
 		}
 
 		// Periodic cleanup of damage tracking dictionaries
-		cleanupTimer += Time.Delta;
-		if ( cleanupTimer >= CleanupInterval )
+		_cleanupTimer += Time.Delta;
+		if ( _cleanupTimer >= _cleanupInterval )
 		{
-			cleanupTimer = 0f;
+			_cleanupTimer = 0f;
 			CleanupExpiredEntries();
 		}
 
 		// Additional optimization pass for physics prop cleanup
-		if ( b_OptimizePhys )
+		if ( OptimizePhys )
 		{
-			cleanupCooldown += Time.Delta;
-			if ( cleanupCooldown >= CleanupRate )
+			_cleanupCooldown += Time.Delta;
+			if ( _cleanupCooldown >= _cleanupRate )
 			{
-				cleanupCooldown = 0f;
+				_cleanupCooldown = 0f;
 				TryCleanUp();
 			}
 		}
@@ -140,19 +135,19 @@ public class trigger_hurt : BaseTrigger
 	{
 		base.OnTriggerIn();
 
-		isRealTimer = true;
+		_isRealTimer = true;
 	}
 
 	protected override void OnTriggerOut()
 	{
 		base.OnTriggerOut();
 
-		isRealTimer = false;
+		_isRealTimer = false;
 
 		foreach ( var obj in GetTrackedItems() )
 		{
-			lastDamageTime.Remove( obj );
-			damagePerTarget.Remove( obj );
+			_lastDamageTime.Remove( obj );
+			_damagePerTarget.Remove( obj );
 		}
 	}
 
@@ -161,13 +156,13 @@ public class trigger_hurt : BaseTrigger
 	{
 		base.OnItemsEmpty();
 
-		RealTimer = 0;
-		isRealTimer = false;
+		_realTimer = 0;
+		_isRealTimer = false;
 
-		if ( _DamageModel == DamageModel.Normal )
+		if ( damageModel == DamageModel.Normal )
 			return;
 
-		if ( _DamageModel == DamageModel.DoublingWithForgiveness )
+		if ( damageModel == DamageModel.DoublingWithForgiveness )
 		{
 			var expectedTime = WorldTime.Now + ForgivenessDelay;
 
@@ -181,8 +176,8 @@ public class trigger_hurt : BaseTrigger
 			}
 
 			// Reset all per-target damage + timers
-			damagePerTarget.Clear();
-			lastDamageTime.Clear();
+			_damagePerTarget.Clear();
+			_lastDamageTime.Clear();
 		}
 	}
 
@@ -196,30 +191,24 @@ public class trigger_hurt : BaseTrigger
 
 		foreach ( var touching in collider.Touching )
 		{
-			if ( !touching.IsValid() )
-				continue;
+			if ( !touching.IsValid() ) continue;
 
 			var damageables = touching.GetComponentsInParent<IDamageable>();
-			if ( damageables is null )
-				continue;
+			if ( damageables is null ) continue;
 
 			foreach ( var target in damageables )
 			{
-				if ( target is null )
-					continue;
+				if ( target is null ) continue;
 
-				if ( _tryHurtList.Contains( target ) )
-					continue;
+				if ( _tryHurtList.Contains( target ) ) continue;
 
 				var targetObject = (target as Component)?.GameObject;
-				if ( !targetObject.IsValid() )
-					continue;
+				if ( !targetObject.IsValid() ) continue;
 
 				bool isDebris = targetObject.Tags.Has( "debris" );
 
 				// Exclude debris unless PhysicsDebris is enabled
-				if ( (spawnFlags & SpawnFlags.PhysicsDebris) == 0 && isDebris )
-					continue;
+				if ( (spawnFlags & SpawnFlags.PhysicsDebris) == 0 && isDebris ) continue;
 
 				_tryHurtList.Add( target );
 			}
@@ -238,32 +227,32 @@ public class trigger_hurt : BaseTrigger
 				continue;
 
 			// Rate limit per target
-			if ( lastDamageTime.TryGetValue( targetObject, out var lastTime ) && now - lastTime < Rate )
+			if ( _lastDamageTime.TryGetValue( targetObject, out var lastTime ) && now - lastTime < Rate )
 				continue;
 
-			lastDamageTime[targetObject] = now;
+			_lastDamageTime[targetObject] = now;
 
 			float damageToApply = Damage;
 
-			if ( _DamageModel == DamageModel.DoublingWithForgiveness )
+			if ( damageModel == DamageModel.DoublingWithForgiveness )
 			{
-				if ( !damagePerTarget.TryGetValue( targetObject, out var current ) )
+				if ( !_damagePerTarget.TryGetValue( targetObject, out var current ) )
 					current = Damage;
 				else
-					current = MathX.Clamp( current * newDamageRate, Damage, DamageCap );
+					current = MathX.Clamp( current * _newDamageRate, Damage, DamageCap );
 
-				damagePerTarget[targetObject] = current;
+				_damagePerTarget[targetObject] = current;
 				damageToApply = current;
 			}
 
-			if ( isDebug )
-				lastDamageValue = damageToApply;
+			if ( IsDebug )
+				LastDamageValue = damageToApply;
 
 			var damageInfo = new DamageInfo
 			{
 				Attacker = GameObject,
 				Damage = damageToApply,
-				Tags = { _DamageType }
+				Tags = { DamageType }
 			};
 
 			if ( ShouldDamageTarget( target ) )
@@ -271,18 +260,15 @@ public class trigger_hurt : BaseTrigger
 		}
 	}
 
-	private bool ShouldDamageTarget( IDamageable target )
+	private bool ShouldDamageTarget( IDamageable target ) => target switch
 	{
-		return target switch
-		{
-			BasePlayer _ when (spawnFlags & SpawnFlags.Clients) != 0 => true,
-			GameProp _ when (spawnFlags & SpawnFlags.PhysicsObjects) != 0 => true,
-			Prop _ when (spawnFlags & SpawnFlags.PhysicsObjects) != 0 => true,
-			Gib _ when (spawnFlags & SpawnFlags.PhysicsDebris) != 0 => true,
-			_ when spawnFlags == SpawnFlags.Everything => true,
-			_ => false,
-		};
-	}
+		BasePlayer _ when (spawnFlags & SpawnFlags.Clients) != 0 => true,
+		GameProp _ when (spawnFlags & SpawnFlags.PhysicsObjects) != 0 => true,
+		Prop _ when (spawnFlags & SpawnFlags.PhysicsObjects) != 0 => true,
+		Gib _ when (spawnFlags & SpawnFlags.PhysicsDebris) != 0 => true,
+		_ when spawnFlags == SpawnFlags.Everything => true,
+		_ => false,
+	};
 
 	private void TryCleanUp()
 	{
@@ -306,7 +292,7 @@ public class trigger_hurt : BaseTrigger
 				var gibs = targetObject?.GetComponentInChildren<Gib>();
 				var rigidgibs = targetObject?.GetComponent<Rigidbody>();
 
-				if ( isDebug ) gibs.Tint = Color.Red;
+				if ( IsDebug ) gibs.Tint = Color.Red;
 				var randomDelay = Game.Random.Int( Mintime, MaxTime );
 
 				if ( PerformanceStats.FrameTime > 0.009 )
@@ -322,15 +308,15 @@ public class trigger_hurt : BaseTrigger
 	private void CleanupExpiredEntries()
 	{
 		var now = WorldTime.Now;
-		var expired = lastDamageTime
+		var expired = _lastDamageTime
 			.Where( kvp => now - kvp.Value > ForgivenessDelay + 1 )
 			.Select( kvp => kvp.Key )
 			.ToList();
 
 		foreach ( var key in expired )
 		{
-			lastDamageTime.Remove( key );
-			damagePerTarget.Remove( key );
+			_lastDamageTime.Remove( key );
+			_damagePerTarget.Remove( key );
 		}
 	}
 

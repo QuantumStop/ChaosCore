@@ -22,6 +22,7 @@ public class WeaponParse : GameResource
 
 	[Space]
 	[Order( 0 )] public WeaponType WeaponType { get; set; }
+	[Order( 0 )] public HoldType HoldType { get; set; }
 
 	[Order( 0 )] public CrosshairData WeaponCrosshair { get; set; } = null;
 
@@ -32,8 +33,9 @@ public class WeaponParse : GameResource
 	[Category( "Features" ), Order( 2 ), HideIf( nameof( WeaponType ), WeaponType.WEAPON_MELEE )] public bool FiresUnderwater { get; set; }
 	[Category( "Features" ), Order( 2 ), HideIf( nameof( WeaponType ), WeaponType.WEAPON_MELEE )] public bool ReloadsSingly { get; set; }
 	[Category( "Features" ), Order( 2 ), Header( "Muzzle Light" ), ShowIf( nameof( _hasBullets ), true )] public Texture MuzzleLightCookie { get; set; } = Texture.Load( "materials/cookies/muzzle_light01.tif" );
-	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.01f, 0.1f ), Step( 0.01f )] public float MuzzleLightTime { get; set; } = 0.02f;
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.05f, 1.0f ), Step( 0.05f )] public float MuzzleLightTime { get; set; } = 0.1f;
 	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 1.0f, 90.0f ), Step( 1 )] public float MuzzleLightFOV { get; set; } = 60f;
+	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true ), Range( 0.1f, 10.0f ), Step( 0.1f )] public float MuzzleLightBrightness { get; set; } = 2;
 
 	[Header( "Muzzle Effects" )]
 	[Category( "Features" ), Order( 2 ), ShowIf( nameof( _hasBullets ), true )] public PrefabFile MuzzleFlashEffect { get; set; }
@@ -136,6 +138,7 @@ public class WeaponParse : GameResource
 #else
 	[Header( "Sound" )]
 	[Category( "Primary" ), Order( 3 )] public List<SoundEvent> AttackSoundsPrimary { get; set; } = [];
+	[Category( "Primary" ), Order( 3 )] public List<SoundEvent> AttackSoundPrimaryThirdPerson { get; set; } = [];
 #endif
 	[Header( "Ammo" )]
 	[Category( "Secondary" ), Order( 4 ), ShowIf( nameof( _hasBullets ), true )] public AmmoInfo SecondaryAmmoType { get; set; }
@@ -162,6 +165,8 @@ public class WeaponParse : GameResource
 	[Header( "Sound" )]
 	[ShowIf( nameof( HasSecondaryAmmoType ), true )]
 	[Category( "Primary" ), Order( 3 )] public List<SoundEvent> AttackSoundsSecondary { get; set; } = [];
+	[ShowIf( nameof( HasSecondaryAmmoType ), true )]
+	[Category( "Secondary" ), Order( 3 )] public List<SoundEvent> AttackSoundSecondaryThirdPerson { get; set; } = [];
 #endif
 
 	[Category( "Inventory" ), Order( 5 ), Title( "Bucket (X)" ), Range( 0, 7 ), Step( 1 )] public int Bucket { get; set; }
@@ -233,57 +238,85 @@ public class AmmoInfo : GameResource
 	}
 }
 
+public enum HoldType
+{
+	/// <summary>Padding for the sake of animgraph, I don't think any weapon needs this</summary>
+	None,
+	/// <summary>Any blunt weapon of close contact, usually involves holding it like a maniac</summary>
+	Melee,
+	/// <summary>Any small handgun, can be twohanded or onehanded, depends only on the animation itself</summary>
+	Pistol,
+	/// <summary>Slightly less smaller gun, probably not onehanded</summary>
+	SMG,
+	/// <summary>Big gun for big boys (and girls)</summary>
+	Shotgun,
+	/// <summary>Even bigger gun (for nonbinaries)</summary>
+	AssaultRifle,
+	/// <summary>Anything that doesn't fit in the AR category because it's somehow even bigger</summary>
+	Heavy,
+	/// <summary>Any sniper rifle or adjacent</summary>
+	Sniper,
+	/// <summary>Grenades (or Jarate)</summary>
+	Throwable,
+	/// <summary>Something harmless and in need of chill pose</summary>
+	Item,
+	/// <summary>Free space for whatever</summary>
+	Custom1,
+	/// <summary>Free space for whatever 2, if you need more cus</summary>
+	Custom2
+};
 public enum WeaponType
 {
-	[Description( "An automatic or semi-automatic weapon" )]
+	/// <summary>An automatic or semi-automatic weapon</summary>
 	WEAPON_GENERIC,
-	[Description( "A shotgun" )]
+	/// <summary>A shotgun</summary>
 	WEAPON_SHOTGUN,
-	[Description( "A melee weapon" )]
+	/// <summary>A melee weapon</summary>
 	WEAPON_MELEE,
-	[Description( "An explosive weapon" )]
+	/// <summary>An explosive weapon</summary>
 	WEAPON_EXPLOSIVE
 };
 
 public enum SpreadType
 {
-	[Description( "No spread scaling" ), Icon( "gps_fixed" ), Title( "Static" )]
+	/// <summary>No spread scaling</summary>
+	[Icon( "gps_fixed" ), Title( "Static" )]
 	SPREAD_STATIC = 0,
-
-	[Description( "Progressive spread per bullet" ), Icon( "scatter_plot" ), Title( "Progressive" )]
+	/// <summary>Progressive spread per bullet</summary>
+	[Icon( "scatter_plot" ), Title( "Progressive" )]
 	SPREAD_DYNAMIC
 }
 
 public enum DynamicSpreadType
 {
-	[Description( "Spread scales with bullets fired from magazine" ), Icon( "bar_chart" ), Title( "Per Bullet" )]
+	/// <summary>Spread scales with bullets fired from magazine</summary>
+	[Icon( "bar_chart" ), Title( "Per Bullet" )]
 	PER_BULLET_FIRED = 0,
-
-	[Description( "Spread scales with consecutive shots" ), Icon( "trending_up" ), Title( "Per Shot" )]
+	/// <summary>Spread scales with consecutive shots</summary>
+	[Icon( "trending_up" ), Title( "Per Shot" )]
 	PER_CONSECUTIVE_SHOT = 1
 }
 
 public enum ExplosionType
 {
-	[Description( "Sphere overlap: fast, no occlusion" )]
+	/// <summary>Sphere overlap: fast, no occlusion</summary>
 	Trace,
-	[Description( "Voxel wave: occluded by geometry, more expensive" )]
+	/// <summary>Voxel wave: occluded by geometry, more expensive</summary>
 	Volumetric
 }
 
 public enum WeaponCrosshairType
 {
-	[Description( "No weapon is present, fall back to default crosshair" )]
+	/// <summary>No weapon is present, fall back to default crosshair</summary>
 	None,
-	[Description( "A simple dot" )]
+	/// <summary>A simple dot</summary>
 	CROSSHAIR_DOT,
-	[Description( "A cross variant" )]
+	/// <summary>A cross variant</summary>
 	CROSSHAIR_CROSS_A,
-	[Description( "A cross variant" )]
+	/// <summary>A cross variant</summary>
 	CROSSHAIR_CROSS_B,
-	[Description( "A cross with additional features. Like for a secondary firing mode, gadget or alike" )]
+	/// <summary>A cross with additional features, such as for a secondary firing mode or gadget</summary>
 	CROSSHAIR_CROSS_HYBRID,
-	[Description( "A circle" )]
+	/// <summary>A circle</summary>
 	CROSSHAIR_CIRCLE
-
 };

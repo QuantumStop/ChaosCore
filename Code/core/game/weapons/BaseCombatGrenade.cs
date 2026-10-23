@@ -186,13 +186,13 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		go.Tags.Add( "grenade" );
 
 		// Model + collider
-		if ( WeaponData?.WeaponWorldmodel is not null )
+		if ( GetWorldmodel().IsValid() )
 		{
 			var renderer = go.Components.Create<ModelRenderer>();
-			renderer.Model = WeaponData.WeaponWorldmodel;
+			renderer.Model = GetWorldmodel();
 
 			var collider = go.Components.Create<ModelCollider>();
-			collider.Model = WeaponData.WeaponWorldmodel;
+			collider.Model = GetWorldmodel();
 			collider.Tags.Add( "debris" );
 			collider.Tags.Add( "grenade" );
 		}

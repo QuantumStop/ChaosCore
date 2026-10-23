@@ -61,7 +61,7 @@ public static partial class AttackManager
 			attack.Result = bullet.Result;
 
 			// TODO: make this not BasePlayer.Local
-			Transform muzzleTrans = BaseCombatWeapon.GetMuzzleAttachObject( BasePlayer.Local, "muzzle", out var attachmentObj );
+			GameObject attachmentObj = BaseCombatWeapon.GetWeaponAttachObject( BasePlayer.Local, "muzzle", out Transform muzzleTrans );
 
 			if ( attachmentObj.IsValid() )
 			{
@@ -179,7 +179,7 @@ public static partial class AttackManager
 		var tr = trace // do the trace
 		.UseHitboxes()
 		.HitTriggers()
-		.WithoutTags( "trigger", "skinned_collider", "passbullets" )
+		.WithoutTags( "trigger", "pickuptrigger", "movement", "skinned_collider", "passbullets" )
 		.IgnoreGameObjectHierarchy( damage.Attacker )
 		.UseHitPosition()
 		.RunAll();
@@ -187,7 +187,7 @@ public static partial class AttackManager
 		if ( tr.Any() )
 		{
 			//			tr = tr.OrderByDescending( x => x.Hitbox is not null );
-			var list = tr.ToList();
+			var list = tr.ToArray();
 			list.Sort( ( yesnull, nonull ) => (nonull.Hitbox is not null).CompareTo( yesnull.Hitbox is not null ) ); // better than linq?
 
 			foreach ( var traceHit in list )
@@ -205,18 +205,6 @@ public static partial class AttackManager
 				result.Last = traceHit;
 
 				if ( traceHit.Hitbox is not null || traceHit.Component is Collider || traceHit.Component is Rigidbody ) break;
-			}
-		}
-
-		if ( result.Hit ) // we hit, fill us with data and do the things
-		{
-			if ( DebugDamageEvents ) DebrisManager.Instance.DebugOverlay.Trace( result.Last, 15, false );
-
-			damage.Position = result.Last.HitPosition;
-
-			if ( damage is CoreDamageInfo coreDamageInfo )
-			{
-				foreach ( var candamage in result.Last.GameObject.Components.GetAll<Component.IDamageable>( FindMode.EverythingInSelfAndAncestors ) ) candamage.OnDamage( coreDamageInfo );
 			}
 		}
 

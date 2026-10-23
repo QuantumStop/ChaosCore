@@ -98,11 +98,11 @@ public class DebrisManager : BaseEntity
 	public static void CreateHitSound( Vector3 position, Surface surface, GameObject HitObject )
 	{
 #if FMOD
-		BasePlayer.SolveNullStringsInSurface( surface, out string surfstring );
+		var soundh = FMODSound.Play( surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.Bullet ), position );
 
-		var soundh = FMODSound.Play( "event:/Physics/BulletImpact", position );
-		if ( !string.IsNullOrEmpty( surfstring ) )
-			FMODSound.SetParameter( soundh, "parameter:/Physics/MaterialType", surfstring );
+		var surfstring = BasePlayer.SolveSurfaceParameter( surface );
+
+		if ( !string.IsNullOrEmpty( surfstring ) ) FMODSound.SetParameter( soundh, "parameter:/Physics/MaterialType", surfstring );
 
 		soundh.setVolume( 0.5f );
 
@@ -155,7 +155,7 @@ public class DebrisManager : BaseEntity
 		//		decalcollider.Radius = 8;
 		//		decalcollider.IsTrigger = true;
 
-		decal.Decals = SurfaceExtension.FindForResourceOrDefault( surface ).DecalList;
+		decal.Decals = surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).DecalList );
 		decal.Depth = 4;
 		decal.Scale = scale;
 
@@ -347,7 +347,8 @@ public class DebrisManager : BaseEntity
 		return prefabObject;
 	}
 
-	[Rpc.Broadcast]
+	// dont broadcast because the place where this is called is broadcasted
+	//	[Rpc.Broadcast]
 	public static void CreateMuzzleflashObject( WeaponParse weapon, Vector3 muzzlePos, Rotation muzzleRot, GameObject muzzleObject )
 	{
 		// Default fallback for muzzleflash
@@ -367,8 +368,8 @@ public class DebrisManager : BaseEntity
 		IncreaseAmount( muzzleflashObj );
 		Instance.GameObject.Name = "Debris Manager (" + Instance.TrackedDebris + ")";
 	}
-
-	[Rpc.Broadcast]
+	// again
+	//	[Rpc.Broadcast]
 	public void CreateShellCasing( string prefabPath, Vector3 position, Rotation rotation, Vector3 velocity )
 	{
 		if ( string.IsNullOrEmpty( prefabPath ) )
@@ -549,5 +550,45 @@ public class DebrisManager : BaseEntity
 public class SurfaceExtension : ResourceExtension<Surface, SurfaceExtension>
 {
 	public List<DecalDefinition> DecalList { get; set; }
+
+#if FMOD
+	/// <summary>Surface "enum" to send into the event for the different surfacing</summary>
+	public string SurfaceParameter { get; set; }
+
+	[InlineEditor] public SoundCollectionPhysics SoundCollection { get; set; }
+
+	public struct SoundCollectionPhysics
+	{
+		/// <summary>Left footstep sound.</summary>
+		public FMODEventResource FootLeft { get; set; }
+
+		/// <summary>Right footstep sound.</summary>
+		public FMODEventResource FootRight { get; set; }
+
+		/// <summary>Jump sound for this surface.</summary>
+		public FMODEventResource FootLaunch { get; set; }
+
+		/// <summary>Landing sound for this surface.</summary>
+		public FMODEventResource FootLand { get; set; }
+
+		/// <summary>Bullet impact sound for this surface.</summary>
+		public FMODEventResource Bullet { get; set; }
+
+		/// <summary>Hard, high velocity impact sound.</summary>
+		public FMODEventResource ImpactHard { get; set; }
+
+		/// <summary>Soft, low velocity impact sound.</summary>
+		public FMODEventResource ImpactSoft { get; set; }
+
+		/// <summary>Rough scraping sound when scraping against another surface.</summary>
+		public FMODEventResource ScrapeRough { get; set; }
+
+		/// <summary>Smooth scraping sound when scraping against another surface.</summary>
+		public FMODEventResource ScrapeSmooth { get; set; }
+
+		/// <summary>Sound to play when an object made of this breaks</summary>
+		public FMODEventResource Break { get; set; }
+	}
+#endif
 	protected override Bitmap CreateAssetTypeIcon( int width, int height ) { return CreateSimpleAssetTypeIcon( "iron", width, height ); }
 }

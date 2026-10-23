@@ -7,13 +7,9 @@ namespace Core;
 [Title( "Ammo Item" )]
 public class BaseAmmoItem : BaseItem
 {
-	/// <summary>
-	/// The ammo resource
-	/// </summary>
+	/// <summary>The ammo resource</summary>
 	[Property] public AmmoInfo AmmoData { get; set; }
-	/// <summary>
-	/// Amount of ammo to give
-	/// </summary>
+	/// <summary>Amount of ammo to give</summary>
 	[Property, Space, Range( 1, 1000, true, false ), Step( 1 ), ShowIf( nameof( FillMax ), false ), Feature( "Custom Amount" )] public int Amount { get; set; } = 1;
 	/// <summary>
 	/// We don't have that many weapons using the same ammo, which is why its probably ok to have a default value, and this helps set it for this ammo item
@@ -21,8 +17,7 @@ public class BaseAmmoItem : BaseItem
 	[Button, ShowIf( nameof( FillMax ), false ), Feature( "Custom Amount" )]
 	private void SetToDefaultAmount()
 	{
-		if ( AmmoData.IsValid() )
-			Amount = AmmoData.DefaultAmmo;
+		if ( AmmoData.IsValid() ) Amount = AmmoData.DefaultAmmo;
 	}
 
 	[Property, FeatureEnabled( "Custom Amount" )] private bool _amount { get; set; } = false;
@@ -34,15 +29,6 @@ public class BaseAmmoItem : BaseItem
 	public Vector3 PositionImpulse { get; set; }
 	public Vector3 AngularImpulse { get; set; }
 
-	public BaseAmmoItem() { AmmoData = AmmoInfo.GetAmmoData( GetType().Name ); }
-
-	protected override void OnValidate()
-	{
-		if ( GetType().Name != "BaseAmmoItem" && (!AmmoData.IsValid() || GetType().Name != AmmoData.ResourceName) )
-			AmmoData = AmmoInfo.GetAmmoData( GetType().Name );
-
-		base.OnValidate();
-	}
 
 	protected override string GetModel() => (UseLargeModel ? AmmoData?.AmmoModelLarge.ResourcePath : AmmoData?.AmmoModel.ResourcePath) ?? base.GetModel();
 

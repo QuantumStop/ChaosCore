@@ -6,7 +6,7 @@ public partial class PlayerWalkControllerComplex : Component
 {
 	[Property, Group( "Body" )] public GameObject Body { get; set; }
 	[Property, Group( "Body" )] public SkinnedModelRenderer BodyModelRenderer { get; set; }
-	[RequireComponent] public CitizenAnimationHelper AnimationHelper { get; set; }
+
 
 	protected void SetupBody()
 	{
@@ -17,21 +17,19 @@ public partial class PlayerWalkControllerComplex : Component
 			Body.LocalPosition = Vector3.Zero;
 			Body.Name = "Body";
 		}
-		if ( !BodyModelRenderer.IsValid() )
-		{
-			BodyModelRenderer = Body.AddComponent<SkinnedModelRenderer>();
-			BodyModelRenderer.Model = Model.Load( "models/citizen/citizen.vmdl" );
-			AnimationHelper.Target = BodyModelRenderer;
-		}
+		/*	
+			if ( !BodyModelRenderer.IsValid() )
+			{
+				BodyModelRenderer = Body.AddComponent<SkinnedModelRenderer>();
+				BodyModelRenderer.Model = Model.Load( "models/citizen/citizen.vmdl" );
+				AnimationHelper.Target = BodyModelRenderer;
+			}
+		*/
 	}
-	[Property, Group( "Animator" )] public float RotationAngleLimit { get; set; } = 45.0f;
-	[Property, Group( "Animator" )] public float RotationSpeed { get; set; } = 1.0f;
-	[Property, Group( "Animator" )] public bool RotationFaceLadders { get; set; } = true;
-	float _animRotationSpeed;
-	TimeSince timeSinceRotationSpeedUpdate;
 
 	public virtual void RotateBody()
 	{
+		/*
 		if ( IsTouchingLadder && RotationFaceLadders )
 		{
 			Body.WorldRotation = Rotation.Lerp( Body.WorldRotation, Rotation.LookAt( LadderNormal * -1 ), Time.Delta * 5.0f );
@@ -74,40 +72,43 @@ public partial class PlayerWalkControllerComplex : Component
 
 			BodyModelRenderer.WorldRotation = newRotation;
 		}
+		*/
 	}
 	public virtual void Animate()
 	{
-		AnimationHelper.WithWishVelocity( Controller.WishVelocity );
-		AnimationHelper.WithVelocity( Controller.Velocity );
+		/*
+			AnimationHelper.WithWishVelocity( Controller.WishVelocity );
+			AnimationHelper.WithVelocity( Controller.Velocity );
 
-		// skid, this isn't in AnimationHelper yet it seems? ok nvm it's absolutely FUCKED
-		/*{
-			var dir = Controller.Velocity.SubtractDirection( Controller.WishVelocity.Normal );
-			if ( dir.IsNearlyZero( 1.0f ) ) dir = 0;
+			// skid, this isn't in AnimationHelper yet it seems? ok nvm it's absolutely FUCKED
+			/*{
+				var dir = Controller.Velocity.SubtractDirection( Controller.WishVelocity.Normal );
+				if ( dir.IsNearlyZero( 1.0f ) ) dir = 0;
 
-			var forward = BodyModelRenderer.WorldRotation.Forward.Dot( dir );
-			var sideward = BodyModelRenderer.WorldRotation.Right.Dot( dir );
+				var forward = BodyModelRenderer.WorldRotation.Forward.Dot( dir );
+				var sideward = BodyModelRenderer.WorldRotation.Right.Dot( dir );
 
-			BodyModelRenderer.Set( "skid_x", forward );
-			BodyModelRenderer.Set( "skid_y", sideward );
+				BodyModelRenderer.Set( "skid_x", forward );
+				BodyModelRenderer.Set( "skid_y", sideward );
 
-			var skidAmount = (Controller.Velocity.Length - Controller.WishVelocity.Length).Clamp( 0, 10 ).Remap( 0, 10, 0, 0.5f );
-			BodyModelRenderer.Set( "skid", skidAmount );
-		}*/
+				var skidAmount = (Controller.Velocity.Length - Controller.WishVelocity.Length).Clamp( 0, 10 ).Remap( 0, 10, 0, 0.5f );
+				BodyModelRenderer.Set( "skid", skidAmount );
+			}
 
-		AnimationHelper.WithLook( EyeAngles.Forward * 100, 1, 1, 1.0f );
-		AnimationHelper.DuckLevel = IsCrouching ? 100 : 0;
-		AnimationHelper.IsGrounded = Controller.IsOnGround || IsTouchingLadder;
-		AnimationHelper.IsClimbing = IsTouchingLadder;
-		AnimationHelper.IsSwimming = IsSwimming;
-		AnimationHelper.IsNoclipping = IsNoclipping;
+			AnimationHelper.WithLook( EyeAngles.Forward * 100, 1, 1, 1.0f );
+			AnimationHelper.DuckLevel = IsCrouching ? 100 : 0;
+			AnimationHelper.IsGrounded = Controller.IsOnGround || IsTouchingLadder;
+			AnimationHelper.IsClimbing = IsTouchingLadder;
+			AnimationHelper.IsSwimming = IsSwimming;
+			AnimationHelper.IsNoclipping = IsNoclipping;
 
-		if ( timeSinceRotationSpeedUpdate > 0.1f )
-		{
-			timeSinceRotationSpeedUpdate = 0;
-			AnimationHelper.MoveRotationSpeed = _animRotationSpeed * 5;
-			_animRotationSpeed = 0;
-		}
-		RotateBody();
+			if ( timeSinceRotationSpeedUpdate > 0.1f )
+			{
+				timeSinceRotationSpeedUpdate = 0;
+				AnimationHelper.MoveRotationSpeed = _animRotationSpeed * 5;
+				_animRotationSpeed = 0;
+			}
+			RotateBody();
+			*/
 	}
 }

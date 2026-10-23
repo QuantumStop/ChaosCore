@@ -47,7 +47,7 @@ public static class CameraEffects
 	public static void Push( CameraEffect effect, float initialTriggerTime = -1f, float initialRampTime = 0f )
 	{
 		if ( IsForceDisabled ) return;
-		
+
 		activeEffects.Add( new ActiveEffect
 		{
 			Data = effect,
@@ -164,8 +164,7 @@ public static class CameraEffects
 			}
 		}
 
-		if ( IsDebug )
-			DrawDebug( lastTriggerTime ?? -1f );
+		if ( IsDebug ) DrawDebug( lastTriggerTime ?? -1f );
 	}
 
 	public static void Reset() => activeEffects.Clear();

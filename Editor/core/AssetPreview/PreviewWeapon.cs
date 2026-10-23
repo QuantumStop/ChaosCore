@@ -7,7 +7,7 @@ class PreviewWeapon( Asset asset ) : AssetPreview( asset )
 {
 	public override float PreviewWidgetCycleSpeed => 0.2f;
 
-	ModelRenderer modelRenderer;
+	private ModelRenderer _modelRenderer;
 
 	/// <summary>
 	/// Create the model or whatever needs to be viewed
@@ -34,8 +34,8 @@ class PreviewWeapon( Asset asset ) : AssetPreview( asset )
 
 				var tonemap = Camera.AddComponent<Tonemapper>().Mode = Tonemapper.TonemappingMode.Saturated;
 
-				modelRenderer = PrimaryObject.AddComponent<ModelRenderer>();
-				modelRenderer.Model = model;
+				_modelRenderer = PrimaryObject.AddComponent<ModelRenderer>();
+				_modelRenderer.Model = model;
 
 				SceneSize = model.Bounds.Size;
 				SceneCenter = model.Bounds.Center;

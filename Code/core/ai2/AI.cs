@@ -61,12 +61,9 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		GOALTYPE_INVALID
 	};
 
-	/// <summary>
-	/// The type of movement which this npc can use
-	/// </summary>
+	/// <summary>The type of movement which this npc can use</summary>
 	public enum MoveType
 	{
-
 		MOVE_NONE,
 		MOVE_GROUND,
 		MOVE_FLY,
@@ -75,9 +72,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 	}
 
-	/// <summary>
-	/// The type of scripting which we are currently under.
-	/// </summary>
+	/// <summary>The type of scripting which we are currently under.</summary>
 	public enum ScriptingContext
 	{
 		SCRIPT_SEQUENCE,
@@ -93,7 +88,6 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		NAVIGATION_STARTED,
 		NAVIGATION_COMPLETED,
 		NAVIGATION_IN_ERROR,
-
 	}
 
 	public enum SleepState
@@ -257,12 +251,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #if IGNIS
 	[DebugExpose, SaveRestore]
 #endif
-	public GoalType CurrentMoveGoal = GoalType.GOALTYPE_NONE;
+	public GoalType CurrentMoveGoal { get; set; } = GoalType.GOALTYPE_NONE;
 
 #if IGNIS
 	[DebugExpose, SaveRestore]
 #endif
-	public MoveType moveType;
+	public MoveType MovementType { get; set; }
 
 #if IGNIS
 	[SaveRestore]
@@ -272,27 +266,27 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #if IGNIS
 	[SaveRestore]
 #endif
-	public float TurnSpeed = 5;
+	public float TurnSpeed { get; set; } = 5;
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public float LastDamageTime;
+	public float LastDamageTime { get; set; }
 
 #if IGNIS
 	[DebugExpose, SaveRestore]
 #endif
-	public float CurHealth;
+	public float CurHealth { get; set; }
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public float MaxHealth;
+	public float MaxHealth { get; set; }
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool IsAlive = true;
+	public bool IsAlive { get; set; } = true;
 
 #if IGNIS
 	[SaveRestore]
@@ -307,12 +301,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #if IGNIS
 	[SaveRestore]
 #endif
-	public List<LookTarget> PotentialLookTargets = []; // Vector 3 for position, float for look priority
+	public List<LookTarget> PotentialLookTargets { get; set; } = []; // Vector 3 for position, float for look priority
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public LookTarget? CurrentLookTarget;
+	public LookTarget? CurrentLookTarget { get; set; }
 
 #if IGNIS
 	[SaveRestore]
@@ -322,34 +316,36 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool TouchingPlayer = false;
+	public bool TouchingPlayer { get; set; } = false;
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool TouchingAlly = false;
+	public bool TouchingAlly { get; set; } = false;
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool TouchingEnemy = false;
+	public bool TouchingEnemy { get; set; } = false;
 
 	/// <summary>
 	/// When enabled, npcs will be placed at the closest point on the navmesh. Prevents poorly placed npcs from breaking due to not being on the navmesh
 	/// </summary>
-	[Property] public bool FallToGround = true;
+	[Property] public bool FallToGround { get; set; } = true;
 
-	[Property] public WeaponParse? SpawnedWeaponData = null;
-	public BaseCombatWeapon? CurrentWeapon = null;
-	public bool CanUseWeapon = true;
+	[Property] public WeaponParse SpawnedWeaponData { get; set; }
+#nullable enable
+	public BaseCombatWeapon? CurrentWeapon { get; set; }
+#nullable disable
+	public bool CanUseWeapon { get; set; } = true;
 
-	public GameObject WeaponGO;
-	public SkinnedModelRenderer WeaponModel;
+	public GameObject WeaponGO { get; set; }
+	public SkinnedModelRenderer WeaponModel { get; set; }
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public ScriptingContext ScriptContext;
+	public ScriptingContext ScriptContext { get; set; }
 
 #if IGNIS
 	[SaveRestore]
@@ -364,39 +360,39 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool ShouldMoveToCine = false;
+	public bool ShouldMoveToCine { get; set; } = false;
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool HasReachedCine = false;
+	public bool HasReachedCine { get; set; } = false;
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public bool ShouldAttackBullseye = false;
+	public bool ShouldAttackBullseye { get; set; } = false;
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public Bullseye CurrentBullseye;
+	public Bullseye CurrentBullseye { get; set; }
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public Vector3? TargetPosition;
+	public Vector3? TargetPosition { get; set; }
 
 #if IGNIS
 	[SaveRestore]
 #endif
-	public Vector3 LastAttackDir;
+	public Vector3 LastAttackDir { get; set; }
 
 
 	// currently playing event. may need to be a list eventually?
 #if FMOD
 	private FMOD.Studio.EventInstance _currentEvent;
 #else
-	private SoundEvent currentEvent;
+	private SoundEvent _currentEvent;
 #endif
 
 	[Property] public NpcDefinition Definition { get; set; }
@@ -431,7 +427,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #if IGNIS
 	[SaveRestore]
 #endif
-	public float? LastSeenEnemyTime = null;
+	public float? LastSeenEnemyTime { get; set; } = null;
 
 #if IGNIS
 	[SaveRestore]
@@ -557,8 +553,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		HitboxSet = Components.GetOrCreate<ModelHitboxes>();
 		HitboxSet.Renderer = BodyModel;
 
-		if ( moveType == MoveType.MOVE_NONE ) StaticEnemy = true;
-		if ( moveType == MoveType.MOVE_GROUND || moveType == MoveType.MOVE_CRAWL ) Agent = Components.GetOrCreate<NavMeshAgent>();
+		if ( MovementType == MoveType.MOVE_NONE ) StaticEnemy = true;
+		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL ) Agent = Components.GetOrCreate<NavMeshAgent>();
 
 		PhysModel = Components.GetOrCreate<ModelPhysics>();
 		Collider = Components.GetOrCreate<ModelCollider>();
@@ -572,7 +568,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		Blackboard = new AIBlackBoard();
 		Blackboard.Init( this );
 
-		if ( moveType == MoveType.MOVE_GROUND || moveType == MoveType.MOVE_CRAWL )
+		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 		{
 			Navigation = new AINavigation();
 			Navigation.Init( this );
@@ -588,14 +584,14 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		Collider.Model = BodyModel.Model;
 		Collider.ColliderFlags = ColliderFlags.IgnoreTraces;
 
-		if ( moveType == MoveType.MOVE_GROUND || moveType == MoveType.MOVE_CRAWL )
+		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 		{
 			Agent.MaxSpeed = Definition.AgentMaxSpeed;
 			Agent.Acceleration = Definition.AgentAccel;
 			Agent.Radius = Definition.AgentRadius;
 			Agent.Height = Definition.AgentHeight;
 			Agent.Separation = Definition.AgentSeparation;
-	
+
 		}
 
 		if ( BodyModel.SceneModel is not null )
@@ -716,8 +712,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 
 #else
-	public SoundEvent GetCurrentSoundEvent() => currentEvent;
-	public void SetCurrentSoundEvent( SoundEvent eventToSet ) => currentEvent = eventToSet;
+	public SoundEvent GetCurrentSoundEvent() => _currentEvent;
+	public void SetCurrentSoundEvent( SoundEvent eventToSet ) => _currentEvent = eventToSet;
 #endif
 
 	/// <summary>
@@ -748,11 +744,11 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			WeaponModel = WeaponGO.AddComponent<SkinnedModelRenderer>();
 			WeaponModel.Model = SpawnedWeaponData.WeaponWorldmodel;
 
-			CurrentWeapon = WeaponGO.AddComponent<BaseCombatWeapon>(false);
+			CurrentWeapon = WeaponGO.AddComponent<BaseCombatWeapon>( false );
 			CurrentWeapon.Owner = new BaseCombatWeapon.WeaponOwner( this );
 			CurrentWeapon.WeaponData = SpawnedWeaponData;
 			CurrentWeapon.Enabled = true;
-	
+
 			//Log.Info($"Weapon Created for {CurrentWeapon} with owner {CurrentWeapon.Owner}");
 
 		}
@@ -763,7 +759,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	public void Spawn()
 	{
-		moveType = Definition.MoveType;
+		MovementType = Definition.MoveType;
 #if IGNIS || STANDALONE
 		if ( BehaviorModule is null )
 		{
@@ -783,14 +779,14 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		GetAndSetHealth();
 		AddNPCToAIManager();
 
-		if (CanUseWeapon)
-		ConfigureWeapon();
+		if ( CanUseWeapon )
+			ConfigureWeapon();
 
 		if ( CurrentSleepState > 0 )
 			SleepNPC();
 
 		Tags.Add( "npc" );
-		if ( FallToGround && moveType == MoveType.MOVE_GROUND || moveType == MoveType.MOVE_CRAWL )
+		if ( FallToGround && MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 			GameObject.WorldPosition = Scene.NavMesh.GetClosestPoint( Agent.WorldPosition ).Value;
 
 		ScentEmitter = new ScentEmitter
@@ -904,7 +900,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// <param name="speed"></param>
 	public void SetMovementSpeed( float speed )
 	{
-		if ( moveType == MoveType.MOVE_GROUND || moveType == MoveType.MOVE_CRAWL )
+		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 		{
 			Agent.MaxSpeed = speed;
 			Agent.Acceleration = speed * 1.25f;
@@ -1206,7 +1202,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		PhysModel.Enabled = true;
 		PhysModel.MotionEnabled = true;
 
-		if ( PhysModel.MotionEnabled && moveType != MoveType.MOVE_NONE ) // dont apply to static npcs... but we may in the future if we have dangly bits when theyre dead. like xen trees or something
+		if ( PhysModel.MotionEnabled && MovementType != MoveType.MOVE_NONE ) // dont apply to static npcs... but we may in the future if we have dangly bits when theyre dead. like xen trees or something
 			ApplyLastHitToRagdoll();
 
 		PlayDeathSound();
@@ -1333,7 +1329,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 		// snapshot enemy state for downstream phases to read consistently
 		FrameEnemy = Blackboard.activeEnemy;
-		FrameMoveType = moveType;
+		FrameMoveType = MovementType;
 
 		CurrentPhase = ThinkPhase.Decide;
 		iSpy.iSpyEndProfile();
@@ -2010,7 +2006,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	public void UpdateAnimgraphParamaters()
 	{
-		if ( moveType == MoveType.MOVE_GROUND || moveType == MoveType.MOVE_CRAWL )
+		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 		{
 			BodyModel.Set( "b_IsMoving", Agent.Velocity.Length > 0 );
 			BodyModel.Set( "f_MoveVelocity", MathX.Lerp( 0, Agent.Velocity.Length, Time.Delta ) );
@@ -2037,7 +2033,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	}
 
 	private Vector3? _formationTarget;
-	private bool _inFormation;
+	private bool _inFormation { get; set; }
 
 	public void SetFormationTarget( Vector3 worldPos )
 	{
@@ -2124,7 +2120,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// Returns true if an NPC is static.
 	/// </summary>
 	/// <returns></returns>
-	public bool IsNPCStatic() => moveType == MoveType.MOVE_NONE && StaticEnemy;
+	public bool IsNPCStatic() => MovementType == MoveType.MOVE_NONE && StaticEnemy;
 
 	/// <summary>
 	/// Gets the eye attachment name
@@ -2221,7 +2217,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			);
 		}
 
-		else if ( (moveType == MoveType.MOVE_GROUND) || (moveType == MoveType.MOVE_CRAWL) )
+		else if ( (MovementType == MoveType.MOVE_GROUND) || (MovementType == MoveType.MOVE_CRAWL) )
 		{
 			var velocity = Agent.Velocity;
 			velocity.z = 0f;

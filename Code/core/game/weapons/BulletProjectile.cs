@@ -4,9 +4,7 @@ public class BulletProjectile : BaseProjectile
 {
 	// Speed in Feet per second / 50 physics fps = speed in feet (12hu) per tick
 	protected override float _velocityPerTick => Ammo.FtPerSec * 12f / ProjectSettings.Physics.FixedUpdateFrequency; // this feels... uhhhhhhhhh
-	/// <summary>
-	/// Gravitational Constant G = 9.80665f, thank you Issac Newton
-	/// </summary>
+	/// <summary>Gravitational Constant G = 9.80665f, thank you Issac Newton</summary>
 	private static float _dropPerSecond => MathX.MeterToInch( 9.80665f );
 	protected override float _entityGizmoSize => 8f;
 	[Property, Feature( "Debug" ), ReadOnly] public CoreDamageInfo DamageInfo { get; set; }

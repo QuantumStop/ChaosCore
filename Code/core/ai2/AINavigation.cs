@@ -22,7 +22,7 @@ public class AINavigation : AIModule
 	public override void Init( AIController owner )
 	{
 		Owner = owner;
-		ControllerMoveType = owner.moveType;
+		ControllerMoveType = owner.MovementType;
 	}
 
 	public void NavigationDoMovement( NavData data )

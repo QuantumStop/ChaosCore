@@ -9,10 +9,10 @@ using System.Numerics;
 [Category( "Core" )]
 public class BaseEntity : BaseCustomSerialize
 {
-	public BaseEntity() // this stopped working idk
+	public BaseEntity()
 	{
-		//	InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
-		//	if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
+		InternalID ??= GetType().Name + "_" + Convert.ToBase64String( Id.ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
+		if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) TargetName = InternalID;
 	}
 	// Base delegate
 	public delegate void ChaosOutput( BaseEntity activator );
@@ -29,11 +29,6 @@ public class BaseEntity : BaseCustomSerialize
 
 	//	============= Hooks ============= //
 	protected override void OnEnabled() => _initialized = true;
-	protected override void OnStart()
-	{
-		InternalID ??= GetType().ToString() + "_" + Convert.ToBase64String( Guid.NewGuid().ToByteArray() ).Replace( "=", "" ).Replace( "+", "" ).Replace( "/", "" ).Truncate( 5 );
-		if ( string.IsNullOrEmpty( TargetName ) || TargetName.Trim().Length == 0 ) { TargetName = InternalID; }
-	}
 
 	/// <summary>
 	/// Called just like OnStart, but not retriggered from transitions or save-loading. 
@@ -214,9 +209,9 @@ public class BaseEntity : BaseCustomSerialize
 
 		// Share resolution across instances, but periodically notice added/removed assets.
 		// Keep calling GetEditorVis so property related overrides can change immediately.
-		
+
 		float now = RealTime.Now;
-		
+
 		if ( _resolvedEditorVisuals.TryGetValue( path, out var cached ) && now < cached.recheckAt )
 			return (cached.path, cached.isModel);
 
@@ -229,10 +224,7 @@ public class BaseEntity : BaseCustomSerialize
 		return (path, isModel);
 	}
 
-	private static float PulseAlpha()
-	{
-		return 0.7f + MathF.Sin( WorldTime.Now * 20f ) * 0.3f;
-	}
+	private static float PulseAlpha() => 0.7f + MathF.Sin( WorldTime.Now * 20f ) * 0.3f;
 
 	#endregion
 

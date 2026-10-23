@@ -3,12 +3,14 @@ namespace Core;
 
 using SliderJoint = Sandbox.SliderJoint;
 
-[Description( "A constraint that constrains an entity along a line segment." )]
+/// <summary>A constraint that constrains an entity along a line segment.</summary>
 [Icon( "desk" )]
 public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 {
+	protected override string GetEditorVis() => null;
+
 	public static phys_slideconstraint Instance { get; set; }
-	[Property, ReadOnly, RequireComponent] public SliderJoint _joint { get; set; }
+	[Property, ReadOnly, RequireComponent] public SliderJoint Joint { get; set; }
 
 	[Property, Title( "Parent:" )]
 	public GameObject ParentGameObject
@@ -19,7 +21,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			if ( field != value )
 			{
 				field = value;
-				_joint.Body = value;
+				Joint.Body = value;
 				OnObjChanged();
 			}
 		}
@@ -37,7 +39,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			}
 		}
 	}
-	List<Component> ProceduralComponents { get; set; }
+	private List<Component> _proceduralComponents { get; set; }
 
 	public enum SlideDirection
 	{
@@ -47,11 +49,11 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	public enum SlideAxis
 	{
-		[Description( "Slide the object on the X axis" )]
+		/// <summary>Slide the object on the X axis</summary>
 		X,
-		[Description( "Slide the object on the Y axis" )]
+		/// <summary>Slide the object on the Y axis</summary>
 		Y,
-		[Description( "Slide the object on the Z axis" )]
+		/// <summary>Slide the object on the Z axis</summary>
 		Z
 	}
 
@@ -62,7 +64,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	[Header( "Joint Options" )]
 	[Property]
-	public SlideDirection slideDirection
+	public SlideDirection SlideDir
 	{
 		get;
 		set
@@ -102,7 +104,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			if ( field != value )
 			{
 				field = value;
-				_joint.EnableCollision = value;
+				Joint.EnableCollision = value;
 			}
 		}
 	}
@@ -115,7 +117,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			if ( field != value )
 			{
 				field = value;
-				_joint.MinLength = value;
+				Joint.MinLength = value;
 			}
 		}
 	}
@@ -128,7 +130,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			if ( field != value )
 			{
 				field = value;
-				_joint.MaxLength = value;
+				Joint.MaxLength = value;
 			}
 		}
 	}
@@ -141,7 +143,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 			if ( field != value )
 			{
 				field = value;
-				_joint.Friction = value;
+				Joint.Friction = value;
 			}
 		}
 	}
@@ -156,7 +158,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	[Feature( "Debug" )]
 	[Property, ReadOnly] public float Speed;
-	private Vector3 startLocation;
+	private Vector3 _startLocation;
 
 
 	// TODO: Add to debug in fixed update
@@ -164,20 +166,11 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 	// [Group("Breaking")] [Property] public float LinearStress  { get; set; }
 	// [Group("Breaking")] [Property] public float AngularStress { get; set; }
 
-	protected override void DrawGizmos()
-	{
-		var editorvis = this.GetEditorVis();
-		editorvis = null;
-	}
-
-	protected override void OnEnabled()
-	{
-		UpdateComponents();
-	}
+	protected override void OnEnabled() => UpdateComponents();
 
 	protected override void OnStart()
 	{
-		startLocation = _joint.GameObject.WorldPosition;
+		_startLocation = Joint.GameObject.WorldPosition;
 		UpdateSlideDirection( slideAxis );
 	}
 
@@ -186,31 +179,31 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 		switch ( SlideDir )
 		{
 			case SlideAxis.X:
-				if ( slideDirection == SlideDirection.Forward ) _joint.GameObject.LocalRotation = new Angles( 0, 0, 0 );
-				else _joint.GameObject.LocalRotation = new Angles( 00, 00, 00 );
+				if ( this.SlideDir == SlideDirection.Forward ) Joint.GameObject.LocalRotation = new Angles( 0, 0, 0 );
+				else Joint.GameObject.LocalRotation = new Angles( 00, 00, 00 );
 				break;
 			case SlideAxis.Y:
-				if ( slideDirection == SlideDirection.Forward ) _joint.GameObject.LocalRotation = new Angles( -90, 00, 00 );
-				else _joint.GameObject.LocalRotation = new Angles( 90, 00, 00 );
+				if ( this.SlideDir == SlideDirection.Forward ) Joint.GameObject.LocalRotation = new Angles( -90, 00, 00 );
+				else Joint.GameObject.LocalRotation = new Angles( 90, 00, 00 );
 				break;
 			case SlideAxis.Z:
-				if ( slideDirection == SlideDirection.Forward ) _joint.GameObject.LocalRotation = new Angles( 0, 0, 0 );
-				else _joint.GameObject.LocalRotation = new Angles( 00, 00, 00 );
+				if ( this.SlideDir == SlideDirection.Forward ) Joint.GameObject.LocalRotation = new Angles( 0, 0, 0 );
+				else Joint.GameObject.LocalRotation = new Angles( 00, 00, 00 );
 				break;
 		}
 	}
 
 	private void Dirty()
 	{
-		_joint.EnableCollision = EnableCollision;
-		_joint.MaxLength = MaxLength;
-		_joint.MinLength = MinLength;
-		_joint.Friction = Friction;
+		Joint.EnableCollision = EnableCollision;
+		Joint.MaxLength = MaxLength;
+		Joint.MinLength = MinLength;
+		Joint.Friction = Friction;
 
-		_joint.StartBroken = StartBroken;
-		_joint.BreakForce = BreakForce;
-		_joint.BreakTorque = BreakTorque;
-		_joint.OnBreak = OnBreak;
+		Joint.StartBroken = StartBroken;
+		Joint.BreakForce = BreakForce;
+		Joint.BreakTorque = BreakTorque;
+		Joint.OnBreak = OnBreak;
 
 		OnObjChanged();
 	}
@@ -232,11 +225,11 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	public void AddProcedural( Component p )
 	{
-		ProceduralComponents ??= [];
+		_proceduralComponents ??= [];
 
 		p.Flags |= ComponentFlags.Hidden | ComponentFlags.NotSaved;
 
-		if ( !ProceduralComponents.Contains( p ) ) { ProceduralComponents.Add( p ); }
+		if ( !_proceduralComponents.Contains( p ) ) { _proceduralComponents.Add( p ); }
 	}
 
 	void OnObjChanged()
@@ -248,7 +241,7 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	void UpdateComponents()
 	{
-		if ( !_joint.IsValid() ) return;
+		if ( !Joint.IsValid() ) return;
 
 		CreatePhysComponent();
 		ApplyVisibilityFlags();
@@ -266,10 +259,10 @@ public class phys_slideconstraint : BaseEntity, Component.ExecuteInEditor
 
 	void ApplyVisibilityFlags()
 	{
-		if ( ProceduralComponents is null )
+		if ( _proceduralComponents is null )
 			return;
 
-		foreach ( var c in ProceduralComponents )
+		foreach ( var c in _proceduralComponents )
 		{
 			if ( ShowCreatedComponents )
 			{

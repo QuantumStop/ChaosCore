@@ -1,35 +1,24 @@
 namespace Core;
 
+/// <summary>The core pawn class, harboring the bare essentials of the pawn system, all pawns intended to be controlled by player must be decendants of this</summary>
 public abstract class BasePawn : BaseEntity
 {
 	public static BasePawn Local { get; private set; }
 	[Property, ReadOnly, Sync( SyncFlags.FromHost ), Feature( "Debug" )] public Client Owner { get; set; }
-	/// <summary>
-	/// Are we possessing this pawn right now? (Clientside)
-	/// </summary>
+	/// <summary>Are we possessing this pawn right now? (Clientside)</summary>
 	[Property, Feature( "Debug" ), ReadOnly] public bool IsPossessedLocally => Local == this;
-	/// <summary>
-	/// Are we controlling this pawn right now? (Clientside)
-	/// </summary>
+	/// <summary>Are we controlling this pawn right now? (Clientside)</summary>
 	[Property, Feature( "Debug" ), ReadOnly] public bool IsControlledLocally => IsPossessedLocally && !IsProxy;
-	/// <summary>
-	/// The pawn's camera. Has to have one.
-	/// </summary>
+	/// <summary>The pawn's camera. Has to have one.</summary>
 	[Property, Feature( "Defines" )] public CameraComponent PawnCamera { get; protected set; }
-	/// <summary>
-	/// Who's the owner?
-	/// </summary>
+	/// <summary>Who's the owner?</summary>
 	[Sync] public ulong SteamId { get; set; }
 
 	public virtual void SetCameraActive( bool which ) => PawnCamera?.GameObject.Enabled = which;
 
-	/// <summary>
-	/// Possess "this" pawn.
-	/// </summary>
+	/// <summary>Possess "this" pawn.</summary>
 	public void Possess() => Possess( this );
-	/// <summary>
-	/// Possess a given pawn
-	/// </summary>
+	/// <summary>Possess a given pawn</summary>
 	/// <param name="pawn">Given pawn</param>
 	public static void Possess( BasePawn pawn )
 	{
@@ -99,8 +88,7 @@ public abstract class BasePawn : BaseEntity
 	[Rpc.Owner]
 	public virtual void OnOwnerAssigned( Client owner )
 	{
-		if ( !owner.IsValid() || !owner.IsLocalPlayer )
-			return;
+		if ( !owner.IsValid() || !owner.IsLocalPlayer ) return;
 
 		Possess();
 	}
@@ -111,18 +99,12 @@ public abstract class BasePawn : BaseEntity
 		PawnCamera?.GameObject.Enabled = IsPossessedLocally;
 	}
 
-	/// <summary>
-	/// This pawn was possessed
-	/// </summary>
+	/// <summary>This pawn was possessed</summary>
 	protected virtual void OnPossess() { }
-	/// <summary>
-	/// This pawn was depossessed
-	/// </summary>
+	/// <summary>This pawn was depossessed</summary>
 	protected virtual void OnDePossess() { }
 
-	/// <summary>
-	/// Stop possessing if disabled (or destoryed) the pawn, return to main pawn if this wasn't one
-	/// </summary>
+	/// <summary>Stop possessing if disabled (or destoryed) the pawn, return to main pawn if this wasn't one</summary>
 	protected override void OnDisabled()
 	{
 		if ( Owner.IsValid() && Owner.MainPawn != this && Owner.MainPawn.IsValid() ) Possess( Owner.MainPawn );

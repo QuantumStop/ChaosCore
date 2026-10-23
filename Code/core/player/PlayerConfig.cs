@@ -8,6 +8,8 @@ public class PlayerConfig : GameResource
 	public List<HudRazorClass> HudEntries { get; set; }
 	[InlineEditor, WideMode] public List<PlayerData> PlayerData { get; set; }
 
+	[InlineEditor] public AttackManager.DamageArea Damage { get; set; }
+
 	public string Faction { get; set; }
 
 	protected override Bitmap CreateAssetTypeIcon( int width, int height ) => CreateSimpleAssetTypeIcon( "accessibility", width, height );

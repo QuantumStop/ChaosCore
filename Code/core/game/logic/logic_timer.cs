@@ -2,44 +2,32 @@ namespace Core;
 
 using System;
 
+/// <summary>An entity that fires a timer event at regular, or random, intervals. It can also be set to oscillate betweena high and low end, in which case it will fire alternating high/low outputs each time it fires.</summary>
 [Icon( "timer" )]
-[Description( "An entity that fires a timer event at regular, or random, intervals. It can also be set to oscillate betweena high and low end, in which case it will fire alternating high/low outputs each time it fires." )]
 public class logic_timer : BaseEntity
 {
 	public new delegate void ChaosOutput( logic_timer activator );
 
 	[Property] public bool StartDisabled { get; set; }
 
-	/// <summary>
-	/// Fired when the timer expires.
-	/// </summary>
+	/// <summary>Fired when the timer expires.</summary>
 	[Property, Group( "Outputs" )] public ChaosOutput OnTimer { get; set; }
 
-	/// <summary>
-	/// Fired every other time for an oscillating timer.
-	/// </summary>
+	/// <summary>Fired every other time for an oscillating timer.</summary>
 	[Property, Group( "Outputs" )] public ChaosOutput OnTimerHigh { get; set; }
 
-	/// <summary>
-	/// Fired every other time for an oscillating timer.
-	/// </summary>
+	/// <summary>Fired every other time for an oscillating timer.</summary>
 	[Property, Group( "Outputs" )] public ChaosOutput OnTimerLow { get; set; }
 
 	[Property] public bool UseRandomTime { get; set; }
 
-	/// <summary>
-	/// If 'Use Random Time' is set, this is the minimum time between timer fires. The time will be a random number between this and the 'Maximum Random Interval'.
-	/// </summary>
+	/// <summary>If 'Use Random Time' is set, this is the minimum time between timer fires. The time will be a random number between this and the 'Maximum Random Interval'.</summary>
 	[Property, ShowIf( "UseRandomTime", true )] public float MinimumRandomInterval { get; set; }
 
-	/// <summary>
-	/// If 'Use Random Time' is set, this is the maximum time between timer fires. The time will be a random number between the 'Minimum Random Interval' and this.
-	/// </summary>	
+	/// <summary>If 'Use Random Time' is set, this is the maximum time between timer fires. The time will be a random number between the 'Minimum Random Interval' and this.</summary>	
 	[Property, ShowIf( "UseRandomTime", true )] public float MaximumRandomInterval { get; set; }
 
-	/// <summary>
-	/// If 'Use Random Time' isn't set, this is the time between timer fires, in seconds.
-	/// </summary>
+	/// <summary>If 'Use Random Time' isn't set, this is the time between timer fires, in seconds.</summary>
 	[Property] public float RefireInterval { get; set; }
 
 	/// <summary>
@@ -50,7 +38,7 @@ public class logic_timer : BaseEntity
 	/// <summary>
 	/// Alternates between OnTimerHigh and OnTimerLow outputs
 	/// </summary>
-	[Group( "SpawnFlags" ), Property, Title( "Oscillator" ), Order( 2 )] public bool isOscillator { get; set; } = false;
+	[Group( "SpawnFlags" ), Property, Title( "Oscillator" ), Order( 2 )] public bool IsOscillator { get; set; } = false;
 #if IGNIS
 	[DebugExpose( "firing in", order: 2, Format = "0.00 sec" )]
 #endif
@@ -60,15 +48,15 @@ public class logic_timer : BaseEntity
 #endif
 	[Property, Feature( "Debug" ), ReadOnly, ActionGraphIgnore] public float CurrentRefireInterval;
 
-	private float CurrentMaxInterval;
-	private int OscillatorState = 0;
-	private bool IsEnabled;
+	private float _currentMaxInterval;
+	private int _oscillatorState = 0;
+	private bool _isEnabled;
 
 	protected override void OnStart()
 	{
 		base.OnStart();
 
-		IsEnabled = !StartDisabled;
+		_isEnabled = !StartDisabled;
 
 		if ( UseRandomTime )
 			CalculateInterval();
@@ -84,7 +72,7 @@ public class logic_timer : BaseEntity
 
 	protected override void OnUpdate()
 	{
-		if ( !IsEnabled )
+		if ( !_isEnabled )
 			return;
 
 		HandleTimer();
@@ -98,9 +86,9 @@ public class logic_timer : BaseEntity
 		}
 		else
 		{
-			if ( isOscillator )
+			if ( IsOscillator )
 			{
-				bool isEven = ((int)OscillatorState++) % 2 == 0;
+				bool isEven = ((int)_oscillatorState++) % 2 == 0;
 				if ( isEven )
 					OnTimerHigh?.Invoke( this );
 				else
@@ -125,7 +113,7 @@ public class logic_timer : BaseEntity
 	{
 		CurrentRefireInterval = Game.Random.Float( MinimumRandomInterval, MaximumRandomInterval );
 		CurrentTime = CurrentRefireInterval;
-		CurrentMaxInterval = CurrentRefireInterval;
+		_currentMaxInterval = CurrentRefireInterval;
 	}
 
 
@@ -170,7 +158,7 @@ public class logic_timer : BaseEntity
 	/// </summary>
 	public override BaseEntity Toggle( BaseEntity activator = null )
 	{
-		IsEnabled ^= true;
+		_isEnabled ^= true;
 
 		CurrentTime = 0f;
 
@@ -236,7 +224,7 @@ public class logic_timer : BaseEntity
 	/// </summary>
 	public BaseEntity PauseTimer( BaseEntity activator = null, float value = 0f )
 	{
-		IsEnabled = true;
+		_isEnabled = true;
 
 		return activator ?? null;
 	}
@@ -247,7 +235,7 @@ public class logic_timer : BaseEntity
 	/// </summary>
 	public BaseEntity UnpauseTimer( BaseEntity activator = null, float value = 0f )
 	{
-		IsEnabled = false;
+		_isEnabled = false;
 
 		return activator ?? null;
 	}

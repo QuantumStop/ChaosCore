@@ -1,9 +1,7 @@
 namespace Core;
-#if FMOD
-#endif
 
+/// <summary>Entity that allows you you play all kinds of videos on a screen (Model with a custom shader)</summary>
 [Title( "Video Player" )]
-[Description( "Prop that specificaly lets you play all kinds of videos on a screen" )]
 [Icon( "movie" )]
 
 public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
@@ -19,9 +17,9 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 
 	public enum VideoType
 	{
-		[Description( "The screen is using a video file" )]
+		/// <summary>The screen is using a video file</summary>
 		File,
-		[Description( "The screen is using a live video transmission using .rtex" )]
+		/// <summary>The screen is using a live video transmission using .rtex</summary>
 		RenderTarget
 	}
 #if IGNIS
@@ -78,7 +76,7 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Property, Order( 10 )] public VideoFX _VideoFX { get; set; }
+	[Property, Order( 10 )] public VideoFX VideoEffects { get; set; }
 	[ShowIf( nameof( Type ), VideoType.File )]
 #if IGNIS
 	[DebugExpose]

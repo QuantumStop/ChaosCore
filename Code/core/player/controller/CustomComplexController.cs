@@ -58,7 +58,6 @@ public partial class PlayerController : PlayerWalkControllerComplex
 					if ( !UpdateIsometricCameraToggle() )
 						UpdateCamera();
 				}
-				
 				DoEyeLook();
 			}
 
@@ -80,8 +79,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 	public override void BuildWishVelocity()
 	{
-		if ( _ownerPawn?.IsControlledLocally is not true ) 
-			return;
+		if ( _ownerPawn?.IsControlledLocally is not true ) return;
 
 		if ( !IsIsometricCamera )
 		{
@@ -279,16 +277,16 @@ public partial class PlayerController : PlayerWalkControllerComplex
 
 		// Inherit the head rotation and discard offsets left by the previous view.
 		// This fixes third person retaining roll from first person, making it widely offset when toggled.
-		if ( Camera.IsValid() && (CameraMode == CameraModes.FirstPerson || CameraMode == CameraModes.ThirdPerson) )
-			Camera.LocalRotation = Rotation.Identity;
+		if ( Camera.IsValid() && (CameraMode == CameraModes.FirstPerson || CameraMode == CameraModes.ThirdPerson) ) Camera.LocalRotation = Rotation.Identity;
 
 		if ( _ownerPawn is BasePlayer basePlayer )
 		{
-			basePlayer?.UpdateBodyVisibility();
-
 			if ( !Camera.IsValid() ) basePlayer?.ViewmodelVisible = false;
 
 			basePlayer?.ViewmodelVisible = CameraMode == CameraModes.FirstPerson;
+			basePlayer?.WorldmodelVisible = !basePlayer.ViewmodelVisible;
+
+			basePlayer?.UpdateBodyVisibility();
 		}
 	}
 }

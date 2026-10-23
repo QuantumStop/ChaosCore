@@ -33,7 +33,7 @@ public partial class BasePlayer
 	{
 		if ( !IsPossessedLocally ) return false;
 		if ( !CurrentWeapon.IsValid() ) return false;
-		if ( !CurrentWeapon.WeaponData.WeaponViewmodel.IsValid() ) return false;
+		if ( !CurrentWeapon.GetViewmodel().IsValid() ) return false;
 		if ( Controller.CameraMode != XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson ) return false;
 
 		return true;
@@ -44,8 +44,7 @@ public partial class BasePlayer
 	/// this determines when we want that
 	/// Viewmodel updates also write the camera transform and only first person should own those effects.
 	/// </summary>
-	protected bool _allowSway => ViewmodelVisible && WantSway && Controller.IsValid()
-		&& Controller.CameraMode == XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson;
+	protected bool _allowSway => ViewmodelVisible && WantSway && Controller.IsValid() && Controller.CameraMode == XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson;
 	public bool WantSway { get; set; } = true;
 
 	/// <summary>
@@ -176,17 +175,17 @@ public partial class BasePlayer
 	{
 		if ( _allowSway )
 		{
-			SetAllAnimgraphParams( "f_walking", Local.Movement.Velocity.Length / (Local.Controller.IsRunning ? 320 : 190) );
-			SetAllAnimgraphParams( "f_timesincewishsprint", (Local.Controller as PlayerController).TimeSinceWishSprint() );
-			SetAllAnimgraphParams( "f_wishsprint", (Local.Controller as PlayerController).WishSprint() );
-			SetAllAnimgraphParams( "b_sprint", Local.Controller.IsRunning );
+			SetAllAnimgraphParams( "f_walking", Movement.Velocity.Length / (Controller.IsRunning ? 320 : 190) );
+			SetAllAnimgraphParams( "f_timesincewishsprint", (Controller as PlayerController).TimeSinceWishSprint() );
+			SetAllAnimgraphParams( "f_wishsprint", (Controller as PlayerController).WishSprint() );
+			SetAllAnimgraphParams( "b_sprint", Controller.IsRunning );
 			SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
 			SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
 			SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
 			SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
 			SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
 		}
-		
+
 		ApplyInertia();
 		ApplyVelocity();
 
@@ -195,15 +194,13 @@ public partial class BasePlayer
 
 	protected virtual void ViewmodelUpdate()
 	{
-		if ( _allowSway )
-			UpdateViewmodelOffset();
-
-		CameraEffects.Update( Local.Controller.Camera, Local.CurrentWeapon?.LastAttackTime );
+		if ( _allowSway ) UpdateViewmodelOffset();
+		CameraEffects.Update( Controller.Camera, CurrentWeapon?.LastAttackTime );
 	}
 
 	void ApplyInertia()
 	{
-		var camera = Local.Controller.Camera;
+		var camera = Controller.Camera;
 		var newPitch = camera.WorldRotation.Pitch();
 		var newYaw = camera.WorldRotation.Yaw();
 
@@ -277,11 +274,7 @@ public partial class BasePlayer
 	private float _smoothedViewPitchInertia;
 
 	private const float _viewmodelReferenceFramerate = 60f;
-	private float ToReferenceFrameDelta( float angleDelta )
-	{
-		float dt = MathF.Max( Time.Delta, 0.0001f );
-		return angleDelta / dt * (1f / _viewmodelReferenceFramerate);
-	}
+	private float ToReferenceFrameDelta( float angleDelta ) => angleDelta / MathF.Max( Time.Delta, 0.0001f ) * (1f / _viewmodelReferenceFramerate);
 
 	/// <summary>
 	/// Holds the last frame's camera rotation, used for delta calculation in determining view rotation changes.
@@ -296,24 +289,23 @@ public partial class BasePlayer
 
 	public void UpdateViewmodelOffset()
 	{
-		if ( Local.LifeState == LifeState.Dead ) // Don't do anything if player is dead.
-			return;
+		if ( LifeState == LifeState.Dead ) return; // Don't do anything if player is dead.
 
-		var currentViewRot = Local.Controller.Camera.WorldRotation;
+		var currentViewRot = Controller.Camera.WorldRotation;
 		var cameraForward = currentViewRot.Forward.Normal;
-		var playerVelocity = Local.Movement.Velocity;
-		var cameraPitch = Local.Controller.WorldRotation.Pitch();
+		var playerVelocity = Movement.Velocity;
+		var cameraPitch = Controller.WorldRotation.Pitch();
 
 		var delta = _lastViewRot.Inverse * currentViewRot;
 		var deltaAngles = delta.Angles();
 
 		_lastViewRot = currentViewRot;
 
-		UpdateViewInertia( deltaAngles );                                              // Calculate view rotation deltas for inertia
-		UpdateSwayOffset();                                                            // Apply weapon sway based on view deltas
-		UpdatePitchLean( cameraPitch );                                                // Apply vertical lean from camera pitch
-		UpdateYawOffsetFromPitch( cameraPitch );                                       // Add yaw offset when looking up/down
-		UpdateMovementLean( playerVelocity, cameraForward );                           // Add forward/backward lean based on movement
+		UpdateViewInertia( deltaAngles );                                   // Calculate view rotation deltas for inertia
+		UpdateSwayOffset();                                                             // Apply weapon sway based on view deltas
+		UpdatePitchLean( cameraPitch );                                 // Apply vertical lean from camera pitch
+		UpdateYawOffsetFromPitch( cameraPitch );                            // Add yaw offset when looking up/down
+		UpdateMovementLean( playerVelocity, cameraForward );    // Add forward/backward lean based on movement
 		UpdateRollLean( playerVelocity, currentViewRot.Left.Normal, cameraForward, deltaAngles );      // Roll lean from strafing, movement and turning
 	}
 
@@ -445,7 +437,7 @@ public partial class BasePlayer
 
 	private float WallProximityFactor( float maxDistance = 60f )
 	{
-		var ray = Local.Controller.AimRay;
+		var ray = Controller.AimRay;
 		var forward = ray.Forward.WithZ( 0f );
 		if ( forward.Length < 0.001f )
 			forward = ray.Forward;
@@ -488,15 +480,13 @@ public partial class BasePlayer
 	//	private float currentBobRoll;
 	private void UpdateViewBob()
 	{
-		if ( Local.LifeState == LifeState.Dead )
-			return;
+		if ( LifeState == LifeState.Dead ) return;
 
-		if ( !(Local?.Controller).IsValid() || !Local.Controller.Camera.IsValid() )
-			return;
+		if ( !Controller.IsValid() || !Controller.Camera.IsValid() ) return;
 
 		// Only first person owns the head relative camera transform used by our viewbob,
 		// this fixes jittery aim when we're in isometric mode.
-		if ( Local.Controller.CameraMode != XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson )
+		if ( Controller.CameraMode != XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson )
 		{
 			_bobTime = 0f;
 			_boblerpFactor = 0f;
@@ -504,26 +494,20 @@ public partial class BasePlayer
 			return;
 		}
 
-		bool isOnGround = (Local?.Controller).Controller.IsOnGround;
-		Vector3 velocity = (Local?.Controller).Controller.Velocity;
-		Rotation eyeRot = (Local?.Controller).EyeAngles.ToRotation();
-		Vector3 headPos = (Local?.Controller).Head.WorldPosition;
-		Vector3 speed = Local.Movement.Velocity;
+		bool isOnGround = Controller.Controller.IsOnGround;
+		Vector3 velocity = Controller.Controller.Velocity;
+		Rotation eyeRot = Controller.EyeAngles.ToRotation();
+		Vector3 headPos = Controller.Head.WorldPosition;
+		Vector3 speed = Movement.Velocity;
 		float Velocity2D = speed.WithZ( 0 ).Length;
 
-		float speedNorm = RemapSpeedNormalized(
-			(Local?.Controller).CrouchSpeed,
-			(Local?.Controller).WalkSpeed,
-			(Local?.Controller).DefaultSpeed,
-			(Local?.Controller).RunSpeed,
-			Velocity2D
-		);
+		float speedNorm = RemapSpeedNormalized( Controller.CrouchSpeed, Controller.WalkSpeed, Controller.DefaultSpeed, Controller.RunSpeed, Velocity2D );
 
 		float bobStrength = (Velocity2D < 50f) ? 0f : BobAmplitudeCurve.Evaluate( speedNorm );
 		float frequency = (Velocity2D < 50f) ? 0f : BobFrequencyCurve.Evaluate( speedNorm );
 
 		// Sync camera and head position
-		Local.Controller.Camera.WorldPosition = headPos;
+		Controller.Camera.WorldPosition = headPos;
 
 		// Strafe roll doing is here
 		float targetStrafeRoll = CalculateStrafeRoll( eyeRot, velocity );
@@ -539,12 +523,11 @@ public partial class BasePlayer
 			float rollBob = MathF.Sin( _bobTime ) * BobRollScale * bobStrength;
 
 			// Apply bob offset relative to current view rotation
-			Vector3 offset = Local.Controller.Camera.WorldRotation.Up * verticalBob
-							 + Local.Controller.Camera.WorldRotation.Right * horizontalBob;
+			Vector3 offset = Controller.Camera.WorldRotation.Up * verticalBob + Controller.Camera.WorldRotation.Right * horizontalBob;
 
 			// Smoothly transition camera position based on bobbing
-			Local.Controller.Camera.WorldPosition = Vector3.Lerp( Local.Controller.Camera.WorldPosition, headPos + offset, Time.Delta * 10f );
-			Local.Controller.Camera.WorldRotation = (Local?.Controller).EyeAngles.ToRotation() * Rotation.From( 0, 0, rollBob );
+			Controller.Camera.WorldPosition = Vector3.Lerp( Controller.Camera.WorldPosition, headPos + offset, Time.Delta * 10f );
+			Controller.Camera.WorldRotation = Controller.EyeAngles.ToRotation() * Rotation.From( 0, 0, rollBob );
 		}
 		else
 		{
@@ -553,12 +536,12 @@ public partial class BasePlayer
 			_boblerpFactor = MathX.Lerp( _boblerpFactor, 0f, Time.Delta * 8f );
 
 			// Smoothly return to default camera position (no bob effect)
-			Local.Controller.Camera.WorldPosition = Vector3.Lerp( Local.Controller.Camera.WorldPosition, headPos, Time.Delta * 10f );
-			Local.Controller.Camera.WorldRotation = (Local?.Controller).EyeAngles.ToRotation();
+			Controller.Camera.WorldPosition = Vector3.Lerp( Controller.Camera.WorldPosition, headPos, Time.Delta * 10f );
+			Controller.Camera.WorldRotation = (Local?.Controller).EyeAngles.ToRotation();
 		}
 
 		// And then lets output it:
-		Local.Controller.Camera.WorldRotation = eyeRot * Rotation.From( 0f, 0f, _currentStrafeRoll /*+ currentBobRoll*/ );
+		Controller.Camera.WorldRotation = eyeRot * Rotation.From( 0f, 0f, _currentStrafeRoll /*+ currentBobRoll*/ );
 	}
 
 	// ======== Recoil ======== //
@@ -568,31 +551,22 @@ public partial class BasePlayer
 		var player = owner.Controller;
 		var weaponData = owner.CurrentWeapon?.WeaponData;
 
-		if ( !weaponData.IsValid() || Local.LifeState == LifeState.Dead )
-			return;
+		if ( !weaponData.IsValid() || owner.LifeState == LifeState.Dead ) return;
 
-		float strength = Math.Clamp( weaponData.RecoilPushForce, 0f, 10f );
-		float easedStrength = EasingPlus.Linear( strength );
-
-		float pitch = easedStrength;
-
-		player.LocalEyeAngles = player.LocalEyeAngles.WithPitch(
-			(player.LocalEyeAngles.pitch - pitch).Clamp( -89f, 89f )
-		);
+		player.LocalEyeAngles = player.LocalEyeAngles.WithPitch( (player.LocalEyeAngles.pitch - EasingPlus.Linear( Math.Clamp( weaponData.RecoilPushForce, 0f, 10f ) )).Clamp( -89f, 89f ) );
 	}
 
 
 	protected void ApplyVelocity()
 	{
-		if ( !Local.ViewmodelWeapon.IsValid() )
-			return;
+		if ( !ViewmodelWeapon.IsValid() ) return;
 
-		var moveLen = Local.Movement.Velocity.Length;
-		var wishMove = Local.Movement.WishVelocity.Normal * 1f;
+		var moveLen = Movement.Velocity.Length;
+		var wishMove = Movement.WishVelocity.Normal * 1f;
 
 		//	if ( Equipment.EquipmentFlags.HasFlag( EquipmentFlags.Aiming ) ) wishMove = 0;
 
-		if ( Local.Controller.IsWalking || Local.Controller.IsCrouching )
+		if ( Controller.IsWalking || Controller.IsCrouching )
 			moveLen *= 0.5f;
 
 		_lerpedWishMove = _lerpedWishMove.LerpTo( wishMove, Time.Delta * 7.0f );
@@ -602,22 +576,14 @@ public partial class BasePlayer
 	}
 
 
-	/// <summary>
-	/// Send shit to all parts of viewmodel
-	/// </summary>
+	/// <summary>Send shit to all parts of viewmodel</summary>
 	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Set( v, value );
-	/// <summary>
-	/// Send shit to all parts of viewmodel
-	/// </summary>
+	/// <summary>Send shit to all parts of viewmodel</summary>
 	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Set( v, value );
-	/// <summary>
-	/// Send shit to all parts of viewmodel
-	/// </summary>
+	/// <summary>Send shit to all parts of viewmodel </summary>
 	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Set( v, value );
-	/// <summary>
-	/// Send shit to all parts of viewmodel
-	/// </summary>
-	public void SetAllWeaponModels( Model model ) => ViewmodelWeapon?.Model = model;
+	/// <summary>Send shit to all parts of viewmodel</summary>
+	public void SetAllWeaponViewmodels( Model model ) => ViewmodelWeapon?.Model = model;
 
 	/// <summary>
 	/// Process all animtags from animgraph
@@ -671,21 +637,15 @@ public partial class BasePlayer
 
 	protected override void OnPreRender()
 	{
-		base.OnPreRender();
+		if ( !IsPossessedLocally ) return;      // only on viewmodel you can see
 
-		if ( !IsPossessedLocally ) // only on viewmodel you can see
-			return;
+		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid() ) return;
 
-		if ( !ViewmodelWeaponObject.IsValid() || !ViewmodelHands.IsValid() || !ViewmodelWeapon.IsValid() )
-			return;
+		if ( !ViewmodelWeaponObject.Active ) return;   // because we toggle the viewmodel object, check if its active (enabled)
 
-		if ( !ViewmodelWeaponObject.Active )    // because we toggle the viewmodel object, check if its active (enabled)
-			return;
+		var camera = PawnCamera;
 
-		var camera = Local.PawnCamera;
-
-		if ( !camera.IsValid() )
-			return;
+		if ( !camera.IsValid() ) return;
 
 		float vmFov = GetViewmodelFOV();
 

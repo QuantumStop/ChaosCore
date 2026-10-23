@@ -74,7 +74,7 @@ public class AIActionRegistry( Scene scene ) : GameObjectSystem<AIActionRegistry
 		{ AIActionDefinition.ActionList.ActionTakeCover,        a => new MoveToCoverAction( a )        },
 	//	{ AIActionDefinition.ActionList.ActionRangeAttack1,     a => new HoundeyeAttackAction( a )     },
 		{ AIActionDefinition.ActionList.ActionChaseEnemy,       a => new MoveToEnemyAction( a )        },
-		{ AIActionDefinition.ActionList.ActionScatter,          a => new PanicScatterAction( a )       },
+	//	{ AIActionDefinition.ActionList.ActionScatter,          a => new PanicScatterAction( a )       },
 		{ AIActionDefinition.ActionList.ActionBackAwayFromEnemy,a => new HoundeyeBackOffAction( a )    },
 		{ AIActionDefinition.ActionList.ActionFollowTheLeader,  a => new FollowTheLeaderAction( a )    },
 		{ AIActionDefinition.ActionList.ActionGoToEnemyLKP,     a => new GoToEnemyLKPAction( a )       },

@@ -1,5 +1,6 @@
 namespace Core;
 
+/// <summary>Trigger volume for detecting player's gaze</summary>
 [Icon( "looks" )]
 public class trigger_look : BaseTrigger
 {
@@ -10,9 +11,7 @@ public class trigger_look : BaseTrigger
 	[Property] public bool FireOnce { get; set; } = false;
 
 
-	/// <summary>
-	/// The GameObject to be looked at.
-	/// </summary>
+	/// <summary>he GameObject to be looked at.</summary>
 	[Property, Order( 3 )] public GameObject LookTarget { get; set; }
 
 	/// <summary>
@@ -40,13 +39,13 @@ public class trigger_look : BaseTrigger
 
 	public override bool IsTouchable => true;
 
-	public bool containsBasePlayer = false;
-	private bool hasBasePlayer = false;
-	private bool hasTimedOut = false;
-	private bool TriggerFired = false;
+	public bool ContainsBasePlayer = false;
+	private bool _hasBasePlayer = false;
+	private bool _hasTimedOut = false;
+	private bool _triggerFired = false;
 
-	private float elapsedLookTime = 0f;
-	private float elapsedTimeInTrigger = 0f;
+	private float _elapsedLookTime = 0f;
+	private float _elapsedTimeInTrigger = 0f;
 
 
 	/// <summary>
@@ -55,15 +54,9 @@ public class trigger_look : BaseTrigger
 	[Property, Group( "Outputs" )] public ChaosOutput OnTimeout { get; set; }
 
 
-	protected override void OnTriggerIn()
-	{
-		CheckPresence();
-	}
+	protected override void OnTriggerIn() => CheckPresence();
 
-	protected override void OnTriggerOut()
-	{
-		CheckPresence();
-	}
+	protected override void OnTriggerOut() => CheckPresence();
 
 	protected override void OnItemsEmpty()
 	{
@@ -76,28 +69,28 @@ public class trigger_look : BaseTrigger
 	{
 		base.OnFixedUpdate();
 
-		if ( FireOnce && TriggerFired )
+		if ( FireOnce && _triggerFired )
 			return;
 
-		if ( hasBasePlayer )
+		if ( _hasBasePlayer )
 		{
-			elapsedTimeInTrigger += Time.Delta;
+			_elapsedTimeInTrigger += Time.Delta;
 
-			if ( IsTimeOut() && !hasTimedOut )
+			if ( IsTimeOut() && !_hasTimedOut )
 			{
-				hasTimedOut = true;
+				_hasTimedOut = true;
 				OnTimeout?.Invoke( this );
 			}
 		}
 
-		if ( !TriggerFired && PlayerSawTarget() )
+		if ( !_triggerFired && PlayerSawTarget() )
 		{
-			TriggerFired = true;
+			_triggerFired = true;
 			OnTrigger?.Invoke( BasePlayer.Local );
 		}
 
 		// Debug view update
-		if ( isDebug && hasBasePlayer && BasePlayer.Local?.LifeState == LifeState.Alive )
+		if ( IsDebug && _hasBasePlayer && BasePlayer.Local?.LifeState == LifeState.Alive )
 		{
 			IsPlayerLookingAtTarget( LookTarget );
 		}
@@ -105,19 +98,19 @@ public class trigger_look : BaseTrigger
 
 	public bool PlayerSawTarget()
 	{
-		if ( !LookTarget.IsValid() || !containsBasePlayer || TriggerFired )
+		if ( !LookTarget.IsValid() || !ContainsBasePlayer || _triggerFired )
 			return false;
 
 		bool isLooking = IsPlayerLookingAtTarget( LookTarget );
 
 		if ( !isLooking )
 		{
-			elapsedLookTime = 0f;
+			_elapsedLookTime = 0f;
 			return false;
 		}
 
-		elapsedLookTime += Time.Delta;
-		return elapsedLookTime >= LookTime;
+		_elapsedLookTime += Time.Delta;
+		return _elapsedLookTime >= LookTime;
 	}
 
 
@@ -125,7 +118,7 @@ public class trigger_look : BaseTrigger
 	{
 		if ( BasePlayer.Local?.LifeState == LifeState.Dead || !target.IsValid() )
 		{
-			if ( isDebug ) PlayerLookTarget = null;
+			if ( IsDebug ) PlayerLookTarget = null;
 			return false;
 		}
 
@@ -139,7 +132,7 @@ public class trigger_look : BaseTrigger
 
 		if ( dot + dotTolerance < FieldOfView )
 		{
-			if ( isDebug ) PlayerLookTarget = null;
+			if ( IsDebug ) PlayerLookTarget = null;
 			return false;
 		}
 
@@ -153,7 +146,7 @@ public class trigger_look : BaseTrigger
 
 		bool hasLineOfSight = !(trace.Hit && trace.GameObject != target);
 
-		if ( isDebug )
+		if ( IsDebug )
 		{
 			PlayerLookTarget = hasLineOfSight ? target : null;
 		}
@@ -163,14 +156,14 @@ public class trigger_look : BaseTrigger
 
 	private void CheckPresence()
 	{
-		lock ( trackedItems )
+		lock ( TrackedItems )
 		{
-			containsBasePlayer = trackedItems.Keys.Any( go => go.GetComponentInParent<BasePlayer>().IsValid() );
+			ContainsBasePlayer = TrackedItems.Keys.Any( go => go.GetComponentInParent<BasePlayer>().IsValid() );
 		}
 
-		if ( containsBasePlayer != hasBasePlayer )
+		if ( ContainsBasePlayer != _hasBasePlayer )
 		{
-			hasBasePlayer = containsBasePlayer;
+			_hasBasePlayer = ContainsBasePlayer;
 			StopTimeout();
 		}
 	}
@@ -180,18 +173,18 @@ public class trigger_look : BaseTrigger
 		if ( Timeout <= 0 )
 			return;
 
-		elapsedTimeInTrigger = 0f;
-		elapsedLookTime = 0f;
+		_elapsedTimeInTrigger = 0f;
+		_elapsedLookTime = 0f;
 
 		if ( !FireOnce )
-			TriggerFired = false;
+			_triggerFired = false;
 
-		hasTimedOut = false;
+		_hasTimedOut = false;
 	}
 
 	private bool IsTimeOut()
 	{
-		if ( Timeout <= 0 || elapsedTimeInTrigger < Timeout || hasTimedOut )
+		if ( Timeout <= 0 || _elapsedTimeInTrigger < Timeout || _hasTimedOut )
 			return false;
 
 		return true;

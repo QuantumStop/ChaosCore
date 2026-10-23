@@ -2,53 +2,53 @@ using System;
 
 namespace Core;
 
-[Description( "A trigger that teleports entities that touch its volume." )]
+/// <summary>A trigger that teleports entities that touch its volume.</summary>
 [Icon( "wifi_tethering" )]
-public class trigger_teleport : BaseEntity, Component.ITriggerListener
+public class triggerTeleport : BaseEntity, Component.ITriggerListener
 {
 	#region SpawnFlags
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Clients" )] public bool b_Clients { get; set; } = true;
+	[Property] public bool Clients { get; set; } = true;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "NPCs" )] public bool b_Npcs { get; set; } = false;
+	[Property, Title( "NPCs" )] public bool NPCs { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Pushables" )] public bool b_Pushables { get; set; } = false;
+	[Property] public bool bPushables { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Physics Objects" )] public bool b_PhysicsObjects { get; set; } = false;
+	[Property, Title( "Physics Objects" )] public bool bPhysicsObjects { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Only player ally NPCs" )] public bool b_PlayerAllyNPCs { get; set; } = false;
+	[Property, Title( "Only player ally NPCs" )] public bool bPlayerAllyNPCs { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Only clients in vehicles" )] public bool b_ClientsInVehicles { get; set; } = false;
+	[Property, Title( "Only clients in vehicles" )] public bool bClientsInVehicles { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Only clients *not* in vehicles" )] public bool b_ClientsNotInVehicles { get; set; } = false;
+	[Property, Title( "Only clients *not* in vehicles" )] public bool bClientsNotInVehicles { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Physics Debris" )] public bool b_PhysicsDebris { get; set; } = false;
+	[Property, Title( "Physics Debris" )] public bool bPhysicsDebris { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Only NPCs in vehicles (respects player ally flag)" )] public bool b_NPCsInVehicles { get; set; } = false;
+	[Property, Title( "Only NPCs in vehicles (respects player ally flag)" )] public bool bNPCsInVehicles { get; set; } = false;
 
 	[Group( "SpawnFlags" )]
-	[Property, Title( "Everything (not including physics debris)" )] public bool b_Everything { get; set; } = false;
+	[Property, Title( "Everything (not including physics debris)" )] public bool Everything { get; set; } = false;
 
-	[Property, Title( "Start Disabled" )] public bool b_StartDisabled { get; set; } = false;
+	[Property] public bool StartDisabled { get; set; } = false;
 
 	#endregion
 
-	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool isDebug = false;
+	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool IsDebug = false;
 
-	[ShowIf( nameof( isDebug ), true ), Property, Feature( "Debug" ), Title( "Show Trigger Items List" )] public bool b_ShowTriggerItems { get; set; } = false;
+	[ShowIf( nameof( IsDebug ), true ), Property, Feature( "Debug" ), Title( "Show Trigger Items List" )] public bool bShowTriggerItems { get; set; } = false;
 #if IGNIS
 	[DebugExpose]
 #endif
-	[ShowIf( nameof( b_ShowTriggerItems ), true ), ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems = new();
+	[ShowIf( nameof( bShowTriggerItems ), true ), ReadOnly, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public List<GameObject> inTriggerItems = new();
 
 	/// <summary>
 	/// The entity specifying the point to which entities should be teleported. Usually either a info_teleport_destination or info_target.
@@ -72,9 +72,9 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 #if IGNIS
 	[DebugExpose]
 #endif
-	[Title( "Rotation Offset" ), Property] public bool b_RotationOffset { get; set; }
+	[Property] public bool RotationOffset { get; set; }
 
-	[Property, Title( "Soften Velocity" )] public bool b_SoftenVelocity { get; set; } = false;
+	[Property] public bool SoftVelocity { get; set; } = false;
 
 	[Property]
 	private bool _isEnabled
@@ -95,8 +95,8 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 	protected override void OnStart()
 	{
-		inTriggerItems ??= new();
-		_isEnabled = !b_StartDisabled;
+		inTriggerItems ??= [];
+		_isEnabled = !StartDisabled;
 	}
 
 	public void OnTriggerEnter( Collider activator )
@@ -105,7 +105,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 		if ( _isEnabled )
 			HandleTeleport();
-		else if ( isDebug )
+		else if ( IsDebug )
 			Log.Warning( "trigger_teleport: Trigger is disabled, not teleporting entities." );
 	}
 
@@ -113,13 +113,13 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 	{
 		if ( !RemoteDestination.IsValid() )
 		{
-			if ( isDebug )
+			if ( IsDebug )
 				Log.Warning( "trigger_teleport: No RemoteDestination set!" );
 
 			return;
 		}
 
-		if ( (inTriggerItems is null || inTriggerItems.Count == 0) && isDebug )
+		if ( (inTriggerItems is null || inTriggerItems.Count == 0) && IsDebug )
 		{
 			Log.Warning( "trigger_teleport: No items in trigger to teleport!" );
 			return;
@@ -138,7 +138,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 			item.WorldPosition = GetTeleportPosition( item );
 			SoftenVelocity( item );
 
-			if ( !b_RotationOffset )
+			if ( !RotationOffset )
 				continue;
 
 			SetTeleportRotation( item, player, sourceRotation );
@@ -191,7 +191,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 
 	private void SoftenVelocity( GameObject item )
 	{
-		if ( !b_SoftenVelocity )
+		if ( !SoftVelocity )
 			return;
 
 		if ( item.Components.Get<BasePlayer>( FindMode.EverythingInSelfAndChildren ) is { } player && player.IsValid() )
@@ -224,7 +224,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 		var go = other.GameObject;
 
 		// Handle players
-		if ( b_Clients )
+		if ( Clients )
 		{
 			var player = go.GetComponentInParent<BasePlayer>();
 			if ( player.IsValid() && !inTriggerItems.Contains( player.GameObject ) )
@@ -235,7 +235,7 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 		}
 
 		// Handle physics props (excluding debris)
-		if ( b_PhysicsObjects && !go.Tags.Has( "debris" ) )
+		if ( bPhysicsObjects && !go.Tags.Has( "debris" ) )
 		{
 			if ( go.GetComponent<Prop>().IsValid() || go.GetComponent<GameProp>().IsValid() )
 			{
@@ -245,14 +245,14 @@ public class trigger_teleport : BaseEntity, Component.ITriggerListener
 		}
 
 		// Handle physics debris
-		if ( b_PhysicsDebris && go.Tags.Has( "debris" ) )
+		if ( bPhysicsDebris && go.Tags.Has( "debris" ) )
 		{
 			inTriggerItems.Add( go );
 			return;
 		}
 
 		// Catch-all for everything else (excluding debris)
-		if ( b_Everything && !go.Tags.Has( "debris" ) )
+		if ( Everything && !go.Tags.Has( "debris" ) )
 		{
 			inTriggerItems.Add( go );
 		}

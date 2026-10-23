@@ -13,6 +13,11 @@ public partial class PlayerMovement : Component
 	[Range( 0, 50 )]
 	[Property] public float StepHeight { get; set; } = 18.0f;
 
+	[Property] public bool TreatSteepLowSlopesAsWalkable { get; set; } = false;
+
+	[Range( 0.5f, 18.0f )]
+	[Property] public float SteepSlopeProbeDistance { get; set; } = 12.0f;
+
 	[Range( 0, 90 )]
 	[Property] public float GroundAngle { get; set; } = 45.5734f;
 
@@ -34,7 +39,7 @@ public partial class PlayerMovement : Component
 	[Property, Group( "Collision" ), HideIf( nameof( UseCollisionRules ), true )]
 	public TagSet IgnoreLayers { get; set; } = new();
 
-	public BBox BoundingBox => new( new Vector3( -Radius, -Radius, 0 ), new Vector3( Radius, Radius, Height ) );
+	public BBox BoundingBox => new BBox( new Vector3( -Radius, -Radius, 0 ), new Vector3( Radius, Radius, Height ) );
 
 	[ReadOnly, Property, Sync]
 	public Vector3 Velocity { get; set; }
@@ -46,6 +51,8 @@ public partial class PlayerMovement : Component
 	public bool IsOnGround { get; set; }
 
 	public Vector3 PreviousPosition { get; set; }
+	private float? _steepSlopeBaseHeight;
+	private bool _touchedSteepSlopeThisMove;
 
 	public GameObject PreviousGroundObject { get; set; }
 	public GameObject GroundObject { get; set; }
@@ -53,10 +60,8 @@ public partial class PlayerMovement : Component
 	public Vector3 GroundNormal { get; set; }
 	public float SurfaceFriction { get; set; } = 1.0f;
 
-	/// <summary>
-	/// Use a physics body for the shape of the player's movement trace, uses bbox if unset.
-	/// </summary> 
-	[Property] HullCollider PlayerColliderCyllinder { get; set; }
+	/// <summary>Use a physics body for the shape of the player's movement trace, uses bbox if unset. Should come from Physics Body GameObject (usually).</summary> 
+	[Property, Feature( "Physics Integration" )] private HullCollider _playerColliderCyllinder { get; set; }
 
 	/// <summary>
 	/// Preserves wall sliding when a trace starts exactly on a wall contact.
@@ -191,11 +196,11 @@ public partial class PlayerMovement : Component
 
 		var source = Scene.Trace.Ray( from, to ).Size( box );
 
-		if ( PlayerColliderCyllinder.IsValid() && PlayerColliderCyllinder.Enabled ) // noclipping disables it and produces NRE if we check
+		if ( _playerColliderCyllinder.IsValid() && _playerColliderCyllinder.Enabled ) // noclipping disables it and produces NRE if we check
 		{
-			SyncPlayerHullCollider( PlayerColliderCyllinder );
+			SyncPlayerHullCollider( _playerColliderCyllinder );
 
-			source = Scene.Trace.Body( PlayerColliderCyllinder.Rigidbody.PhysicsBody, new Transform( from ), to );
+			source = Scene.Trace.Body( _playerColliderCyllinder?.Rigidbody?.PhysicsBody, new Transform( from ), to );
 		}
 		var trace = source.IgnoreGameObjectHierarchy( GameObject );
 
@@ -224,16 +229,16 @@ public partial class PlayerMovement : Component
 	/// </summary>
 	void ResetPlayerColliderTransform()
 	{
-		if ( !PlayerColliderCyllinder.IsValid() ) return;
+		if ( !_playerColliderCyllinder.IsValid() ) return;
 
-		SyncPlayerHullCollider( PlayerColliderCyllinder );
+		SyncPlayerHullCollider( _playerColliderCyllinder );
 
-		var rigidbody = PlayerColliderCyllinder.Rigidbody;
+		var rigidbody = _playerColliderCyllinder.Rigidbody;
 
 		if ( !rigidbody.IsValid() ) return;
 
-		PlayerColliderCyllinder.GameObject.LocalPosition = Vector3.Zero;
-		PlayerColliderCyllinder.GameObject.LocalRotation = Rotation.Identity;
+		_playerColliderCyllinder.GameObject.LocalPosition = Vector3.Zero;
+		_playerColliderCyllinder.GameObject.LocalRotation = Rotation.Identity;
 
 		rigidbody.LocalPosition = Vector3.Zero;
 		rigidbody.LocalRotation = Rotation.Identity;
@@ -258,9 +263,14 @@ public partial class PlayerMovement : Component
 
 		var pos = GameObject.WorldPosition;
 
-		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, delta );
-		mover.Bounce = Bounciness;
-		mover.MaxStandableAngle = GroundAngle;
+		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, delta )
+		{
+			Bounce = Bounciness,
+			MaxStandableAngle = GroundAngle,
+			TreatSteepLowSlopesAsWalkable = TreatSteepLowSlopesAsWalkable,
+			SteepSlopeProbeDistance = SteepSlopeProbeDistance,
+			SteepSlopeRiseLimit = GetSteepSlopeRiseLimit( pos.z, StepHeight )
+		};
 
 		if ( step && IsOnGround )
 		{
@@ -271,6 +281,9 @@ public partial class PlayerMovement : Component
 			mover.TryMove( Time.Delta );
 		}
 
+		if ( step && IsOnGround && mover.TouchedSteepSlope && !_steepSlopeBaseHeight.HasValue )
+			_steepSlopeBaseHeight = pos.z;
+
 		WorldPosition = mover.Position;
 	}
 	void Move( bool step )
@@ -280,13 +293,13 @@ public partial class PlayerMovement : Component
 			//Velocity = Velocity.WithZ( 0 );
 		}
 
-
 		var pos = GameObject.WorldPosition;
+		_touchedSteepSlopeThisMove = false;
+
+		if ( !TreatSteepLowSlopesAsWalkable ) _steepSlopeBaseHeight = null;
 
 		Velocity *= WorldScale;
-
 		Velocity += BaseVelocity;
-
 		Velocity += PhysicsBodyVelocity;
 
 		// Speculative fix to solve #81
@@ -298,7 +311,10 @@ public partial class PlayerMovement : Component
 		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, Velocity )
 		{
 			Bounce = Bounciness,
-			MaxStandableAngle = GroundAngle
+			MaxStandableAngle = GroundAngle,
+			TreatSteepLowSlopesAsWalkable = TreatSteepLowSlopesAsWalkable,
+			SteepSlopeProbeDistance = SteepSlopeProbeDistance,
+			SteepSlopeRiseLimit = GetSteepSlopeRiseLimit( pos.z, StepHeight * WorldScale.z )
 		};
 
 		if ( step && IsOnGround )
@@ -309,6 +325,10 @@ public partial class PlayerMovement : Component
 		{
 			mover.TryMove( Time.Delta );
 		}
+
+		if ( step && IsOnGround && mover.TouchedSteepSlope && !_steepSlopeBaseHeight.HasValue )
+			_steepSlopeBaseHeight = pos.z;
+		_touchedSteepSlopeThisMove = mover.TouchedSteepSlope;
 
 		WorldPosition = mover.Position;
 		Velocity = mover.Velocity;
@@ -339,10 +359,18 @@ public partial class PlayerMovement : Component
 		return velocity - horizontalNormal * inwardSpeed;
 	}
 
-	void CategorizePosition()
+	private float GetSteepSlopeRiseLimit( float currentHeight, float stepHeight )
+	{
+		if ( !_steepSlopeBaseHeight.HasValue )
+			return stepHeight;
+
+		return Math.Max( 0.0f, stepHeight - Math.Max( 0.0f, currentHeight - _steepSlopeBaseHeight.Value ) );
+	}
+
+	private void CategorizePosition()
 	{
 		SurfaceFriction = 1.0f;
-		var point = WorldPosition + ((Vector3.Down * 2f) * WorldScale.z);
+		var point = WorldPosition + (Vector3.Down * 2f * WorldScale.z);
 		var vBumpOrigin = WorldPosition;
 		var wasOnGround = IsOnGround;
 
@@ -357,11 +385,17 @@ public partial class PlayerMovement : Component
 
 		var pm = BuildTrace( vBumpOrigin, point, 0.0f ).Run();
 
-		//
 		// we didn't hit - or the ground is too steep to be ground
-		//
 
-		if ( IsOnGround && !pm.Hit || Vector3.GetAngle( Vector3.Up, pm.Normal ) > GroundAngle )
+		var groundAngle = Vector3.GetAngle( Vector3.Up, pm.Normal );
+		var withinSteepSlopeHeight = _steepSlopeBaseHeight.HasValue
+			&& WorldPosition.z - _steepSlopeBaseHeight.Value <= StepHeight * WorldScale.z + 0.03125f;
+		var walkableSteepSlope = TreatSteepLowSlopesAsWalkable
+			&& groundAngle > GroundAngle
+			&& groundAngle <= 90.0f
+			&& withinSteepSlopeHeight;
+
+		if ( (IsOnGround && !pm.Hit) || (groundAngle > GroundAngle && !walkableSteepSlope) )
 		{
 			ClearGround();
 
@@ -371,16 +405,15 @@ public partial class PlayerMovement : Component
 			return;
 		}
 
-		//
+		if ( groundAngle <= GroundAngle && !_touchedSteepSlopeThisMove )
+			_steepSlopeBaseHeight = null;
+
 		// we are on ground
-		//
 		ChangeGround( pm );
 
-		var posDelta = (WorldPosition - PreviousPosition);
+		var posDelta = WorldPosition - PreviousPosition;
 
-		//
 		// move to this ground position, if we moved, and hit
-		//
 		if ( wasOnGround && !pm.StartedSolid && pm.Fraction > 0.0f && pm.Fraction < 1.0f && posDelta.z <= 3f )
 		{
 			WorldPosition = pm.EndPosition;
@@ -396,10 +429,7 @@ public partial class PlayerMovement : Component
 
 		var tr = BuildTrace( start, end, 0.0f ).Run();
 
-		//
 		// we didn't hit - or the ground is too steep to be ground
-		//
-
 		if ( tr.Fraction > 0.0f && tr.Fraction < 1.0f && !tr.StartedSolid && Vector3.GetAngle( Vector3.Up, tr.Normal ) <= GroundAngle )
 		{
 			float zDelta = MathF.Abs( WorldPosition.z - tr.EndPosition.z );
@@ -407,16 +437,13 @@ public partial class PlayerMovement : Component
 		}
 	}
 
-	/// <summary>
-	/// Disconnect from ground and punch our velocity. This is useful if you want the player to jump or something.
-	/// </summary>
+	/// <summary>Disconnect from ground and punch our velocity. This is useful if you want the player to jump or something.</summary>
 	public void Punch( in Vector3 amount )
 	{
 		ClearGround();
 		Velocity += amount;
 	}
 
-	/// <summary>
 	/// <summary>
 	/// Fired when the player lands on the ground after being airborne.
 	/// Parameters: fall distance, impact velocity.
@@ -425,8 +452,7 @@ public partial class PlayerMovement : Component
 
 	private Vector3 _preLandVelocity;
 
-	/// We're no longer on the ground, remove it
-	/// </summary>
+	/// <summary>We're no longer on the ground, remove it</summary>
 	public virtual void ClearGround()
 	{
 		if ( IsOnGround )
@@ -454,7 +480,7 @@ public partial class PlayerMovement : Component
 		PreviousGroundObject = GroundObject;
 		IsOnGround = pm.Hit;
 		GroundObject = pm.GameObject;
-		GroundCollider = pm.Shape?.Collider as Collider;
+		GroundCollider = pm.Shape?.Collider;
 		GroundNormal = pm.Normal;
 
 		BaseVelocity = Vector3.Zero;
@@ -495,8 +521,13 @@ public partial class PlayerMovement : Component
 		var pos = WorldPosition;
 		var delta = targetPosition - pos;
 
-		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, delta );
-		mover.MaxStandableAngle = GroundAngle;
+		var mover = new CharacterControllerHelper( BuildTrace( pos, pos ), pos, delta )
+		{
+			MaxStandableAngle = GroundAngle,
+			TreatSteepLowSlopesAsWalkable = TreatSteepLowSlopesAsWalkable,
+			SteepSlopeProbeDistance = SteepSlopeProbeDistance,
+			SteepSlopeRiseLimit = GetSteepSlopeRiseLimit( pos.z, StepHeight )
+		};
 
 		if ( useStep )
 		{
@@ -507,17 +538,15 @@ public partial class PlayerMovement : Component
 			mover.TryMove( 1.0f );
 		}
 
+		if ( useStep && IsOnGround && mover.TouchedSteepSlope && !_steepSlopeBaseHeight.HasValue )
+			_steepSlopeBaseHeight = pos.z;
+
 		WorldPosition = mover.Position;
 	}
 
 	int _stuckTries;
 
-	bool IsStuck()
-	{
-		var result = BuildTrace( WorldPosition, WorldPosition ).Run();
-		return result.StartedSolid || IsOutOfBounds( WorldPosition );
-	}
-	[ConVar] public static bool debug_playermovement_unstick { get; set; } = false;
+	[ConVar] public static bool DebugPlayermovementUnstick { get; set; } = false;
 	Transform _previousTransform;
 	bool TryUnstuck()
 	{
@@ -559,7 +588,7 @@ public partial class PlayerMovement : Component
 			if ( i <= 2 && !wasOutOfBounds )
 			{
 				pos = WorldPosition + Vector3.Up * ((i) * 0.2f);
-				if ( debug_playermovement_unstick ) DebugOverlay.Box( BoundingBox, Color.Cyan, 2, Transform.World.WithRotation( Rotation.Identity ) );
+				if ( DebugPlayermovementUnstick ) DebugOverlay.Box( BoundingBox, Color.Cyan, 2, Transform.World.WithRotation( Rotation.Identity ) );
 			}
 			// Try base velocity 
 			if ( (PhysicsBodyVelocity.Length > 0 || (PhysicsBodyRigidbody.IsValid() && PhysicsBodyRigidbody.WorldPosition != WorldPosition)) && i < 80 && !wasOutOfBounds )
@@ -578,7 +607,7 @@ public partial class PlayerMovement : Component
 					if ( i > 75 ) searchdistance = 3f;
 					normal *= searchdistance;
 					pos += normal;
-					if ( debug_playermovement_unstick ) DebugOverlay.Line( WorldPosition, pos, Color.Yellow, 2 );
+					if ( DebugPlayermovementUnstick ) DebugOverlay.Line( WorldPosition, pos, Color.Yellow, 2 );
 					/*using ( Gizmo.Scope( "unstuck2", new Transform() ) )
 					{
 						Gizmo.Draw.Color = Color.Yellow;
@@ -586,7 +615,7 @@ public partial class PlayerMovement : Component
 					}*/
 
 				}
-				if ( debug_playermovement_unstick ) DebugOverlay.Box( BoundingBox, Color.Green, 2, Transform.World.WithRotation( Rotation.Identity ) );
+				if ( DebugPlayermovementUnstick ) DebugOverlay.Box( BoundingBox, Color.Green, 2, Transform.World.WithRotation( Rotation.Identity ) );
 
 				/*using ( Gizmo.Scope( "unstuck3", pos ) )
 				{
@@ -598,7 +627,7 @@ public partial class PlayerMovement : Component
 			else if ( i < 4 && !wasOutOfBounds )
 			{
 				pos = WorldPosition + Vector3.Up * ((i) * 3f);
-				if ( debug_playermovement_unstick ) DebugOverlay.Box( BoundingBox, Color.Yellow, 2, Transform.World.WithRotation( Rotation.Identity ) );
+				if ( DebugPlayermovementUnstick ) DebugOverlay.Box( BoundingBox, Color.Yellow, 2, Transform.World.WithRotation( Rotation.Identity ) );
 			}
 			else
 			{
@@ -606,11 +635,11 @@ public partial class PlayerMovement : Component
 				if ( wasOutOfBounds ) pushscale = 3f;
 				normal = Vector3.Random.Normal * (((float)_stuckTries) * pushscale);
 
-				if ( debug_playermovement_unstick ) DebugOverlay.Line( WorldPosition, pos, Color.Blue, 2 );
+				if ( DebugPlayermovementUnstick ) DebugOverlay.Line( WorldPosition, pos, Color.Blue, 2 );
 				pos = WorldPosition + normal;
 				normal *= 0.25f;
 				//normal.ClampLength( 0, 10 );
-				if ( debug_playermovement_unstick ) DebugOverlay.Box( BoundingBox, Color.Magenta, 2, Transform.World.WithRotation( Rotation.Identity ) );
+				if ( DebugPlayermovementUnstick ) DebugOverlay.Box( BoundingBox, Color.Magenta, 2, Transform.World.WithRotation( Rotation.Identity ) );
 			}
 			/*using ( Gizmo.Scope( "unstuck4", new Transform() ) )
 			{

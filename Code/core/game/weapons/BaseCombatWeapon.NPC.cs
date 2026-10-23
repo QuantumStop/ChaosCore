@@ -81,7 +81,7 @@ public partial class BaseCombatWeapon
 
 		LastAttackTime = WorldTime.Now;
 
-		AttackSound( false );
+		AttackSound();
 
 		PrimaryAmmoLoaded -= 1;
 		PrimaryAmmoInChamber = Math.Min( 1, PrimaryAmmoLoaded );

@@ -191,12 +191,16 @@ public partial class BasePlayer
 
 	public virtual void UpdateBodyVisibility()
 	{
-		var isIsometricCamera = Controller is PlayerController playerController && playerController.IsIsometricCamera;
-
 		if ( !IsPossessedLocally )
 		{
 			foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 			{
+				if ( mdlrenderer == WorldModelRenderer )
+				{
+					mdlrenderer.RenderType = CurrentWeapon.IsValid() ? ModelRenderer.ShadowRenderType.On : ModelRenderer.ShadowRenderType.Off;
+					continue;
+				}
+
 				mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
 				//		Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath} !PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
 			}
@@ -207,16 +211,28 @@ public partial class BasePlayer
 			{
 				foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 				{
+					if ( mdlrenderer == WorldModelRenderer )
+					{
+						mdlrenderer.RenderType = ConvertShouldToType( ShouldDrawWorldmodel() );
+						continue;
+					}
+
 					mdlrenderer.RenderType = Controller.PlayerShadowsOnly ? ModelRenderer.ShadowRenderType.ShadowsOnly : ModelRenderer.ShadowRenderType.On;
 					//	Log.Info( $"Called from: {name}" );
 					//	Log.Info( $" " );
 					//	Log.Info( $"{Network.Owner} {mdlrenderer.Model.ResourcePath}  PossessedLocally {Rpc.Caller.DisplayName} {mdlrenderer.RenderType}" );
 				}
 			}
-			if ( (Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson || isIsometricCamera) && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
+			if ( (Controller.CameraMode == PlayerWalkControllerComplex.CameraModes.ThirdPerson || Controller is PlayerController playerController && playerController.IsIsometricCamera) && Controller.BodyModelRenderer.RenderType == ModelRenderer.ShadowRenderType.ShadowsOnly && Controller.PlayerShadowsOnly )
 			{
 				foreach ( ModelRenderer mdlrenderer in Controller.Body.Components.GetAll<ModelRenderer>( FindMode.EverythingInSelfAndChildren ) )
 				{
+					if ( mdlrenderer == WorldModelRenderer )
+					{
+						mdlrenderer.RenderType = ConvertShouldToType( ShouldDrawWorldmodel() );
+						continue;
+					}
+
 					mdlrenderer.RenderType = ModelRenderer.ShadowRenderType.On;
 				}
 			}

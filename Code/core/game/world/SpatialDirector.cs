@@ -11,9 +11,8 @@ public enum SpatialDirectorViewMode
 	Perspective
 }
 
+/// <summary>Controls world cutaway, interior dimming, fog of war, and renderer visibility.</summary>
 [PresetTarget( "SpatialDirector", Name = "Spatial Director", Icon = "travel_explore", Category = "Rendering", IncludeAll = true )]
-
-[Description( "Controls world cutaway, interior dimming, fog of war, and renderer visibility." )]
 [Title( "Spatial Director" )]
 [Category( "Rendering" )]
 [Icon( "travel_explore" )]

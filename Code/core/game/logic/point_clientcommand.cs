@@ -3,9 +3,8 @@ using System.Reflection;
 
 namespace Core;
 
+/// <summary>An entity that issues commands to the client console, as if it was typed in by the player (if activator is a player, or the local player in single player).</summary>
 [Icon( "terminal" )]
-
-[Description( "An entity that issues commands to the client console, as if it was typed in by the player (if activator is a player, or the local player in single player)." )]
 public class point_clientcommand : BaseEntity
 {
 #if STANDALONE

@@ -121,14 +121,14 @@ public partial class PlayerWalkControllerComplex : Component
 	public void Jump()
 	{
 		Controller.LaunchUpwards( JumpPower );
-		BroadcastPlayerJumped();
+		//	BroadcastPlayerJumped();
 	}
 
 	/// <summary>
 	/// A network message that lets other users that we've triggered a jump.
 	/// </summary>
-	[Rpc.Broadcast]
-	public void BroadcastPlayerJumped() => AnimationHelper?.TriggerJump();
+	//	[Rpc.Broadcast]
+	//	public void BroadcastPlayerJumped() => AnimationHelper?.TriggerJump();
 
 	protected void BuildFrameInput()
 	{
@@ -154,7 +154,7 @@ public partial class PlayerWalkControllerComplex : Component
 
 	public virtual float GetWishSpeed()
 	{
-		if ( IsCrouching ) return CrouchSpeed;
+		if ( Controller.IsOnGround && IsCrouching ) return CrouchSpeed;
 		if ( IsRunning ) return RunSpeed;
 		if ( IsWalking ) return WalkSpeed;
 		return DefaultSpeed;

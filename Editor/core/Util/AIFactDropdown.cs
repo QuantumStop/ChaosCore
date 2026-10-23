@@ -7,7 +7,7 @@ using Core;
 
 public sealed class AIFactDropdown : ControlWidget
 {
-	private PopupWidget _menu;
+	//private PopupWidget _menu;
 
 	public AIFactDropdown( SerializedProperty property ) : base( property )
 	{
@@ -16,8 +16,7 @@ public sealed class AIFactDropdown : ControlWidget
 		Layout.Spacing = 2;
 	}
 
-	public override bool IsControlActive => base.IsControlActive || _menu.IsValid();
-	public override bool IsControlHovered => base.IsControlHovered || _menu.IsValid();
+	//public override bool IsControlActive => base.IsControlActive || _menu.IsValid();
 	public override bool IsControlButton => true;
 	public override bool SupportsMultiEdit => true;
 
@@ -36,7 +35,7 @@ public sealed class AIFactDropdown : ControlWidget
 
 	protected override void OnMouseClick( MouseEvent e )
 	{
-		if ( IsControlDisabled || !e.LeftMouseButton || _menu.IsValid() ) return;
+		if ( IsControlDisabled || !e.LeftMouseButton ) return;
 #if IGNIS
 		OpenMenu();
 #endif
@@ -44,7 +43,7 @@ public sealed class AIFactDropdown : ControlWidget
 
 	public override void StartEditing()
 	{
-		if ( IsControlDisabled || _menu.IsValid() ) return;
+		if ( IsControlDisabled ) return;
 #if IGNIS
 		OpenMenu();
 #endif

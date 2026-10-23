@@ -134,9 +134,6 @@
         "OnComponentUpdate": null,
         "OnlyAllowHost": false,
         "PlayerShadowsOnly": true,
-        "RotationAngleLimit": 45,
-        "RotationFaceLadders": true,
-        "RotationSpeed": 1,
         "RunAction": "Run",
         "RunByDefault": false,
         "RunSpeed": 320,
@@ -156,6 +153,7 @@
         "__guid": "0a1b686c-516a-4697-94c4-096e97ed052e",
         "__enabled": true,
         "Flags": 0,
+        "_playerColliderCyllinder": null,
         "Acceleration": 21,
         "AccurateBidirectionalSampling": false,
         "AccurateDownwardsTraceSampling": false,
@@ -226,52 +224,15 @@
           "go": "82c0e517-c335-4cf8-b3d4-4d52fa581953",
           "component_type": "Rigidbody"
         },
-        "PlayerColliderCyllinder": {
-          "_type": "component",
-          "component_id": "6c21b154-0e46-477b-b25f-2d4ecd9088a8",
-          "go": "3dbd38fd-9920-4076-83f9-52b029e355a9",
-          "component_type": "HullCollider"
-        },
         "PushScale": 0.7,
         "Radius": 16,
+        "SteepSlopeProbeDistance": 12,
         "StepHeight": 18,
         "StopSpeed": 100,
+        "TreatSteepLowSlopesAsWalkable": false,
         "UnstickOutOfBoundsMode": "BidirectionalTrace",
         "UseCollisionRules": false,
         "Velocity": "0,0,0"
-      },
-      {
-        "__type": "Sandbox.Citizen.CitizenAnimationHelper",
-        "__guid": "724c6f09-7675-4725-a568-813efa48a89c",
-        "__enabled": true,
-        "Flags": 0,
-        "BodyWeight": 1,
-        "EyeSource": null,
-        "EyesWeight": 1,
-        "HeadWeight": 1,
-        "Height": null,
-        "IkLeftFoot": null,
-        "IkLeftHand": null,
-        "IkRightFoot": null,
-        "IkRightHand": null,
-        "LookAt": null,
-        "LookAtEnabled": false,
-        "LookAtEyes": null,
-        "OnComponentDestroy": null,
-        "OnComponentDisabled": null,
-        "OnComponentEnabled": null,
-        "OnComponentFixedUpdate": null,
-        "OnComponentStart": null,
-        "OnComponentUpdate": null,
-        "Sitting": "None",
-        "SittingOffsetHeight": 0,
-        "SpecialMove": "None",
-        "Target": {
-          "_type": "component",
-          "component_id": "b245634c-86aa-4f28-aa9d-3838d11a0d0f",
-          "go": "f57a7a30-a821-4603-952e-2a394a53830c",
-          "component_type": "SkinnedModelRenderer"
-        }
       },
       {
         "__type": "SDK.Player",
@@ -447,7 +408,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 18591.389
+          "Relative": 2610.39
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -477,7 +438,7 @@
         "WaterLevel": "None",
         "WeaponGameObject": {
           "_type": "gameobject",
-          "go": "1a4fe5fd-a99f-4548-9877-bb8f67fe664f"
+          "go": "09a4cf92-8b32-4a0e-b783-2776825f8fc5"
         },
         "WeaponList": [],
         "WeaponToEquip": null,
@@ -487,6 +448,13 @@
           "go": "39274841-4d4f-4ec9-9fc0-b2dfa837c7f7",
           "component_type": "WorldInput"
         },
+        "WorldModelRenderer": {
+          "_type": "component",
+          "component_id": "3a1d2f59-630b-4b74-8ce1-c6b5a3cc1f6a",
+          "go": "f57a7a30-a821-4603-952e-2a394a53830c",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "WorldmodelVisible": true,
         "YawInertia": 0,
         "YawOffsetLerpSpeed": 6
       },
@@ -556,28 +524,6 @@
             "OnComponentFixedUpdate": null,
             "OnComponentStart": null,
             "OnComponentUpdate": null
-          },
-          {
-            "__type": "SDK.CanvasPlayerStatus",
-            "__guid": "fc148ceb-bf30-407f-baa9-b09a8eff32df",
-            "__enabled": true,
-            "Flags": 0,
-            "HealthContentPositionOffsetVh": "0,0",
-            "IsDebug": false,
-            "OnComponentDestroy": null,
-            "OnComponentDisabled": null,
-            "OnComponentEnabled": null,
-            "OnComponentFixedUpdate": null,
-            "OnComponentStart": null,
-            "OnComponentUpdate": null,
-            "ScreenPanel": {
-              "_type": "component",
-              "component_id": "da429b58-1a6e-41de-ae42-3c24baf19471",
-              "go": "566b1312-0abc-4eff-8dc1-c654d837cd80",
-              "component_type": "ScreenPanel"
-            },
-            "SuitRequired": false,
-            "UseScreenPanelLayout": true
           }
         ],
         "Children": []
@@ -704,11 +650,56 @@
             },
             "Tint": "1,1,1,1",
             "UseAnimGraph": true
+          },
+          {
+            "__type": "Sandbox.SkinnedModelRenderer",
+            "__guid": "3a1d2f59-630b-4b74-8ce1-c6b5a3cc1f6a",
+            "__enabled": true,
+            "Flags": 0,
+            "AnimationGraph": null,
+            "BodyGroups": 18446744073709551615,
+            "BoneMergeTarget": {
+              "_type": "component",
+              "component_id": "b245634c-86aa-4f28-aa9d-3838d11a0d0f",
+              "go": "f57a7a30-a821-4603-952e-2a394a53830c",
+              "component_type": "SkinnedModelRenderer"
+            },
+            "CreateAttachments": false,
+            "CreateBoneObjects": true,
+            "DeformationMode": "Normal",
+            "LodOverride": null,
+            "MaterialGroup": null,
+            "MaterialOverride": null,
+            "Materials": null,
+            "Model": null,
+            "Morphs": {},
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null,
+            "Parameters": {},
+            "PlaybackRate": 1,
+            "RenderOptions": {
+              "GameLayer": true,
+              "OverlayLayer": false,
+              "BloomLayer": false,
+              "AfterUILayer": false
+            },
+            "RenderType": "On",
+            "Sequence": {
+              "Name": null,
+              "Looping": true,
+              "Blending": false
+            },
+            "Tint": "1,1,1,1",
+            "UseAnimGraph": true
           }
         ],
         "Children": [
           {
-            "__guid": "ff418b9c-2ca4-4ee1-b024-45aa4e04d501",
+            "__guid": "fb7522cb-ad54-436d-a58a-1c03cbb0add0",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - y_front_pants_white",
@@ -725,7 +716,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "e382aa5f-59cf-4763-a99f-01cba77b863e",
+                "__guid": "80b801e2-0049-4384-85be-05d5f76840fc",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -775,6 +766,24 @@
             "Children": []
           }
         ]
+      },
+      {
+        "__guid": "09a4cf92-8b32-4a0e-b783-2776825f8fc5",
+        "__version": 2,
+        "Flags": 0,
+        "Name": "Inventory",
+        "Position": "0,0,0",
+        "Rotation": "0,0,0,1",
+        "Scale": "1,1,1",
+        "Tags": "",
+        "Enabled": true,
+        "NetworkMode": 2,
+        "NetworkFlags": 0,
+        "NetworkOrphaned": 0,
+        "NetworkTransmit": true,
+        "OwnerTransfer": 1,
+        "Components": [],
+        "Children": []
       },
       {
         "__guid": "39274841-4d4f-4ec9-9fc0-b2dfa837c7f7",
@@ -980,6 +989,7 @@
                 "__enabled": false,
                 "Flags": 0,
                 "Attenuation": 1,
+                "BakeLightIndex": -1,
                 "Brightness": 1,
                 "ColorMode": "Color",
                 "ConeInner": 0,
@@ -991,13 +1001,13 @@
                 "KelvinTemperature": 6500,
                 "LightColor": "3.14159,3.14159,3.14159,3.14159",
                 "MiredTemperature": 154,
+                "MixedShadows": false,
                 "OnComponentDestroy": null,
                 "OnComponentDisabled": null,
                 "OnComponentEnabled": null,
                 "OnComponentFixedUpdate": null,
                 "OnComponentStart": null,
                 "OnComponentUpdate": null,
-                "PI": true,
                 "Preset": null,
                 "Radius": 1024,
                 "RGB_Color": "1,1,1,1",
@@ -1025,10 +1035,10 @@
                 "Flags": 0,
                 "_customLUT": null,
                 "_exposureBias": 1,
+                "_gammaIn": 2.4,
+                "_gammaOut": 2.2,
                 "_oklabLumaBlend": 0.8,
                 "_oklabSaturation": 2,
-                "GammaIn": 2.4,
-                "GammaOut": 2.2,
                 "Mode": "NeutralAlt",
                 "OnComponentDestroy": null,
                 "OnComponentDisabled": null,
@@ -1248,6 +1258,7 @@
             "Gravity": true,
             "GravityScale": 1,
             "ImpactDamage": 0,
+            "InertiaScale": 1,
             "LinearDamping": 0,
             "Locking": {
               "X": false,
@@ -1301,7 +1312,7 @@
             "Slices": 16,
             "Static": false,
             "Surface": {
-              "Id": "dd379b05-42a2-4780-90e5-2be4748e7df7",
+              "Id": "c2d26f83-9d25-4f7a-94da-5d5e805f969f",
               "Path": "xmove_phys.surface"
             },
             "SurfaceVelocity": "0,0,0",
@@ -1337,6 +1348,7 @@
             "Gravity": false,
             "GravityScale": 0,
             "ImpactDamage": 0,
+            "InertiaScale": 1,
             "LinearDamping": 0,
             "Locking": {
               "X": false,
@@ -1390,7 +1402,7 @@
             "Slices": 16,
             "Static": false,
             "Surface": {
-              "Id": "dd379b05-42a2-4780-90e5-2be4748e7df7",
+              "Id": "c2d26f83-9d25-4f7a-94da-5d5e805f969f",
               "Path": "xmove_phys.surface"
             },
             "SurfaceVelocity": "0,0,0",

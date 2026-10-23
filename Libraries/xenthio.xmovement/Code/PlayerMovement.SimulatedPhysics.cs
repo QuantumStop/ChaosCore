@@ -122,6 +122,7 @@ public partial class PlayerMovement : Component
 			//vel.z = MathF.Max( 0, vel.z );
 			//WorldPosition += vel * Time.Delta;
 		}*/
+		/*
 		if ( IsStuck() && PhysicsBodyRigidbody.WorldPosition != Vector3.Zero )
 		{
 			// If we're stuck, assume the physics simulated body is where we should be.
@@ -132,12 +133,12 @@ public partial class PlayerMovement : Component
 									//MoveTo( bodypos, true );
 			PhysicsBodyVelocity = delta;
 		}
-		else
+		else*/
 		{
 			PhysicsBodyVelocity = vel;// * Time.Delta;   
 		}
 
-		TryUnstuck();
+		//	TryUnstuck();
 
 		//if ( GroundObject == null && PreviouslyOnGround )
 		//{
@@ -171,7 +172,7 @@ public partial class PlayerMovement : Component
 		{
 			PhysicsBodyRigidbody.Velocity -= Gravity * Time.Delta * 1f;
 		}
-		else if ( !IsStuck() && IsOnGround )
+		else if ( IsOnGround )
 		{
 			// we need "friction" here since we've got no gravity pulling us down, else we will keep sliding once pushed.
 			PhysicsBodyRigidbody.Velocity = ApplyFriction( PhysicsBodyRigidbody.Velocity, GetFriction() * 1f, 0f );

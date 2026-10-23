@@ -1,8 +1,6 @@
 namespace Core;
 
-/// <summary>
-/// An entity that fades out/in player's view.
-/// </summary>
+/// <summary>An entity that fades out/in player's view.</summary>
 [Icon( "format_align_justify" ), Category( "Logic" ), Title( "env_fade" )]
 public class ui_fade : BaseEntity
 {

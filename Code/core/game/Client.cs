@@ -67,7 +67,14 @@ public partial class Client : Component, Component.INetworkListener
 	/// <summary>
 	/// Initialize the client locally for that client only
 	/// </summary>
-	[Rpc.Owner] public void ClientInit() => Local = this;
+	[Rpc.Owner]
+	public void ClientInit()
+	{
+		Local = this;
+		NameClient();
+	}
+
+	[Rpc.Broadcast] private void NameClient() => GameObject.Name = $"{Connection.DisplayName} [CLIENT]";
 
 	/// <summary>
 	/// This client possessed some pawn, consider this an "event" of sorts
@@ -144,4 +151,8 @@ public partial class Client : Component, Component.INetworkListener
 		if ( connection is null ) return null;
 		return Game.ActiveScene.GetAll<Client>().FirstOrDefault( x => x.Connection == connection );
 	}
+
+	[Sync] public bool LateJoiner { get; set; }
+
+	[Rpc.Owner] public void ResetLate() => LateJoiner = false;
 }

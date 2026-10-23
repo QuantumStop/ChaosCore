@@ -7,17 +7,17 @@ public partial class GameProp
 {
 	public enum PropEffectOverride
 	{
+		/// <summary>Use prop data to determine if the effect applies.</summary>
 		[Icon( "data_array" )]
-		[Description( "Use prop data to determine if the effect applies." )]
 		UseModelData,
+		/// <summary>This prop always does the effect.</summary>
 		[Icon( "motion_photos_on" )]
-		[Description( "This prop always does the effect." )]
 		Always,
+		/// <summary>This prop does the effect based on a script. Use the condition property to control this.</summary>
 		[Icon( "rule" )]
-		[Description( "This prop does the effect based on a script. Use the condition property to control this." )]
 		Conditional,
+		/// <summary>This prop never does the effect.</summary>
 		[Icon( "motion_photos_off" )]
-		[Description( "This prop never does the effect." )]
 		Never
 	}
 
@@ -33,7 +33,7 @@ public partial class GameProp
 		PropEffectOverride.Always => true,
 		PropEffectOverride.Conditional => FlammableCondition,
 		PropEffectOverride.Never => false,
-		_ => ModelFlammable
+		_ => _modelFlammable
 	};
 
 	/// <summary>
@@ -48,7 +48,7 @@ public partial class GameProp
 		PropEffectOverride.Always => true,
 		PropEffectOverride.Conditional => ExplosiveCondition,
 		PropEffectOverride.Never => false,
-		_ => ModelExplosive
+		_ => _modelExplosive
 	};
 
 	/// <summary>
@@ -74,23 +74,23 @@ public partial class GameProp
 	public bool ExplosiveCondition { get; set; } = false;
 
 	[Sync]
-	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( UseAuthoredExplosiveData ), true )]
+	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( _useAuthoredExplosiveData ), true )]
 	public float ExplosionDamageOverride { get; set; } = -1f;
 
 	[Sync]
-	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( UseAuthoredExplosiveData ), true )]
+	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( _useAuthoredExplosiveData ), true )]
 	public float ExplosionRadiusOverride { get; set; } = -1f;
 
 	[Sync]
-	[Group( "Breakable Properties" ), Property, Order( 13 ), Title( "Force Scale" ), ShowIf( nameof( UseAuthoredExplosiveData ), true )]
+	[Group( "Breakable Properties" ), Property, Order( 13 ), Title( "Force Scale" ), ShowIf( nameof( _useAuthoredExplosiveData ), true )]
 	public float ExplosionForceOverride { get; set; } = -1f;
 
 	[Sync]
-	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( UseAuthoredExplosiveData ), true )]
+	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( _useAuthoredExplosiveData ), true )]
 	public float MinImpactDamageSpeedOverride { get; set; } = -1f;
 
 	[Sync]
-	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( UseAuthoredExplosiveData ), true )]
+	[Group( "Breakable Properties" ), Property, Order( 13 ), ShowIf( nameof( _useAuthoredExplosiveData ), true )]
 	public float ImpactDamageOverride { get; set; } = -1f;
 
 	[Sync]
@@ -122,13 +122,13 @@ public partial class GameProp
 	[DebugExpose]
 #endif
 	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
-	public float ImpactSpeedThreshold => ResolvedMinImpactDamageSpeed;
+	public float ImpactSpeedThreshold => _resolvedMinImpactDamageSpeed;
 
 #if IGNIS
 	[DebugExpose]
 #endif
 	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
-	public float ImpactDamageAmount => ResolvedImpactDamage;
+	public float ImpactDamageAmount => _resolvedImpactDamage;
 
 #if IGNIS
 	[DebugExpose]
@@ -141,46 +141,31 @@ public partial class GameProp
 	[Feature( "Debug" ), Group( "Velocity" ), Property, ReadOnly, ShowIf( nameof( _hasRigidbody ), true )]
 	public bool LastImpactPassedThreshold { get; private set; }
 
-	private bool ModelFlammable => Model?.Data.Flammable ?? false;
-	private bool ModelExplosive => Model?.Data.Explosive ?? false;
+	private bool _modelFlammable => Model?.Data.Flammable ?? false;
+	private bool _modelExplosive => Model?.Data.Explosive ?? false;
 
 	[Property, Hide]
-	protected bool UseAuthoredExplosiveData =>
-		ExplosiveOverride is PropEffectOverride.Always or PropEffectOverride.Conditional;
+	protected bool _useAuthoredExplosiveData => ExplosiveOverride is PropEffectOverride.Always or PropEffectOverride.Conditional;
 
-	private float AuthoredOrModelExplosionDamage =>
-		UseAuthoredExplosiveData ? ExplosionDamageOverride : (Model?.Data.ExplosionDamage ?? -1f);
-	private float AuthoredOrModelExplosionRadius =>
-		UseAuthoredExplosiveData ? ExplosionRadiusOverride : (Model?.Data.ExplosionRadius ?? -1f);
-	private float AuthoredOrModelExplosionForce =>
-		UseAuthoredExplosiveData ? ExplosionForceOverride : (Model?.Data.ExplosionForce ?? -1f);
-	private float AuthoredOrModelMinImpactDamageSpeed =>
-		UseAuthoredExplosiveData ? MinImpactDamageSpeedOverride : (Model?.Data.MinImpactDamageSpeed ?? -1f);
-	private float AuthoredOrModelImpactDamage =>
-		UseAuthoredExplosiveData ? ImpactDamageOverride : (Model?.Data.ImpactDamage ?? -1f);
-	private float ResolvedExplosionDamage =>
-		AuthoredOrModelExplosionDamage <= 0 ? 80 : AuthoredOrModelExplosionDamage;
-	private float ResolvedExplosionRadius =>
-		AuthoredOrModelExplosionRadius <= 0 ? 256 : AuthoredOrModelExplosionRadius;
-	private float ResolvedExplosionForce =>
-		AuthoredOrModelExplosionForce <= 0 ? 1 : AuthoredOrModelExplosionForce;
-	private float ResolvedMinImpactDamageSpeed =>
-		AuthoredOrModelMinImpactDamageSpeed <= 0 ? 500f : AuthoredOrModelMinImpactDamageSpeed;
-	private float ResolvedImpactDamage =>
-		AuthoredOrModelImpactDamage <= 0 ? 10f : AuthoredOrModelImpactDamage;
+	private float _authoredOrModelExplosionDamage => _useAuthoredExplosiveData ? ExplosionDamageOverride : (Model?.Data.ExplosionDamage ?? -1f);
+	private float _authoredOrModelExplosionRadius => _useAuthoredExplosiveData ? ExplosionRadiusOverride : (Model?.Data.ExplosionRadius ?? -1f);
+	private float _authoredOrModelExplosionForce => _useAuthoredExplosiveData ? ExplosionForceOverride : (Model?.Data.ExplosionForce ?? -1f);
+	private float _authoredOrModelMinImpactDamageSpeed => _useAuthoredExplosiveData ? MinImpactDamageSpeedOverride : (Model?.Data.MinImpactDamageSpeed ?? -1f);
+	private float _authoredOrModelImpactDamage => _useAuthoredExplosiveData ? ImpactDamageOverride : (Model?.Data.ImpactDamage ?? -1f);
+	private float _resolvedExplosionDamage => _authoredOrModelExplosionDamage <= 0 ? 80 : _authoredOrModelExplosionDamage;
+	private float _resolvedExplosionRadius => _authoredOrModelExplosionRadius <= 0 ? 256 : _authoredOrModelExplosionRadius;
+	private float _resolvedExplosionForce => _authoredOrModelExplosionForce <= 0 ? 1 : _authoredOrModelExplosionForce;
+	private float _resolvedMinImpactDamageSpeed => _authoredOrModelMinImpactDamageSpeed <= 0 ? 500f : _authoredOrModelMinImpactDamageSpeed;
+	private float _resolvedImpactDamage => _authoredOrModelImpactDamage <= 0 ? 10f : _authoredOrModelImpactDamage;
 
 	bool CanIgniteFromDamage( in DamageInfo damage )
 	{
-		if ( IsOnFire )
-			return false;
+		if ( IsOnFire ) return false;
 
 		return IsFlammable && ShouldDamageIgnite( damage );
 	}
 
-	bool ShouldDetonateFromDamage( in DamageInfo damage )
-	{
-		return IsExplosive && IsStrongImpact( damage );
-	}
+	bool ShouldDetonateFromDamage( in DamageInfo damage ) => IsExplosive && IsStrongImpact( damage );
 
 	bool IsStrongImpact( in DamageInfo damage )
 	{
@@ -188,7 +173,7 @@ public partial class GameProp
 			return false;
 
 		LastImpactSpeed = GetImpactSpeed();
-		LastImpactPassedThreshold = LastImpactSpeed >= ResolvedMinImpactDamageSpeed;
+		LastImpactPassedThreshold = LastImpactSpeed >= _resolvedMinImpactDamageSpeed;
 
 		return LastImpactPassedThreshold;
 	}
@@ -205,16 +190,13 @@ public partial class GameProp
 #endif
 	}
 
-	private bool ShouldCreateExplosionOnBreak()
+	private bool ShouldCreateExplosionOnBreak() => ExplosiveOverride switch
 	{
-		return ExplosiveOverride switch
-		{
-			PropEffectOverride.Always => true,
-			PropEffectOverride.Conditional => ExplosiveCondition,
-			PropEffectOverride.Never => false,
-			_ => ModelExplosive
-		};
-	}
+		PropEffectOverride.Always => true,
+		PropEffectOverride.Conditional => ExplosiveCondition,
+		PropEffectOverride.Never => false,
+		_ => _modelExplosive
+	};
 
 	private bool ShouldDamageIgnite( in DamageInfo damage )
 	{
@@ -263,9 +245,9 @@ public partial class GameProp
 		if ( Scene.IsEditor || !ShouldCreateExplosionOnBreak() )
 			return;
 
-		var radius = ResolvedExplosionRadius;
-		var damage = ResolvedExplosionDamage;
-		var force = ResolvedExplosionForce;
+		var radius = _resolvedExplosionRadius;
+		var damage = _resolvedExplosionDamage;
+		var force = _resolvedExplosionForce;
 
 		var explosionPrefab = ResourceLibrary.Get<PrefabFile>( "/prefabs/game/particles/explosion_med.prefab" );
 		if ( !explosionPrefab.IsValid() )
@@ -314,22 +296,17 @@ public partial class GameProp
 
 		foreach ( var surface in surfaces )
 		{
-			if ( !surface.IsValid() )
-				continue;
+			if ( !surface.IsValid() ) continue;
 
 #if FMOD
-			var sound = "event:/Physics/Break";
+			var surf = BasePlayer.SolveSurfaceParameter( surface );
 
-			var surf = surface?.SoundCollection.SurfaceParameter;
-
-			var s = FMODSound.Play( sound, WorldPosition );
-			if ( !string.IsNullOrWhiteSpace( surf ) )
-				FMODSound.SetParameter( s, "parameter:/Physics/MaterialType", surf );
+			var s = FMODSound.Play( surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.Break ), WorldPosition );
+			if ( !string.IsNullOrWhiteSpace( surf ) ) FMODSound.SetParameter( s, "parameter:/Physics/MaterialType", surf );
 
 #else
 			var sound = surface.SoundCollection.Break;
-			if ( !sound.IsValid() )
-				continue;
+			if ( !sound.IsValid() ) continue;
 
 			Sound.Play( sound, WorldPosition );
 #endif

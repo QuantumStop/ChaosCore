@@ -8,7 +8,7 @@ namespace Core;
 [EditorHandle( "" )]
 
 public class KelvinSpotLight : SpotLight
-{    
+{
 	[Property, PresetSelector, Header( "Mode" )] public GenericPresetResource Preset { get; set; }
 
 	[Property]
@@ -43,7 +43,7 @@ public class KelvinSpotLight : SpotLight
 
 	[Space]
 	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.ColorTemperature )] public LightUnits.TemperatureMode TemperatureMode { get; set; } = LightUnits.TemperatureMode.Kelvin;
-	
+
 	[Property, ShowIf( nameof( IsKelvin ), true ), Range( 1000, 20000 ), Step( 50 ), Header( "Temperature" )]
 	public float KelvinTemperature
 	{
@@ -136,6 +136,7 @@ public class KelvinSpotLight : SpotLight
 			}
 		}
 	} = 1;
+#if PI
 	/// <summary>
 	/// Due to how stuff is supossed to be rendered, the diffuse is intended to be darker by a factor of PI, which may not be desirable if WYSIWYG color values are expected. 
 	/// This compensates the brightness automatically, if desired. 
@@ -154,10 +155,10 @@ public class KelvinSpotLight : SpotLight
 			}
 		}
 	} = true;
-#if PI
-	private float ResultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
+
+	private float _resultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
 #else
-	private float ResultBrightness => Brightness;
+	private float _resultBrightness => Brightness;
 #endif
 #endif
 
@@ -186,7 +187,7 @@ public class KelvinSpotLight : SpotLight
 			KelvinTemperature = LightUnits.MiredToKelvin( MiredTemperature );
 		}
 
-		LightColor = RGB_Color * ResultBrightness;
+		LightColor = RGB_Color * _resultBrightness;
 	}
 
 	protected override void DrawGizmos()

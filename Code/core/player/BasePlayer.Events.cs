@@ -40,11 +40,7 @@ public partial class BasePlayer
 	protected virtual void OnLandedEvent( float FallDist, Vector3 impactVel, Surface surface )
 	{
 #if FMOD
-		if ( WaterLevel < WaterLvl.Waist )
-		{
-			SolveNullStringsInSurface( surface, out var surfstring );
-			FootSound( "event:/Physics/Land", GameObject, surfstring );
-		}
+		if ( WaterLevel < WaterLvl.Waist ) FootSound( surface.FindInParents( static s => SurfaceExtension.FindForResourceOrDefault( s ).SoundCollection.FootLand ), GameObject, SolveSurfaceParameter( surface ) );
 #endif
 	}
 

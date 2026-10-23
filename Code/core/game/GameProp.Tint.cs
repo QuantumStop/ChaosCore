@@ -6,11 +6,11 @@ public partial class GameProp
 
 	public enum PropTintCount
 	{
-		[Description( "A single Tint + Mask" )]
+		/// <summary>A single Tint + Mask</summary>
 		OneTint,
-		[Description( "Two combinations of Tint + Mask" )]
+		/// <summary>Two combinations of Tint + Mask</summary>
 		TwoTints,
-		[Description( "Three of everything" )]
+		/// <summary>Three of everything</summary>
 		ThreeTints
 	}
 
@@ -30,14 +30,14 @@ public partial class GameProp
 			{
 				field = value;
 
-				if ( tintComponent.IsValid() && tintComponent.ModelRenderer.IsValid() ) // check specifically if the tint component has a reference, so theres no pant shitting
+				if ( _tintComponent.IsValid() && _tintComponent.ModelRenderer.IsValid() ) // check specifically if the tint component has a reference, so theres no pant shitting
 				{
-					tintComponent.TintA = field;
+					_tintComponent.TintA = field;
 
 					if ( WhichTints == PropTintCount.OneTint )
 					{
-						tintComponent.TintB = new Color( 1f, 1f, 1f, 1f );
-						tintComponent.TintC = new Color( 1f, 1f, 1f, 1f );
+						_tintComponent.TintB = new Color( 1f, 1f, 1f, 1f );
+						_tintComponent.TintC = new Color( 1f, 1f, 1f, 1f );
 					}
 				}
 			}
@@ -55,13 +55,13 @@ public partial class GameProp
 			{
 				field = value;
 
-				if ( tintComponent.IsValid() && tintComponent.ModelRenderer.IsValid() )
+				if ( _tintComponent.IsValid() && _tintComponent.ModelRenderer.IsValid() )
 				{
-					tintComponent.TintB = value;
+					_tintComponent.TintB = value;
 
 					if ( WhichTints == PropTintCount.TwoTints )
 					{
-						tintComponent.TintC = new Color( 1f, 1f, 1f, 1f );
+						_tintComponent.TintC = new Color( 1f, 1f, 1f, 1f );
 					}
 				}
 
@@ -79,24 +79,24 @@ public partial class GameProp
 			{
 				field = value;
 
-				if ( tintComponent.IsValid() && tintComponent.ModelRenderer.IsValid() )
-					tintComponent.TintC = value;
+				if ( _tintComponent.IsValid() && _tintComponent.ModelRenderer.IsValid() )
+					_tintComponent.TintC = value;
 			}
 		}
 	} = Color.White.WithAlpha( 1 );
 
-	private TintComponent tintComponent;
+	private TintComponent _tintComponent;
 
 	void CreateTintComponent()
 	{
-		tintComponent = Components.GetOrCreate<TintComponent>();
+		_tintComponent = Components.GetOrCreate<TintComponent>();
 
-		tintComponent.IsOnProp = true;
+		_tintComponent.IsOnProp = true;
 
-		tintComponent.TintA = Tint;
-		tintComponent.TintB = TintB;
-		tintComponent.TintC = TintC;
+		_tintComponent.TintA = Tint;
+		_tintComponent.TintB = TintB;
+		_tintComponent.TintC = TintC;
 
-		AddProcedural( tintComponent );
+		AddProcedural( _tintComponent );
 	}
 }

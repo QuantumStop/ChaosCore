@@ -1,6 +1,6 @@
 ﻿namespace Core;
 
-[Description( "A volume thats used to control which entities go through the level transition." )]
+/// <summary>A volume thats used to control which entities go through the level transition.</summary>
 [Icon( "multiple_stop" )]
 public class trigger_transition : BaseTrigger
 {
@@ -17,7 +17,7 @@ public class trigger_transition : BaseTrigger
 	{
 		base.OnTriggerIn();
 
-		foreach ( var items in trackedItems.Keys )
+		foreach ( var items in TrackedItems.Keys )
 		{
 			items.Flags = GameObjectFlags.DontDestroyOnLoad;
 		}
@@ -28,7 +28,7 @@ public class trigger_transition : BaseTrigger
 	{
 		base.OnTriggerIn();
 
-		foreach ( var items in trackedItems.Keys )
+		foreach ( var items in TrackedItems.Keys )
 		{
 			items.Flags = ~GameObjectFlags.DontDestroyOnLoad;
 		}

@@ -97,7 +97,7 @@ public partial class GameProp
 			if ( !IsStrongImpact( damage ) )
 				return;
 
-			damage.Damage = ResolvedImpactDamage;
+			damage.Damage = _resolvedImpactDamage;
 		}
 
 		// John: This is where we could apply physics impulses based on the damage type, if we wanted to. 
@@ -161,7 +161,7 @@ public partial class GameProp
 			if ( damageOrigin == default )
 				damageOrigin = WorldPosition;
 
-			scatterForceScale = ResolvedExplosionForce;
+			scatterForceScale = _resolvedExplosionForce;
 			CreateExplosion();
 		}
 

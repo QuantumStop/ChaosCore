@@ -4,12 +4,12 @@ public partial class GameProp
 {
 	private ModelPhysics _modelPhysics { get; set; }
 
+	/// <summary>This object doesn't move (like prop_static).</summary>
 #if IGNIS
 	[DebugExpose]
 #endif
 	[Group( "Physics Properties" )]
 	[Property, Order( 13 )]
-	[Description( "This object doesn't move (like prop_static)." )]
 	public bool IsStatic
 	{
 		get;
@@ -30,15 +30,16 @@ public partial class GameProp
 		}
 	}
 
+	/// <summary>Physics will be asleep until it's woken up.</summary>
 #if IGNIS
 	[DebugExpose]
 #endif
 	[Group( "Physics Properties" )]
 	[Property, Order( 13 )]
 	[ShowIf( nameof( IsStatic ), false )]
-	[Description( "Physics will be asleep until it's woken up." )]
 	public bool StartAsleep { get; set; }
 
+	/// <summary>For multi-body models, lets physics drive the skinned renderer.</summary>
 #if IGNIS
 	[DebugExpose]
 #endif
@@ -46,7 +47,6 @@ public partial class GameProp
 	[Group( "Physics Properties" )]
 	[Property, Order( 13 )]
 	[ShowIf( nameof( IsStatic ), false )]
-	[Description( "For multi-body models, lets physics drive the skinned renderer." )]
 	public bool RagdollActive { get; set; } = true;
 
 #if IGNIS

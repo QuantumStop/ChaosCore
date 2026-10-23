@@ -2,15 +2,17 @@ using System;
 
 namespace Core;
 
-[Hide]
-public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPressable
+/// <summary>Basic trigger class to suit all of our trigger logic needs</summary>
+public abstract class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPressable
 {
 	public new delegate void ChaosOutput( BaseEntity activator );
+
+	protected override string GetEditorVis() => null;
 
 	/// <summary>
 	/// Used to hold the reference to the collider of this trigger
 	/// </summary>
-	protected Collider EntityCollider { get; set; }
+	protected Collider _entityCollider { get; set; }
 
 	#region SpawnFlags
 
@@ -65,12 +67,12 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 
 	[Property, Title( "Start Disabled" )] public bool StartDisabled { get; set; } = false;
 
-	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool isDebug = false;
+	[Feature( "Debug" ), Title( "Enable Debug" ), Property] public bool IsDebug = false;
 
-	[Feature( "Debug" ), ShowIf( "isDebug", true ), ReadOnly, Property, Title( "Tracked Objects Count" )] public int TrackedCount => trackedItems.Count;
+	[Feature( "Debug" ), ShowIf( "isDebug", true ), ReadOnly, Property, Title( "Tracked Objects Count" )] public int TrackedCount => TrackedItems.Count;
 
 	[ShowIf( "isDebug", true ), ReadOnly]
-	[ActionGraphIgnore, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public Dictionary<GameObject, int> trackedItems = [];
+	[ActionGraphIgnore, Feature( "Debug" ), Title( "Objects in Trigger:" ), Property] public Dictionary<GameObject, int> TrackedItems = [];
 
 
 	/// <summary>
@@ -151,15 +153,15 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	/// </summary>
 	public virtual bool IsTouchable => false;
 
-	public bool isEnabled { get; set; } = true;
+	public bool IsEnabled { get; set; } = true;
 
-	private readonly object triggerItemsLock = new();
+	private readonly object _triggerItemsLock = new();
 
 	protected override void OnStart()
 	{
-		isEnabled = !StartDisabled;
+		IsEnabled = !StartDisabled;
 
-		EntityCollider ??= GameObject.GetComponent<Collider>();
+		_entityCollider ??= GameObject.GetComponent<Collider>();
 
 		RegisterOutputEvents();
 	}
@@ -167,13 +169,6 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	protected virtual void RegisterOutputEvents()
 	{
 		OnTriggerItemsEmpty?.Invoke( this );
-	}
-
-	protected override void DrawGizmos()
-	{
-		// Not valid in "point entity" like usage, at least for now. Thus no icon!
-		var editorvis = this.GetEditorVis();
-		editorvis = null;
 	}
 
 
@@ -184,7 +179,7 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	{
 		TryAddToTriggerList( activator );
 
-		if ( !isEnabled )
+		if ( !IsEnabled )
 			return;
 
 		OnTriggerIn();
@@ -277,9 +272,9 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 
 	private void ClearInTriggerItems()
 	{
-		lock ( triggerItemsLock )
+		lock ( _triggerItemsLock )
 		{
-			trackedItems.Clear();
+			TrackedItems.Clear();
 		}
 	}
 
@@ -304,15 +299,15 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 		var go = GetTrackedObject( activator );
 		if ( !go.IsValid() ) return;
 
-		lock ( triggerItemsLock )
+		lock ( _triggerItemsLock )
 		{
-			if ( trackedItems.TryGetValue( go, out var count ) )
+			if ( TrackedItems.TryGetValue( go, out var count ) )
 			{
-				trackedItems[go] = count + 1;
+				TrackedItems[go] = count + 1;
 			}
 			else if ( IsValidTriggerEntity( go ) )
 			{
-				trackedItems[go] = 1;
+				TrackedItems[go] = 1;
 			}
 		}
 	}
@@ -323,19 +318,15 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 		var player = go.GetComponentInParent<BasePlayer>();
 
 		// Everything: all non-debris flags, ignore debris
-		if ( spawnFlags == SpawnFlags.Everything && !isDebris )
-			return true;
+		if ( spawnFlags == SpawnFlags.Everything && !isDebris ) return true;
 
-		if ( (spawnFlags & SpawnFlags.Clients) != 0 && player.IsValid() )
-			return true;
+		if ( (spawnFlags & SpawnFlags.Clients) != 0 && player.IsValid() ) return true;
 
 		if ( (spawnFlags & SpawnFlags.PhysicsObjects) != 0 &&
 			!isDebris &&
-			(go.GetComponent<Prop>().IsValid() || go.GetComponent<GameProp>().IsValid()) )
-			return true;
+			(go.GetComponent<Prop>().IsValid() || go.GetComponent<GameProp>().IsValid()) ) return true;
 
-		if ( (spawnFlags & SpawnFlags.PhysicsDebris) != 0 && isDebris )
-			return true;
+		if ( (spawnFlags & SpawnFlags.PhysicsDebris) != 0 && isDebris ) return true;
 
 		return false;
 	}
@@ -345,19 +336,19 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	{
 		if ( !go.IsValid() ) return;
 
-		lock ( triggerItemsLock )
+		lock ( _triggerItemsLock )
 		{
-			if ( trackedItems.TryGetValue( go, out var count ) )
+			if ( TrackedItems.TryGetValue( go, out var count ) )
 			{
 				if ( count > 1 )
 				{
-					trackedItems[go] = count - 1;
+					TrackedItems[go] = count - 1;
 				}
 				else
 				{
-					trackedItems.Remove( go );
+					TrackedItems.Remove( go );
 
-					if ( trackedItems.Count == 0 )
+					if ( TrackedItems.Count == 0 )
 					{
 						OnTriggerItemsEmpty?.Invoke( this );
 						OnItemsEmpty();
@@ -370,7 +361,7 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	public IEnumerable<GameObject> GetTrackedItems()
 	{
 		// Simply return the keys (make a copy to avoid modification during iteration)
-		return [.. trackedItems.Keys];
+		return [.. TrackedItems.Keys];
 	}
 
 	private GameObject GetTrackedObject( Collider collider )
@@ -404,9 +395,9 @@ public class BaseTrigger : BaseEntity, Component.ITriggerListener, Component.IPr
 	/// </summary>
 	public BaseEntity DisableAndEndTouch( BaseEntity activator = null )
 	{
-		isEnabled = false;
+		IsEnabled = false;
 
-		foreach ( var item in trackedItems.Keys.ToList() )
+		foreach ( var item in TrackedItems.Keys.ToList() )
 		{
 			EndTouch( item.GetComponent<BaseEntity>() );
 		}

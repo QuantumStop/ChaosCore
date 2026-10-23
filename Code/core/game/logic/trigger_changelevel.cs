@@ -1,33 +1,32 @@
 ﻿namespace Core;
 
-[Description( "A trigger that changes level to a defined scene." )]
+/// <summary>A trigger that changes level to a defined scene.</summary>
 [Icon( "multiple_stop" )]
 public class trigger_changelevel : BaseTrigger
 {
-	[Title( "Next scene" )][Property] public SceneFile nextScene { get; set; }
+	[Title( "Next scene" )][Property] public SceneFile NextScene { get; set; }
 
-	[Property] public bool destroyPlayer { get; set; }
+	[Property] public bool DestroyPlayer { get; set; }
 
 
-	[ShowIf( nameof( isDebug ), true )][Feature( "Debug" ), Property, ReadOnly] public SceneFile currentScene;
+	[ShowIf( nameof( IsDebug ), true )][Feature( "Debug" ), Property, ReadOnly] public SceneFile CurrentScene;
 
 	protected override void OnFixedUpdate()
 	{
 		base.OnFixedUpdate();
 		DebugOverlay.ScreenText( new Vector2( 250, 25 ), "current scene:" + Game.ActiveScene.Source.ToString() );
-		DebugOverlay.ScreenText( new Vector2( 250, 50 ), nextScene?.ToString() );
+		DebugOverlay.ScreenText( new Vector2( 250, 50 ), NextScene?.ToString() );
 	}
 
 	protected override void OnTriggerIn()
 	{
-
 		base.OnTriggerIn();
 
-		var item = trackedItems.Keys.FirstOrDefault( i => i.Tags.Has( "player" ) && isEnabled );
+		var item = TrackedItems.Keys.FirstOrDefault( i => i.Tags.Has( "player" ) && IsEnabled );
 
 		if ( item.IsValid() )
 		{
-			if ( destroyPlayer )
+			if ( DestroyPlayer )
 			{
 				item.Flags = ~GameObjectFlags.DontDestroyOnLoad;
 			}
@@ -45,19 +44,19 @@ public class trigger_changelevel : BaseTrigger
 
 	void ChangeScene()
 	{
-		if ( nextScene is null )
+		if ( NextScene is null )
 		{
 			Log.Warning( this + " No Scene selected!" );
 			return;
 		}
 
-		if ( nextScene == Game.ActiveScene.Source )
+		if ( NextScene == Game.ActiveScene.Source )
 		{
 			Log.Info( this + "Next scene is the same as current one, trigger will not execute" );
 			return;
 		}
 
-		GameManagerSystem.Current.EnterLevelTransition( nextScene.ResourcePath );
+		GameManagerSystem.Current.EnterLevelTransition( NextScene.ResourcePath );
 
 		//var load = new SceneLoadOptions();
 		//

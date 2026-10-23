@@ -41,14 +41,6 @@ public class BaseWeaponItem : BaseItem
 		if ( InternalAmmoCountPrimary > 0 ) InternalAmmoCountPrimary -= howmuch;
 	}
 
-	protected override void OnValidate()
-	{
-		if ( GetType().Name != "BaseWeaponItem" && (!Data.IsValid() || GetType().Name != Data.ResourceName) )
-			Data = WeaponParse.GetWeaponData( GetType().Name );
-
-		base.OnValidate();
-	}
-
 	protected override string GetModel() => Data?.WeaponWorldmodel?.ResourcePath ?? base.GetModel();
 
 	protected override void OnStart()
@@ -131,7 +123,7 @@ public class BaseWeaponItem : BaseItem
 
 		if ( _counter == PickupTime )
 		{
-			var weapon = Activator.GiveWeaponByName( Data.ResourceName, null, false, this );
+			var weapon = Activator.GiveWeapon( Data, null, false, this );
 
 			if ( !weapon.IsValid() ) return false;
 
@@ -156,10 +148,9 @@ public class BaseWeaponItem : BaseItem
 	{
 		if ( Activator.LifeState == LifeState.Dead || SlotTaken() ) return; // Ghosts can attempt to pick up items, but we won't let them actually do it
 
-		var weapon = Activator.GiveWeaponByName( Data.ResourceName, null, false, this );
+		var weapon = Activator.GiveWeapon( Data, null, false, this );
 
-		if ( !weapon.IsValid() )    // if we are just filling ammo this stops it
-			return;
+		if ( !weapon.IsValid() ) return;  // if we are just filling ammo this stops it
 
 		base.OnPickup( Activator ); // putting this here is easier than to figure out the pickup check override
 
@@ -187,6 +178,7 @@ public class BaseWeaponItem : BaseItem
 		if ( _counter > 0 ) DebugOverlay.ScreenText( new Vector2( Screen.Width * 0.5f, Screen.Height * 0.575f ), $"{MathF.Truncate( _counter / PickupTime * 100 )}%" );
 	}
 
-	/// <summary>500 null checks to get proper printable weapon name</summary><returns>Either the name or placeholder</returns>
+	/// <summary>500 null checks to get proper printable weapon name</summary>
+	/// <returns>Either the name or placeholder</returns>
 	public static string ResolvePrintName( WeaponParse data ) => !data.IsValid() || string.IsNullOrWhiteSpace( data.Name ) ? "Unnamed Weapon" : data.Name;
 }

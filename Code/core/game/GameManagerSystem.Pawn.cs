@@ -6,11 +6,10 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 {
 	private static GameObject CreateClientObject( Connection connection, out Client client )
 	{
-		var clientObj = new GameObject { Name = $"{connection.DisplayName} [CLIENT]" };
+		var clientObj = new GameObject();
 
 		client = clientObj.Components.Create<Client>();
 		clientObj.Network.SetOrphanedMode( NetworkOrphaned.ClearOwner );
-		clientObj.Name = $"{connection.DisplayName} [CLIENT]";
 
 		return clientObj;
 	}

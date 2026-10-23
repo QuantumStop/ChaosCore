@@ -1,10 +1,7 @@
 namespace Core;
 
-/// <summary>
-/// Intermediate class to specify which props can receive use input
-/// </summary>
-[Hide]
-public class BaseUsable : BaseEntity, Component.IPressable
+/// <summary>Intermediate class to specify which props can receive use input</summary>
+public abstract class BaseUsable : BaseEntity, Component.IPressable
 {
 	// we aim to get the player
 	public new delegate void ChaosOutput( BasePlayer Activator );
