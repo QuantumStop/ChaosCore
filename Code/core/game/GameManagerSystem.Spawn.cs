@@ -30,8 +30,11 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		if ( !Scene.GetAllComponents<DebrisManager>().Any() )
 			Scene.CreateObject().Components.GetOrCreate<DebrisManager>();
 
-		Parallel.ForEach( Scene.GetAll<BaseEntity>(), x => x.OnStartOnceInternal() );
-
+		foreach ( var entity in Scene.GetAll<BaseEntity>() )
+		{
+			entity.OnStartOnceInternal();
+		}
+		
 		if ( Rules is null )
 		{ Log.Error( "No GameRules were given!" ); return; }
 
