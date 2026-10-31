@@ -7,6 +7,7 @@ public sealed class PresetCollapsibleSection : Widget
 	public Widget Content { get; }
 
 	public string StateCookieName { get; set; }
+	public System.Action ContextMenuRequested { get; set; }
 
 	public bool Expanded
 	{
@@ -86,6 +87,16 @@ public sealed class PresetCollapsibleSection : Widget
 		private readonly PresetCollapsibleSection _owner = owner;
 
 		protected override void BuildRightIcons( Layout layout ) { }
+
+		protected override void OnContextMenu( ContextMenuEvent e )
+		{
+			if ( _owner.ContextMenuRequested is not null )
+			{
+				_owner.ContextMenuRequested();
+				e.Accepted = true;
+			}
+			else base.OnContextMenu( e );
+		}
 
 		protected override void OnExpandChanged()
 		{
