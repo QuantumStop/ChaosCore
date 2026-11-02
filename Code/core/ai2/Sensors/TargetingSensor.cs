@@ -255,7 +255,8 @@ public class NpcTargetingSensor
 				sig.WorldPos, sig.Velocity, 0f, score
 			);
 
-			RefreshCombatMemory( data );
+			if ( Owner.BehaviorModule?.ShouldTarget( entity ) ?? true )
+				RefreshCombatMemory( data );
 			KnownTargets[sig.GameObject.Id] = data;
 		}
 
@@ -335,6 +336,7 @@ public class NpcTargetingSensor
 		{
 			var t = kvp.Value;
 			if ( IsAlly( t.Target ) ) continue;
+			if ( !(Owner.BehaviorModule?.ShouldTarget( t.Target ) ?? true) ) continue;
 
 			// recompute score with current lost time so it decays as well
 			float score = ComputeThreatScore(
