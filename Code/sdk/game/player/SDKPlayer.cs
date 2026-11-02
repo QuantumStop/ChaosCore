@@ -34,4 +34,17 @@ public partial class Player : BasePlayer
 
 		CalculateBob();
 	}
+
+	public override void OnDeath( DamageInfo dmginfo )
+	{
+		base.OnDeath( dmginfo );
+
+		// TODO: Better SDK example how to do this, take more from 2K in regards to structure/handling.
+
+		if ( CurrentWeapon.IsValid() ) DropWeapon( CurrentWeapon, false );
+
+		CurrentWeapon = null;
+	}
+
 }
+	
