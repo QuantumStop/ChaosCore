@@ -15,6 +15,7 @@ public abstract partial class GameManagerSystem
 
 	private static bool _pauseRequested { get; set; }
 	private bool _isWorldTimeInitialized { get; set; }
+	private bool _hasWorldTimeUpdate;
 
 	public static float WorldNow => GetWorldNow();
 	public static float WorldDelta => HasActiveWorldTimeManager() ? Current.CurrentWorldDelta : 0f;
@@ -22,15 +23,18 @@ public abstract partial class GameManagerSystem
 	private static float GetWorldNow()
 	{
 		// Keeps world time continuous across save loads by using saved time during loading,
-		// then applying an offset to time.now once our worldtime manager is active.
+		// then binding an offset to our clock on the very first runtime update.
 		if ( !HasActiveWorldTimeManager() )
 		{
 			return SaveSystem.TryGetStagedWorldTime(
 				out var stagedWorldTime
 			)
 				? stagedWorldTime
-				: Time.Now;
+				: Current?._isWorldTimeInitialized == true ? Current.CurrentWorldTime : 0f;
 		}
+
+		if ( !Current._hasWorldTimeUpdate )
+			return Current.CurrentWorldTime;
 
 		return MathF.Max(
 			0f,
@@ -43,24 +47,34 @@ public abstract partial class GameManagerSystem
 	public void SetWorldTime( float time )
 	{
 		CurrentWorldTime = MathF.Max( 0f, time );
-		WorldTimeOffset = CurrentWorldTime - Time.Now;
+		WorldTimeOffset = _hasWorldTimeUpdate ? CurrentWorldTime - Time.Now : 0f;
 		CurrentWorldDelta = 0f;
 		_isWorldTimeInitialized = true;
 	}
 
 	private void ResetWorldTimeForSceneStart()
 	{
+		_hasWorldTimeUpdate = false;
 		if ( SaveSystem.TryGetStagedWorldTime( out var stagedWorldTime ) )
 		{
 			SetWorldTime( stagedWorldTime );
 			return;
 		}
 
-		SetWorldTime( Time.Now );
+		SetWorldTime( 0f );
 	}
 
 	protected void UpdateWorldTime()
 	{
+		// Bind startup/save time to the runtime clock, never the loading clock.
+		if ( !_hasWorldTimeUpdate )
+		{
+			WorldTimeOffset = CurrentWorldTime - Time.Now;
+			CurrentWorldDelta = 0f;
+			_hasWorldTimeUpdate = true;
+			return;
+		}
+
 		var previousWorldTime = CurrentWorldTime;
 
 		CurrentWorldTime = MathF.Max( 0f, Time.Now + WorldTimeOffset );

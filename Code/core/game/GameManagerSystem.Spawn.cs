@@ -1,10 +1,56 @@
 
 namespace Core;
 
-using Sandbox.Utility;
+using System;
 
 public abstract partial class GameManagerSystem : GameObjectSystem
 {
+	private readonly Queue<(BaseEntity Entity, float Deadline, Action Callback)> _pendingStartOnce = new();
+	private IDisposable _pendingStartOnceHook;
+
+	internal void QueueStartOnce( BaseEntity entity, System.Action callback )
+	{
+		_pendingStartOnce.Enqueue( (entity, CurrentWorldTime + 0.2f, callback) );
+		// Run last so removing this hook cannot skip another listener in this stage.
+		_pendingStartOnceHook ??= Scene.AddHook( Stage.StartUpdate, int.MaxValue,
+			UpdatePendingStartOnce, GetType().Name, "Pending OnStartOnce" );
+	}
+
+	private void UpdatePendingStartOnce()
+	{
+		var count = _pendingStartOnce.Count;
+		for ( var i = 0; i < count; i++ )
+		{
+			var pending = _pendingStartOnce.Dequeue();
+			if ( !pending.Entity.IsValid() )
+				continue;
+
+			if ( CurrentWorldTime < pending.Deadline )
+			{
+				_pendingStartOnce.Enqueue( pending );
+				continue;
+			}
+
+			try
+			{
+				pending.Callback();
+			}
+			finally
+			{
+				if ( _pendingStartOnce.Count == 0 )
+					StopPendingStartOnce();
+			}
+		}
+
+		if ( _pendingStartOnce.Count == 0 )
+			StopPendingStartOnce();
+	}
+
+	private void StopPendingStartOnce()
+	{
+		_pendingStartOnceHook?.Dispose();
+		_pendingStartOnceHook = null;
+	}
 	/// <summary>
 	/// The thing you should set
 	/// </summary>
@@ -25,7 +71,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	protected virtual void PreSpawn()
 	{
 		TimeScale = 1f; // reset timescale
-		CurrentWorldDelta = 0f;
+		ResetWorldTimeForSceneStart();
 
 		if ( !Scene.GetAllComponents<DebrisManager>().Any() )
 			Scene.CreateObject().Components.GetOrCreate<DebrisManager>();
@@ -38,8 +84,16 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		if ( Rules is null )
 		{ Log.Error( "No GameRules were given!" ); return; }
 
+		// Save restoration dispatches its own ready event after state has been restored.
+#if IGNIS || STANDALONE
+		if ( SaveSystem.IsRestoringSave )
+			return;
+#endif
+
 		// check if this is a level transition
 		if ( Rules.CanTransition ) ExitLevelTransition();
+		if ( !_pendingMapLoadType.HasValue )
+			QueueSceneReady( SceneLoadType.SceneLoad_NewGame );
 	}
 
 	/// <summary>

@@ -35,6 +35,10 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 
 	override public void Dispose()
 	{
+		StopSceneReady();
+		StopPendingStartOnce();
+		_pendingStartOnce.Clear();
+
 		if ( Application.IsEditor && Game.IsClosing )
 			BaseGUIManager.ClearColdBootPlayState();
 
@@ -94,9 +98,6 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 
 		DecideGameRules();
 		PreSpawn();
-#if IGNIS || STANDALONE
-		if ( !SaveSystem.IsRestoringSave ) ResetWorldTimeForSceneStart();
-#endif
 
 		Rules?.GameStart();
 

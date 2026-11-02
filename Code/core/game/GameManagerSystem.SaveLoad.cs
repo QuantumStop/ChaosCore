@@ -422,5 +422,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			var component = (BaseCustomSerialize)Scene.Directory.FindComponentByGuid( Guid.Parse( guid.ToString() ) );
 			component.CustomDeserialize( componentData.AsObject() );
 		}
+
+		QueueSceneReady( SceneLoadType.SceneLoad_Transition );
 	}
 }
