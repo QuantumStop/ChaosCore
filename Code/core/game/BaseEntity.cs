@@ -33,7 +33,7 @@ public class BaseEntity : BaseCustomSerialize
 	/// <summary>
 	/// Called just like OnStart, but not retriggered from transitions or save-loading. 
 	/// If you are on the map for the first time it will be called.
-	/// Only called if this existed when scene started.
+	/// Only called if this existed when scene started and after a 0.2s WorldTime windup.
 	/// </summary>
 	protected virtual void OnStartOnce() { }
 
@@ -44,11 +44,11 @@ public class BaseEntity : BaseCustomSerialize
 	/// </summary>
 	public void OnStartOnceInternal()
 	{
-		if ( _hasOnceStarted )
-		{
-			OnStartOnce();
-			_hasOnceStarted = false;
-		}
+		if ( !_hasOnceStarted )
+			return;
+
+		_hasOnceStarted = false;
+		GameManagerSystem.Current.QueueStartOnce( this, OnStartOnce );
 	}
 
 	//	============= Editor Vis ============= //
