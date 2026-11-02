@@ -1,4 +1,4 @@
-﻿namespace Core.AI;
+namespace Core.AI;
 
 public sealed class CombatMemory
 {
@@ -20,8 +20,12 @@ public class AIBlackBoard : AIModule
 {
 	public BaseEntity activeEnemy = null;
 	public float lastSeenEnemyTime;
-	public BasePlayer playerReference = null;
-	public PlayerTargetSignature playerTargetReference = null;
+	public BasePlayer PlayerReference = null;
+	public void RefreshPlayerReference()
+	{
+		PlayerReference = GameManagerSystem.Current?.GetNearestPlayer( Owner.WorldPosition );
+	}
+
 	public HintNode activeHintNode; // the node in which we want to move to. (cover, special actions, etc )
 
 	public Vector3? _currentMovePos = new Vector3( 0, 0, 0 ); // where we should go
