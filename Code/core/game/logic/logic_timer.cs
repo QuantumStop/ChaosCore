@@ -2,8 +2,12 @@ namespace Core;
 
 using System;
 
-/// <summary>An entity that fires a timer event at regular, or random, intervals. It can also be set to oscillate betweena high and low end, in which case it will fire alternating high/low outputs each time it fires.</summary>
+/// <summary>
+/// An entity that fires a timer event at regular, or random, intervals. 
+/// It can also be set to oscillate betweena high and low end, in which case it will fire alternating high/low outputs each time it fires.
+/// </summary>
 [Icon( "timer" )]
+[Category( "Logic" )]
 public class logic_timer : BaseEntity
 {
 	public new delegate void ChaosOutput( logic_timer activator );

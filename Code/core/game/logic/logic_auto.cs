@@ -1,9 +1,12 @@
 
 namespace Core;
 
-/// <summary>Logic that runs immediately after certain game event. Usually immediately when a map starts.</summary>
-[Icon( "auto" )]
-public class logic_auto : BaseEntity
+/// <summary>
+/// Logic that runs immediately after certain game event. Usually immediately when a map starts.
+/// </summary>
+[Icon( "start" )]
+[Category( "Logic" )]
+public class logic_auto : BaseEntity, ISceneLifecycleEvents
 {
 	public new delegate void ChaosOutput( logic_auto activator );
 
@@ -27,12 +30,24 @@ public class logic_auto : BaseEntity
 	/// </summary>
 	[Property, Group( "Outputs" )] public ChaosOutput OnMapTransition { get; set; }
 
-	protected override async void OnStart()
+	void ISceneLifecycleEvents.OnSceneReady( SceneLoadType loadType )
 	{
-		await GameTask.Delay( 1 );
+		if ( !this.IsValid() )
+			return;
+
+		switch ( loadType )
+		{
+			case SceneLoadType.SceneLoad_NewGame:
+				OnNewGame?.Invoke( this );
+				break;
+			case SceneLoadType.SceneLoad_LoadGame:
+				OnLoadGame?.Invoke( this );
+				break;
+			case SceneLoadType.SceneLoad_Transition:
+				OnMapTransition?.Invoke( this );
+				break;
+		}
 
 		OnMapSpawn?.Invoke( this );
 	}
-
-
 }
