@@ -3,15 +3,13 @@ namespace Core.AI;
 using FMODSbox;
 #endif
 using System;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-public class AIBehavior : AIModule
-#if IGNIS || STANDALONE
-, IJsonConvert
-#endif
+public partial class AIBehavior : AIModule, IJsonConvert
 {
+	public delegate void ChaosOutput( BaseEntity activator );
+
 	public AIController Controller;
 	public string Name => GetType().Name;
 	public bool IsActive { get; set; } = true;
@@ -32,6 +30,24 @@ public class AIBehavior : AIModule
 	{
 
 	}
+
+	public virtual bool UsesCustomAnimation => false;
+	public virtual void UpdateAnimation() { }
+
+	/// <summary>
+	/// Multiplier applied to movement acceleration.
+	/// </summary>
+	public virtual float MotorAccelerationScale => 1f;
+
+	/// <summary>
+	/// Optional authored points shown by the navigation debug overlay.
+	/// </summary>
+	public virtual IReadOnlyList<Vector3> NavigationDebugTargets => [];
+
+	/// <summary>
+	/// Whether a specific sensed entity should be a target or not.
+	/// </summary>
+	public virtual bool ShouldTarget( BaseEntity target ) => true;
 
 	public override void Tick()
 	{
@@ -72,7 +88,7 @@ public class AIBehavior : AIModule
 	public virtual Vector3? OverrideMove( Vector3? movePos ) => movePos;
 
 	public void Bind( AIController controller ) => Controller = controller;
-#if IGNIS || STANDALONE
+
 	public static object JsonRead( ref Utf8JsonReader reader, Type targetType )
 	{
 		if ( reader.TokenType == JsonTokenType.Null )
@@ -81,15 +97,12 @@ public class AIBehavior : AIModule
 		if ( JsonNode.Parse( ref reader ) is not JsonObject node )
 			return new AIBehavior();
 
-		var typeName = node["__type"]?.GetValue<string>();
-		var resolvedType = ResolveBehaviorType( typeName ) ?? targetType ?? typeof( AIBehavior );
+		var typeName = node["__type"]?.GetValue<string>() ?? node["Name"]?.GetValue<string>();
+		var behaviorType = Game.TypeLibrary.GetType<AIBehavior>( typeName )
+			?? Game.TypeLibrary.GetType( targetType );
+		var behavior = behaviorType?.Create<AIBehavior>() ?? new AIBehavior();
 
-		if ( !typeof( AIBehavior ).IsAssignableFrom( resolvedType ) )
-			resolvedType = typeof( AIBehavior );
-
-		var behavior = Activator.CreateInstance( resolvedType ) as AIBehavior ?? new AIBehavior();
-
-		foreach ( var prop in GetSerializableProperties( behavior.GetType() ) )
+		foreach ( var prop in GetSerializableProperties( behavior ) )
 		{
 			if ( !node.TryGetPropertyValue( prop.Name, out var valueNode ) || valueNode is null )
 				continue;
@@ -118,10 +131,10 @@ public class AIBehavior : AIModule
 
 		var node = new JsonObject
 		{
-			["__type"] = behavior.GetType().Name
+			["__type"] = behavior.GetType().FullName
 		};
 
-		foreach ( var prop in GetSerializableProperties( behavior.GetType() ) )
+		foreach ( var prop in GetSerializableProperties( behavior ) )
 		{
 			try
 			{
@@ -136,91 +149,15 @@ public class AIBehavior : AIModule
 		node.WriteTo( writer );
 	}
 
-	private static PropertyInfo[] GetSerializableProperties( Type type )
+	private static IEnumerable<PropertyDescription> GetSerializableProperties( AIBehavior behavior )
 	{
-		var result = new List<PropertyInfo>();
+		var type = Game.TypeLibrary.GetType( behavior.GetType() );
+		if ( type is null )
+			return [];
 
-		foreach ( var p in type.GetProperties( BindingFlags.Public | BindingFlags.Instance ) )
-		{
-			if ( !p.CanRead || !p.CanWrite )
-				continue;
-
-			if ( p.GetIndexParameters().Length != 0 )
-				continue;
-
-			if ( p.Name == nameof( Controller ) )
-				continue;
-
-			if ( p.GetCustomAttribute<PropertyAttribute>() is not null ||
-				p.Name == nameof( IsActive ) ||
-			 	p.Name == nameof( IsInterruptible ) )
-				result.Add( p );
-		}
-
-		return [.. result];
+		return type.Properties.Where( p => p.CanRead && p.CanWrite &&
+			(p.HasAttribute<PropertyAttribute>() ||
+			 p.Name == nameof( IsActive ) ||
+			 p.Name == nameof( IsInterruptible )) );
 	}
-
-	public static Type ResolveBehaviorType( string className )
-	{
-		if ( string.IsNullOrWhiteSpace( className ) )
-			return typeof( AIBehavior );
-
-		// i mightve fucked this im sorry
-		var candidates = new List<Type>();
-
-		foreach ( var assembly in AppDomain.CurrentDomain.GetAssemblies() )
-		{
-			Type[] types;
-			try
-			{
-				types = assembly.GetTypes();
-			}
-			catch ( ReflectionTypeLoadException e )
-			{
-				types = new Type[e.Types.Length];
-				int i = 0;
-				foreach ( var t in e.Types )
-				{
-					if ( t is not null )
-						types[i++] = t;
-				}
-			}
-
-			foreach ( var t in types )
-			{
-				if ( t == null ) continue;
-				if ( !t.IsClass ) continue;
-				if ( t.IsAbstract ) continue;
-				if ( !typeof( AIBehavior ).IsAssignableFrom( t ) ) continue;
-
-				candidates.Add( t );
-			}
-		}
-
-		foreach ( var t in candidates )
-		{
-			if ( string.Equals( t.Name, className, StringComparison.Ordinal ) ||
-				string.Equals( t.FullName, className, StringComparison.Ordinal ) ||
-				string.Equals( t.Name, className, StringComparison.OrdinalIgnoreCase ) ||
-				string.Equals( t.FullName, className, StringComparison.OrdinalIgnoreCase ) )
-			{
-				return t;
-			}
-		}
-
-		return null;
-	}
-#endif
 }
-
-public class HeadcrabBehaviors : AIBehavior
-{
-	public HeadcrabBehaviors() { }
-
-	public HeadcrabBehaviors( AIController controller ) : base( controller ) { }
-
-	[Property] public bool StartBurrowed { get; set; } = false;
-	[Property] public bool StartInCeiling { get; set; } = false;
-}
-
-
