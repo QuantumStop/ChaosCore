@@ -408,7 +408,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 2610.39
+          "Relative": 27353.176
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -469,6 +469,23 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null
+      },
+      {
+        "__type": "Core.AI.PlayerTargetSignature",
+        "__guid": "45200e6b-39e3-4c02-936a-3f7ee9c12ca8",
+        "__enabled": true,
+        "Flags": 0,
+        "_initialized": false,
+        "InternalID": "PlayerTargetSignature_aw4gR",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnKilled": null,
+        "SerializedGuid": null,
+        "TargetName": "PlayerTargetSignature_aw4gR"
       }
     ],
     "Children": [
@@ -603,7 +620,7 @@
             "__enabled": true,
             "Flags": 0,
             "AnimationGraph": null,
-            "BodyGroups": 5185,
+            "BodyGroups": 20737,
             "BoneMergeTarget": null,
             "CreateAttachments": false,
             "CreateBoneObjects": false,
@@ -699,7 +716,7 @@
         ],
         "Children": [
           {
-            "__guid": "fb7522cb-ad54-436d-a58a-1c03cbb0add0",
+            "__guid": "1b07430d-f9d9-46d3-b7f0-5ce88f2f936f",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - y_front_pants_white",
@@ -716,7 +733,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "80b801e2-0049-4384-85be-05d5f76840fc",
+                "__guid": "bcf477aa-1348-4b9a-80e4-3f0be2de28fa",
                 "__enabled": true,
                 "Flags": 0,
                 "AnimationGraph": null,
@@ -988,6 +1005,45 @@
                 "__guid": "801dae0e-9a0e-4d22-9946-3f6b81552ab9",
                 "__enabled": false,
                 "Flags": 0,
+                "__version": 1,
+                "AnimationCurve": [
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "in": 0,
+                    "out": 0,
+                    "mode": "Mirrored"
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 1,
+                    "in": 0,
+                    "out": 0,
+                    "mode": "Mirrored"
+                  },
+                  {
+                    "x": 1,
+                    "y": 0,
+                    "in": 0,
+                    "out": 0,
+                    "mode": "Mirrored"
+                  }
+                ],
+                "AnimationDuration": 2,
+                "AnimationEnabled": false,
+                "AnimationGradient": {
+                  "blend": "Linear",
+                  "color": [
+                    {
+                      "t": 0.5,
+                      "c": "1,1,1,1"
+                    }
+                  ],
+                  "alpha": []
+                },
+                "AnimationPattern": "Flicker",
+                "AnimationSpeed": 1,
+                "AnimationTimeOffset": 0,
                 "Attenuation": 1,
                 "BakeLightIndex": -1,
                 "Brightness": 1,
@@ -998,6 +1054,7 @@
                 "Cookie": null,
                 "FogMode": "Enabled",
                 "FogStrength": 1,
+                "Intensity": 1,
                 "KelvinTemperature": 6500,
                 "LightColor": "3.14159,3.14159,3.14159,3.14159",
                 "MiredTemperature": 154,
@@ -1014,6 +1071,7 @@
                 "ShadowBias": 0.0005,
                 "ShadowHardness": 0,
                 "Shadows": false,
+                "Temperature": 6500,
                 "TemperatureMode": "Kelvin"
               },
               {
