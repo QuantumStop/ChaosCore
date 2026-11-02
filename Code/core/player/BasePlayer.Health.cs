@@ -158,12 +158,12 @@ public partial class BasePlayer
 
 	/// <summary>Deal damage to player, route it through a function where we can actually call RPC because of the in keyword</summary>
 	/// <param name="dmginfo">Damage Information</param>
-	public void OnDamage( in DamageInfo dmginfo ) => OnDamage( dmginfo );
+	void IDamageable.OnDamage( in DamageInfo dmginfo ) => OnDamage( dmginfo );
 
 	/// <summary>Deal damage to this player</summary>
 	/// <param name="dmginfo">Damage information</param>
 	[Rpc.Owner]
-	protected virtual void OnDamage( DamageInfo dmginfo )
+	public virtual void OnDamage( DamageInfo dmginfo )
 	{
 		if ( dmginfo is null ) return;
 
