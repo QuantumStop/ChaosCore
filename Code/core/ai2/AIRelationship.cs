@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json.Nodes;
 using static Core.AI.NpcRelations;
 
@@ -15,6 +15,48 @@ public abstract class TargetSignature : BaseEntity
 {
 	public abstract TargetType Type { get; }
 	public virtual ScentEmitter scentEmitter { get; set; }
+	protected virtual ScentCategory? ScentType => null;
+
+	protected override void OnEnabled()
+	{
+		base.OnEnabled();
+		RegisterScent();
+	}
+
+	protected override void OnStart()
+	{
+		base.OnStart();
+		RegisterScent();
+	}
+
+	private void RegisterScent()
+	{
+		if ( Scene.IsEditor || scentEmitter is not null || ScentType is not { } category )
+			return;
+
+		scentEmitter = new ScentEmitter
+		{
+			Position = WorldPosition,
+			SourceEnt = this,
+			Intensity = 1f,
+			Category = category,
+			DecayRate = 0f
+		};
+
+		AIScentManager.Current.Register( scentEmitter );
+	}
+
+	private void UnregisterScent()
+	{
+		if ( scentEmitter is not null )
+			AIScentManager.Current?.Unregister( scentEmitter );
+
+		scentEmitter = null;
+	}
+
+	protected override void OnDisabled() => UnregisterScent();
+	protected override void OnDestroy() => UnregisterScent();
+
 
 	public virtual Vector3 WorldPos
 		=> Transform.World.Position;
@@ -37,7 +79,7 @@ public sealed class PlayerTargetSignature : TargetSignature
 
 	public bool shouldIgnore { get; set; } = false;
 
-	public override ScentEmitter scentEmitter { get; set; }
+	protected override ScentCategory? ScentType => ScentCategory.Player;
 
 	public override Vector3 Velocity
 	{
@@ -73,7 +115,7 @@ public sealed class BullseyeTargetSignature : TargetSignature
 public partial class NpcRelations : TargetSignature
 {
 	[Property]
-	public override NpcRelations.TargetType Type { get; }
+	public override TargetType Type { get; }
 
 	public override Vector3 Velocity
 		=> Owner.Agent?.Velocity ?? Vector3.Zero;
@@ -104,18 +146,8 @@ public partial class NpcRelations : TargetSignature
 	public Dictionary<string, Dictionary<string, Relation>> Relations { get; private set; }
 	public void Init()
 	{
-		var playerTarget = Owner.Blackboard.playerReference.AddComponent<PlayerTargetSignature>();
-		var scentEmit = playerTarget.scentEmitter ?? new ScentEmitter();
-		scentEmit.Position = playerTarget.WorldPosition;
-		scentEmit.SourceEnt = playerTarget;
-		scentEmit.Intensity = 1.0f; // maybe the player should.. smell different sometimes. like when exhausted? sweaty and gross
-		scentEmit.Category = ScentCategory.Player;
-		scentEmit.DecayRate = 0f;
-
-		AIScentManager.Current.Register( scentEmit );
-
-
 		// this whole system is primordial tbh
+		// John: Yes, it is. TODO: Actually finish my relations matrix and replace this monstrositiy!
 		Relations = [];
 		if ( !FileSystem.Mounted.FileExists( "scripts\\ai_faction_relations.fac" ) )
 		{
