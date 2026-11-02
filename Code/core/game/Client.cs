@@ -53,6 +53,9 @@ public partial class Client : Component, Component.INetworkListener
 	/// </summary>
 	[Sync] public BasePawn Pawn { get; set; }
 
+	protected override void OnEnabled() => GameManagerSystem.Current?.RegisterClient( this );
+	protected override void OnDisabled() => GameManagerSystem.Current?.UnregisterClient( this );
+	protected override void OnDestroy() => GameManagerSystem.Current?.UnregisterClient( this );
 	protected override void OnUpdate() => DisconnectCleanupCheck();
 
 	/// <summary>
