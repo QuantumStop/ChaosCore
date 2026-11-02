@@ -296,6 +296,7 @@ public sealed partial class SaveSystem( Scene scene ) : GameObjectSystem<SaveSys
 
 		newSystem.LoadedSavePath = path;
 		newSystem.Scene.RunEvent<ISaveEvents>( x => x.AfterLoad( path ) );
+		GameManagerSystem.Current?.QueueSceneReady( SceneLoadType.SceneLoad_LoadGame );
 		newSystem.SetLastOperation( "load" );
 		newSystem.FinishLastOperation( true );
 		return true;
@@ -346,6 +347,7 @@ public sealed partial class SaveSystem( Scene scene ) : GameObjectSystem<SaveSys
 
 		LoadedSavePath = path;
 		Scene.RunEvent<ISaveEvents>( x => x.AfterLoad( path ) );
+		GameManagerSystem.Current?.QueueSceneReady( SceneLoadType.SceneLoad_LoadGame );
 		return FinishLastOperation( true );
 	}
 
