@@ -53,6 +53,10 @@ public class AIFacts : GameObjectSystem
 	public const string CanRest = "canRest";
 	public const string ShouldRest = "shouldRest";
 	public const string IsRested = "Rested";
+	public const string HasPatrolOrder = "hasPatrolOrder";
+	public const string PatrolWarning = "patrolWarning";
+	public const string PatrolIntrusion = "patrolIntrusion";
+	public const string PatrolReaction = "patrolReaction";
 
 	// Squad
 	public const string SquadCohesionOK = "squadCohesionOK";
@@ -101,15 +105,11 @@ public class AIFacts : GameObjectSystem
 
 	public const string ScentDetected = "scentDetected";
 	public const string ScentInvestigated = "scentInvestigated";
-#if IGNIS || STANDALONE
+
 	public static IEnumerable<string> All()
 	{
-		return typeof( AIFacts )
-			.GetFields( System.Reflection.BindingFlags.Public |
-						System.Reflection.BindingFlags.Static |
-						System.Reflection.BindingFlags.FlattenHierarchy )
-			.Where( f => f.IsLiteral && f.FieldType == typeof( string ) )
-			.Select( f => (string)f.GetValue( null ) );
+		return Game.TypeLibrary.GetType<AIFacts>().Fields
+		.Where( f => f.IsPublic && f.IsStatic && f.FieldType == typeof( string ) )
+		.Select( f => (string)f.GetValue( null ) );
 	}
-#endif
 }
