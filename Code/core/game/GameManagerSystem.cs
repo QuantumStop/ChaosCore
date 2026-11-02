@@ -38,6 +38,8 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 		StopSceneReady();
 		StopPendingStartOnce();
 		_pendingStartOnce.Clear();
+		Clients.Clear();
+		_singlePlayer = null;
 
 		if ( Application.IsEditor && Game.IsClosing )
 			BaseGUIManager.ClearColdBootPlayState();

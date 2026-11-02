@@ -38,6 +38,7 @@ partial class GameManagerSystem : GameObjectSystem, Component.INetworkListener
 
 		if ( !Client.IsValid() ) throw new Exception( $"Something went wrong when trying to create Client for {channel.DisplayName}" );
 
+		RegisterClient( Client );
 		OnPlayerJoined( Client, channel );
 	}
 

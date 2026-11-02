@@ -73,6 +73,9 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		TimeScale = 1f; // reset timescale
 		ResetWorldTimeForSceneStart();
 
+		foreach ( var client in Scene.GetAllComponents<Client>() )
+			RegisterClient( client );
+
 		if ( !Scene.GetAllComponents<DebrisManager>().Any() )
 			Scene.CreateObject().Components.GetOrCreate<DebrisManager>();
 
