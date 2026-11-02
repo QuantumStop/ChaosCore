@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using static Core.AI.AIController;
 
 namespace Core.AI;
@@ -74,8 +74,12 @@ public class AIBrain : AIModule
 
 	public AILod DetermineAILOD()
 	{
-		float playerDist = Vector3.DistanceBetween( Owner.WorldPosition, Owner.Blackboard.playerReference.WorldPosition ); // should probably be put somewhere upstream tbh
-		Vector3 toPlayer = (Owner.Blackboard.playerReference.WorldPosition - Owner.WorldPosition).Normal;
+		var player = Owner.Blackboard.PlayerReference;
+		if ( !player.IsValid() )
+			return AILod.AI_LOD4;
+
+		float playerDist = Vector3.DistanceBetween( Owner.WorldPosition, player.WorldPosition ); // should probably be put somewhere upstream tbh
+		Vector3 toPlayer = (player.WorldPosition - Owner.WorldPosition).Normal;
 		float playerDot = Vector3.Dot( Owner.WorldRotation.Forward, toPlayer );// Zapagoogas writes worst code ever, asked to leave Chaos Theory
 
 		if ( playerDot > 0.5 && playerDist >= LODDistanceChecks[0] && playerDist <= LODDistanceChecks[1] )

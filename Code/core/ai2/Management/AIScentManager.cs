@@ -54,7 +54,7 @@ public class ScentEmitter
 public class AIScentManager : GameObjectSystem<AIScentManager>
 {
 	public AIScentManager( Scene scene ) : base( scene ) => Listen( Stage.PhysicsStep, 0, TickAll, "AIScentManager TickAll" );
-	private readonly List<ScentEmitter> _emitters = new();
+	private readonly List<ScentEmitter> _emitters = [];
 	public IReadOnlyList<ScentEmitter> All => _emitters;
 
 	public Vector3 Wind = Vector3.Zero; // heheheh maybe one day???

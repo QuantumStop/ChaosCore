@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Core.AI;
 
@@ -35,7 +35,7 @@ public class ScentSensor : BaseSensor<ScentPacket>
 		var detected = new List<DetectedScent>();
 		var stillTracked = new HashSet<ScentEmitter>();
 
-		foreach ( var emitter in AIScentManager.Current.All )
+		foreach ( var emitter in AIScentManager.Current?.All ?? [] )
 		{
 			float dist = Vector3.DistanceBetween( agentPos, emitter.Position );
 			float effectiveRadius = emitter.Radius * smellStrength;
