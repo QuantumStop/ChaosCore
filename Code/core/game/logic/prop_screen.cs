@@ -148,12 +148,11 @@ public partial class PropScreen : BaseEntity, Component.ExecuteInEditor
 
 			if ( _videoPlayer is not null )
 			{
-				var whatvid = string.IsNullOrEmpty( videoPath ) ? _editorVideo : videoPath;
 #if FMOD
 				if ( !Scene.IsEditor ) _videoPlayer?.OnLoaded += PlayFMODSound;
 #endif
 
-				_videoPlayer?.Play( FileSystem.Mounted, whatvid );
+				_videoPlayer?.Play( FileSystem.Mounted, string.IsNullOrEmpty( videoPath ) ? _editorVideo : videoPath );
 
 				_videoPlayer?.Repeat = Scene.IsEditor || ShouldLoop;
 #if FMOD

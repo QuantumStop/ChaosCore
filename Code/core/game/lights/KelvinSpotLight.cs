@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 namespace Core;
 
 [PresetTarget( "KelvinSpotLight", Name = "Kelvin Spot Light", Icon = "light_mode", Category = "Rendering", IncludeAll = true )]
@@ -9,69 +10,9 @@ namespace Core;
 
 public class KelvinSpotLight : SpotLight
 {
-	[Property, PresetSelector, Header( "Mode" )] public GenericPresetResource Preset { get; set; }
+	[Property, PresetSelector, Header( "Mode" ), Order( 0 )] public GenericPresetResource Preset { get; set; }
 
-	[Property]
-	public LightUnits.ColorMode ColorMode
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = LightUnits.ColorMode.Color;
-
-	[Space]
-
-	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.Color ), Header( "Color" ), ColorUsage( false, false )]
-	public Color RGB_Color
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = Color.White.WithAlpha( 1 );
-
-	[Space]
-	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.ColorTemperature )] public LightUnits.TemperatureMode TemperatureMode { get; set; } = LightUnits.TemperatureMode.Kelvin;
-
-	[Property, ShowIf( nameof( IsKelvin ), true ), Range( 1000, 20000 ), Step( 50 ), Header( "Temperature" )]
-	public float KelvinTemperature
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = 6500f;
-
-
-	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), Header( "Temperature" )]
-	public float MiredTemperature
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = 154f;
+	private const float _oneOverPI = 1 / MathF.PI;
 
 #if PLU
 	/// <summary>
@@ -123,19 +64,6 @@ public class KelvinSpotLight : SpotLight
 	/// </summary>
 	private float ResultBrightness => Brightness / energy_spot();
 #else
-	[Property, Range( 0, 15 ), Title( "Brightness" ), Header( "Brightness" )]
-	public float Brightness
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = 1;
 #if PI
 	/// <summary>
 	/// Due to how stuff is supossed to be rendered, the diffuse is intended to be darker by a factor of PI, which may not be desirable if WYSIWYG color values are expected. 
@@ -156,15 +84,14 @@ public class KelvinSpotLight : SpotLight
 		}
 	} = true;
 
-	private float _resultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
+	private float _resultBrightness => PI ? MathF.PI : _oneOverPI;
+	private float _piOld => PI ? _oneOverPI : 1;
 #else
 	private float _resultBrightness => Brightness;
 #endif
 #endif
 
-	/// <summary>
-	/// Force refresh the light
-	/// </summary>
+	/// <summary>Force refresh the light</summary>
 	public void Refresh() => Dirty();
 
 	private void Dirty()
@@ -176,18 +103,7 @@ public class KelvinSpotLight : SpotLight
 			ConeInner = 0;
 #endif
 
-		if ( IsKelvin )
-		{
-			RGB_Color = LightUnits.CorrelatedColorTemperatureToRGB( KelvinTemperature );
-			MiredTemperature = LightUnits.KelvinToMired( KelvinTemperature );
-		}
-		if ( IsMired )
-		{
-			RGB_Color = LightUnits.CorrelatedColorTemperatureToRGB( LightUnits.MiredToKelvin( MiredTemperature ) );
-			KelvinTemperature = LightUnits.MiredToKelvin( MiredTemperature );
-		}
-
-		LightColor = RGB_Color * _resultBrightness;
+		LightColor = LightColor.WithColorMultiplied( _resultBrightness );
 	}
 
 	protected override void DrawGizmos()
@@ -199,14 +115,23 @@ public class KelvinSpotLight : SpotLight
 		if ( editorvis.EndsWith( ".vmdl" ) )
 		{
 			var vmdl = Model.Load( editorvis );
-			Gizmo.Draw.Color = RGB_Color;
-			Gizmo.Draw.Model( vmdl ).ColorTint = RGB_Color;
+#if PI
+			Gizmo.Draw.Color = LightColor.WithColorMultiplied( _piOld );
+#else
+			Gizmo.Draw.Color = LightColor;
+#endif
+
+#if PI
+			Gizmo.Draw.Model( vmdl ).ColorTint = LightColor.WithColorMultiplied( _piOld );
+#else
+			Gizmo.Draw.Model( vmdl ).ColorTint = LightColor;
+#endif
 			Gizmo.Hitbox.Model( vmdl );
 			Gizmo.Draw.Model( vmdl ).Flags.CastShadows = false;
 
 			if ( Gizmo.IsHovered )
 			{
-				Gizmo.Draw.Color = Color.Orange.WithAlpha( (((float)Math.Sin( WorldTime.Now * 20f )) * 0.3f) + 0.7f );
+				Gizmo.Draw.Color = Color.Orange.WithAlpha( (MathF.Sin( WorldTime.Now * 20f ) * 0.3f) + 0.7f );
 				Gizmo.Draw.LineBBox( vmdl.Bounds );
 			}
 			else if ( Gizmo.IsSelected )
@@ -216,19 +141,4 @@ public class KelvinSpotLight : SpotLight
 			}
 		}
 	}
-
-	float GetHalfConeAngle()
-	{
-		float ClampedInnerConeAngle = Math.Clamp( ConeInner, 0.0f, 89.0f ) * MathF.PI / 180.0f;
-		float ClampedOuterConeAngle = Math.Clamp( ConeOuter * MathF.PI / 180.0f, ClampedInnerConeAngle + 0.001f, 89.0f * MathF.PI / 180.0f + 0.001f );
-		return ClampedOuterConeAngle;
-	}
-
-	float GetCosHalfConeAngle()
-	{
-		return MathF.Cos( GetHalfConeAngle() );
-	}
-
-	private bool IsKelvin => (ColorMode == LightUnits.ColorMode.ColorTemperature) && (TemperatureMode == LightUnits.TemperatureMode.Kelvin);
-	private bool IsMired => (ColorMode == LightUnits.ColorMode.ColorTemperature) && (TemperatureMode == LightUnits.TemperatureMode.Mired);
 }

@@ -1,76 +1,16 @@
 ﻿using System;
+
 namespace Core;
 
-[PresetTarget( "KelvinDirlLight", Name = "Kelvin Direcitonal Light", Icon = "light_mode", Category = "Rendering", IncludeAll = true )]
-
+[PresetTarget( "KelvinDirlLight", Name = "Kelvin Directional Light", Icon = "light_mode", Category = "Rendering", IncludeAll = true )]
 [Category( "Light" )]
 [Icon( "light_mode" )]
 [EditorHandle( "" )]
 public class KelvinDirectionalLight : DirectionalLight
 {
-	[Property, PresetSelector, Header( "Mode" )] public GenericPresetResource Preset { get; set; }
+	[Property, PresetSelector, Header( "Mode" ), Order( 0 )] public GenericPresetResource Preset { get; set; }
 
-	[Property]
-	public LightUnits.ColorMode ColorMode
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = LightUnits.ColorMode.Color;
-
-	[Space]
-
-	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.Color ), Header( "Color" ), ColorUsage( false, false )]
-	public Color RGB_Color
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = Color.White.WithAlpha( 1 );
-
-	[Space]
-	[Property, ShowIf( nameof( ColorMode ), LightUnits.ColorMode.ColorTemperature )] public LightUnits.TemperatureMode TemperatureMode { get; set; } = LightUnits.TemperatureMode.Kelvin;
-	[Property, ShowIf( nameof( IsKelvin ), true ), Range( 1000, 20000 ), Step( 50 ), Header( "Temperature" )]
-	public float KelvinTemperature
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = 6500f;
-
-	[Property, Hide, PresetSelector( "light_color" )] public GenericPresetResource ColorPresetTemplate { get; set; }
-
-	[Property, ShowIf( nameof( IsMired ), true ), Range( 50, 1000 ), Step( 1 ), Header( "Temperature" )]
-	public float MiredTemperature
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = 154f;
+	private const float _oneOverPI = 1 / MathF.PI;
 
 #if PLU
 	[Property, Range( 1, 110000 ), Step( 1 ), Title( "Lux" ), Header( "Brightness" )]
@@ -86,7 +26,9 @@ public class KelvinDirectionalLight : DirectionalLight
 			}
 		}
 	} = 100000f;
+
 	[Property] public LightUnits.SunBrightnessPresets SunBrightnessPreset { get; set; } = LightUnits.SunBrightnessPresets.Noon;
+
 	[Button]
 	void ApplyBrightnessPreset()
 	{
@@ -94,26 +36,12 @@ public class KelvinDirectionalLight : DirectionalLight
 		Dirty();
 	}
 
-	private float ResultBrightness => Brightness;
+	private float _resultBrightness => Brightness;
 #else
-	[Property, Range( 0, 15 ), Title( "Brightness" ), Header( "Brightness" )]
-	public float Brightness
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = 1;
 #if PI
 	/// <summary>
-	/// Due to how stuff is supossed to be rendered, the diffuse is intended to be darker by a factor of PI, which may not be desirable if WYSIWYG color values are expected. 
-	/// This compensates the brightness automatically, if desired. 
-	/// Hammer lights don't have that, so they would have to be manually adjusted if needed.
+	/// Compensates for diffuse rendering being darker by a factor of PI.
+	/// Hammer lights must be adjusted manually if needed.
 	/// </summary>
 	[Property, Title( "PI Compensation" )]
 	public bool PI
@@ -128,54 +56,37 @@ public class KelvinDirectionalLight : DirectionalLight
 			}
 		}
 	} = true;
-	private float _resultBrightness => Brightness * (PI ? MathF.PI : 1.0f);
+
+	private float _resultBrightness => PI ? MathF.PI : _oneOverPI;
+	private float _piOld => PI ? _oneOverPI : 1;
 #else
 	private float _resultBrightness => Brightness;
 #endif
 #endif
-	/// <summary>
-	/// Does the brightness of the sun affect brightness of the sky?
-	/// </summary>
-	[Property]
-	public bool AffectsSky
-	{
-		get;
-		set
-		{
-			if ( field != value )
-			{
-				field = value;
-				Dirty();
-			}
-		}
-	} = true;
 
+	[Property, Hide, Space]
+	new Color SkyColor { get; set; } = Color.Black.WithAlpha( 0 );
 
-	[Property, Hide, Space] new Color SkyColor { get; set; } = Color.Black.WithAlpha( 0 );
-
-	/// <summary>
-	/// Force refresh the light
-	/// </summary>
+	/// <summary>Force refresh the light.</summary>
 	public void Refresh() => Dirty();
 
 	private void Dirty()
 	{
-		if ( IsKelvin )
-		{
-			RGB_Color = LightUnits.CorrelatedColorTemperatureToRGB( KelvinTemperature );
-			MiredTemperature = LightUnits.KelvinToMired( KelvinTemperature );
-		}
-		if ( IsMired )
-		{
-			RGB_Color = LightUnits.CorrelatedColorTemperatureToRGB( LightUnits.MiredToKelvin( MiredTemperature ) );
-			KelvinTemperature = LightUnits.MiredToKelvin( MiredTemperature );
-		}
+		LightColor = LightColor.WithColorMultiplied( _resultBrightness );
+		SendAttribute();
+	}
 
-		LightColor = RGB_Color * _resultBrightness;
-
+	private void SendAttribute()
+	{
 #if !PLU
-		Scene.RenderAttributes.Set( "SunLux", AffectsSky ? Brightness : 1.0f );
+		Scene.RenderAttributes.Set( "SunLux", PI ? MathF.PI : 1 );
 #endif
+	}
+
+	protected override void OnEnabled()
+	{
+		base.OnEnabled();
+		SendAttribute();
 	}
 
 	protected override void DrawGizmos()
@@ -187,14 +98,24 @@ public class KelvinDirectionalLight : DirectionalLight
 		if ( editorvis.EndsWith( ".vmdl" ) )
 		{
 			var vmdl = Model.Load( editorvis );
-			Gizmo.Draw.Color = RGB_Color;
-			Gizmo.Draw.Model( vmdl ).ColorTint = RGB_Color;
+
+#if PI
+			Gizmo.Draw.Color = LightColor.WithColorMultiplied( _piOld );
+#else
+			Gizmo.Draw.Color = LightColor;
+#endif
+
+#if PI
+			Gizmo.Draw.Model( vmdl ).ColorTint = LightColor.WithColorMultiplied( _piOld );
+#else
+			Gizmo.Draw.Model( vmdl ).ColorTint = LightColor;
+#endif
 			Gizmo.Hitbox.Model( vmdl );
 			Gizmo.Draw.Model( vmdl ).Flags.CastShadows = false;
 
 			if ( Gizmo.IsHovered )
 			{
-				Gizmo.Draw.Color = Color.Orange/*.WithAlpha( (((float)Math.Sin( WorldTime.Now * 20f )) * 0.3f) + 0.7f )*/;
+				Gizmo.Draw.Color = Color.Orange.WithAlpha( (MathF.Sin( WorldTime.Now * 20f ) * 0.3f) + 0.7f );
 				Gizmo.Draw.LineBBox( vmdl.Bounds );
 			}
 			else if ( Gizmo.IsSelected )
@@ -204,7 +125,4 @@ public class KelvinDirectionalLight : DirectionalLight
 			}
 		}
 	}
-
-	private bool IsKelvin => (ColorMode == LightUnits.ColorMode.ColorTemperature) && (TemperatureMode == LightUnits.TemperatureMode.Kelvin);
-	private bool IsMired => (ColorMode == LightUnits.ColorMode.ColorTemperature) && (TemperatureMode == LightUnits.TemperatureMode.Mired);
 }
