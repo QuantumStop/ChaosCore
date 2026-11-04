@@ -274,7 +274,7 @@ public partial class BasePlayer
 
 		CurrentWeapon?.Holster(); // call holster anyway since it disables the component, we never see it
 
-		if ( weapon.DoFirstSetup ) weapon.ForceFirstSetup();
+		if ( weapon.IsValid() && weapon.DoFirstSetup ) weapon?.ForceFirstSetup();
 
 		if ( CurrentWeapon.IsValid() && CurrentWeapon.HasUsableAmmo() ) LastWeapon = CurrentWeapon;
 

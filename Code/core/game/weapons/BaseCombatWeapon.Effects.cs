@@ -84,14 +84,13 @@ public partial class BaseCombatWeapon
 		// stay parented
 		delete_go.Parent = attachmentObj;
 
-		_muzzleSpotLight = delete_go.Components.Create<KelvinSpotLight>();
-		_muzzleSpotLight.Brightness = WeaponData.MuzzleLightBrightness;
+		_muzzleSpotLight = delete_go.Components.GetOrCreate<KelvinSpotLight>();
+		_muzzleSpotLight.Intensity = WeaponData.MuzzleLightBrightness;
 		_muzzleSpotLight.Shadows = false;
 		_muzzleSpotLight.Cookie = WeaponData.MuzzleLightCookie;
 		_muzzleSpotLight.ConeInner = 0;
 		_muzzleSpotLight.ConeOuter = WeaponData.MuzzleLightFOV;
 		_muzzleSpotLight.Attenuation = 0.5f;
-		_muzzleSpotLight.Refresh();
 	}
 
 	/// <summary>Force clear all effects</summary>

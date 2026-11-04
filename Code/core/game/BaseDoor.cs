@@ -23,10 +23,10 @@ public class BaseDoor : BaseUsable
 		switch ( State )
 		{
 			case DoorState.Sleeping:
-				Open( basePlayer.GetEyeForward() ); // i dont know why this works
+				Open( basePlayer.WorldPosition ); // i dont know why this works
 				break;
 			case DoorState.Ajar:
-				Close( basePlayer.GetEyeForward() );
+				Close( basePlayer.WorldPosition );
 				break;
 		}
 
@@ -116,14 +116,14 @@ public class BaseDoor : BaseUsable
 #endif
 	}
 	/// <summary>This is one of the two only actual player input thats possible, every other action is physics based (walk next to the door to close it, etc)</summary>
-	public virtual void Open( Vector3 rot = default )
+	public virtual void Open( Vector3 PlayerPos = default )
 	{
 		if ( State != DoorState.Sleeping ) return;
 
 		State = DoorState.Opening; // separate state so we don't trigger the latching zone
 		Hinge?.Enabled = true;
 		Rigidbody?.MotionEnabled = true;
-		FastMove( true, false, GetOpeningAngle( rot, 4 ) ); // always away from the player
+		FastMove( true, false, GetTargetAngle( true, PlayerPos, 4 ) ); // always away from the player
 #if FMOD
 		if ( Data.HandleOpen.IsValid() ) FMODSound.Play( Data.HandleOpen, GameObject.GetBounds().Center );
 		if ( Data.Move.IsValid() )
@@ -135,11 +135,11 @@ public class BaseDoor : BaseUsable
 	}
 
 	/// <summary>The other only possible action, except without a separate state so it can be interrupted</summary>
-	public virtual void Close( Vector3 rot = default )
+	public virtual void Close( Vector3 PlayerPos = default )
 	{
 		if ( State != DoorState.Ajar ) return;
 
-		FastMove( true, false, GetClosingAngle() );
+		FastMove( true, false, GetTargetAngle( false, PlayerPos ) );
 #if FMOD
 		if ( Data.HandleOpen.IsValid() ) FMODSound.Play( Data.HandleOpen, GameObject.GetBounds().Center );
 #endif
@@ -179,6 +179,7 @@ public class BaseDoor : BaseUsable
 
 	private void FastMove( bool on, bool fast = true, float angle = 0f )
 	{
+		if ( on ) Log.Info( angle );
 		if ( fast ) // this is really only for teleporting the hinge back to 0 when latching, every other movement uses slower methods
 		{
 			Hinge?.Motor = on ? HingeJoint.MotorMode.TargetAngle : HingeJoint.MotorMode.Disabled;
@@ -200,8 +201,17 @@ public class BaseDoor : BaseUsable
 
 	[ConVar( "debug_door_force" )] public static bool DebugDoorForce { get; set; }
 
-	protected float GetOpeningAngle( Vector3 rot, float targetAngle ) => Data.HingeOnRightSide == (rot.Dot( WorldRotation.Forward ) > 0f) ? MathF.Abs( targetAngle ) : -MathF.Abs( targetAngle );
 
+	/// <summary>In order to nudge the door into opening/closing, which way (angular force) should it be pushed</summary>
+	protected float GetTargetAngle( bool open, Vector3 activatorPos, float target = 0 ) =>
+	open ? GetOpeningAngle( Vector3.Dot( Data.HingeOnRightSide ? WorldRotation.Backward : WorldRotation.Forward, activatorPos - WorldPosition ) > 0, target ) : GetClosingAngle();
+
+	/// <summary>Which way is opening</summary>
+	/// <returns>Closing direction</returns>
+	protected float GetOpeningAngle( bool front, float targetAngle ) => Data.HingeOnRightSide == front ? MathF.Abs( targetAngle ) : -MathF.Abs( targetAngle );
+
+	/// <summary>Which way is closing</summary>
+	/// <returns>Closing direction</returns>
 	protected float GetClosingAngle() => Data.HingeOnRightSide == (Hinge.Angle > 0f) ? -ArcAngle * 0.5f : ArcAngle * 0.5f;
 
 	/// <summary>Is this door locked and requires external machinations to be able to be opened or you live in the 1950s where no one locked their doors</summary>
