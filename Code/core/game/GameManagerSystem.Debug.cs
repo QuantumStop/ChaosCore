@@ -2,6 +2,8 @@ namespace Core;
 
 using System;
 using AI;
+using Sandbox.Rendering;
+using Sandbox.UI;
 
 public abstract partial class GameManagerSystem : GameObjectSystem
 {
@@ -246,6 +248,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	private static void DebugConvars()
 	{
 		Vector2 pos = new( 32, 32 );
+		Vector2 rightPos = new( 32, 32 );
 
 		if ( Application.IsStandalone )
 		{
@@ -261,14 +264,39 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 #if IGNIS || STANDALONE
 		if ( ShowSaveSystem )
 		{
-			DrawSaveSystem( ref pos );
-			pos.y += _debugSpacing;
+			DrawSaveSystem( ref rightPos );
+			rightPos.y += _debugSpacing;
 		}
 #endif
 		if ( ShowWorldTime )
 		{
-			WorldTime( ref pos );
-			pos.y += _debugSpacing;
+			DrawWorldTime( ref rightPos );
+			rightPos.y += _debugSpacing;
+		}
+
+		var columnBottoms = new List<float> { rightPos.y };
+
+		if ( CameraEffects.IsDebug )
+			DrawPanel( CameraEffects.GetDebugText() );
+
+		if ( BaseGrenade.GrenadeDebug )
+		{
+			foreach ( var grenade in Current.Scene.GetAll<BaseGrenade>() )
+			{
+				DrawPanel( grenade.GetDebugText() );
+			}
+		}
+
+		if ( SpatialDirector.DebugMode > 0 || SpatialProbe.DebugMode > 0 )
+		{
+			foreach ( var director in Current.Scene.GetAll<SpatialDirector>() )
+			{
+				if ( !director.Active || !director.IsSupportedView || !director.Camera.IsValid() )
+					continue;
+
+				DrawPanel( director.GetDebugText() );
+				DrawPanel( director.Probe.GetDebugText() );
+			}
 		}
 
 		if ( BasePlayer.Local.IsValid() && BasePlayer.Local.Controller.IsValid() && BasePlayer.Local.Controller.IsNoclipping )
@@ -290,28 +318,53 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		}
 
 		if ( AIManager.AIDisable ) AIDisable( new( Screen.Width * 0.7f, Screen.Height * 0.8f ) );
+
+		void DrawPanel( DebugTextBlock block )
+		{
+			if ( block is null || block.Height <= 0f ) 
+				return;
+
+			// Fill available space before opening another column to the left.
+			int column = 0;
+			while ( column < columnBottoms.Count && columnBottoms[column] + block.Height > Screen.Height - 32f )
+			{	
+				column++;
+			}
+
+			if ( column == columnBottoms.Count )
+				columnBottoms.Add( 32f );
+
+			var origin = new Vector2( 32f + column * (DebugTextBlock.Width + _debugSpacing), columnBottoms[column] );
+			block.Draw( origin, InitDebugTextScope() );
+			columnBottoms[column] += block.Height + _debugSpacing;
+		}
+
 	}
 
-	private static void WorldTime( ref Vector2 pos )
+	private static void DrawWorldTime( ref Vector2 pos )
 	{
 		var scope = InitDebugTextScope();
+		scope.FontVariantNumeric = FontVariantNumeric.TabularNums;
 
-		var x = pos.x;
-		var y = pos.y;
+		float labelX = MathF.Round( Screen.Width - pos.x - 224f );
+		float valueX = MathF.Round( Screen.Width - pos.x - 88f );
+		float y = MathF.Round( pos.y );
 
-		DrawWorldTimeLine( ref y, "Time.Now", Time.Now, Color.White );
-		DrawWorldTimeLine( ref y, "WorldTime.Now", Core.WorldTime.Now, Color.Green );
-		DrawWorldTimeLine( ref y, "WorldTime.Delta", Core.WorldTime.Delta, Color.Orange );
-		DrawWorldTimeLine( ref y, "WorldTime.Offset", Current.WorldTimeOffset, Color.Cyan );
-
+		DrawWorldTimeLine( "Time.Now", Time.Now, Color.White );
+		DrawWorldTimeLine( "WorldTime.Now", WorldTime.Now, Color.Green );
+		DrawWorldTimeLine( "WorldTime.Delta", WorldTime.Delta, Color.Orange );
+		DrawWorldTimeLine( "WorldTime.Offset", Current.WorldTimeOffset, Color.Cyan );
 		pos.y = y;
 
-		void DrawWorldTimeLine( ref float lineY, string label, float value, Color color )
+		void DrawWorldTimeLine( string label, float value, Color color )
 		{
-			scope.Text = $"{label,-16} {value,10:0.000}";
 			scope.TextColor = color;
-			DebugOverlaySystem.Current.ScreenText( new Vector2( -x, lineY ), scope, TextFlag.Right, 0f );
-			lineY += 14;
+			scope.Text = label;
+			DebugOverlaySystem.Current.ScreenText( new Vector2( labelX, y ), scope, TextFlag.Left, 0f );
+
+			scope.Text = value.ToString( "0.000", System.Globalization.CultureInfo.InvariantCulture ).PadLeft( 12 );
+			DebugOverlaySystem.Current.ScreenText( new Vector2( valueX, y ), scope, TextFlag.Left, 0f );
+			y += 14;
 		}
 	}
 #if IGNIS || STANDALONE
@@ -614,17 +667,18 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		_buildNumber = 365 * (y - 2026) - 31 + days[m] + d; // original method had 1999, we are not in 1999
 	}
 
-	private static TextRendering.Scope InitDebugTextScope()
+	private static TextRendering.Scope InitDebugTextScope( float outlineSize = 3f )
 	{
-		return new( "", Color.White, 12, "Roboto Mono" )
+		return new( "", Color.White, 12, "Lucida Console" )
 		{
+			FontWeight = 550,
+			LineHeight = 1.45f,
 			Outline = new TextRendering.Outline
 			{
 				Color = Color.Black,
 				Enabled = true,
-				Size = 3.25f
-			},
-			LineHeight = 0.85f
+				Size = outlineSize
+			}
 		};
 	}
 
