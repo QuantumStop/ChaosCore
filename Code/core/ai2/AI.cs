@@ -5,6 +5,7 @@
 using FMODSbox;
 #endif
 using Sandbox.Navigation;
+using Sandbox.Diagnostics;
 using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -24,6 +25,8 @@ public interface IAIEvent : ISceneEvent<IAIEvent>
 
 public class AIController : BaseEntity, Component.IDamageable, Component.ICollisionListener
 {
+	private static readonly Logger Log = new( nameof( AIController ) );
+
 	public static bool NoTarget { get; set; } = false;
 
 	[ConCmd( "notarget" )]
@@ -235,7 +238,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #endif
 	public AIAction CurrentAction { get; set; }
 
-	[Property] public bool DebugPlanning { get; set; } = false;
+	[Property, Feature( "Debug" )] public bool DebugPlanning { get; set; } = false;
 #if IGNIS
 	[DebugExpose( hideIfEmpty: true )]
 #endif
@@ -599,7 +602,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 				else
 					Log.Warning( $"{TargetName} has null SceneModel!" );
 		*/
-		Blackboard.playerReference = Scene.GetAllComponents<BasePlayer>().FirstOrDefault();
+
+		Blackboard.RefreshPlayerReference();
 
 		Relationships = AddComponent<NpcRelations>(); // soon i destroy ALL COMPONENTS. this should be a CLASS!!!
 		Relationships.Owner = this;
@@ -640,12 +644,10 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	public void ConfigureDefaultWorldState()
 	{
-#if IGNIS || STANDALONE
 		foreach ( var fact in AIFacts.All() )
 		{
 			WorldState.Set( fact, false );
 		}
-#endif
 	}
 
 	public void PopulateHints()
@@ -760,13 +762,20 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	public void Spawn()
 	{
 		MovementType = Definition.MoveType;
-#if IGNIS || STANDALONE
-		if ( BehaviorModule is null )
+
+		if ( BehaviorModule is null || BehaviorModule.GetType() == typeof( AIBehavior ) )
 		{
-			var behaviorType = AIBehavior.ResolveBehaviorType( Definition.BehaviorClass );
-			BehaviorModule = Activator.CreateInstance( behaviorType ) as AIBehavior;
+			if ( !string.IsNullOrWhiteSpace( Definition.BehaviorClass ) )
+			{
+				var behaviorType = Game.TypeLibrary.GetType<AIBehavior>( Definition.BehaviorClass );
+				
+				if ( behaviorType is not null )
+					BehaviorModule = behaviorType.Create<AIBehavior>();
+				else
+					Log.Error( $"Unknown AI behavior '{Definition.BehaviorClass}' for {TargetName}." );
+			}
+			BehaviorModule ??= new AIBehavior();
 		}
-#endif
 		BehaviorModule?.Bind( this );
 
 		InitAIModules();
@@ -786,8 +795,15 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			SleepNPC();
 
 		Tags.Add( "npc" );
-		if ( FallToGround && MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
-			GameObject.WorldPosition = Scene.NavMesh.GetClosestPoint( Agent.WorldPosition ).Value;
+		if ( FallToGround && (MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL) )
+		{
+			var groundPosition = Scene.NavMesh.GetClosestPoint( Agent.WorldPosition );
+
+			if ( groundPosition.HasValue )
+				GameObject.WorldPosition = groundPosition.Value;
+			else
+				Log.Error( $"{TargetName}: No navmesh point found at spawn, keeping the current position." );
+		}
 
 		ScentEmitter = new ScentEmitter
 		{
@@ -808,7 +824,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 			Touched?.Invoke();
 			TouchingPlayer = true;
-			//	BodyModel.Set( "b_Interrupt", true );
+			//	BodyModel.Animation.Parameters.TrySet( "b_Interrupt", true );
 			//Log.Info( "Touching player" );
 		}
 		else if ( collision.Other.GameObject.Root.GetComponent<AIController>() is { } npc )
@@ -831,6 +847,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	protected override void OnStart() => Spawn();
 	protected override void OnDestroy()
 	{
+		Navigation?.Terminate();
 		StopAllNPCSounds();
 		CurrentAction = null;
 		CurrentGoal = null;
@@ -900,10 +917,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// <param name="speed"></param>
 	public void SetMovementSpeed( float speed )
 	{
+		if ( Navigation?.Motor is AIMotor motor )
+			motor.RequestedSpeed = speed;
 		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 		{
 			Agent.MaxSpeed = speed;
-			Agent.Acceleration = speed * 1.25f;
+			Agent.Acceleration = Definition.AgentAccel;
 		}
 	}
 
@@ -1130,7 +1149,10 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 		LastDamageInfo = dmginfo;
 
-
+		if ( CurHealth <= 0f )
+		{
+			KillNPCOnNextUpdate();
+		}
 	}
 
 	/// <summary>
@@ -1167,25 +1189,19 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	}
 
 	/// <summary>
-	/// Sets the NPC to be killed on the next tick. Kills it if its set.
+	/// Queues the NPC's death for the next update.
 	/// </summary>
-	public void KillNPCOnNextUpdate()
-	{
-
-		if ( KillOnNextUpdate )
-			EventKilled();
-		else
-			KillOnNextUpdate = true;
-	}
+	public void KillNPCOnNextUpdate() => KillOnNextUpdate = true;
 
 	/// <summary>
 	/// Handles the death of an NPC.
 	/// </summary>
 	public void EventKilled()
 	{
+		if ( !IsAlive ) return;
+
 		BodyModel.Animation.Parameters.TrySet( "b_dead", true );
 		BodyModel.UseAnimGraph = false; // kind of a hacky way to get animations to stop playing once the npc has died. but it works!
-		if ( !IsAlive ) return;
 
 		Collider.Enabled = false;
 		Tags.Remove( "npc" );
@@ -1267,6 +1283,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	public void TickSense( float deltaTime )
 	{
 		iSpy.iSpyStartProfile( "TickStep_1" );
+
+		Blackboard.RefreshPlayerReference();
 
 		AIBrain._lastThinkTime = WorldTime.Now;
 		AIBrain._aiLOD = AIBrain.DetermineAILOD();
@@ -1685,7 +1703,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	// this should probably be defined per definition
 	private readonly string[] _replanTriggerFacts =
 {
-	 AIFacts.Alert, AIFacts.SquadIsBroken, AIFacts.Bored, AIFacts.SquadCohesionOK, AIFacts.IsBored, AIFacts.LowPain, AIFacts.MediumPain, AIFacts.HighPain, AIFacts.FriendDied
+	 AIFacts.Alert, AIFacts.SquadIsBroken, AIFacts.Bored, AIFacts.SquadCohesionOK, AIFacts.HasPatrolOrder, AIFacts.PatrolReaction, AIFacts.LowPain, AIFacts.MediumPain, AIFacts.HighPain, AIFacts.FriendDied
 };
 
 	private Dictionary<string, bool> _stateAtPlanTime = [];
@@ -1735,8 +1753,6 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 		_forcedMovePosition = pos;
 
-		_debugPathCreated = false;
-		_debugPath = default;
 		FollowingForcedMovementPath = false;
 		ForcedMoveComplete = false;
 	}
@@ -1747,14 +1763,6 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	public void ClearForcedMovePosition()
 	{
 		_forcedMovePosition = null;
-
-		// Clear the line and reset path state
-		if ( _pathLine != null )
-		{
-			_pathLine.VectorPoints.Clear();
-		}
-		_debugPathCreated = false;
-		_debugPath = default;
 
 		Agent.Stop();
 		SetAIState( AI_BehaviorState.BEHAVIORSTATE_DEFAULT );
@@ -1781,9 +1789,6 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		return finalPath;
 	}
 
-	private LineRenderer _pathLine;
-	private bool _debugPathCreated = false;
-	private NavMeshPath _debugPath;
 	public bool FollowingForcedMovementPath = false;
 	public bool ForcedMoveComplete = false;
 	public void HandleScripting()
@@ -1810,42 +1815,6 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 				//data.position = forcedMovePosition.Value;
 				//data.goalType = GoalType.GOALTYPE_LOCATION;
 				DoMovement( _forcedMovePosition.Value, GoalType.GOALTYPE_LOCATION );
-
-				if ( !_debugPathCreated )
-				{
-					_pathLine = Components.Create<LineRenderer>();
-					_pathLine.Width = 1;
-					_pathLine.SplineInterpolation = 1;
-					_pathLine.EndCap = SceneLineObject.CapStyle.Arrow;
-					_pathLine.UseVectorPoints = true;
-					_pathLine.VectorPoints = [];
-					_debugPathCreated = true;
-				}
-
-
-
-				if ( _debugPath.IsValid() )
-				{
-
-					if ( _debugPath.Points != null )
-					{
-						_pathLine.VectorPoints.Clear();
-						foreach ( var point in _debugPath.Points )
-						{
-							_pathLine.VectorPoints.Add( point.Position );
-						}
-					}
-				}
-				else
-				{
-					var path = CreateNavMeshPath( _forcedMovePosition );
-					_debugPath = path;
-				}
-
-
-
-				Gizmo.Draw.LineCircle( _forcedMovePosition.Value, 15 );
-
 
 				break;
 			case ScriptingContext.SCRIPT_PATH:
@@ -1891,10 +1860,14 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		float npcPressure = AIManager.Current.GetNavPressureFactor();
 		float pressureScale = MathX.Lerp( 0.75f, 1.5f, npcPressure );
 
-		float playerDist = data.Position.Distance( Blackboard.playerReference.WorldPosition );
-		float playerDist01 = Math.Clamp( (playerDist - _navPlayerNearDist) / (_navPlayerFarDist - _navPlayerNearDist), 0f, 1f );
-
-		float playerScale = MathX.Lerp( 0.1f, 2f, playerDist01 );
+		var player = Blackboard.PlayerReference;
+		float playerScale = 1f;
+		if ( player.IsValid() )
+		{
+			float playerDist = data.Position.Distance( player.WorldPosition );
+			float playerDist01 = Math.Clamp( (playerDist - _navPlayerNearDist) / (_navPlayerFarDist - _navPlayerNearDist), 0f, 1f );
+			playerScale = MathX.Lerp( 0.1f, 2f, playerDist01 );
+		}
 
 		float cooldown = pressureScale * playerScale;
 
@@ -1968,11 +1941,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			//Blackboard._currentMovePos = finalMovePos.Value;
 			//Agent.MoveTo( finalMovePos.Value );
 
-			NavData data = new NavData();
-
-			data.Controller = this;
-			data.Position = finalMovePos.Value;
-			data.GoalType = goal;
+			NavData data = new NavData
+			{
+				Controller = this,
+				Position = finalMovePos.Value,
+				GoalType = goal
+			};
 
 			Navigation.NavigationDoMovement( data );
 
@@ -1999,11 +1973,30 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	public void UpdateAnimgraphParamaters()
 	{
-		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
-		{
-			BodyModel.Animation.Parameters.TrySet( "b_IsMoving", Agent.Velocity.Length > 0 );
-			BodyModel.Animation.Parameters.TrySet( "f_MoveVelocity", MathX.Lerp( 0, Agent.Velocity.Length, Time.Delta ) );
-		}
+		if ( BehaviorModule?.UsesCustomAnimation == true || !BodyModel.IsValid() || !Agent.IsValid() )
+			return;
+
+		if ( MovementType != MoveType.MOVE_GROUND && MovementType != MoveType.MOVE_CRAWL )
+			return;
+
+		var parameters = BodyModel.Animation.Parameters;
+		var velocity = Agent.Velocity;
+		var wishVelocity = Agent.IsNavigating ? Agent.WishVelocity : Vector3.Zero;
+		var rotation = BodyModel.WorldRotation;
+
+		parameters.Set( "b_grounded", true );
+		parameters.Set( "move_x", rotation.Forward.Dot( velocity ) );
+		parameters.Set( "move_y", rotation.Right.Dot( velocity ) );
+		parameters.Set( "move_z", velocity.z );
+		parameters.Set( "wish_groundspeed", wishVelocity.WithZ( 0 ).Length );
+		parameters.Set( "wish_x", rotation.Forward.Dot( wishVelocity ) );
+		parameters.Set( "wish_y", rotation.Right.Dot( wishVelocity ) );
+		parameters.Set( "wish_z", wishVelocity.z );
+
+		// Optional inputs, that may not be around
+		parameters.TrySet( "move_groundspeed", velocity.WithZ( 0 ).Length );
+		parameters.TrySet( "b_IsMoving", velocity.Length > 0f );
+		parameters.TrySet( "f_MoveVelocity", velocity.Length );
 	}
 
 	/// <summary>
@@ -2042,11 +2035,28 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 	protected override void DrawGizmos() => base.DrawGizmos();
 
+	[Property, Feature( "Debug" )] public bool DebugNavigation { get; set; }
+
 	protected override void OnUpdate()
 	{
+		if ( KillOnNextUpdate )
+		{
+			KillOnNextUpdate = false;
+			if ( IsAlive )
+				EventKilled();
+			return;
+		}
+
+		AIManager.Current?.DrawSelectionDebug( this, ScriptContext == ScriptingContext.SCRIPT_FORCED_MOVE ? _forcedMovePosition : null );
+
+		if ( IsAlive && BehaviorModule?.UsesCustomAnimation == true )
+			BehaviorModule.UpdateAnimation();
+
 		if ( AIManager.AIDebugVisionSensing )
 			TargetingSensor.DrawGizmos();
-
+			
+		if ( IsAlive && DebugNavigation && Agent.IsValid() )
+			Navigation.Motor?.DrawDebug();
 
 		base.OnUpdate();
 	}
@@ -2059,9 +2069,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			case SleepState.SLEEPSTATE_NONE:
 
 				DecayLookTargets( Time.Delta );
+			
+				if ( IsAlive )
+					Navigation.Motor?.Tick();
+
 				UpdateFacing( LookAtTarget );
 				TickAbilities();
-
 
 				if ( AIManager.AIDebugLogPlanning )
 					DebugWorldState();
@@ -2203,29 +2216,24 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 			var targetRotation = Rotation.LookAt( toTarget, Vector3.Up );
 
-			WorldRotation = Rotation.Lerp(
-				WorldRotation,
-				targetRotation,
-				Time.Delta * TurnSpeed
-			);
+			WorldRotation = Rotation.FromYaw( AIMotor.ApproachYaw( WorldRotation.Yaw(), targetRotation.Yaw(), Time.Delta, Navigation?.Motor?.TurnRate ?? 150f ) );
 		}
 
+		else if ( Navigation?.Motor?.FacingYaw is float facingYaw && IsMoving )
+		{
+			WorldRotation = Rotation.FromYaw( AIMotor.ApproachYaw( WorldRotation.Yaw(), facingYaw, Time.Delta, Navigation.Motor.TurnRate ) );
+		}
 		else if ( (MovementType == MoveType.MOVE_GROUND) || (MovementType == MoveType.MOVE_CRAWL) )
 		{
 			var velocity = Agent.Velocity;
 			velocity.z = 0f;
-
 			if ( velocity.LengthSquared > 0.01f )
 			{
 				var moveDirection = velocity.Normal;
 
 				var targetRotation = Rotation.LookAt( moveDirection, Vector3.Up );
 
-				WorldRotation = Rotation.Lerp(
-					WorldRotation,
-					targetRotation,
-					Time.Delta * TurnSpeed
-				);
+				WorldRotation = Rotation.FromYaw( AIMotor.ApproachYaw( WorldRotation.Yaw(), targetRotation.Yaw(), Time.Delta, Navigation?.Motor?.TurnRate ?? 150f ) );
 			}
 		}
 
