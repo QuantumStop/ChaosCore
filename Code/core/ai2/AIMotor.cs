@@ -5,10 +5,8 @@ using System;
 /// <summary>
 /// Base class for motors that implement and fine-tune a specific locomotion style.
 /// </summary>
-public abstract class AIMotor( AIController owner )
+public abstract partial class AIMotor : AIModule
 {
-	public AIController Owner { get; } = owner;
-
 	public float? RequestedSpeed { get; set; }
     public float? BrakingDeceleration { get; set; }
     public float SpeedLimit { get; protected set; }
@@ -28,7 +26,16 @@ public abstract class AIMotor( AIController owner )
         return cruise;
     }
 
-    public abstract void Update();
+    public override void Terminate()
+    {
+        if ( Owner.Agent.IsValid() )
+            Stop();
+
+        FacingYaw = null;
+        SpeedLimit = 0f;
+        base.Terminate();
+    }
+
     public abstract void MoveTo( Vector3 position );
     public abstract void Stop();
 
