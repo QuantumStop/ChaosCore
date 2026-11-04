@@ -41,6 +41,7 @@ public static class CameraEffects
 	}
 
 	private static readonly List<ActiveEffect> activeEffects = new();
+	private static float _lastTriggerTime = -1f;
 
 	// Public API
 
@@ -144,6 +145,7 @@ public static class CameraEffects
 	public static void Update( CameraComponent camera, float? lastTriggerTime = null )
 	{
 		if ( !camera.IsValid() ) return;
+		_lastTriggerTime = lastTriggerTime ?? -1f;
 
 		if ( !IsForceDisabled )
 		{
@@ -163,11 +165,13 @@ public static class CameraEffects
 					activeEffects[i] = e;
 			}
 		}
-
-		if ( IsDebug ) DrawDebug( lastTriggerTime ?? -1f );
 	}
 
-	public static void Reset() => activeEffects.Clear();
+	public static void Reset()
+	{
+		activeEffects.Clear();
+		_lastTriggerTime = -1f;
+	}
 
 
 	// Evaluators
@@ -276,122 +280,72 @@ public static class CameraEffects
 		return false;
 	}
 
-	private static void DrawDebug( float lastTriggerTime )
+	public static DebugTextBlock GetDebugText()
 	{
-		// Find ramp effect for recoil section
+		var block = new DebugTextBlock();
 		ActiveEffect? ramp = null;
-		foreach ( var fx in activeEffects )
+		int rampCount = 0;
+
+		foreach ( var effect in activeEffects )
 		{
-			if ( !fx.IsRampBased ) continue;
-			ramp = fx;
-			break;
+			if ( !effect.IsRampBased ) continue;
+			ramp ??= effect;
+			rampCount++;
 		}
 
-		bool isActive = ramp.HasValue && (WorldTime.Now - lastTriggerTime) <= ramp.Value.Data.ResetThreshold;
-		bool newPulse = ramp.HasValue && lastTriggerTime > ramp.Value.LastProcessedAttackTime;
+		int shakeCount = activeEffects.Count - rampCount;
 
-		float rampT = 0f;
-		float targetStrength = 0f;
+		block.Header( "CAMERA EFFECTS DEBUG" );
+		block.Line( "Active effects", $"{activeEffects.Count}", Color.White );
+		block.Line( "Recoil / Shake", $"{rampCount} / {shakeCount}", Color.Green );
+		block.Space();
 
-		if ( ramp.HasValue )
+		block.Header( "Recoil" );
+		if ( ramp is ActiveEffect recoil )
 		{
-			var e = ramp.Value;
-			rampT = Math.Clamp( e.RampTime / e.Data.RampSpeed, 0f, 1f );
-			targetStrength = e.Data.StrengthCurve.Evaluate( EasingPlus.EaseOutCubic( rampT ) );
-			targetStrength = Math.Clamp( targetStrength, 0f, e.MaxCurveStrength );
+			float fraction = Math.Clamp( recoil.RampTime / recoil.Data.RampSpeed, 0f, 1f );
+			float strength = Math.Clamp( recoil.Data.StrengthCurve.Evaluate( EasingPlus.EaseOutCubic( fraction ) ), 0f, recoil.MaxCurveStrength );
+			bool isActive = WorldTime.Now - _lastTriggerTime <= recoil.Data.ResetThreshold;
+			bool newPulse = _lastTriggerTime > recoil.LastProcessedAttackTime;
+
+			block.Line( "Ramp fraction", $"{fraction:0.00}", Color.Green );
+			block.Line( "Strength / Max", $"{strength:0.00} / {recoil.MaxCurveStrength:0.00}", Color.Green );
+			block.Line( "Active", $"{isActive}", Color.Cyan );
+			block.Line( "New pulse", $"{newPulse}", Color.Cyan );
+			block.Line( "Roll direction", $"{recoil.RollDirection:0}", Color.Cyan );
+			block.Line( "Roll / Target", $"{recoil.CurrentRoll:0.00} / {recoil.TargetRoll:0.00}", Color.Green );
+			block.Line( "Hold time", $"{recoil.HoldTimer:0.00}s", Color.Orange );
+			block.Line( "Ramp time", $"{recoil.RampTime:0.00}s", Color.Orange );
 		}
-
-		float x = Screen.Width - 300f;
-		float y = 20f;
-		float lineHeight = 0.85f;
-
-		var scope = new TextRendering.Scope
+		else
 		{
-			FontName = "RobotoMono",
-			FontSize = 11f,
-			FontWeight = 500,
-			TextColor = Color.White,
-			LineHeight = lineHeight
-		};
-
-		scope.Outline.Enabled = true;
-		scope.Outline.Color = Color.Black;
-		scope.Outline.Size = 3.25f;
-
-		// Header
-		scope.Text += "CAMERA EFFECTS DEBUG\n";
-		scope.Text += "\n";
-
-		// Active effects
-		{
-			int rampCount = 0;
-			int fadeCount = 0;
-			foreach ( var fx in activeEffects )
-			{
-				if ( fx.IsRampBased ) rampCount++;
-				else fadeCount++;
-			}
-
-			scope.Text += "Active Effects:\n";
-			scope.Text += $"   Total:        {activeEffects.Count}\n";
-			scope.Text += $"   Ramp-based:   {rampCount}\n";
-			scope.Text += $"   Fade-based:   {fadeCount}\n";
-			scope.Text += "\n";
+			block.Line( "Status", "Inactive", Color.White );
 		}
+		
+		block.Space();
 
-		// Recoil
+		if ( shakeCount == 0 )
 		{
-			scope.Text += "Recoil:\n";
-
-			if ( !ramp.HasValue )
-			{
-				scope.Text += "   No active recoil\n";
-			}
-			else
-			{
-				var e = ramp.Value;
-				scope.Text += $"   RampT:        {rampT:F2}\n";
-				scope.Text += $"   Strength:     {targetStrength:F2} / Max: {e.MaxCurveStrength:F2}\n";
-				scope.Text += $"   IsActive:     {isActive}\n";
-				scope.Text += $"   NewPulse:     {newPulse}\n";
-				scope.Text += $"   RollDir:      {e.RollDirection:F0}\n";
-				scope.Text += $"   CurrentRoll:  {e.CurrentRoll:F2}\n";
-				scope.Text += $"   TargetRoll:   {e.TargetRoll:F2}\n";
-				scope.Text += $"   HoldTimer:    {e.HoldTimer:F2}\n";
-				scope.Text += $"   RampTime:     {e.RampTime:F2}\n";
-			}
-
-			scope.Text += "\n";
+			block.Header( "Shake" );
+			block.Line( "Status", "Inactive", Color.White );
 		}
-
-		// Shake
+		else
 		{
-			int fadeCount = 0;
-			foreach ( var fx in activeEffects )
-				if ( !fx.IsRampBased ) fadeCount++;
-
-			scope.Text += "Shake:\n";
-
-			if ( fadeCount == 0 )
+			int index = 0;
+			foreach ( var effect in activeEffects )
 			{
-				scope.Text += "   No active shake\n";
-			}
-			else
-			{
-				foreach ( var fx in activeEffects )
-				{
-					if ( fx.IsRampBased ) continue;
-					scope.Text += $"   Timer:        {fx.Timer:F2} / {fx.Data.Duration:F2}\n";
-					scope.Text += $"   Strength:     {fx.Data.ShakeStrength:F2}\n";
-					scope.Text += $"   Frequency:    {fx.Data.Frequency:F2}\n";
-					scope.Text += $"   Axes:         P:{fx.Data.ShakePitch} Y:{fx.Data.ShakeYaw} R:{fx.Data.ShakeRoll}\n";
-					scope.Text += $"   Directional:  {fx.Data.SourcePosition.HasValue}\n";
-					scope.Text += "   · · · · · · · · · · · · ·\n";
-				}
+				if ( effect.IsRampBased ) continue;
+				index++;
+				if ( index > 1 ) block.Space();
+				block.Header( shakeCount > 1 ? $"Shake {index}" : "Shake" );
+				block.Line( "Time / Duration", $"{effect.Timer:0.00} / {effect.Data.Duration:0.00}s", Color.Orange );
+				block.Line( "Strength", $"{effect.Data.ShakeStrength:0.00}", Color.Green );
+				block.Line( "Frequency", $"{effect.Data.Frequency:0.00}", Color.Green );
+				block.Line( "Axes", $"P:{effect.Data.ShakePitch} Y:{effect.Data.ShakeYaw} R:{effect.Data.ShakeRoll}", Color.Cyan );
+				block.Line( "Directional", $"{effect.Data.SourcePosition.HasValue}", Color.Cyan );
 			}
 		}
-
-		DebugOverlaySystem.Current.ScreenText( new Vector2( x, y ), scope, TextFlag.Left, 0f );
+		return block;
 	}
 
 	// Config

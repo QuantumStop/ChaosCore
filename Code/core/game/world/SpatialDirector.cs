@@ -112,10 +112,8 @@ public sealed partial class SpatialDirector : BaseEntity
 
 		Scene.RenderAttributes.Set( "SpatialDirectorDebug", (float)ShaderDebugMode );
 
-		if ( DebugMode == 1 )
-			_spatialProbe.DrawDebugText( new Vector2( 20f, 20f ), Camera );
-		else
-			_spatialProbe.DrawDebug( new Vector2( 20f, 20f ), force: DebugMode >= 2, camera: Camera );
+		if ( DebugMode >= 2 || SpatialProbe.DebugMode >= 2 )
+			_spatialProbe.DrawDebugWorld();
 
 		if ( !FogEnabled )
 		{
