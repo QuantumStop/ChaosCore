@@ -67,3 +67,5 @@ assets/_fmod_project
 *.lscache
 ProjectSettings/Directory.metadata
 editor/Properties/launchSettings.json
+Libraries/xenthio.xmovement/.sbox
+Libraries/xenthio.xgui-3/.sbox
