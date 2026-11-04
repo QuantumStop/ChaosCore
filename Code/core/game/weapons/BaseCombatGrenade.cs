@@ -57,14 +57,6 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	protected virtual bool HasGrenades() => PrimaryAmmoLoaded >= 0;
 
 
-	protected override void OnUpdate()
-	{
-		base.OnUpdate();
-
-		if ( GrenadeDebug )
-			DrawDebug();
-	}
-
 	protected override void HandleWeaponInput()
 	{
 		if ( Input.Pressed( "attack1" ) )
@@ -415,78 +407,47 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		return fallback;
 	}
 
-	private void DrawDebug()
+	public DebugTextBlock GetDebugText()
 	{
-		float x = Screen.Width - 320f;
-		float y = 20f;
+		var block = new DebugTextBlock();
+		var player = Owner.Player;
 
-		var scope = new TextRendering.Scope
-		{
-			FontName = "RobotoMono",
-			FontSize = 12f,
-			TextColor = Color.White,
-			LineHeight = 0.85f
-		};
+		if ( !GrenadeDebug || !Active || !player.IsValid() || player != BasePlayer.Local )
+			return null;
 
-		scope.Outline.Enabled = true;
-		scope.Outline.Color = Color.Black;
-		scope.Outline.Size = 3.25f;
+		if ( player.CurrentWeapon != this && !IsCooking && _liveGrenades.Count == 0 )
+			return null;
 
-		scope.Text += "GRENADE DEBUG\n\n";
-
-		// --- Core State ---
-		scope.Text += "State:\n";
-		scope.Text += $"   IsCooking:        {IsCooking}\n";
-		scope.Text += $"   CookedSeconds:    {CookedSeconds:F2}\n";
-		scope.Text += $"   Current Cooked Fuse: {CurrentCookedFuse:F2}\n";
-		scope.Text += $"   Live Grenades: {_liveGrenades.Count}\n";
+		block.Header( "GRENADE DEBUG" );
+		block.Line( "Weapon", WeaponData.IsValid() ? WeaponData.Name : "None", Color.White );
+		block.Line( "Cooking", $"{IsCooking}", Color.Cyan );
+		block.Line( "Cooked time", $"{CookedSeconds:0.00}s", Color.Orange );
+		block.Line( "Fuse remaining", $"{CurrentCookedFuse:0.00}s", Color.Orange );
+		block.Line( "Live grenades", $"{_liveGrenades.Count}", Color.Green );
+		
 		for ( int i = 0; i < _liveGrenades.Count; i++ )
-			scope.Text += $"     [{i + 1}]: Fuse {_liveGrenades[i].RemainingFuse:F2}\n";
-		scope.Text += "\n";
-
-		// --- Ammo ---
-		scope.Text += "Ammo:\n";
-		scope.Text += $"   InfiniteAmmo:     {BasePlayer.InfiniteAmmo}\n";
-		scope.Text += $"   PrimaryLoaded:    {PrimaryAmmoLoaded}\n";
-		scope.Text += $"   HasGrenades():    {HasGrenades()}\n";
-		scope.Text += "\n";
-
-		// --- Conditions ---
-		bool attackOk = AttackConditions();
-
-		scope.Text += "Conditions:\n";
-		scope.Text += $"   AttackConditions: {attackOk}\n";
-		scope.Text += "\n";
-
-		// --- Timing ---
-		scope.Text += "Timing:\n";
-		scope.Text += $"   WorldTime.Now:         {WorldTime.Now:F2}\n";
-		scope.Text += $"   CookStartTime:    {CookStartTime:F2}\n";
-		scope.Text += $"   MaxCookTime:      {MaxCookTime:F2}\n";
-		scope.Text += "\n";
-
-		// --- Weapon Data ---
-		scope.Text += "WeaponData:\n";
-		scope.Text += $"   IsValid():            {WeaponData.IsValid()}\n";
-
-		if ( WeaponData.IsValid() )
 		{
-			scope.Text += $"   Name:             {WeaponData.Name}\n";
-			scope.Text += $"   ExplosionRadius:  {ExplosionRadius:F1}\n";
-			scope.Text += $"   ExplosionDamage:  {ExplosionDamage:F1}\n";
+			block.Line( $"Grenade {i + 1} fuse", $"{_liveGrenades[i].RemainingFuse:0.00}s", Color.Orange );
 		}
-		else
-		{
-			scope.Text += "   NULL (!!!)\n";
-		}
+		
+		block.Space();
 
-		scope.Text += "\n";
+		block.Header( "Ammo / Conditions" );
+		block.Line( "Infinite ammo", $"{BasePlayer.InfiniteAmmo}", Color.Cyan );
+		block.Line( "Ammo loaded", $"{PrimaryAmmoLoaded}", Color.Green );
+		block.Line( "Has grenades", $"{HasGrenades()}", Color.Cyan );
+		block.Line( "Can attack", $"{AttackConditions()}", Color.Cyan );
+		block.Space();
 
-		DebugOverlaySystem.Current.ScreenText(
-			new Vector2( x, y ),
-			scope,
-			TextFlag.Left,
-			0f
-		);
+		block.Header( "Timing / Explosion" );
+		block.Line( "World time", $"{WorldTime.Now:0.00}s", Color.Orange );
+		block.Line( "Cook started", $"{CookStartTime:0.00}s", Color.Orange );
+		block.Line( "Max cook time", $"{MaxCookTime:0.00}s", Color.Orange );
+		block.Line( "Weapon data", $"{WeaponData.IsValid()}", Color.Cyan );
+		block.Line( "Blast radius", WeaponData.IsValid() ? $"{ExplosionRadius:0.0}u" : "-", Color.Green );
+		block.Line( "Damage", WeaponData.IsValid() ? $"{ExplosionDamage:0.0}" : "-", Color.Green );
+		return block;
 	}
+
+
 }

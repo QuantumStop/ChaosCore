@@ -8,66 +8,32 @@ public partial class SpatialProbe
 	[ConVar( "spatialprobe_debug", Help = "Spatial probe debug. 0=off, 1=text, 2=text+preview." )]
 	public static int DebugMode { get; set; } = 0;
 
-	public void DrawDebug( Vector2 textPosition, bool force = false, CameraComponent camera = null )
+	public DebugTextBlock GetDebugText()
 	{
-		if ( (!force && DebugMode <= 0) || !Result.HasSample )
-			return;
+		var block = new DebugTextBlock();
 
-		DrawDebugText( textPosition, camera );
-
-		if ( force || DebugMode >= 2 )
-			DrawDebugWorld();
-	}
-
-	public void DrawDebugText( Vector2 position, CameraComponent camera = null )
-	{
 		if ( !Result.HasSample )
-			return;
-
-		camera ??= Game.ActiveScene?.Camera;
-		if ( !camera.IsValid() )
-			return;
-
-		var scope = new TextRendering.Scope
-		{
-			FontName = "RobotoMono",
-			FontSize = 11f,
-			FontWeight = 500,
-			TextColor = Color.White,
-			LineHeight = 0.85f
-		};
-
-		scope.Outline.Enabled = true;
-		scope.Outline.Color = Color.Black;
-		scope.Outline.Size = 3.25f;
-
-		scope.Text += "SPATIAL PROBE\n\n";
-		scope.Text += $"Sampling: {Result.SamplingMode} ({Result.SampleAngle:F0} deg)\n";
-		scope.Text += $"Covered:         	{Result.IsCovered}\n";
-		scope.Text += $"Overhead:        	{Result.OverheadHits}/{Result.OverheadSamples}\n";
-		scope.Text += $"Compatible:     	{Result.CompatibleOverheadHits}\n";
-		scope.Text += $"Coverage:       	{Result.OverheadCoverage:F2}\n";
-		scope.Text += $"CompatibleCov:  	{Result.CompatibleOverheadCoverage:F2}\n";
-		scope.Text += $"Ceiling:        	{Result.CeilingDepth:F1}\n";
-		scope.Text += $"AverageCeiling: 	{Result.AverageCeilingDepth:F1}\n";
-		scope.Text += $"Sectors:        	{Result.OverheadSectors}/4\n";
-		scope.Text += $"Opposite:       	{Result.OppositeOverhead}\n";
-		scope.Text += $"Sample hits:     	{Result.RadialHits}/{Result.RadialSamples}\n";
-		scope.Text += $"NearestWall:    	{Result.NearestWallDistance:F1}\n";
-		scope.Text += $"AverageOpen:    	{Result.AverageOpenDistance:F1}\n";
-		scope.Text += $"FurthestOpen:   	{Result.FurthestOpenDistance:F1}\n";
-		scope.Text += $"Openness:       	{Result.Openness:F2}\n";
-		scope.Text += $"Enclosure:      	{Result.Enclosure:F2}\n";
-		scope.Text += $"OpenDirection:  	{Result.OpenDirection}\n";
-
-		using var painter = camera.BeginOverlay();
-		painter.TextStyle = new TextStyle( scope.FontName, scope.FontSize, scope.TextColor )
-		{
-			FontWeight = scope.FontWeight,
-			LineHeight = scope.LineHeight,
-			Alignment = TextFlag.LeftTop
-		}.WithOutline( Color.Black, 3.25f );
-		painter.Text( scope.Text, new Rect( position, Screen.Size - position ) );
+			return null;
+			
+		block.Header( "SPATIAL PROBE DEBUG" );
+		block.Line( "Sampling / Arc", $"{Result.SamplingMode} / {Result.SampleAngle:0} deg", Color.White );
+		block.Line( "Covered", $"{Result.IsCovered}", Color.Green );
+		block.Line( "Overhead hits", $"{Result.OverheadHits} / {Result.OverheadSamples}", Color.Green );
+		block.Line( "Compatible hits", $"{Result.CompatibleOverheadHits}", Color.Green );
+		block.Line( "Coverage", $"{Result.OverheadCoverage:0.00}", Color.Green );
+		block.Line( "Compatible cov.", $"{Result.CompatibleOverheadCoverage:0.00}", Color.Green );
+		block.Line( "Ceiling depth", $"{Result.CeilingDepth:0.0}u", Color.Orange );
+		block.Line( "Average ceiling", $"{Result.AverageCeilingDepth:0.0}u", Color.Orange );
+		block.Line( "Sectors", $"{Result.OverheadSectors} / 4", Color.Cyan );
+		block.Line( "Opposite", $"{Result.OppositeOverhead}", Color.Cyan );
+		block.Line( "Radial hits", $"{Result.RadialHits} / {Result.RadialSamples}", Color.Green );
+		block.Line( "Nearest wall", $"{Result.NearestWallDistance:0.0}u", Color.Orange );
+		block.Line( "Average open", $"{Result.AverageOpenDistance:0.0}u", Color.Orange );
+		block.Line( "Furthest open", $"{Result.FurthestOpenDistance:0.0}u", Color.Orange );
+		block.Line( "Openness", $"{Result.Openness:0.00}", Color.Cyan );
+		block.Line( "Enclosure", $"{Result.Enclosure:0.00}", Color.Cyan );
+		block.Line( "Open direction", $"{Result.OpenDirection.x:0.0}, {Result.OpenDirection.y:0.0}, {Result.OpenDirection.z:0.0}", Color.Cyan );
+		return block;
 	}
 
 	public void DrawDebugWorld()

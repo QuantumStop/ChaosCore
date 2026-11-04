@@ -170,127 +170,84 @@ public sealed partial class SpatialDirector
 		if ( DebugMode <= 0 )
 			return;
 
-		DrawDebugText();
-
 		if ( DebugMode >= 2 )
 			DrawDebugWorld();
 	}
 
-	private void DrawDebugText()
+	public DebugTextBlock GetDebugText()
 	{
-		if ( !Camera.IsValid() )
-			return;
+		var block = new DebugTextBlock();
 
-		float x = Screen.Width - 330f;
-		float y = 20f;
-		float lineHeight = 0.85f;
+		if ( DebugMode <= 0 || !Active || !IsSupportedView || !Camera.IsValid() )
+			return null;
+		
+		block.Header( "SPATIAL DIRECTOR DEBUG" );
+		block.Line( "Director", GameObject.Name, Color.White );
+		block.Space();
 
-		var scope = new TextRendering.Scope
-		{
-			FontName = "RobotoMono",
-			FontSize = 11f,
-			FontWeight = 500,
-			TextColor = Color.White,
-			LineHeight = lineHeight
-		};
+		block.Header( "Cutaway" );
+		block.Line( "Running", $"{ShouldRun()}", Color.Cyan );
+		block.Line( "Strength", $"{CutawayStrength:0.00}", Color.Green );
+		block.Line( "Blocked", $"{TargetTraceBlocked}", Color.Cyan );
+		block.Line( "Inside", $"{IsTargetInside}", Color.Cyan );
+		block.Line( "View blend", $"{ViewBlend:0.00}", Color.Green );
+		block.Line( "Hit position", $"{CutawayHitWorld.x:0}, {CutawayHitWorld.y:0}, {CutawayHitWorld.z:0}", Color.Orange );
+		block.Line( "Hit normal", $"{CutawayHitNormalWorld.x:0.00}, {CutawayHitNormalWorld.y:0.00}, {CutawayHitNormalWorld.z:0.00}", Color.Orange );
+		block.Line( "Trigger", "Single view ray", Color.White );
+		block.Space();
 
-		scope.Outline.Enabled = true;
-		scope.Outline.Color = Color.Black;
-		scope.Outline.Size = 3.25f;
+		block.Header( "Visibility" );
+		block.Line( "Sampling / Arc", $"{VisionMode} / {VisionArcAngle:0} deg", Color.White );
+		block.Line( "Enabled", $"{FogEnabled}", Color.Cyan );
+		block.Line( "Resolution", $"{_allocatedResolution}", Color.Green );
+		block.Line( "Rays", $"{_spatialProbe.Result.RadialSamples}", Color.Green );
+		block.Line( "Radius", $"{VisionRadius:0.0}u", Color.Orange );
+		block.Line( "Padding", $"{VisibilityPadding:0.0}u", Color.Orange );
+		block.Line( "World only", $"{WorldOnlyOcclusion}", Color.Cyan );
+		block.Line( "Texture ready", $"{_visibilityTexture is not null}", Color.Cyan );
+		block.Space();
 
-		scope.Text += "SPATIAL DIRECTOR DEBUG\n";
-		scope.Text += "\n";
+		block.Header( "Renderer Culling" );
+		block.Line( "Active", $"{FogEnabled && CullHiddenModelRenderers}", Color.Cyan );
+		block.Line( "Bounds / Static", $"{UseBoundsForVisibility} / {CullStaticRenderers}", Color.Cyan );
+		block.Line( "Visible / Hidden", $"{_rendererCullingVisible} / {_rendererCullingHidden}", Color.Green );
+		block.Line( "Outside vision", $"{_rendererCullingOutOfRange}", Color.Orange );
+		block.Line( "LOS traces", $"{_rendererCullingTraces}", Color.Orange );
+		block.Space();
 
-		// Cutaway
-		{
-			scope.Text += "Cutaway:\n";
-			scope.Text += $"   Running:       	{ShouldRun()}\n";
-			scope.Text += $"   Strength:      	{CutawayStrength:F2}\n";
-			scope.Text += $"   Blocked:       	{TargetTraceBlocked}\n";
-			scope.Text += $"   Inside:        	{IsTargetInside}\n";
-			scope.Text += $"   ViewBlend:     	{ViewBlend:F2}\n";
-			scope.Text += $"   Hit:           	{CutawayHitWorld}\n";
-			scope.Text += $"   HitNormal:     	{CutawayHitNormalWorld}\n";
-			scope.Text += "   Trigger:       Single view ray\n";
-			scope.Text += "\n";
-		}
+		block.Header( "Distance Fog" );
+		block.Line( "Start / End", $"{FarStart:0.0} / {FarEnd:0.0}u", Color.Orange );
+		block.Line( "Strength", $"{FarStrength:0.00}", Color.Green );
+		block.Line( "Overlap", $"{FarOverlapStrength:0.00}", Color.Green );
+		block.Line( "Overlap power", $"{FarOverlapPower:0.00}", Color.Green );
+		block.Space();
 
-		// Visibility
-		{
-			scope.Text += "Visibility:\n";
-			scope.Text += $"   Sampling: {VisionMode} / {VisionArcAngle:F0} deg\n";
-			scope.Text += $"   Enabled:       	{FogEnabled}\n";
-			scope.Text += $"   Resolution:    	{_allocatedResolution}\n";
-			scope.Text += $"   Rays:          	{_spatialProbe.Result.RadialSamples}\n";
-			scope.Text += $"   Radius:        	{VisionRadius:F1}\n";
-			scope.Text += $"   Padding:       	{VisibilityPadding:F1}\n";
-			scope.Text += $"   WorldOnly:     	{WorldOnlyOcclusion}\n";
-			scope.Text += $"   Texture:       	{_visibilityTexture is not null}\n";
-			scope.Text += "\n";
-		}
+		block.Header( "Interior" );
+		block.Line( "Dimming enabled", $"{DimDistantInterior}", Color.Cyan );
+		block.Line( "Dim amount", $"{InteriorDimAmount:0.00}", Color.Green );
+		block.Line( "Radius / Fade", $"{InteriorVisibleRadius:0.0} / {InteriorFade:0.0}u", Color.Orange );
+		block.Line( "Inside", $"{IsTargetInside}", Color.Cyan );
+		block.Line( "Probe hits", $"{_spatialProbe.Result.OverheadHits} / {_spatialProbe.Result.OverheadSamples}", Color.Green );
+		block.Line( "Probe coverage", $"{_spatialProbe.Result.OverheadCoverage:0.00}", Color.Green );
+		block.Line( "Compatible hits", $"{_spatialProbe.Result.CompatibleOverheadHits}", Color.Green );
+		block.Line( "Ceiling depth", $"{_spatialProbe.Result.CeilingDepth:0.0}u", Color.Orange );
+		block.Line( "Enclosure", $"{_spatialProbe.Result.Enclosure:0.00}", Color.Green );
+		block.Line( "Peek enabled", $"{LimitExteriorInteriorPeek}", Color.Cyan );
+		block.Line( "Peek reveal", $"{InteriorPeekReveal:0.00}", Color.Green );
+		block.Line( "Wall thickness", $"{InteriorPeekWallThickness:0.0}u", Color.Orange );
+		block.Line( "Peek fog", $"{FogInteriorPeek}", Color.Cyan );
+		block.Line( "Peek fog amount", $"{InteriorPeekFogAmount:0.00}", Color.Green );
+		block.Space();
 
-		// Culling
-		{
-			scope.Text += "Renderer Culling:\n";
-			scope.Text += $"   Active:        	{FogEnabled && CullHiddenModelRenderers}\n";
-			scope.Text += $"   Bounds/Static: 	{UseBoundsForVisibility}/{CullStaticRenderers}\n";
-			scope.Text += $"   Visible/Hidden:	{_rendererCullingVisible}/{_rendererCullingHidden}\n";
-			scope.Text += $"   Outside vision:  	{_rendererCullingOutOfRange}\n";
-			scope.Text += $"   LOS traces:    	{_rendererCullingTraces}\n";
-			scope.Text += "\n";
-		}
-
-		// Distance dimming
-		{
-			scope.Text += "Distance Fog:\n";
-			scope.Text += $"   Start:         	{FarStart:F1}\n";
-			scope.Text += $"   End:           	{FarEnd:F1}\n";
-			scope.Text += $"   Strength:      	{FarStrength:F2}\n";
-			scope.Text += $"   Overlap:       	{FarOverlapStrength:F2}\n";
-			scope.Text += $"   OverlapPower:  	{FarOverlapPower:F2}\n";
-			scope.Text += "\n";
-		}
-
-		// Interior
-		{
-			scope.Text += "Interior:\n";
-			scope.Text += $"   DimEnabled:    	{DimDistantInterior}\n";
-			scope.Text += $"   Dim:           	{InteriorDimAmount:F2}\n";
-			scope.Text += $"   Radius:        	{InteriorVisibleRadius:F1}\n";
-			scope.Text += $"   Fade:          	{InteriorFade:F1}\n";
-			scope.Text += $"   Inside:        	{IsTargetInside}\n";
-			scope.Text += $"   ProbeHits:     	{_spatialProbe.Result.OverheadHits}/{_spatialProbe.Result.OverheadSamples}\n";
-			scope.Text += $"   ProbeCoverage: 	{_spatialProbe.Result.OverheadCoverage:F2}\n";
-			scope.Text += $"   Compatible:    	{_spatialProbe.Result.CompatibleOverheadHits}\n";
-			scope.Text += $"   CeilingDepth:  	{_spatialProbe.Result.CeilingDepth:F1}\n";
-			scope.Text += $"   Enclosure:     	{_spatialProbe.Result.Enclosure:F2}\n";
-			scope.Text += $"   Peek:          	{LimitExteriorInteriorPeek}\n";
-			scope.Text += $"   PeekReveal:    	{InteriorPeekReveal:F2}\n";
-			scope.Text += $"   PeekThickness: {InteriorPeekWallThickness:F1}\n";
-			scope.Text += $"   PeekFog:       	{FogInteriorPeek}\n";
-			scope.Text += $"   PeekFogAmount: 	{InteriorPeekFogAmount:F2}\n";
-			scope.Text += "\n";
-		}
-
-		scope.Text += "Shader Debug:\n";
-		scope.Text += $"   Current Mode:    {ShaderDebugMode}\n";
-		scope.Text += "\n";
-		scope.Text += "   1 = Paint classes\n";
-		scope.Text += "   2 = Cut / Peek / Dim\n";
-		scope.Text += "   3 = LOS / Distance / Peek\n";
-		scope.Text += "   4 = Interior shading\n";
-		scope.Text += "   5 = Interior depth gate\n";
-
-		// Make sure the text is drawn on top of everything else here
-		using var painter = Camera.BeginOverlay();
-		painter.TextStyle = new TextStyle( scope.FontName, scope.FontSize, scope.TextColor )
-		{
-			FontWeight = scope.FontWeight,
-			LineHeight = scope.LineHeight,
-			Alignment = TextFlag.LeftTop
-		}.WithOutline( Color.Black, 3.25f );
-
-		painter.Text( scope.Text, new Rect( x, y, 330f, Screen.Height - y ) );
+		block.Header( "Shader Debug" );
+		block.Line( "Current mode", $"{ShaderDebugMode}", Color.Cyan );
+		block.Line( "1", "Paint classes", Color.White );
+		block.Line( "2", "Cut / Peek / Dim", Color.White );
+		block.Line( "3", "LOS / Distance / Peek", Color.White );
+		block.Line( "4", "Interior shading", Color.White );
+		block.Line( "5", "Interior depth gate", Color.White );
+	
+		return block;
 	}
 
 	private void DrawDebugWorld()

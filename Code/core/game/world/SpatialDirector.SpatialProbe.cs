@@ -21,6 +21,7 @@ public sealed partial class SpatialDirector
 	[Property, Group( "Interior Probe" ), Range( 0f, 128f )] public float ProbeDepthTolerance { get; set; } = 32f;
 
 	private readonly SpatialProbe _spatialProbe = new();
+	public SpatialProbe Probe => _spatialProbe;
 
 	public SpatialProbeResult SpatialResult => _spatialProbe.Result;
 
