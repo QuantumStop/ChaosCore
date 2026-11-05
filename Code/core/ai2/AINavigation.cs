@@ -1,4 +1,5 @@
-﻿using Sandbox.Navigation;
+using Sandbox.Navigation;
+using System;
 using static Core.AI.AIController;
 
 namespace Core.AI;
@@ -12,37 +13,70 @@ public struct NavData()
 
 public class AINavigation : AIModule
 {
+	public AIMotor Motor { get; private set; }
+	public AIGroundMotor GroundMotor => Motor as AIGroundMotor;
+
+	/// <summary>
+	/// Assign and initialize this navigation module's motor.
+	/// </summary>
+	public void SetMotor( AIMotor motor )
+	{
+		ArgumentNullException.ThrowIfNull( motor );
+
+		if ( motor.Owner.IsValid() && motor.Owner != Owner )
+			throw new ArgumentException( "Motor must belong to this NPC.", nameof( motor ) );
+
+		// Try to set the same motor should not do anything
+		if ( Motor == motor )
+			return;
+
+		// Clean a previous motor to be able to switch motors 
+		// and to make sure we're using the correct one
+		Motor?.Terminate();
+		motor.Init( Owner );
+		Motor = motor;
+	}
+
+	public override void Terminate() => Motor?.Terminate();
 
 	public NavData? Data;
 	public MoveType ControllerMoveType;
 	public NavMeshPath Path;
 	public TimeSince TimeSinceMovementStart;
 
-
 	public override void Init( AIController owner )
 	{
 		Owner = owner;
 		ControllerMoveType = owner.MovementType;
+		
+		// TODO: I think this should be defined in a definition instead!
+		if ( ControllerMoveType == MoveType.MOVE_GROUND || ControllerMoveType == MoveType.MOVE_CRAWL )
+			SetMotor( new AIGroundMotor() );
 	}
 
 	public void NavigationDoMovement( NavData data )
 	{
+		// Keep the current path when an action refreshes an unchanged destination.
+		if ( Motor is AIGroundMotor && Owner.Agent.IsValid() && Owner.Agent.IsNavigating
+			&& Owner.Agent.TargetPosition is Vector3 target && target.Distance( data.Position ) < 1f )
+		{
+			Data = data;
+			Owner.IsMoving = true;
+			return;
+		}
+
 		Data = data; // Assign nav data here, held onto until we reach are position or recieve a new call to movement.
 		Owner.IsMoving = true;
 
 		TimeSinceMovementStart = 0f;
 
-		switch ( ControllerMoveType )
-		{
-			case MoveType.MOVE_NONE:
-				return;
-			case MoveType.MOVE_GROUND:
-				Owner.Agent.MoveTo( data.Position );
-				Path = Owner.Agent.GetPath();
-				//	AddDataToNavigationQueue();
-				return;
-		}
+		if ( ControllerMoveType == MoveType.MOVE_NONE || Motor is null )
+			return;
 
+		Motor.MoveTo( data.Position );
+
+		if ( Motor is AIGroundMotor )
+			Path = Owner.Agent.GetPath();
 	}
 
 	public void NavigationCheckMovement( bool cineMovement = false )
@@ -84,7 +118,7 @@ public class AINavigation : AIModule
 
 		Owner.CurrentMoveGoal = GoalType.GOALTYPE_NONE;
 		Owner.IsMoving = false;
-		Owner.Agent.Stop();
+		Motor?.Stop();
 
 	}
 
