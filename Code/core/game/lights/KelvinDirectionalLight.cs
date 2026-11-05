@@ -60,7 +60,7 @@ public class KelvinDirectionalLight : DirectionalLight
 	private float _resultBrightness => PI ? MathF.PI : _oneOverPI;
 	private float _piOld => PI ? _oneOverPI : 1;
 #else
-	private float _resultBrightness => Brightness;
+	private float _resultBrightness => 1;
 #endif
 #endif
 
@@ -78,7 +78,7 @@ public class KelvinDirectionalLight : DirectionalLight
 
 	private void SendAttribute()
 	{
-#if !PLU
+#if !PLU && PI
 		Scene.RenderAttributes.Set( "SunLux", PI ? MathF.PI : 1 );
 #endif
 	}

@@ -65,7 +65,7 @@ public class KelvinPointLight : PointLight
 	private float _resultBrightness => PI ? MathF.PI : _oneOverPI;
 	private float _piOld => PI ? _oneOverPI : 1;
 #else
-	private float _resultBrightness => Brightness;
+	private float _resultBrightness => 1;
 #endif
 #endif
 
