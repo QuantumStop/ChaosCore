@@ -1,6 +1,5 @@
-﻿// A centralized system from which we can call specific npcs without iterating over bullshit or ugly calls
+// A centralized system from which we can call specific npcs without iterating over bullshit or ugly calls
 
-using Sandbox.Diagnostics;
 using System;
 using static Core.AI.AIController;
 
@@ -29,8 +28,8 @@ public class AIManager : GameObjectSystem<AIManager>
 		public Vector3 TargetPosition;
 	}
 
-	public Queue<NavRequest> navQueue = new Queue<NavRequest>(); // stores requests to be processed 
-	public Dictionary<AIController, NavRequest> pendingNavRequests = new Dictionary<AIController, NavRequest>(); // having the controller is a bit redundant
+	public Queue<NavRequest> navQueue = new(); // stores requests to be processed 
+	public Dictionary<AIController, NavRequest> pendingNavRequests = []; // having the controller is a bit redundant
 
 	public List<AIController> currentNPCsInScene { get; set; }
 
@@ -60,7 +59,6 @@ public class AIManager : GameObjectSystem<AIManager>
 	[ConCmd( "npc_create" )]
 	public static void NpcCreate( string npcname = "" )
 	{
-#if STANDALONE
 		var scene = Game.ActiveScene;
 		if ( !scene.IsValid() )
 		{
@@ -68,98 +66,102 @@ public class AIManager : GameObjectSystem<AIManager>
 			return;
 		}
 
-		var player = BasePlayer.Local;
-		if ( !player.Controller.IsValid() )
-		{
-			Log.Warning( "[npc_create] Local player/controller is not available." );
-			return;
-		}
+		var definition = ResourceLibrary.GetAll<NpcDefinition>().FirstOrDefault( definition =>
+			definition.ResourceName.Equals( npcname, StringComparison.OrdinalIgnoreCase ) );
 
-		if ( !ResourceLibrary.Get<NpcDefinition>( "scripts/npc/def/" + npcname + ".npc" ).IsValid() )
+		if ( !definition.IsValid() )
 		{
+			if ( !string.IsNullOrWhiteSpace( npcname ) )
+				Log.Warning( $"[npc_create] Unknown NPC definition '{npcname}'." );
+
 			foreach ( var npcdef in ResourceLibrary.GetAll<NpcDefinition>() )
+			{
 				Log.Info( npcdef.ResourceName );
+			}
+
 			return;
 		}
 
-		var tr = scene.Trace.Ray( new Ray( player.GetEyePos(), player.GetEyeAngles().Forward ), 200f ).WithoutTags( "player" ).Run();
-		var npc = scene.CreateObject().Components.Create<AIController>( false );
-		npc.Definition = ResourceLibrary.Get<NpcDefinition>( "scripts/npc/def/" + npcname + ".npc" );
-		npc.GameObject.WorldPosition = tr.EndPosition;
-		npc.GameObject.WorldRotation = player.Controller.WorldRotation;
-		npc.GameObject.Name = npcname;
-		npc.Enabled = true;
-		npc.Spawn();
+		var camera = scene.Camera;
+
+#if IGNIS
+		if ( GameManagerSystem.IsGameEjected )
+			camera = Application.Editor.Camera;
 #endif
+
+		if ( !camera.IsValid() )
+		{
+			Log.Warning( "[npc_create] No active scene camera." );
+			return;
+		}
+
+		var tr = scene.Trace.Ray( new Ray( camera.WorldPosition, camera.WorldRotation.Forward ), 4096f ).WithoutTags( "player", "npc" ).Run();
+		if ( !tr.Hit )
+		{
+			Log.Warning( "[npc_create] No surface found under the crosshair." );
+			return;
+		}
+
+		var npc = scene.CreateObject().Components.Create<AIController>( false );
+		npc.Definition = definition;
+		npc.GameObject.WorldPosition = tr.EndPosition;
+		npc.GameObject.WorldRotation = Rotation.FromYaw( camera.WorldRotation.Yaw() );
+		npc.GameObject.Name = definition.ResourceName;
+		npc.Enabled = true;
 	}
 
-	Dictionary<AIController, Capsule> _selectedNPCOverlays = new();
+	public List<AIController> selectedNPCs = new();
 
 	public void SelectNPC( AIController npc )
 	{
-#if IGNIS
-		bool createdEntry = npc.DebugOverlay.ScreenTextOverlay( npc );
-		selectedNPCs.Add( npc );
-		if ( createdEntry )
-		{
-			// Remove any existing capsule for this NPC first
-			if ( _selectedNPCOverlays.TryGetValue( npc, out var existing ) )
-			{
-				_selectedNPCOverlays.Remove( npc );
-			}
-			// TODO: movetype none doesnt use an agent. we should just grab the BodyModel bounds in this situation
-			Capsule capsule = new Capsule( npc.GameObject.WorldPosition, npc.GameObject.WorldPosition + Vector3.Up * npc.Agent.Height, npc.Agent.Radius );
+		if ( !npc.IsValid() || npc.Scene != Scene )
+			return;
 
-			_selectedNPCOverlays[npc] = capsule;
-		}
-		else
+		if ( selectedNPCs.Contains( npc ) )
 		{
-			// Toggled off, remove capsule
-			if ( _selectedNPCOverlays.TryGetValue( npc, out var capsule ) )
-			{
-				DeselectNPC( npc );
-			}
+			DeselectNPC( npc );
+			return;
 		}
+
+		selectedNPCs.Add( npc );
+#if IGNIS
+		npc.DebugOverlay.ScreenTextOverlay( npc );
 #endif
 	}
 
 	public void DeselectNPC( AIController npc )
 	{
+		selectedNPCs.Remove( npc );
 #if IGNIS
-		if ( _selectedNPCOverlays.TryGetValue( npc, out var capsule ) )
-		{
-			_selectedNPCOverlays.Remove( npc );
-		}
-		// also clear the text overlay if still active
-		DebugOverlaySystem.Current.RemoveWhere( so =>
+		DebugOverlaySystem.Current?.RemoveWhere( so =>
 			so is DebugTextSceneObject d && d.component == npc
 		);
 #endif
 	}
 
-	public List<AIController> selectedNPCs = new();
-
 	[ConCmd( "npc_select" )]
 	public static void NpcSelect( string cmd = "!picker" )
 	{
-#if IGNIS
 		var scene = Game.ActiveScene;
-		var system = DebugOverlaySystem.Current;
+		var manager = Current;
 
-		if ( !scene.IsValid() || system is null || system.Scene != scene )
+		if ( !scene.IsValid() || manager is null || manager.Scene != scene )
 		{
-			Log.Warning( "[npc_select] DebugOverlaySystem not available." );
+			Log.Warning( "[npc_select] AIManager not available." );
 			return;
 		}
 
-		//
-		// Clear All
-		//
+		if ( string.IsNullOrWhiteSpace( cmd ) )
+			cmd = "!picker";
+
 		if ( cmd.Equals( "!clearall", StringComparison.OrdinalIgnoreCase ) )
 		{
-			DebugOverlaySystem.Current.ClearAllEntries();
+			foreach ( var npc in manager.selectedNPCs.ToArray() )
+			{
+				manager.DeselectNPC( npc );
+			}
 
-			Log.Info( "[npc_select] Cleared all debug overlays." );
+			Log.Info( "[npc_select] Cleared NPC selection." );
 			return;
 		}
 
@@ -170,9 +172,11 @@ public class AIManager : GameObjectSystem<AIManager>
 		{
 			var camera = scene.Camera;
 
+#if IGNIS
 			if ( GameManagerSystem.IsGameEjected )
 				camera = Application.Editor.Camera;
 
+#endif
 			if ( !camera.IsValid() )
 			{
 				Log.Warning( "[npc_select] No active scene camera." );
@@ -198,75 +202,49 @@ public class AIManager : GameObjectSystem<AIManager>
 					.WithoutTags( "player" )
 					.Run();
 
-			if ( !trace.Hit || !trace.GameObject.IsValid() )
+			var npc = trace.GameObject.IsValid()
+				? trace.GameObject.GetComponentInParent<AIController>()
+				: null;
+
+			if ( !trace.Hit || !npc.IsValid() )
 			{
-				Log.Warning( "[npc_select] Picker trace failed." );
+				Log.Warning( "[npc_select] Picker trace failed to pickup any npc." );
 				return;
 			}
 
-			AIController hitComponent = trace.GameObject.Components.Get<AIController>( true );
-
-			AIManager.Current.SelectNPC( hitComponent );
+			manager.SelectNPC( npc );
 			return;
 		}
 
-		//
-		// Name / Type Match Mode
-		//
 		int changedCount = 0;
 
-		var matches = scene.GetAllComponents<AIController>()
-		.Where( comp =>
+		foreach ( var npc in scene.GetAllComponents<AIController>() )
 		{
-			if ( !comp.IsValid() )
-				return false;
+			if ( !npc.IsValid() || !(npc.GetType().Name.Contains( cmd, StringComparison.OrdinalIgnoreCase ) ||
+			npc.GameObject.Name.Contains( cmd, StringComparison.OrdinalIgnoreCase )) )
+				continue;
 
-			var cmdLower = cmd.ToLowerInvariant();
-
-			var typeName = comp.GetType().Name.ToLowerInvariant();
-			var gameName = comp.GameObject?.Name?.ToLowerInvariant();
-
-			return
-				typeName.Contains( cmdLower ) ||
-				(gameName is not null && gameName.Contains( cmdLower ));
-		} );
-
-		Log.Info(
-			$"[npc_select] Search '{cmd}' found {matches.Count<Component>()} candidates."
-		);
-
-		foreach ( var comp in matches )
-		{
-			Log.Info( $"[npc_select] Candidate: Type:{comp.GetType().Name} | Name:{comp.GameObject?.Name}" );
-
-			bool removed = DebugOverlaySystem.Current.RemoveWhere( so =>
-				so is DebugTextSceneObject d &&
-				d.component == comp
-			) > 0;
-
-			if ( !removed )
-				comp.DebugOverlay.ScreenTextOverlay( comp );
-
+			manager.SelectNPC( npc );
 			changedCount++;
 		}
 
-		Log.Info(
-			$"[npc_select] Toggled overlay text debug for {changedCount} entities."
-		);
+		Log.Info( $"[npc_select] Toggled selection for {changedCount} NPCs." );
 	}
 
 	[ConCmd( "npc_kill" )]
 	public static void NpcKill( string cmd = "!picker" )
 	{
 		var scene = Game.ActiveScene;
-		var system = DebugOverlaySystem.Current;
+		var manager = Current;
 
-		if ( !scene.IsValid() || system is null || system.Scene != scene )
+		if ( !scene.IsValid() || manager is null || manager.Scene != scene )
 		{
-			Log.Warning( "[npc_select] DebugOverlaySystem not available." );
+			Log.Warning( "[npc_kill] AIManager not available." );
 			return;
 		}
 
+		if ( string.IsNullOrWhiteSpace( cmd ) )
+			cmd = "!picker";
 
 		//
 		// Picker Mode
@@ -274,21 +252,19 @@ public class AIManager : GameObjectSystem<AIManager>
 		if ( cmd.Equals( "!picker", StringComparison.OrdinalIgnoreCase ) )
 		{
 			var camera = scene.Camera;
-
+#if IGNIS
 			if ( GameManagerSystem.IsGameEjected )
 				camera = Application.Editor.Camera;
-
+#endif
 			if ( !camera.IsValid() )
 			{
-				Log.Warning( "[npc_select] No active scene camera." );
+				Log.Warning( "[npc_kill] No active scene camera." );
 				return;
 			}
 
 			const float maxDistance = 4096f;
-
 			var start = camera.WorldPosition;
 			var end = start + camera.WorldRotation.Forward * maxDistance;
-
 			var trace = scene.Trace.Ray( start, end )
 				.WithAnyTags( "npc" )
 				.UseHitboxes( true )
@@ -303,66 +279,37 @@ public class AIManager : GameObjectSystem<AIManager>
 					.WithoutTags( "player" )
 					.Run();
 
-			if ( !trace.Hit || !trace.GameObject.IsValid() )
+			var npc = trace.GameObject.IsValid()
+				? trace.GameObject.GetComponentInParent<AIController>()
+				: null;
+
+			if ( !trace.Hit || !npc.IsValid() || !npc.IsAlive )
 			{
-				Log.Warning( "[npc_kill] Picker trace failed." );
+				Log.Warning( "[npc_kill] No NPC found under the crosshair." );
 				return;
 			}
 
-			AIController hitComponent = trace.GameObject.Components.Get<AIController>( true );
-
-			hitComponent.OnDamage( new DamageInfo( hitComponent.CurHealth, hitComponent.GameObject, hitComponent.GameObject ) );
+			npc.OnDamage( new DamageInfo( npc.CurHealth, npc.GameObject, npc.GameObject ) );
 			return;
 		}
 
-		//
-		// Name / Type Match Mode
-		//
 		int changedCount = 0;
 
-		var matches = scene.GetAllComponents<AIController>()
-		.Where( comp =>
+		foreach ( var npc in scene.GetAllComponents<AIController>() )
 		{
-			if ( !comp.IsValid() )
-				return false;
+			if ( !npc.IsValid() || !npc.IsAlive ||
+				!(npc.GetType().Name.Contains( cmd, StringComparison.OrdinalIgnoreCase ) ||
+				  npc.GameObject.Name.Contains( cmd, StringComparison.OrdinalIgnoreCase )) )
+				continue;
 
-			var cmdLower = cmd.ToLowerInvariant();
-
-			var typeName = comp.GetType().Name.ToLowerInvariant();
-			var gameName = comp.GameObject?.Name?.ToLowerInvariant();
-
-			return
-				typeName.Contains( cmdLower ) ||
-				(gameName is not null && gameName.Contains( cmdLower ));
-		} );
-
-		Log.Info(
-			$"[npc_kill] Search '{cmd}' found {matches.Count<Component>()} candidates."
-		);
-
-		foreach ( var comp in matches )
-		{
-			Log.Info( $"[npc_kill] Candidate: Type:{comp.GetType().Name} | Name:{comp.GameObject?.Name}" );
-
-			bool removed = DebugOverlaySystem.Current.RemoveWhere( so =>
-				so is DebugTextSceneObject d &&
-				d.component == comp
-			) > 0;
-
-			if ( !removed )
-				comp.DebugOverlay.ScreenTextOverlay( comp );
-
+			npc.OnDamage( new DamageInfo( npc.CurHealth, npc.GameObject, npc.GameObject ) );
 			changedCount++;
 		}
 
-		Log.Info(
-			$"[npc_select] Toggled overlay text debug for {changedCount} entities."
-		);
-#endif
+		Log.Info( $"[npc_kill] Applied lethal damage to {changedCount} NPCs." );
 	}
 
 	[ConCmd( "npc_go" )]
-
 	public static void NPCGo()
 	{
 		var scene = Game.ActiveScene;
@@ -434,7 +381,7 @@ public class AIManager : GameObjectSystem<AIManager>
 			if ( navBudget <= 0 )
 				break;
 
-			req.Controller.NavStatus = AIController.NavigationStatus.NAVIGATION_STARTED;
+			req.Controller.NavStatus = NavigationStatus.NAVIGATION_STARTED;
 			req.Controller.Agent.MoveTo( req.TargetPosition );
 			navBudget--;
 			processed++;
@@ -495,19 +442,56 @@ public class AIManager : GameObjectSystem<AIManager>
 		ProcessNavQueue();
 	}
 
-	void DrawDebugOverlays( AIController ai )
+	/// <summary>
+	/// Draws a simple gizmo for a selected npc and where it's going.
+	/// </summary>
+	public void DrawSelectionDebug( AIController npc, Vector3? destination )
 	{
-		if ( _selectedNPCOverlays.ContainsKey( ai ) )
+		if ( !selectedNPCs.Contains( npc ) )
+			return;
+
+		const float halfWidth = 16f;
+		float height = npc.Agent.IsValid() ? npc.Agent.Height
+			: npc.BodyModel.IsValid() && npc.BodyModel.Model.IsValid() ? npc.BodyModel.Model.Bounds.Size.z
+			: 72f;
+
+		BBox bounds = new( new Vector3( -halfWidth, -halfWidth, 0f ), new Vector3( halfWidth, halfWidth, height ) );
+		Transform transform = new( npc.WorldPosition );
+
+		using ( Gizmo.Scope( "NPC selection", transform ) )
 		{
-			var liveCapsule = new Capsule(
-				ai.GameObject.WorldPosition,
-				ai.GameObject.WorldPosition + Vector3.Up * ai.Agent.Height,
-				ai.Agent.Radius
-			);
-			DebugOverlaySystem.Current.Capsule( liveCapsule, Color.Red, 0, default, true );
+			Gizmo.Draw.IgnoreDepth = false;
+			Gizmo.Draw.Color = Color.Red.WithAlpha( 20f / 255f );
+			Gizmo.Draw.SolidBox( bounds );
+			Gizmo.Draw.Color = Color.Red;
+			Gizmo.Draw.LineBBox( bounds );
 		}
 
+		if ( AIMotor.DebugLevel == 2 || destination is not Vector3 goal )
+			return;
 
+		using ( Gizmo.Scope( "NPC forced movement", new Transform( Vector3.Zero ) ) )
+		{
+			Gizmo.Draw.IgnoreDepth = true;
+			Gizmo.Draw.Color = Color.Magenta;
+			Gizmo.Draw.LineBBox( new BBox( goal - 5f, goal + 5f ) );
+
+			var start = npc.WorldPosition;
+			var delta = (goal - start).WithZ( 0f );
+			var forward = delta.Length > 0.001f ? delta.Normal : npc.WorldRotation.Forward.WithZ( 0f ).Normal;
+			var side = Vector3.Cross( forward, Vector3.Up ) * 8f;
+			var neck = goal - forward * 32f;
+
+			if ( delta.Length < 32f )
+				start = neck;
+
+			Gizmo.Draw.Line( start + side, neck + side );
+			Gizmo.Draw.Line( neck + side, neck + side * 2f );
+			Gizmo.Draw.Line( neck + side * 2f, goal );
+			Gizmo.Draw.Line( goal, neck - side * 2f );
+			Gizmo.Draw.Line( neck - side * 2f, neck - side );
+			Gizmo.Draw.Line( neck - side, start - side );
+		}
 	}
 
 	protected virtual void TickAISystem()
@@ -520,43 +504,42 @@ public class AIManager : GameObjectSystem<AIManager>
 		using ( var _ = PerformanceStats.Timings.AI.Scope() )
 		{
 #endif
-			int senseCount = 0, decideCount = 0, executeCount = 0;
+		int senseCount = 0, decideCount = 0, executeCount = 0;
 
-			foreach ( var agent in currentNPCsInScene )
+		foreach ( var agent in currentNPCsInScene )
+		{
+			if ( !agent.Active ) continue;
+
+
+			if ( WorldTime.Now < agent.AIBrain._lastThinkTime + agent.AIBrain._currentThinkRate ) continue; // respect think rate
+
+			switch ( agent.CurrentPhase )
 			{
-				if ( !agent.Active ) continue;
-
-				DrawDebugOverlays( agent );
-
-				if ( WorldTime.Now < agent.AIBrain._lastThinkTime + agent.AIBrain._currentThinkRate ) continue; // respect think rate
-
-				switch ( agent.CurrentPhase )
-				{
-					case ThinkPhase.Sense:
-						if ( senseCount++ >= MaxPhasesPerTick ) continue;
-						if ( agent.CurrentSleepState == SleepState.SLEEPSTATE_WAIT_FOR_INPUT ) continue;
-						agent.TickSense( Time.Delta );
-						break;
-					case ThinkPhase.Decide:
-						if ( decideCount++ >= MaxPhasesPerTick ) continue;
-						if ( agent.CurrentSleepState == SleepState.SLEEPSTATE_WAIT_FOR_INPUT ) continue;
-						agent.TickDecide( Time.Delta );
-						break;
-					case ThinkPhase.Execute:
-						if ( executeCount++ >= MaxPhasesPerTick ) continue;
-						if ( agent.CurrentSleepState == SleepState.SLEEPSTATE_WAIT_FOR_INPUT ) continue;
-						agent.TickExecute( Time.Delta );
-						break;
-				}
+				case ThinkPhase.Sense:
+					if ( senseCount++ >= MaxPhasesPerTick ) continue;
+					if ( agent.CurrentSleepState == SleepState.SLEEPSTATE_WAIT_FOR_INPUT ) continue;
+					agent.TickSense( Time.Delta );
+					break;
+				case ThinkPhase.Decide:
+					if ( decideCount++ >= MaxPhasesPerTick ) continue;
+					if ( agent.CurrentSleepState == SleepState.SLEEPSTATE_WAIT_FOR_INPUT ) continue;
+					agent.TickDecide( Time.Delta );
+					break;
+				case ThinkPhase.Execute:
+					if ( executeCount++ >= MaxPhasesPerTick ) continue;
+					if ( agent.CurrentSleepState == SleepState.SLEEPSTATE_WAIT_FOR_INPUT ) continue;
+					agent.TickExecute( Time.Delta );
+					break;
 			}
+		}
 
-			if ( WorldTime.Now >= _nextPhysicsResolve )
-			{
-				_nextPhysicsResolve = WorldTime.Now + physicsCheckRate;
+		if ( WorldTime.Now >= _nextPhysicsResolve )
+		{
+			_nextPhysicsResolve = WorldTime.Now + physicsCheckRate;
 
-				foreach ( var npc in physImpacts.Keys )
-					ResolvePhysics( npc );
-			}
+			foreach ( var npc in physImpacts.Keys )
+				ResolvePhysics( npc );
+		}
 #if IGNIS
 		}
 #endif
@@ -663,6 +646,7 @@ public class AIManager : GameObjectSystem<AIManager>
 
 		sceneAICount--;
 		currentNPCsInScene.Remove( NPC );
+		DeselectNPC( NPC );
 		NPC.Destroy();
 
 	}
