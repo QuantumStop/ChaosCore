@@ -87,7 +87,7 @@ public class KelvinSpotLight : SpotLight
 	private float _resultBrightness => PI ? MathF.PI : _oneOverPI;
 	private float _piOld => PI ? _oneOverPI : 1;
 #else
-	private float _resultBrightness => Brightness;
+	private float _resultBrightness => 1;
 #endif
 #endif
 
@@ -96,7 +96,7 @@ public class KelvinSpotLight : SpotLight
 
 	private void Dirty()
 	{
-#if PLU
+#if PLU && PI
 		if ( Focused )
 			ConeInner = ConeOuter;
 		else
