@@ -5,7 +5,13 @@
 public abstract class MoveToAction : AIAction
 {
 	protected Vector3 _targetPosition;
+
+	/// <summary>
+	/// Distance at which this movement action considers its goal reached.
+	/// </summary>
+	public virtual float ArrivalDistance => _stoppingDistance;	
 	protected float _stoppingDistance => Owner.Agent.Radius;
+
 	protected bool _arrived = false;
 	protected bool _hasStarted = false;
 	public float NextMoveUpdate = 0f;
