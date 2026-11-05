@@ -276,6 +276,37 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 
 		var columnBottoms = new List<float> { rightPos.y };
 
+		
+		if ( AIMotor.DebugLevel >= 2 )
+		{
+			DebugTextBlock navigation = null;
+			
+			foreach ( var npc in Current.Scene.GetAll<AIController>() )
+			{
+				if ( !npc.DebugNavigation || !npc.Enabled || !npc.Agent.IsValid() || npc.Navigation?.Motor is null )
+					continue;
+
+				var block = npc.Navigation.Motor.GetLocomotionDebugText();
+				
+				if ( block is null ) 
+					continue;
+
+				if ( navigation is null )
+				{
+					navigation = new DebugTextBlock();
+					navigation.Header( "AI NAVIGATION DEBUG" );
+				}
+				else
+				{
+					navigation.Space();
+				}
+				
+				navigation.Append( block );
+			}
+			
+			DrawPanel( navigation );
+		}
+
 		if ( CameraEffects.IsDebug )
 			DrawPanel( CameraEffects.GetDebugText() );
 
@@ -671,8 +702,11 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	{
 		return new( "", Color.White, 12, "Lucida Console" )
 		{
-			FontWeight = 550,
+			FontWeight = 600,
 			LineHeight = 1.45f,
+			FontSmooth = FontSmooth.Auto,
+			FilterMode = FilterMode.Trilinear,
+			
 			Outline = new TextRendering.Outline
 			{
 				Color = Color.Black,
