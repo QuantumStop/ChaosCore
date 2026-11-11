@@ -114,24 +114,18 @@ public partial class BasePlayer
 	private static float _localRunSpeed => Local?.Controller?.RunSpeed ?? 0f;
 
 	[Group( "ViewBob" ), Property, Range( 0f, 50f ), Feature( "Viewmodel" )]
-	public Curve BobAmplitudeCurve { get; set; } = new Curve(
-	new[] {
+	public Curve BobAmplitudeCurve { get; set; } = new Curve( new[] {
 		new Curve.Frame( _localCrouchSpeed,  0.05f ),
 		new Curve.Frame( _localWalkSpeed,    0.15f ),
 		new Curve.Frame( _localDefaultSpeed, 0.35f ),
-		new Curve.Frame( _localRunSpeed,     1.0f )
-		}
-	);
+		new Curve.Frame( _localRunSpeed,     1.0f ) } );
 
 	[Group( "ViewBob" ), Property, Feature( "Viewmodel" )]
-	public Curve BobFrequencyCurve { get; set; } = new Curve(
-	new[] {
+	public Curve BobFrequencyCurve { get; set; } = new Curve( new[] {
 		new Curve.Frame( _localCrouchSpeed,  0.5f ),
 		new Curve.Frame( _localWalkSpeed,    1.0f ),
 		new Curve.Frame( _localDefaultSpeed, 1.5f ),
-		new Curve.Frame( _localRunSpeed,     2.0f )
-		}
-	);
+		new Curve.Frame( _localRunSpeed,     2.0f )} );
 
 	[Group( "ViewBob" ), Property, Range( 0f, 5f ), Feature( "Viewmodel" )] public float BobHorizontalScale { get; set; } = 1.25f;
 	[Group( "ViewBob" ), Property, Range( 0f, 10f ), Feature( "Viewmodel" )] public float BobRollScale { get; set; } = 0.45f;
@@ -166,8 +160,8 @@ public partial class BasePlayer
 		if ( _allowSway )
 		{
 			SetAllAnimgraphParams( "f_walking", Movement.Velocity.Length / (Controller.IsRunning ? 320 : 190) );
-			SetAllAnimgraphParams( "f_timesincewishsprint", (Controller as PlayerController).TimeSinceWishSprint() );
-			SetAllAnimgraphParams( "f_wishsprint", (Controller as PlayerController).WishSprint() );
+			SetAllAnimgraphParams( "f_timesincewishsprint", Controller.TimeSinceWishSprint() );
+			SetAllAnimgraphParams( "f_wishsprint", Controller.WishSprint() );
 			SetAllAnimgraphParams( "b_sprint", Controller.IsRunning );
 			SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
 			SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
@@ -316,10 +310,7 @@ public partial class BasePlayer
 
 	private void UpdateSwayOffset()
 	{
-		Vector3 targetSway = new(
-			-_viewYawInertia * SwayIntensity,
-			_viewPitchInertia * SwayIntensity
-		);
+		Vector3 targetSway = new( -_viewYawInertia * SwayIntensity, _viewPitchInertia * SwayIntensity );
 
 		SwayOffset = Vector3.Lerp( SwayOffset, targetSway, Time.Delta * SwayReturnSpeed );
 		SwayOffset = SwayOffset.ClampLength( SwayMaxOffset );
