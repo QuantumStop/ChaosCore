@@ -4,6 +4,7 @@ using System;
 using XMovement;
 
 [Icon( "Lightbulb" )]
+[Title( "Ignis Chaos Core Player Controller" )]
 public partial class PlayerController : PlayerWalkControllerComplex
 {
 	[Property] private BasePawn _ownerPawn { get; set; }

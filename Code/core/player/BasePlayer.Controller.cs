@@ -16,16 +16,16 @@ partial class BasePlayer
 
 	protected virtual void HandleActionUpdate()
 	{
-		Controller.DoInput();
-		Controller.BuildFrameInput();
-		Controller.DoUsing();
+		Controller?.DoInput();
+		Controller?.BuildFrameInput();
+		Controller?.DoUsing();
 	}
 
 	void IPlayerControllable.HandleActionFixedUpdate() => HandleActionFixedUpdate();
 
 	protected virtual void HandleActionFixedUpdate()
 	{
-		Controller.UpdateCrouching();
+		Controller?.UpdateCrouching();
 		HandleWeaponSelection();
 		HandleLastSelected();
 		UpdateFallDamage();
@@ -34,16 +34,16 @@ partial class BasePlayer
 	void IPlayerControllable.HandleLookInput() => HandleLookInput();
 	protected virtual void HandleLookInput()
 	{
-		Controller.DoEyeLook();
+		Controller?.DoEyeLook();
 
 		if ( Controller.IsIsometricCamera )
 		{
-			if ( !Controller.UpdateIsometricCameraToggle() ) Controller.UpdateIsometricCamera();
+			if ( !Controller.UpdateIsometricCameraToggle() ) Controller?.UpdateIsometricCamera();
 		}
 		else
 		{
 			Controller.ResetBaseCameraProjection(); // Not sure these should be OnUpdate, especially for cases when a game is FP only
-			if ( !Controller.UpdateIsometricCameraToggle() ) Controller.UpdateCamera();
+			if ( !Controller.UpdateIsometricCameraToggle() ) Controller?.UpdateCamera();
 		}
 	}
 }

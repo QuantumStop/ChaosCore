@@ -325,6 +325,15 @@
           "go": "55197006-f7a6-4f1c-8242-809225d5757d",
           "component_type": "PlayerController"
         },
+        "CurrentControllable": {
+          "Type": "Component",
+          "Value": {
+            "_type": "component",
+            "component_id": "76ab1155-8d8e-4db8-a514-202005115abd",
+            "go": "55197006-f7a6-4f1c-8242-809225d5757d",
+            "component_type": "Player"
+          }
+        },
         "CurrentCrosshair": null,
         "CurrentFOV": 0,
         "CurrentWeapon": null,
@@ -408,7 +417,7 @@
         "TargetName": null,
         "TimeSinceLastWeaponSelect": {
           "Absolute": 0,
-          "Relative": 2610.39
+          "Relative": 2450.092
         },
         "ViewInertiaSmoothTime": 1.25,
         "ViewMaxInertia": 180,
@@ -602,13 +611,29 @@
             "__guid": "b245634c-86aa-4f28-aa9d-3838d11a0d0f",
             "__enabled": true,
             "Flags": 0,
+            "Animation": {
+              "Graph": {
+                "Id": "4cf3cf30-e076-4ceb-9295-f9c177c6bbcf",
+                "Path": "models/citizen_human/animgraphs/human.ag"
+              },
+              "Parameters": {
+                "floats": {
+                  "scale_height": 1,
+                  "scale_heel": 0
+                },
+                "ids": {
+                  "holdtype": "none"
+                }
+              }
+            },
             "AnimationGraph": null,
-            "BodyGroups": 5185,
+            "BodyGroups": 20737,
             "BoneMergeTarget": null,
             "CreateAttachments": false,
             "CreateBoneObjects": false,
             "DeformationMode": "Normal",
             "LodOverride": null,
+            "LowDetailAnimation": false,
             "MaterialGroup": "default",
             "MaterialOverride": null,
             "Materials": null,
@@ -656,6 +681,10 @@
             "__guid": "3a1d2f59-630b-4b74-8ce1-c6b5a3cc1f6a",
             "__enabled": true,
             "Flags": 0,
+            "Animation": {
+              "Graph": null,
+              "Parameters": {}
+            },
             "AnimationGraph": null,
             "BodyGroups": 18446744073709551615,
             "BoneMergeTarget": {
@@ -668,6 +697,7 @@
             "CreateBoneObjects": true,
             "DeformationMode": "Normal",
             "LodOverride": null,
+            "LowDetailAnimation": false,
             "MaterialGroup": null,
             "MaterialOverride": null,
             "Materials": null,
@@ -699,7 +729,7 @@
         ],
         "Children": [
           {
-            "__guid": "fb7522cb-ad54-436d-a58a-1c03cbb0add0",
+            "__guid": "a77356bf-a557-48a1-b277-cd2dec4312b4",
             "__version": 2,
             "Flags": 0,
             "Name": "Clothing - y_front_pants_white",
@@ -716,9 +746,13 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "80b801e2-0049-4384-85be-05d5f76840fc",
+                "__guid": "353872e3-2a22-4109-bd6e-67f068321129",
                 "__enabled": true,
                 "Flags": 0,
+                "Animation": {
+                  "Graph": null,
+                  "Parameters": {}
+                },
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
                 "BoneMergeTarget": {
@@ -731,6 +765,7 @@
                 "CreateBoneObjects": false,
                 "DeformationMode": "Normal",
                 "LodOverride": null,
+                "LowDetailAnimation": false,
                 "MaterialGroup": null,
                 "MaterialOverride": null,
                 "Materials": null,
@@ -915,6 +950,7 @@
                 "Flags": 0,
                 "BackgroundColor": "0.33333,0.46275,0.52157,1",
                 "ClearFlags": "All",
+                "DisableAntiAliasing": false,
                 "EnablePostProcessing": true,
                 "FieldOfView": 90,
                 "FovAxis": "Horizontal",
@@ -988,19 +1024,55 @@
                 "__guid": "801dae0e-9a0e-4d22-9946-3f6b81552ab9",
                 "__enabled": false,
                 "Flags": 0,
+                "__version": 1,
+                "AnimationCurve": [
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "in": 0,
+                    "out": 0,
+                    "mode": "Mirrored"
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 1,
+                    "in": 0,
+                    "out": 0,
+                    "mode": "Mirrored"
+                  },
+                  {
+                    "x": 1,
+                    "y": 0,
+                    "in": 0,
+                    "out": 0,
+                    "mode": "Mirrored"
+                  }
+                ],
+                "AnimationDuration": 2,
+                "AnimationEnabled": false,
+                "AnimationGradient": {
+                  "blend": "Linear",
+                  "color": [
+                    {
+                      "t": 0.5,
+                      "c": "1,1,1,1"
+                    }
+                  ],
+                  "alpha": []
+                },
+                "AnimationPattern": "Flicker",
+                "AnimationSpeed": 1,
+                "AnimationTimeOffset": 0,
                 "Attenuation": 1,
                 "BakeLightIndex": -1,
-                "Brightness": 1,
-                "ColorMode": "Color",
                 "ConeInner": 0,
                 "ConeOuter": 70,
                 "Contribution": "Diffuse, Specular, Transmissive",
                 "Cookie": null,
                 "FogMode": "Enabled",
                 "FogStrength": 1,
-                "KelvinTemperature": 6500,
+                "Intensity": 1,
                 "LightColor": "3.14159,3.14159,3.14159,3.14159",
-                "MiredTemperature": 154,
                 "MixedShadows": false,
                 "OnComponentDestroy": null,
                 "OnComponentDisabled": null,
@@ -1010,11 +1082,10 @@
                 "OnComponentUpdate": null,
                 "Preset": null,
                 "Radius": 1024,
-                "RGB_Color": "1,1,1,1",
                 "ShadowBias": 0.0005,
                 "ShadowHardness": 0,
                 "Shadows": false,
-                "TemperatureMode": "Kelvin"
+                "Temperature": 6500
               },
               {
                 "__type": "Sandbox.ScreenSpaceReflections",
@@ -1095,6 +1166,10 @@
                 "__guid": "8985a1d6-b3c0-422b-8117-253b71d1e5cb",
                 "__enabled": true,
                 "Flags": 0,
+                "Animation": {
+                  "Graph": null,
+                  "Parameters": {}
+                },
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
                 "BoneMergeTarget": null,
@@ -1102,6 +1177,7 @@
                 "CreateBoneObjects": true,
                 "DeformationMode": "Normal",
                 "LodOverride": null,
+                "LowDetailAnimation": false,
                 "MaterialGroup": null,
                 "MaterialOverride": null,
                 "Materials": null,
@@ -1135,6 +1211,10 @@
                 "__guid": "af173e84-b76b-47fe-b600-518e71a8a198",
                 "__enabled": true,
                 "Flags": 0,
+                "Animation": {
+                  "Graph": null,
+                  "Parameters": {}
+                },
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
                 "BoneMergeTarget": {
@@ -1147,6 +1227,7 @@
                 "CreateBoneObjects": false,
                 "DeformationMode": "Normal",
                 "LodOverride": null,
+                "LowDetailAnimation": false,
                 "MaterialGroup": null,
                 "MaterialOverride": null,
                 "Materials": null,
