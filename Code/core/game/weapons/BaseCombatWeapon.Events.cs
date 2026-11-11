@@ -88,4 +88,13 @@ public partial class BaseCombatWeapon
 		if ( _disallowAttack ) EventDisallowFiring( false ); // a slight hack to help with weapons that have fucked event tags in animgraph
 	}
 
+	public enum ReloadStage
+	{
+		FULL,
+		STAGE_1,
+		STAGE_2,
+		STAGE_3,
+		STAGE_4,
+		STAGE_5
+	}
 }
