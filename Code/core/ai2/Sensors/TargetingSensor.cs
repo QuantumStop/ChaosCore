@@ -399,8 +399,7 @@ public class NpcTargetingSensor
 		{
 			enemyIsNPC = true;
 
-			if ( npc.CurHealth == 0 )
-				enemyIsDead = true;
+			if ( npc.CurHealth <= 0 ) enemyIsDead = true;
 		}
 
 		bool hasEnemy = PrimaryTarget.HasValue && !enemyIsDead;
@@ -418,7 +417,7 @@ public class NpcTargetingSensor
 		// Alert stays true for LostTargetTimeout seconds after losing sight
 		bool alert = hasEnemy && lostTime <= LostTargetTimeout || Owner.Blackboard.lastCombatSoundHeard < 15 && Owner.Blackboard.lastCombatSoundHeard is not null || (Owner.AISquad is not null && Owner.WorldState.Get( "squadHasEnemyContact" ));
 		Owner.WorldState.Set( AIFacts.Alert, alert );
-		Owner.BodyModel.Set( "b_IsMad", alert );
+		Owner.BodyModel.Animation.Parameters.TrySet( "b_IsMad", alert );
 
 		// we have a last known position even if not currently visible
 		bool hasLKP = hasEnemy && !tracking && Owner.EnemyLKP.HasValue && Owner.EnemyLKP is not null;

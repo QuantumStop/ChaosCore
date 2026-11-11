@@ -21,7 +21,7 @@ public sealed class MeleeAttack1Action : AIAction
 		agent.CanMove = false;
 		agent.Navigation.NavigationStopMovement();
 
-		agent.BodyModel.Set( "b_MeleeAttack", true );
+		agent.BodyModel.Animation.Parameters.TrySet( "b_MeleeAttack", true );
 		_endTime = WorldTime.Now + _attackDuration;
 	}
 

@@ -136,9 +136,9 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 #endif
 	public ModelCollider Collider { get; set; }
 #if IGNIS
-	[SaveRestore]
+//	[SaveRestore]
 #endif
-	public AnimGraphDirectPlayback AGDirectPlayback { get; set; }
+	//	public AnimGraphDirectPlayback AGDirectPlayback { get; set; }
 #if IGNIS
 	[SaveRestore]
 #endif
@@ -593,12 +593,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			Agent.Separation = Definition.AgentSeparation;
 
 		}
-
-		if ( BodyModel.SceneModel is not null )
-			AGDirectPlayback = BodyModel.SceneModel.DirectPlayback;
-		else
-			Log.Warning( $"{TargetName} has null SceneModel!" );
-
+		/*
+				if ( BodyModel.SceneModel is not null )
+					AGDirectPlayback = BodyModel.Ani.SceneModel.DirectPlayback;
+				else
+					Log.Warning( $"{TargetName} has null SceneModel!" );
+		*/
 		Blackboard.playerReference = Scene.GetAllComponents<BasePlayer>().FirstOrDefault();
 
 		Relationships = AddComponent<NpcRelations>(); // soon i destroy ALL COMPONENTS. this should be a CLASS!!!
@@ -822,7 +822,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			var friend = npc.Definition.ResourceName == Definition.ResourceName && AISquad == npc.AISquad; // if we have the same def and are in the same squad, we are a friend 
 
 			TouchingAlly = friend;
-			BodyModel.Set( "b_Interrupt", true );
+			BodyModel.Animation.Parameters.TrySet( "b_Interrupt", true );
 			Log.Info( $"Touching npc isFriend{friend}" );
 		}
 
@@ -1111,7 +1111,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		FaceTarget( vecDir, 4f );
 		LastAttackDir = -vecDir;
 
-		BodyModel.Set( "b_Interrupt", true ); // flinch test
+		BodyModel.Animation.Parameters.TrySet( "b_Interrupt", true ); // flinch test
 
 		if ( dmginfo.Damage < MaxHealth * .25f )
 		{
@@ -1183,7 +1183,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	public void EventKilled()
 	{
-		BodyModel.Set( "b_dead", true );
+		BodyModel.Animation.Parameters.TrySet( "b_dead", true );
 		BodyModel.UseAnimGraph = false; // kind of a hacky way to get animations to stop playing once the npc has died. but it works!
 		if ( !IsAlive ) return;
 
@@ -2001,8 +2001,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	{
 		if ( MovementType == MoveType.MOVE_GROUND || MovementType == MoveType.MOVE_CRAWL )
 		{
-			BodyModel.Set( "b_IsMoving", Agent.Velocity.Length > 0 );
-			BodyModel.Set( "f_MoveVelocity", MathX.Lerp( 0, Agent.Velocity.Length, Time.Delta ) );
+			BodyModel.Animation.Parameters.TrySet( "b_IsMoving", Agent.Velocity.Length > 0 );
+			BodyModel.Animation.Parameters.TrySet( "f_MoveVelocity", MathX.Lerp( 0, Agent.Velocity.Length, Time.Delta ) );
 		}
 	}
 
