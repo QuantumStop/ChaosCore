@@ -32,6 +32,10 @@
         "Identifier": null,
         "Output": null
       },
+      "Weight": {
+        "Identifier": null,
+        "Output": null
+      },
       "BlendMode": "Effector",
       "IsTargetInWorldSpace": true,
       "ReferencePoseTwistWeight": 0,
@@ -55,6 +59,10 @@
         "Output": "Target"
       },
       "Enable": {
+        "Identifier": null,
+        "Output": null
+      },
+      "Weight": {
         "Identifier": null,
         "Output": null
       },
@@ -83,7 +91,7 @@
       "Title": "Final Stage",
       "Description": "In the final stage we make sure we have IkRule set up so our hands are correctly tied to our current weapon at all times. From there on we just hit the finishing stage with our current pose.",
       "Color": "Red",
-      "Layer": 3,
+      "Layer": 1,
       "Identifier": "a73da5ef-14f7-4e02-ab01-c96326732d42",
       "Position": "-216,-1248",
       "HandleOffsets": {}
@@ -107,6 +115,7 @@
           "Type": "StateMachine",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-112,-64",
           "Graph": {
@@ -130,6 +139,7 @@
                     "Type": "BlendTree",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "-32,0",
                     "Graph": {
@@ -200,6 +210,7 @@
                     "Type": "BlendTree",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "64,-192",
                     "Graph": {
@@ -270,6 +281,7 @@
                     "Type": "BlendTree",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "176,-0",
                     "Graph": {
@@ -497,6 +509,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-112,-256",
           "Graph": {
@@ -621,7 +634,7 @@
                   "Kind": "SelectorConditions"
                 },
                 "Identifier": "68483856-eb0b-4fdc-8ff9-44f0085304b1",
-                "Position": "348,-72",
+                "Position": "408,-72",
                 "HandleOffsets": {}
               },
               {
@@ -667,6 +680,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-368,-64",
           "Graph": {
@@ -737,6 +751,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-368,-256",
           "Graph": {
@@ -763,7 +778,8 @@
                 "FixedTime": 1,
                 "UseFramesAsInput": false,
                 "DefaultVariationData": {
-                  "AnimationName": "animation/anims/viewmodel/glock/holster.anim"
+                  "AnimationName": "animation/anims/viewmodel/glock/holster.anim",
+                  "TimeOverride": -1
                 },
                 "Overrides": [],
                 "Identifier": "d32381aa-ccda-4219-b2d3-db4c7316ad4c",
@@ -802,6 +818,7 @@
           "Type": "StateMachine",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "144,-64",
           "Graph": {
@@ -825,6 +842,7 @@
                     "Type": "BlendTree",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "-128,-0",
                     "Graph": {
@@ -895,6 +913,7 @@
                     "Type": "BlendTree",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "-128,208",
                     "Graph": {
@@ -965,6 +984,7 @@
                     "Type": "BlendTree",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "-128,416",
                     "Graph": {
@@ -1881,6 +1901,7 @@
           "Type": "StateMachine",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "352,-224",
           "Graph": {
@@ -1904,6 +1925,7 @@
                     "Type": "StateMachine",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "32,160",
                     "Graph": {
@@ -1927,6 +1949,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "-48,32",
                               "Graph": {
@@ -2062,6 +2085,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "224,32",
                               "Graph": {
@@ -2197,6 +2221,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "-48,224",
                               "Graph": {
@@ -2267,6 +2292,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "224,224",
                               "Graph": {
@@ -2957,6 +2983,7 @@
                     "Type": "StateMachine",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "224,160",
                     "Graph": {
@@ -2980,6 +3007,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "-48,32",
                               "Graph": {
@@ -3115,6 +3143,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "224,32",
                               "Graph": {
@@ -3250,6 +3279,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "-48,224",
                               "Graph": {
@@ -3320,6 +3350,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "224,224",
                               "Graph": {
@@ -4055,6 +4086,7 @@
                     "Type": "StateMachine",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "416,160",
                     "Graph": {
@@ -4078,6 +4110,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "-48,32",
                               "Graph": {
@@ -4213,6 +4246,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "224,32",
                               "Graph": {
@@ -4348,6 +4382,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "-48,224",
                               "Graph": {
@@ -4418,6 +4453,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "224,224",
                               "Graph": {
@@ -5383,6 +5419,7 @@
           "Type": "Off",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "128,-224",
           "Graph": {
@@ -5681,7 +5718,7 @@
     {
       "_class": "SpeedScaleNode",
       "Source": {
-        "Identifier": "1fae59fa-54bd-4a8e-b9eb-496691eea0d3",
+        "Identifier": "7fb1725d-03e6-43e7-b178-4f7f559b09c6",
         "Output": "Result"
       },
       "Speed": {
@@ -5690,7 +5727,7 @@
       },
       "DefaultSpeed": 1,
       "Identifier": "2197652b-3e94-42e4-b73c-97dd26d14448",
-      "Position": "696,-1080",
+      "Position": "792,-912",
       "HandleOffsets": {}
     },
     {
@@ -5735,6 +5772,7 @@
           "Type": "StateMachine",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "304,-224",
           "Graph": {
@@ -5758,6 +5796,7 @@
                     "Type": "StateMachine",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "-288,-32",
                     "Graph": {
@@ -5781,6 +5820,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "1072,-288",
                               "Graph": {
@@ -5851,6 +5891,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "688,-464",
                               "Graph": {
@@ -5921,6 +5962,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "880,-464",
                               "Graph": {
@@ -5991,6 +6033,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "1072,-464",
                               "Graph": {
@@ -6038,6 +6081,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "688,-288",
                               "Graph": {
@@ -6085,6 +6129,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "880,-288",
                               "Graph": {
@@ -6527,6 +6572,7 @@
                     "Type": "StateMachine",
                     "Events": [],
                     "TimedEvents": [],
+                    "UseActualElapsedTimeInStateForTimedEvents": false,
                     "TransitionOrder": [],
                     "Position": "-496,-32",
                     "Graph": {
@@ -6550,6 +6596,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "1072,-288",
                               "Graph": {
@@ -6620,6 +6667,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "688,-464",
                               "Graph": {
@@ -6690,6 +6738,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "880,-464",
                               "Graph": {
@@ -6760,6 +6809,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "1072,-464",
                               "Graph": {
@@ -6807,6 +6857,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "688,-288",
                               "Graph": {
@@ -6854,6 +6905,7 @@
                               "Type": "BlendTree",
                               "Events": [],
                               "TimedEvents": [],
+                              "UseActualElapsedTimeInStateForTimedEvents": false,
                               "TransitionOrder": [],
                               "Position": "880,-288",
                               "Graph": {
@@ -7487,6 +7539,7 @@
           "Type": "Off",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "80,-224",
           "Graph": {
@@ -7646,6 +7699,10 @@
             "_class": "BoneMaskNode",
             "BoneName": "gun_slide",
             "DefaultWeight": 1,
+            "DefaultVariationData": {
+              "MaskOverride": ""
+            },
+            "Overrides": [],
             "Identifier": "243d7115-622e-4ea5-9971-bb9c7ecf380b",
             "Position": "180,72",
             "HandleOffsets": {}
@@ -7726,6 +7783,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-32,-0",
           "Graph": {
@@ -7791,6 +7849,10 @@
                 "_class": "BoneMaskNode",
                 "BoneName": "gun_empty",
                 "DefaultWeight": 1,
+                "DefaultVariationData": {
+                  "MaskOverride": ""
+                },
+                "Overrides": [],
                 "Identifier": "24308e50-dbaa-4e3c-b61c-91387a065841",
                 "Position": "216,48",
                 "HandleOffsets": {}
@@ -7804,6 +7866,7 @@
           "Type": "Off",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "160,0",
           "Graph": {
@@ -8027,6 +8090,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-160,-32",
           "Graph": {
@@ -8120,6 +8184,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "48,-32",
           "Graph": {
@@ -8213,6 +8278,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-160,144",
           "Graph": {
@@ -8260,6 +8326,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "48,144",
           "Graph": {
@@ -8307,6 +8374,7 @@
           "Type": "Off",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "-48,336",
           "Graph": {
@@ -8812,6 +8880,7 @@
           "Type": "BlendTree",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "32,0",
           "Graph": {
@@ -8941,7 +9010,8 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_roll_left.anim"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_roll_left.anim",
+                            "TimeOverride": -1
                           },
                           "Overrides": [],
                           "Identifier": "0bb2ce29-ae58-42c7-9196-bbd80e6c224e",
@@ -8978,7 +9048,8 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_roll_right.anim"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_orientation_roll_right.anim",
+                            "TimeOverride": -1
                           },
                           "Overrides": [],
                           "Identifier": "bfffa6dc-98ae-4a94-a300-e1f9298df9d4",
@@ -9015,7 +9086,8 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim"
+                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim",
+                            "TimeOverride": -1
                           },
                           "Overrides": [],
                           "Identifier": "512c4b9e-e3cb-45e3-bc7a-f396d69343dd",
@@ -9090,7 +9162,8 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_backwards.anim"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_backwards.anim",
+                            "TimeOverride": -1
                           },
                           "Overrides": [],
                           "Identifier": "1590a26c-fdf1-4af4-bf2c-22ab46b324f7",
@@ -9127,7 +9200,8 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_forward.anim"
+                            "AnimationName": "animation/anims/viewmodel/glock/weaponoffset_forward.anim",
+                            "TimeOverride": -1
                           },
                           "Overrides": [],
                           "Identifier": "f60144c9-cc40-4c8e-9e92-36385127d998",
@@ -9164,7 +9238,8 @@
                           "FixedTime": 0,
                           "UseFramesAsInput": false,
                           "DefaultVariationData": {
-                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim"
+                            "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim",
+                            "TimeOverride": -1
                           },
                           "Overrides": [],
                           "Identifier": "118928d0-f718-4d32-b653-0b35c99001cc",
@@ -9727,7 +9802,8 @@
                 "FixedTime": 0,
                 "UseFramesAsInput": true,
                 "DefaultVariationData": {
-                  "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim"
+                  "AnimationName": "animation/anims/viewmodel/glock/bindpose_delta.anim",
+                  "TimeOverride": -1
                 },
                 "Overrides": [],
                 "Identifier": "b6cc6350-f86a-4e4b-a9e7-07cce84ff01e",
@@ -10287,6 +10363,7 @@
           "Type": "Off",
           "Events": [],
           "TimedEvents": [],
+          "UseActualElapsedTimeInStateForTimedEvents": false,
           "TransitionOrder": [],
           "Position": "272,-0",
           "Graph": {
@@ -10471,9 +10548,23 @@
       "Identifier": "eee2f92d-78cc-4478-9eb2-3d03ac240947",
       "Position": "-420,-648",
       "HandleOffsets": {}
+    },
+    {
+      "_class": "ExternalReferencedGraphNode",
+      "SlotName": "External Graph",
+      "Fallback": {
+        "Identifier": "1fae59fa-54bd-4a8e-b9eb-496691eea0d3",
+        "Output": "Result"
+      },
+      "Identifier": "7fb1725d-03e6-43e7-b178-4f7f559b09c6",
+      "Position": "612,-1080",
+      "HandleOffsets": {}
     }
   ],
-  "Model": "models/weapons/viewmodel_glock.vmdl",
+  "Model": {
+    "Id": "7f5725a2-0060-46b1-8278-d1bceacac7ef",
+    "Path": "models/weapons/viewmodel_glock.vmdl"
+  },
   "Skeleton": "animation/skeleton/viewmodel.skel",
   "parameters": [
     {
@@ -10481,6 +10572,10 @@
       "Type": "Float",
       "Name": "view_aim_pitch",
       "Group": "View",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": -180,
       "Max": 180,
@@ -10488,6 +10583,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10498,6 +10594,10 @@
       "Type": "Float",
       "Name": "view_aim_pitch_inertia",
       "Group": "View",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": -180,
       "Max": 180,
@@ -10505,6 +10605,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10515,6 +10616,10 @@
       "Type": "Float",
       "Name": "view_aim_yaw",
       "Group": "View",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": -180,
       "Max": 180,
@@ -10522,6 +10627,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10532,6 +10638,10 @@
       "Type": "Float",
       "Name": "view_aim_yaw_inertia",
       "Group": "View",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": -180,
       "Max": 180,
@@ -10539,6 +10649,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10549,6 +10660,10 @@
       "Type": "Bool",
       "Name": "action_init",
       "Group": "Action",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10556,6 +10671,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10566,6 +10682,10 @@
       "Type": "Float",
       "Name": "weapon_attack_variation",
       "Group": "Weapon",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10573,6 +10693,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10583,6 +10704,10 @@
       "Type": "ID",
       "Name": "action",
       "Group": "Action",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10590,6 +10715,14 @@
       "DefaultID": "action_deploy",
       "EnumTypeName": "",
       "ExpectedValues": [
+        "action_idle",
+        "action_deploy",
+        "action_attack",
+        "action_reload",
+        "action_holster",
+        "action_lower"
+      ],
+      "ResolvedOptions": [
         "action_idle",
         "action_deploy",
         "action_attack",
@@ -10607,6 +10740,10 @@
       "Type": "Bool",
       "Name": "action_reset",
       "Group": "Action",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10614,6 +10751,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10624,6 +10762,10 @@
       "Type": "ID",
       "Name": "weapon_attack_type",
       "Group": "Weapon",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10631,6 +10773,11 @@
       "DefaultID": "attack_primary",
       "EnumTypeName": "",
       "ExpectedValues": [
+        "attack_primary",
+        "attack_secondary",
+        "attack_special"
+      ],
+      "ResolvedOptions": [
         "attack_primary",
         "attack_secondary",
         "attack_special"
@@ -10645,6 +10792,10 @@
       "Type": "Float",
       "Name": "action_speedscale",
       "Group": "Action",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 1,
       "Min": 0,
       "Max": 2,
@@ -10652,6 +10803,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10662,6 +10814,10 @@
       "Type": "ID",
       "Name": "locomote_type",
       "Group": "Locomotion",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10669,6 +10825,12 @@
       "DefaultID": "locomote_locked",
       "EnumTypeName": "",
       "ExpectedValues": [
+        "locomote_locked",
+        "locomote_grounded",
+        "locomote_airborne",
+        "locomote_swim"
+      ],
+      "ResolvedOptions": [
         "locomote_locked",
         "locomote_grounded",
         "locomote_airborne",
@@ -10684,6 +10846,10 @@
       "Type": "Float",
       "Name": "weapon_ammo_loaded",
       "Group": "Weapon",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 0,
@@ -10691,6 +10857,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10701,6 +10868,10 @@
       "Type": "Float",
       "Name": "weapon_ammo_max",
       "Group": "Weapon",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 0,
@@ -10708,6 +10879,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10718,6 +10890,10 @@
       "Type": "Float",
       "Name": "weapon_ammo_reserve",
       "Group": "Weapon",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 0,
@@ -10725,6 +10901,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10735,6 +10912,10 @@
       "Type": "ID",
       "Name": "weapon_reload_stage",
       "Group": "Weapon",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10742,6 +10923,14 @@
       "DefaultID": "reload_stage_ready",
       "EnumTypeName": "Core.ViewmodelReloadStage",
       "ExpectedValues": [],
+      "ResolvedOptions": [
+        "reload_stage_ready",
+        "reload_stage_1",
+        "reload_stage_2",
+        "reload_stage_3",
+        "reload_stage_4",
+        "reload_stage_5"
+      ],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10752,6 +10941,10 @@
       "Type": "ID",
       "Name": "grounded_type",
       "Group": "Locomotion",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10759,6 +10952,12 @@
       "DefaultID": "grounded_null",
       "EnumTypeName": "",
       "ExpectedValues": [
+        "grounded_null",
+        "grounded_walk",
+        "grounded_stroll",
+        "grounded_run"
+      ],
+      "ResolvedOptions": [
         "grounded_null",
         "grounded_walk",
         "grounded_stroll",
@@ -10774,6 +10973,10 @@
       "Type": "ID",
       "Name": "airborne_type",
       "Group": "Locomotion",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10781,6 +10984,12 @@
       "DefaultID": "airborne_null",
       "EnumTypeName": "",
       "ExpectedValues": [
+        "airborne_null",
+        "airborne_jump",
+        "airborne_fall",
+        "airborne_levitate"
+      ],
+      "ResolvedOptions": [
         "airborne_null",
         "airborne_jump",
         "airborne_fall",
@@ -10796,6 +11005,10 @@
       "Type": "ID",
       "Name": "swim_type",
       "Group": "Locomotion",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10803,6 +11016,13 @@
       "DefaultID": "swim_null",
       "EnumTypeName": "",
       "ExpectedValues": [
+        "swim_null",
+        "swim_forward",
+        "swim_side",
+        "swim_updown",
+        "swim_drown"
+      ],
+      "ResolvedOptions": [
         "swim_null",
         "swim_forward",
         "swim_side",
@@ -10819,6 +11039,10 @@
       "Type": "Float",
       "Name": "grounded_wish_walk",
       "Group": "Locomotion",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10826,6 +11050,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10836,6 +11061,10 @@
       "Type": "Float",
       "Name": "grounded_wish_run",
       "Group": "Locomotion",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10843,6 +11072,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10853,6 +11083,10 @@
       "Type": "Bool",
       "Name": "view_pose",
       "Group": "View",
+      "RuntimeDefaultFloat": 0,
+      "RuntimeDefaultBool": false,
+      "RuntimeDefaultID": "",
+      "RuntimeDefaultVector": "0,0,0",
       "DefaultFloat": 0,
       "Min": 0,
       "Max": 1,
@@ -10860,6 +11094,7 @@
       "DefaultID": "",
       "EnumTypeName": "",
       "ExpectedValues": [],
+      "ResolvedOptions": [],
       "DefaultVector": "0,0,0",
       "PreviewStartTargetIsSet": false,
       "PreviewStartTargetIsBone": false,
@@ -10873,6 +11108,7 @@
       "Identifier": "b70fdb90-3d8f-4972-b207-524c0aa075bb",
       "Name": "weapon_ammo",
       "Group": "Weapon",
+      "Lifetime": "Graph",
       "Graph": {
         "Version": 1,
         "nodes": [
@@ -10930,6 +11166,7 @@
       "Identifier": "85054f61-fedb-49d2-82a2-f889ebe50591",
       "Name": "weapon_ammo_loaded_percentage",
       "Group": "Weapon",
+      "Lifetime": "Graph",
       "Graph": {
         "Version": 1,
         "nodes": [
@@ -11002,7 +11239,10 @@
   ],
   "PreviewAttachments": [
     {
-      "Model": "models/weapons/viewmodel_hand.vmdl"
+      "Model": {
+        "Id": "edb12798-1412-44a5-aaaf-3963e1a5f5c6",
+        "Path": "models/weapons/viewmodel_hand.vmdl"
+      }
     }
   ]
 }
