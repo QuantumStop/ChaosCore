@@ -24,9 +24,8 @@ public partial class BaseVoxelVolume<T> where T : struct
 			if ( (wpos - origin).Length > radius ) continue;
 
 			// Skip solid voxels (assume bit 0 is solid)
-			dynamic voxelValue = GetVoxel( v );
 			bool solid = false;
-			if ( voxelValue is byte b ) solid = (b & 0x1) != 0;
+			if ( GetVoxel( v ) is byte b ) solid = (b & 0x1) != 0;
 			if ( solid ) continue;
 
 			// Mark visible
@@ -63,9 +62,8 @@ public partial class BaseVoxelVolume<T> where T : struct
 
 					if ( !InBounds( v ) ) continue;
 
-					dynamic voxelValue = GetVoxel( v );
 					bool solid = false;
-					if ( voxelValue is byte b ) solid = (b & 0x1) != 0;
+					if ( GetVoxel( v ) is byte b ) solid = (b & 0x1) != 0;
 
 					if ( !solid )
 						visible++;
@@ -76,9 +74,9 @@ public partial class BaseVoxelVolume<T> where T : struct
 		return total == 0 ? 0f : (float)visible / total;
 	}
 
-	private IEnumerable<Vector3Int> GetNeighbors( Vector3Int v )
+	private static IEnumerable<Vector3Int> GetNeighbors( Vector3Int v )
 	{
-		int[] offsets = { -1, 0, 1 };
+		int[] offsets = [-1, 0, 1];
 		foreach ( var dx in offsets )
 			foreach ( var dy in offsets )
 				foreach ( var dz in offsets )
