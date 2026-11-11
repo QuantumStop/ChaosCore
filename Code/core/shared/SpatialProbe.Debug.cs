@@ -5,16 +5,15 @@ using System;
 
 public partial class SpatialProbe
 {
-	[ConVar( "spatialprobe_debug", Help = "Spatial probe debug. 0=off, 1=text, 2=text+preview." )]
+	[ConVar( "debug_spatialprobe", Help = "Spatial probe debug. 0 = Off, 1 = Text, 2 = Text + Preview." )]
 	public static int DebugMode { get; set; } = 0;
 
 	public DebugTextBlock GetDebugText()
 	{
 		var block = new DebugTextBlock();
 
-		if ( !Result.HasSample )
-			return null;
-			
+		if ( !Result.HasSample ) return null;
+
 		block.Header( "SPATIAL PROBE DEBUG" );
 		block.Line( "Sampling / Arc", $"{Result.SamplingMode} / {Result.SampleAngle:0} deg", Color.White );
 		block.Line( "Covered", $"{Result.IsCovered}", Color.Green );
@@ -38,8 +37,7 @@ public partial class SpatialProbe
 
 	public void DrawDebugWorld()
 	{
-		if ( !Result.HasSample )
-			return;
+		if ( !Result.HasSample ) return;
 
 		var debug = DebugOverlaySystem.Current;
 

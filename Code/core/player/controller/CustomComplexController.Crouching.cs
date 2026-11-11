@@ -11,16 +11,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 	{
 		if ( IsCrouching )
 		{
-			if ( Controller.IsOnGround )
-			{
-				// normal duck
-				DuckRatio = Math.Clamp( DuckRatio + Time.Delta / 0.3f, 0, 1 );
-			}
-			else
-			{
-				// jump duck, snap to fully ducked
-				DuckRatio = 1.0f;
-			}
+			DuckRatio = Controller.IsOnGround ? Math.Clamp( DuckRatio + Time.Delta / 0.3f, 0, 1 ) : 1.0f;
 			DuckSpeedScale = Math.Clamp( DuckRatio * 3.0f - 2.0f, 0, 1 );
 		}
 		else
@@ -60,7 +51,7 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		DoCrouching();
 		Controller.Height = Height + EyeHeightOffset;
 		// This moves our feet up when crouching in air
-		var delta = LastEyeHeightOffset - EyeHeightOffset;
+		var delta = _lastEyeHeightOffset - EyeHeightOffset;
 		if ( !Controller.IsOnGround )
 		{
 			var delmove = delta;
@@ -78,17 +69,18 @@ public partial class PlayerController : PlayerWalkControllerComplex
 		}
 
 		Head.LocalPosition = new Vector3( 0, 0, HeadHeight + EyeHeightOffset );
-		LastEyeHeightOffset = EyeHeightOffset;
+		_lastEyeHeightOffset = EyeHeightOffset;
 	}
 
-
-	public bool CanUncrouchAtHeight( float height )
-	{
-		var b = Controller.Height;
-		if ( !IsCrouching ) return true;
-		Controller.Height = height;
-		var tr = Controller.TraceDirection( Vector3.Zero );
-		Controller.Height = b;
-		return !tr.Hit;
-	}
+	/*
+		public bool CanUncrouchAtHeight( float height )
+		{
+			if ( !IsCrouching ) return true;
+			var b = Controller.Height;
+			Controller.Height = height;
+			var tr = Controller.TraceDirection( Vector3.Zero );
+			Controller.Height = b;
+			return !tr.Hit;
+		}
+	*/
 }

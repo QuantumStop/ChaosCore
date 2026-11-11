@@ -10,13 +10,13 @@ using FMODSbox;
 
 namespace Core;
 
-public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISaveEvents, ISaveRoot
+public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISaveEvents, ISaveRoot, IPlayerControllable
 {
 	public static new BasePlayer Local => BasePawn.Local as BasePlayer;
 	public virtual string PlayerName { get; protected set; } = "Player";
 	public override string ToString() => $"{PlayerName}";
 	[Property, Feature( "Defines" )] public PlayerMovement Movement { get; set; }
-	[Property, Feature( "Defines" )] public PlayerWalkControllerComplex Controller { get; set; }
+	[Property, Feature( "Defines" )] public PlayerController Controller { get; set; }
 	[Property, Feature( "Defines" )] public HullCollider PickupTrigger { get; set; }
 
 	[Property, Feature( "Defines" )] public PlayerConfig PlayerCfg { get; set; }
@@ -25,7 +25,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	protected virtual Model GetViewmodelHands() => PlayerCfg?.ViewmodelHands;
 
-	[ConCmd( "noclip" )]
+	[ConCmd( "noclip", Help = "What do you think." )]
 	private static void ToggleNoclip()
 	{
 		if ( Local.LifeState == LifeState.Alive )
@@ -37,7 +37,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	protected override void OnStart()
 	{
 		// In some cases if we spawn very quickly we can die immediately from fall damage, this prevents it.
-		Local?.Controller?.Controller?.Velocity = Vector3.Zero;
+		Controller?.Controller?.Velocity = Vector3.Zero;
 
 		// HACKHACKHACK: don't call this for yourself to not get a double call, 
 		// the "real" refresh if you happen to be this player when OnStart is called is in OnPossess()
@@ -84,6 +84,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 			{
 				player.OnSpawn( this );
 			}
+
+			CurrentControllable = this; // player was newly created, so it's controlling self, if we were loading a save or player was reactivated/repossessed this should not be reset
 		}
 
 		CheckPrefabSetup();
@@ -170,13 +172,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		}
 	}
 
-	private bool ShouldLoadHudEntry( string className )
-	{
-		if ( className is "ChatOverlay" or "ChaosChatOverlay" )
-			return GameManagerSystem.Rules?.IsOnline == true;
-
-		return true;
-	}
+	private bool ShouldLoadHudEntry( string className ) => className is not "ChatOverlay" and not "ChaosChatOverlay" || GameManagerSystem.Rules?.IsOnline == true;
 
 	// technically you shouldnt disable the player (like ever), but still
 	protected override void OnDisabled()
@@ -188,10 +184,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		ViewmodelHands = null;
 	}
 
-	/// <summary>
-	/// Draw debug overlay on footsteps
-	/// </summary>
-	[ConVar( "debug_footsteps" )] public static bool DebugFootsteps { get; set; } = false;
+	/// <summary>Draw debug overlay on footsteps</summary>
+	[ConVar( "debug_footsteps", Help = "Show where the footstep events are placed" )] public static bool DebugFootsteps { get; set; } = false;
 
 	TimeSince _timeSinceStep;
 	private void OnFootstepEvent( SceneModel.FootstepEvent e )
@@ -290,28 +284,34 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	override protected void OnUpdate()
 	{
+		Controller.Controller.PrepareMovement(); // also technically physics, but this was first in DoLook(), before anything else (not sure this should be in OnUpdate instead of OnFixedUpdate)
+
+		if ( IsControlledLocally ) // inputs always first
+		{
+			CurrentControllable?.HandleActionUpdate();
+			CurrentControllable?.HandleLookInput();
+		}
+
+		if ( Controller.Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerUpdate ) Controller.DoMovement();
+
 		if ( !IsPossessedLocally ) return;
 
 		CalculateFOV();
-
 		ViewmodelUpdate();
 	}
 
 	override protected void OnFixedUpdate()
 	{
+		if ( IsControlledLocally ) CurrentControllable?.HandleActionFixedUpdate();
+
 		UpdatePickupPhysics();
 
-		if ( IsPossessedLocally ) ViewmodelFixedUpdate();
-
-		if ( !IsControlledLocally ) return;
-
+		// this is practically "physics" rather than input, so this should be active regardless of ownage
+		if ( Controller.Controller.MovementFrequency == PlayerMovement.MovementFrequencyMode.PerFixedUpdate ) Controller.DoMovement();
 		CheckWaterLevel();
-		HandleWeaponSelection();
 		WantsSprint();
 
-		HandleLastSelected();
-
-		UpdateFallDamage();
+		if ( IsPossessedLocally ) ViewmodelFixedUpdate();
 	}
 
 	/// <summary>
@@ -375,9 +375,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 	{
 		if ( Controller.Controller.IsOnGround && FallingSpeed != 0f )
 		{
-			//if ( !PlayerAnimatedInteraction.StaticRef.Active )
 			ApplyFallDamage( -FallingSpeed );
-			//BasePlayerOld.StaticRef.IgnoreNextFallDamage = false;
 			FallingSpeed = 0f;
 		}
 		else
@@ -388,23 +386,23 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 
 	protected void ApplyFallDamage( float speed )
 	{
-		if ( LifeState != LifeState.Alive )
-			return;
+		if ( LifeState != LifeState.Alive ) return;
 
-		if ( speed < 303 )
-			return;
+		if ( speed < 303 ) return; // dont even bother with any if this if the speed is this low
 
 		//		TODO: Scale it down if we landed on something that's floating... (speed -= 173)
-		//		TODO: Subtract the velocity of whatever we landed on, dont allow negative speed
 
-		if ( speed > 526.5f )
+		// subtract velocity of the object we fell onto, if its moving downwards the velocity is negative so it would add more to the speed, flip it so it subtracts properly
+		if ( Controller.Controller.GroundObject.IsValid() && Controller.Controller.GroundObject.Components.TryGet( out Rigidbody rigid ) ) speed -= -rigid.Velocity.Length;
+		speed = MathF.Max( speed, 0 );
+
+		if ( speed > 526.5f ) // if after adjusting it its still super high, then we actually deal damage
 		{
-			//	do damage
 			speed -= 526.5f;
-			speed *= 100.0f / (922.5f - 526.5f);
-			speed = MathF.Floor( speed ); //	round down
-										  // apply to player
+			speed *= 0.25252525252525f; // 100.0f / (922.5f - 526.5f)
+			speed = MathF.Floor( speed );   // round down
 
+			// apply to player
 			DamageInfo damage = new()
 			{
 				Attacker = GameObject,

@@ -50,10 +50,7 @@ public partial class PlayerMovement : Component
 		CreateShadowObjects();
 	}
 
-	public void PrepareMovement()
-	{
-		UpdateFromSimulatedShadow();
-	}
+	public void PrepareMovement() => UpdateFromSimulatedShadow();
 
 	/// <summary>
 	/// Move a character, with this velocity

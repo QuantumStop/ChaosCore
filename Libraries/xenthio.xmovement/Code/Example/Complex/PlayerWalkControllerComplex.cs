@@ -4,9 +4,7 @@ namespace XMovement;
 public partial class PlayerWalkControllerComplex : Component
 {
 	[RequireComponent] public PlayerMovement Controller { get; set; }
-	/// <summary>
-	/// Disabling the component ruins EyeAngles, so we have to block it manually
-	/// </summary>
+	/// <summary>Disabling the component ruins EyeAngles, so we have to block it manually</summary>
 	[Property, Hide] public bool AllowMovement { get; set; } = true;
 	protected override void OnStart()
 	{

@@ -21,15 +21,15 @@ namespace Core;
 [Hide]
 public abstract partial class BaseGrenade : BaseCombatWeapon
 {
-	protected virtual float FuseTime => TryGetCustomData( "fuse_time", 3.0f );
-	protected virtual float MaxCookTime => TryGetCustomData( "max_cook_time", 4.0f );
-	protected virtual bool ExplodeOnOvercook => TryGetCustomData( "explode_on_overcook", 1f ) >= 1f;
-	protected virtual float ThrowForce => TryGetCustomData( "throw_force", 1024f );
+	protected virtual float _fuseTime => TryGetCustomData( "fuse_time", 3.0f );
+	protected virtual float _maxCookTime => TryGetCustomData( "max_cook_time", 4.0f );
+	protected virtual bool _explodeOnOvercook => TryGetCustomData( "explode_on_overcook", 1f ) >= 1f;
+	protected virtual float _throwForce => TryGetCustomData( "throw_force", 1024f );
 
-	protected float ExplosionRadius => WeaponData?.ExplosionRadius ?? 180f;
-	protected float ExplosionDamage => WeaponData?.ExplosionDamage ?? 100f;
-	protected float ExplosionDuration => WeaponData?.ExplosionDuration ?? 0.05f;
-	protected float ExplosionMaxVoxels => WeaponData?.ExplosionMaxVoxels ?? 15f;
+	protected float _explosionRadius => WeaponData?.ExplosionRadius ?? 180f;
+	protected float _explosionDamage => WeaponData?.ExplosionDamage ?? 100f;
+	protected float _explosionDuration => WeaponData?.ExplosionDuration ?? 0.05f;
+	protected float _explosionMaxVoxels => WeaponData?.ExplosionMaxVoxels ?? 15f;
 
 	[ConVar( "ch_grenade_debug", Help = "Show grenade debug info" )] public static bool GrenadeDebug { get; set; } = false;
 	[Property, ReadOnly, Feature( "Debug" )] public bool IsCooking { get; private set; }
@@ -37,7 +37,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 
 	/// <summary> Seconds cooked off the fuse so far. </summary>
 	[Property, ReadOnly, Feature( "Debug" )] public float CookedSeconds => IsCooking ? (WorldTime.Now - CookStartTime) : 0f;
-	[Property, ReadOnly, Feature( "Debug" )] public float CurrentCookedFuse => IsCooking ? FuseTime - CookedSeconds : FuseTime;
+	[Property, ReadOnly, Feature( "Debug" )] public float CurrentCookedFuse => IsCooking ? _fuseTime - CookedSeconds : _fuseTime;
 
 	private class ThrownGrenade
 	{
@@ -59,16 +59,13 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 
 	protected override void HandleWeaponInput()
 	{
-		if ( Input.Pressed( "attack1" ) )
-			BeginCook();
+		if ( Input.Pressed( "attack1" ) ) BeginCook();
 
 		// Throw if we're cooking
-		if ( Input.Released( "attack1" ) )
-			Throw();
+		if ( Input.Released( "attack1" ) ) Throw();
 
 		// Overcook check
-		if ( IsCooking && CurrentCookedFuse <= 0 )
-			OnOvercooked();
+		if ( IsCooking && CurrentCookedFuse <= 0 ) OnOvercooked();
 
 		// Secondary if it exists (edge cases)
 		if ( Input.Pressed( "attack2" ) && _nextSecondaryAttack <= WorldTime.Now )
@@ -98,19 +95,14 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		}
 	}
 
-	/// <summary>
-	/// Pull the pin and start the fuse burning.
-	/// </summary>
+	/// <summary>Pull the pin and start the fuse burning.</summary>
 	protected virtual void BeginCook()
 	{
-		if ( IsCooking )
-			return;
+		if ( IsCooking ) return;
 
-		if ( !AttackConditions() )
-			return;
+		if ( !AttackConditions() ) return;
 
-		if ( !HasGrenades() )
-			return;
+		if ( !HasGrenades() ) return;
 
 		IsCooking = true;
 		CookStartTime = WorldTime.Now;
@@ -132,10 +124,10 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		if ( !IsCooking ) return;
 
 		// Fuse left = total fuse - time cooked
-		float fuseLeft = FuseTime - CookedSeconds;
+		float fuseLeft = _fuseTime - CookedSeconds;
 		fuseLeft = MathF.Max( fuseLeft, 0f ); // clamp to 0
 
-		FinishAndSpawn( fuseLeft, ThrowForce );
+		FinishAndSpawn( fuseLeft, _throwForce );
 	}
 
 	/// <summary>
@@ -146,7 +138,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		if ( !AttackConditions() ) return;
 		if ( !HasGrenades() ) return;
 
-		FinishAndSpawn( FuseTime, ThrowForce );
+		FinishAndSpawn( _fuseTime, _throwForce );
 	}
 
 	/// <summary>
@@ -157,8 +149,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	{
 		IsCooking = false;
 
-		if ( !BasePlayer.InfiniteAmmo )
-			PrimaryAmmoLoaded = Math.Max( 0, PrimaryAmmoLoaded - 1 );
+		if ( !BasePlayer.InfiniteAmmo ) PrimaryAmmoLoaded = Math.Max( 0, PrimaryAmmoLoaded - 1 );
 
 		Owner.Player?.SetAllAnimgraphParams( "b_attack1", false );
 
@@ -260,8 +251,8 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	/// </summary>
 	protected virtual void ExplodeTrace( Vector3 origin )
 	{
-		var radius = ExplosionRadius;
-		var damage = ExplosionDamage;
+		var radius = _explosionRadius;
+		var damage = _explosionDamage;
 		var pushBack = WeaponData?.ExplosionPushBack;
 		var curve = WeaponData?.ExplosionCurve;
 
@@ -323,8 +314,8 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	/// </summary>
 	protected virtual void ExplodeVolumetric( Vector3 origin )
 	{
-		var radius = ExplosionRadius;
-		var voxelSize = MathF.Max( radius * 2f / ExplosionMaxVoxels, 0.5f );
+		var radius = _explosionRadius;
+		var voxelSize = MathF.Max( radius * 2f / _explosionMaxVoxels, 0.5f );
 		var dim = (int)MathF.Ceiling( radius * 2f / voxelSize );
 
 		var volume = new BaseVoxelVolume<byte>(
@@ -341,8 +332,8 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		ExplosionSystem.DoExplosionWave(
 			origin: origin,
 			maxRadius: radius,
-			baseDamage: ExplosionDamage,
-			ExplosionDuration: ExplosionDuration,
+			baseDamage: _explosionDamage,
+			ExplosionDuration: _explosionDuration,
 			voxelVolume: volume,
 			explosionSource: GameObject,
 			explosionCurve: WeaponData?.ExplosionCurve,
@@ -361,8 +352,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	{
 		if ( WeaponData?.ExplosionParticle is not null )
 		{
-			var go = SceneUtility.GetPrefabScene( WeaponData.ExplosionParticle )
-			.Clone( origin );
+			var go = SceneUtility.GetPrefabScene( WeaponData.ExplosionParticle ).Clone( origin );
 		}
 #if FMOD
 		FMODSound.Play( "event:/Weapons/Explosion", origin );
@@ -374,7 +364,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 	/// </summary>
 	protected virtual void OnOvercooked()
 	{
-		if ( ExplodeOnOvercook )
+		if ( _explodeOnOvercook )
 		{
 			IsCooking = false;
 			ExplodeInHand();
@@ -400,12 +390,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		if ( !UsesSecondary() ) return;
 	}
 
-	protected float TryGetCustomData( string key, float fallback )
-	{
-		if ( WeaponData?.CustomDataFloat is not null && WeaponData.CustomDataFloat.TryGetValue( key, out float val ) )
-			return val;
-		return fallback;
-	}
+	protected float TryGetCustomData( string key, float fallback ) => WeaponData?.CustomDataFloat is not null && WeaponData.CustomDataFloat.TryGetValue( key, out float val ) ? val : fallback;
 
 	public DebugTextBlock GetDebugText()
 	{
@@ -424,12 +409,12 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		block.Line( "Cooked time", $"{CookedSeconds:0.00}s", Color.Orange );
 		block.Line( "Fuse remaining", $"{CurrentCookedFuse:0.00}s", Color.Orange );
 		block.Line( "Live grenades", $"{_liveGrenades.Count}", Color.Green );
-		
+
 		for ( int i = 0; i < _liveGrenades.Count; i++ )
 		{
 			block.Line( $"Grenade {i + 1} fuse", $"{_liveGrenades[i].RemainingFuse:0.00}s", Color.Orange );
 		}
-		
+
 		block.Space();
 
 		block.Header( "Ammo / Conditions" );
@@ -442,10 +427,10 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		block.Header( "Timing / Explosion" );
 		block.Line( "World time", $"{WorldTime.Now:0.00}s", Color.Orange );
 		block.Line( "Cook started", $"{CookStartTime:0.00}s", Color.Orange );
-		block.Line( "Max cook time", $"{MaxCookTime:0.00}s", Color.Orange );
+		block.Line( "Max cook time", $"{_maxCookTime:0.00}s", Color.Orange );
 		block.Line( "Weapon data", $"{WeaponData.IsValid()}", Color.Cyan );
-		block.Line( "Blast radius", WeaponData.IsValid() ? $"{ExplosionRadius:0.0}u" : "-", Color.Green );
-		block.Line( "Damage", WeaponData.IsValid() ? $"{ExplosionDamage:0.0}" : "-", Color.Green );
+		block.Line( "Blast radius", WeaponData.IsValid() ? $"{_explosionRadius:0.0}u" : "-", Color.Green );
+		block.Line( "Damage", WeaponData.IsValid() ? $"{_explosionDamage:0.0}" : "-", Color.Green );
 		return block;
 	}
 

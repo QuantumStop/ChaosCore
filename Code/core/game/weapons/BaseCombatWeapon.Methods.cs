@@ -29,23 +29,11 @@ public partial class BaseCombatWeapon
 	/// <summary>The secondary ammo type of this weapon as a string</summary>
 	/// <returns>The name of the ammo resource</returns>
 	public string GetSecondaryAmmoType() => WeaponData.SecondaryAmmoType.ResourceName;
-	/// <summary>Return true if this weapon has some ammo</summary>
-	public bool HasLoadedAmmo()
-	{
-		// Weapons with no ammo types can always be selected
-		if ( GetPrimaryCapacity() <= 0 && GetSecondaryCapacity() <= 0 )
-			return true;
-
-		return (PrimaryAmmoLoaded > 0) || (SecondaryAmmoLoaded > 0);
-	}
+	/// <summary>Return true if this weapon has some ammo, weapons with no ammo types can always be selected</summary>
+	public bool HasLoadedAmmo() => GetPrimaryCapacity() <= 0 && GetSecondaryCapacity() <= 0 || (PrimaryAmmoLoaded > 0) || (SecondaryAmmoLoaded > 0);
 	/// <summary>Any ammo at all loaded or not</summary>
 	/// <returns></returns>
-	public virtual bool HasUsableAmmo()
-	{
-		if ( WeaponData.IgnoreAmmo ) return true;
-
-		return HasLoadedAmmo() || (Owner.Player.GetReserveAmmo( WeaponData.PrimaryAmmoType?.ResourceName ) > 0) || (Owner.Player.GetReserveAmmo( WeaponData.SecondaryAmmoType?.ResourceName ) > 0);
-	}
+	public virtual bool HasUsableAmmo() => WeaponData.IgnoreAmmo || HasLoadedAmmo() || (Owner.Player.GetReserveAmmo( WeaponData.PrimaryAmmoType?.ResourceName ) > 0) || (Owner.Player.GetReserveAmmo( WeaponData.SecondaryAmmoType?.ResourceName ) > 0);
 	/// <summary>Does this weapon use primary attack?</summary>
 	/// <returns>Yes/No</returns>
 	public bool UsesPrimary() => IsMeleeWeapon() || AmmoResourceHasAnythingPrimary() || (GetPrimaryCapacity() > 0);

@@ -40,39 +40,29 @@ public partial class BasePlayer
 	}
 
 	/// <summary>
-	/// There are certain moments when we don't want to calculate sway etc (mostly for code exception reasons),
+	/// There are certain moments when we don't want to calculate sway etc (mostly for NRE reasons),
 	/// this determines when we want that
 	/// Viewmodel updates also write the camera transform and only first person should own those effects.
 	/// </summary>
 	protected bool _allowSway => ViewmodelVisible && WantSway && Controller.IsValid() && Controller.CameraMode == XMovement.PlayerWalkControllerComplex.CameraModes.FirstPerson;
 	public bool WantSway { get; set; } = true;
 
-	/// <summary>
-	/// Renderer for the gun
-	/// </summary>
+	/// <summary>Renderer for the gun</summary>
 	[Property, Feature( "Viewmodel" )] public SkinnedModelRenderer ViewmodelWeapon { get; set; }
-	/// <summary>
-	/// Renderer for the hands
-	/// </summary>
+	/// <summary>Renderer for the hands</summary>
 	[Property, Feature( "Viewmodel" )] public SkinnedModelRenderer ViewmodelHands { get; set; }
-	/// <summary>
-	/// The GameObject we put two renderers on
-	/// </summary>
+	/// <summary>The GameObject we put two renderers on</summary>
 	[Property, Feature( "Viewmodel" )] public GameObject ViewmodelWeaponObject { get; set; }
 
-	/// <summary>
-	/// Get the viewmodel model
-	/// </summary>
+	/// <summary>Get the viewmodel model</summary>
 	/// <returns>Model as path</returns>
 	protected virtual string GetViewmodel() => "";
-	/// <summary>
-	/// Vertex colors for blending in/out the FOV correction
-	/// </summary>
+	/// <summary>Vertex colors for blending in/out the FOV correction</summary>
 	/// <returns>The three colors as a whole</returns>
 	protected virtual Vector3 GetViewmodelFovMask() => Vector3.Up;
 
 
-	[ConVar( "viewmodel_fov", Saved = true )]
+	[ConVar( "viewmodel_fov", Saved = true, Help = "Viewmodel FOV (horizontal/vertical should be the same as regular view FOV)" )]
 	public static float ViewmodelFOV { get; set; } = 55f;
 
 	[Property, Feature( "Viewmodel" ), Range( 1f, 179f )]

@@ -8,19 +8,12 @@ using System;
 
 public partial class BasePlayer
 {
-	private static string GetWeaponTypeLibraryKey( WeaponParse data )
-	{
-		if ( data is null ) return null;
-
-		return data.ResourceName?.ToString()?.ToLowerInvariant();
-	}
+	private static string GetWeaponTypeLibraryKey( WeaponParse data ) => data?.ResourceName?.ToString()?.ToLowerInvariant();
 
 	private static TypeDescription ResolveWeaponTypeDescription( WeaponParse data )
 	{
 		var key = GetWeaponTypeLibraryKey( data );
-		if ( string.IsNullOrWhiteSpace( key ) ) return null;
-
-		return GlobalGameNamespace.TypeLibrary.GetType( key );
+		return string.IsNullOrWhiteSpace( key ) ? null : GlobalGameNamespace.TypeLibrary.GetType( key );
 	}
 
 	protected static bool TryResolveWeaponTypeDescription( WeaponParse data, out TypeDescription type )

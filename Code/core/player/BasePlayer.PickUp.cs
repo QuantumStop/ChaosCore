@@ -15,8 +15,7 @@ public partial class BasePlayer
 		public Vector3 EndPoint => !IsValid ? default : Body.PhysicsBody.Transform.PointToWorld( LocalOffset );
 	}
 
-
-	[Property, ReadOnly, Feature( "PickUp" ), Sync]
+	[Property, ReadOnly, Feature( "PickUp" ), Sync, WideMode]
 	public GrabState PickupState
 	{
 		get;
@@ -32,7 +31,7 @@ public partial class BasePlayer
 	private PhysicsBody _controlBody;
 	private bool _useSuccess { get; set; } = false;
 
-	[ConVar( "debug_nomass", ConVarFlags.Cheat )]
+	[ConVar( "debug_nomass", ConVarFlags.Cheat, Help = "Ignore the 35kg threshold for prop_physics pickup" )]
 	public static bool DebugNoMass { get; set; }
 
 	public void DropObject( bool punt = false )
@@ -131,12 +130,10 @@ public partial class BasePlayer
 		SetHeldPropTag( state.GameObject, true );
 		SetHeldPropTagBroadcast( state.GameObject, true );
 
-		if ( owner is not null && state.GameObject.Network.Active )
-			state.GameObject.Network.AssignOwnership( owner );
+		if ( owner is not null && state.GameObject.Network.Active ) state.GameObject.Network.AssignOwnership( owner );
 	}
 
-	[Rpc.Host]
-	private void ClaimPickupHost( GrabState state ) => ClaimPickupOnHost( state, Rpc.Caller );
+	[Rpc.Host] private void ClaimPickupHost( GrabState state ) => ClaimPickupOnHost( state, Rpc.Caller );
 
 	private GrabState ResolvePickupState( GrabState state )
 	{
@@ -206,7 +203,7 @@ public partial class BasePlayer
 	private SceneTraceResult TraceIsometricPickup( PlayerController controller, float reach )
 	{
 		if ( !controller.TryGetIsometricCursorRay( out var cursorRay ) ) return default;
-		
+
 		SceneTraceResult closest = default;
 
 		// The camera ray can hit a cutaway roof first. We first gather prop candidates,
@@ -219,20 +216,17 @@ public partial class BasePlayer
 
 		var origin = controller.Head.WorldPosition;
 		var closestDistance = float.MaxValue;
-		
+
 		foreach ( var candidate in candidates )
 		{
-			if ( !candidate.Hit || !candidate.GameObject.IsValid() || candidate.Distance >= closestDistance ) 
-				continue;
+			if ( !candidate.Hit || !candidate.GameObject.IsValid() || candidate.Distance >= closestDistance ) continue;
 
-			if ( !TryFindPickupRigidbody( candidate, out var body ) || !body.MotionEnabled ) 
-				continue;
-			
+			if ( !TryFindPickupRigidbody( candidate, out var body ) || !body.MotionEnabled ) continue;
+
 			var delta = candidate.HitPosition - origin;
 			var distance = delta.Length;
-			
-			if ( distance > reach || distance <= 0.001f ) 
-				continue;
+
+			if ( distance > reach || distance <= 0.001f ) continue;
 
 			var reachable = Scene.Trace.Ray( origin, origin + delta.Normal * MathF.Min( distance + 1f, reach ) )
 				.IgnoreGameObjectHierarchy( GameObject )
@@ -240,11 +234,9 @@ public partial class BasePlayer
 				.HitTriggers()
 				.Run();
 
-			if ( !reachable.Hit || !reachable.GameObject.IsValid() ) 
-				continue;
+			if ( !reachable.Hit || !reachable.GameObject.IsValid() ) continue;
 
-			if ( !TryFindPickupRigidbody( reachable, out var reachedBody ) || reachedBody != body ) 
-				continue;
+			if ( !TryFindPickupRigidbody( reachable, out var reachedBody ) || reachedBody != body ) continue;
 
 			closest = reachable;
 			closestDistance = candidate.Distance;
@@ -391,8 +383,7 @@ public partial class BasePlayer
 
 	private void ClearPickupJoint()
 	{
-		if ( _joint.IsValid() )
-			_joint.Remove();
+		if ( _joint.IsValid() ) _joint.Remove();
 
 		_joint = null;
 		_controlBody?.Remove();
@@ -411,7 +402,7 @@ public partial class BasePlayer
 
 		if ( !PickupState.IsValid )
 		{
-			ClearPickupJoint();
+			CleanupHeldProp();
 			return;
 		}
 

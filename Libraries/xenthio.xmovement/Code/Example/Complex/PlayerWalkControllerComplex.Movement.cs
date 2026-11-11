@@ -96,7 +96,7 @@ public partial class PlayerWalkControllerComplex : Component
 		{
 			DoNoclipMove();
 		}
-		else if ( IsTouchingLadder )
+		else if ( _isTouchingLadder )
 		{
 			LadderMove();
 		}
@@ -130,12 +130,12 @@ public partial class PlayerWalkControllerComplex : Component
 	//	[Rpc.Broadcast]
 	//	public void BroadcastPlayerJumped() => AnimationHelper?.TriggerJump();
 
-	protected void BuildFrameInput()
+	public void BuildFrameInput()
 	{
 		if ( AllowPogosticking && Input.Down( JumpAction ) || (IsInVR && Input.VR.RightHand.ButtonA.IsPressed) ) WantsJump = true;
 		else if ( Input.Pressed( JumpAction ) || (IsInVR && Input.VR.RightHand.ButtonA.Delta) ) WantsJump = true;
 	}
-	private void ResetFrameInput() => WantsJump = false;
+	protected void ResetFrameInput() => WantsJump = false;
 
 	protected virtual void BuildInput()
 	{
@@ -143,10 +143,7 @@ public partial class PlayerWalkControllerComplex : Component
 		var walk = Input.Down( WalkAction );
 		var crouch = Input.Down( CrouchAction ) || (IsInVR && Input.VR.LeftHand.JoystickPress.IsPressed);
 
-		if ( RunByDefault )
-			IsRunning = !run && EnableRunning;
-		else
-			IsRunning = run && EnableRunning;
+		IsRunning = RunByDefault ? !run && EnableRunning : run && EnableRunning;
 
 		IsWalking = walk && EnableWalking;
 		IsCrouching = crouch || !CanUncrouch();

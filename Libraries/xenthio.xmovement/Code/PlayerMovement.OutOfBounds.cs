@@ -31,8 +31,8 @@ public partial class PlayerMovement : Component
 	/// </summary>
 	[Property, Feature( "Out of Bounds" )] public OutOfBoundsDetectionMode UnstickOutOfBoundsMode { get; set; } = OutOfBoundsDetectionMode.BidirectionalTrace;
 
-	[ConVar] public static bool debug_playermovement_oob { get; set; } = false;
-	[ConVar] public static bool debug_playermovement_oob_timing { get; set; } = false;
+	[ConVar] public static bool DebugPlayermovementOob { get; set; } = false;
+	[ConVar] public static bool DebugPlayermovementOobTiming { get; set; } = false;
 
 	public enum OutOfBoundsDetectionMode
 	{
@@ -91,7 +91,7 @@ public partial class PlayerMovement : Component
 	{
 		if ( !OutOfBoundsDetectionEnabled ) return false;
 
-		var timingEnabled = debug_playermovement_oob_timing;
+		var timingEnabled = DebugPlayermovementOobTiming;
 		long timingStart = 0;
 		if ( timingEnabled )
 			timingStart = Stopwatch.GetTimestamp();
@@ -119,19 +119,16 @@ public partial class PlayerMovement : Component
 
 	private bool CheckOutOfBoundsAt( Vector3 position ) => CheckOutOfBoundsAt( position, DetectionMode );
 
-	private bool CheckOutOfBoundsAt( Vector3 position, OutOfBoundsDetectionMode mode )
+	private bool CheckOutOfBoundsAt( Vector3 position, OutOfBoundsDetectionMode mode ) => mode switch
 	{
-		return mode switch
-		{
-			OutOfBoundsDetectionMode.DownwardsTrace => DownwardsTraceOutOfBoundsCheck( position ),
-			OutOfBoundsDetectionMode.AllDirectionsTrace => AllDirectionsOutOfBoundsCheck( position ),
-			OutOfBoundsDetectionMode.BidirectionalTrace => BidirectionalOutOfBoundsCheck( position ),
-			OutOfBoundsDetectionMode.OobVolume => OobVolumeCheck( position ),
-			OutOfBoundsDetectionMode.NavMeshTest => NavMeshOutOfBoundsCheck( position ),
-			OutOfBoundsDetectionMode.Custom => CustomOutOfBoundsCheck?.Invoke() ?? false,
-			_ => false
-		};
-	}
+		OutOfBoundsDetectionMode.DownwardsTrace => DownwardsTraceOutOfBoundsCheck( position ),
+		OutOfBoundsDetectionMode.AllDirectionsTrace => AllDirectionsOutOfBoundsCheck( position ),
+		OutOfBoundsDetectionMode.BidirectionalTrace => BidirectionalOutOfBoundsCheck( position ),
+		OutOfBoundsDetectionMode.OobVolume => OobVolumeCheck( position ),
+		OutOfBoundsDetectionMode.NavMeshTest => NavMeshOutOfBoundsCheck( position ),
+		OutOfBoundsDetectionMode.Custom => CustomOutOfBoundsCheck?.Invoke() ?? false,
+		_ => false
+	};
 
 	/// <summary>
 	/// Like <see cref="IsOutOfBounds(Vector3)"/> but uses <see cref="UnstickOutOfBoundsMode"/>
@@ -169,7 +166,7 @@ public partial class PlayerMovement : Component
 			if ( !tr.Hit )
 				return true;
 
-			if ( debug_playermovement_oob )
+			if ( DebugPlayermovementOob )
 			{
 				DebugOverlaySystem.Current.Line( samplePosition, tr.EndPosition, tr.Hit ? Color.Green : Color.Red, 0 );
 				DebugOverlaySystem.Current.Sphere( new Sphere( tr.EndPosition, 4f ), Color.Green, 0, overlay: true );
@@ -186,14 +183,14 @@ public partial class PlayerMovement : Component
 	[Property, Feature( "Out of Bounds" ), ShowIf( "DetectionMode", OutOfBoundsDetectionMode.AllDirectionsTrace )]
 	public float AllDirectionsTraceDistance { get; set; } = 8192f;
 
-	private static readonly Vector3[] AllDirectionAxes = new[]
+	private static readonly Vector3[] _allDirectionAxes = new[]
 	{
 		Vector3.Up, Vector3.Down,
 		Vector3.Forward, Vector3.Backward,
 		Vector3.Left, Vector3.Right,
 	};
 
-	private static readonly Vector2[] AccurateFootprintSampleOffsets =
+	private static readonly Vector2[] _accurateFootprintSampleOffsets =
 	{
 		new( -0.75f, -0.75f ),
 		new( 0.0f, -0.75f ),
@@ -206,7 +203,7 @@ public partial class PlayerMovement : Component
 		new( 0.75f, 0.75f ),
 	};
 
-	private static readonly Vector2[] SingleFootprintSampleOffset =
+	private static readonly Vector2[] _singleFootprintSampleOffset =
 	{
 		new( 0.0f, 0.0f )
 	};
@@ -215,10 +212,7 @@ public partial class PlayerMovement : Component
 	private double _oobTimingMaxMs;
 	private int _oobTimingSampleCount;
 
-	private ReadOnlySpan<Vector2> GetFootprintSampleOffsets( bool accurateSampling )
-	{
-		return accurateSampling ? AccurateFootprintSampleOffsets : SingleFootprintSampleOffset;
-	}
+	private ReadOnlySpan<Vector2> GetFootprintSampleOffsets( bool accurateSampling ) => accurateSampling ? _accurateFootprintSampleOffsets : _singleFootprintSampleOffset;
 
 	private void RecordOutOfBoundsTiming( TimeSpan elapsed )
 	{
@@ -239,7 +233,7 @@ public partial class PlayerMovement : Component
 	{
 		// Cast a ray in each axis-aligned direction. Inside a fully sealed map every ray
 		// hits a surface. If even one escapes (no hit), we must be outside the hull.
-		foreach ( var dir in AllDirectionAxes )
+		foreach ( var dir in _allDirectionAxes )
 		{
 			if ( !BuildProbeTrace( position, position + dir * AllDirectionsTraceDistance ).Run().Hit )
 				return true;
@@ -271,7 +265,7 @@ public partial class PlayerMovement : Component
 		int oobCount = 0;
 		var sampleRadius = Radius * MathF.Max( WorldScale.x, WorldScale.y );
 
-		foreach ( var dir in AllDirectionAxes )
+		foreach ( var dir in _allDirectionAxes )
 		{
 			var directionIsOob = false;
 
@@ -305,7 +299,7 @@ public partial class PlayerMovement : Component
 
 				if ( inward.Hit && !inward.StartedSolid && !isclose )
 				{
-					if ( debug_playermovement_oob )
+					if ( DebugPlayermovementOob )
 					{
 						DebugOverlaySystem.Current.Line( returnStart, inward.HitPosition, Color.Red, 2 );
 						DebugOverlaySystem.Current.Sphere( new Sphere( inward.StartPosition, 4f ), Color.Red, 2, overlay: true );
@@ -352,11 +346,9 @@ public partial class PlayerMovement : Component
 		return UseCollisionRules ? trace.WithCollisionRules( Tags ) : trace.WithoutTags( IgnoreLayers );
 	}
 
-	private bool NavMeshOutOfBoundsCheck( Vector3 position )
-	{
+	private bool NavMeshOutOfBoundsCheck( Vector3 position ) =>
 		// TODO
 		throw new NotImplementedException( "NavMesh out-of-bounds check is not yet implemented sorry lol" );
-	}
 
 	/// <summary>
 	/// When OutOfBoundsIsSolid is true, binary-searches along the current velocity vector to find

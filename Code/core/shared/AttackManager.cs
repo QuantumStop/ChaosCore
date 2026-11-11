@@ -6,13 +6,11 @@ using System;
 
 public static partial class AttackManager
 {
-	[ConVar( "debug_damage_events" )] public static bool DebugDamageEvents { get; set; }
+	[ConVar( "debug_damage_events", Help = "Show traces and other stuff for the damage events." )] public static bool DebugDamageEvents { get; set; }
 
-	[ConVar( "debug_attack_traces" )] public static bool DebugAttackTraces { get; set; }
+	[ConVar( "debug_attack_traces", Help = "Show attack traces." )] public static bool DebugAttackTraces { get; set; }
 
-	/// <summary>
-	/// Main attack struct, has a bool for successful hit and the trace itself
-	/// </summary>
+	/// <summary>Main attack struct, has a bool for successful hit and the trace itself</summary>
 	public struct AttackResult
 	{
 		/// <summary>
@@ -37,9 +35,7 @@ public static partial class AttackManager
 		public BaseProjectile Object { get; set; }
 	}
 
-	/// <summary>
-	/// Main projectile function to start the projectile
-	/// </summary>
+	/// <summary>Main projectile function to start the projectile</summary>
 	/// <param name="transform"></param>
 	/// <param name="damageinfo"></param>
 	/// <param name="spreadFromWeaponData"></param>
@@ -81,9 +77,7 @@ public static partial class AttackManager
 	//
 	/////////////////////////////////////////////////////////////////////////////////////
 
-	/// <summary>
-	/// Main hitscan bullet function with all the additional effects
-	/// </summary>
+	/// <summary>Main hitscan bullet function with all the additional effects</summary>
 	/// <param name="transform">Where</param>
 	/// <param name="damageinfo">Damage information</param>
 	/// <param name="spreadFromWeaponData">Optional spread</param>
@@ -142,17 +136,13 @@ public static partial class AttackManager
 		}
 	}
 
-	/// <summary>
-	/// A wrapper for SceneTrace to add debug and simplify input
-	/// </summary>
+	/// <summary>A wrapper for SceneTrace to add debug and simplify input</summary>
 	/// <param name="ray">Direction</param>
 	/// <param name="distance">How far</param>
 	/// <param name="damage">Damage Information</param>
 	/// <returns>The trace</returns>
 	public static AttackResult TraceGenericAttack( Ray ray, float distance, DamageInfo damage ) => RunSceneTrace( Game.ActiveScene.Trace.Ray( ray, distance ), damage );
-	/// <summary>
-	/// A wrapper for SceneTrace to add debug and simplify input
-	/// </summary>
+	/// <summary>A wrapper for SceneTrace to add debug and simplify input</summary>
 	/// <param name="capsule">Capsule trace</param>
 	/// <param name="damage">Damage information</param>
 	/// <returns>The trace</returns>
@@ -162,9 +152,7 @@ public static partial class AttackManager
 		return RunSceneTrace( Game.ActiveScene.Trace.Capsule( capsule ), damage );
 	}
 
-	/// <summary>
-	/// The main tracing function
-	/// </summary>
+	/// <summary>The main tracing function</summary>
 	/// <param name="trace">The trace</param>
 	/// <param name="damage">Damage information</param>
 	/// <returns>AttackResult struct</returns>
@@ -211,11 +199,9 @@ public static partial class AttackManager
 		return result;
 	}
 
-	[ConVar( "debug_hit_result" )] public static bool DebugHitResult { get; set; }
+	[ConVar( "debug_hit_result", Help = "Print the contents of the hit GameObject, or rather the things we actually care about" )] public static bool DebugHitResult { get; set; }
 
-	/// <summary>
-	/// Trace an explosion instead of a ray, apply damage and force to all objects
-	/// </summary>
+	/// <summary>Trace an explosion instead of a ray, apply damage and force to all objects</summary>
 	/// <param name="position">Where was the explosion</param>
 	/// <param name="range">Radius of the explosion</param>
 	/// <param name="damage">Damage Information</param>

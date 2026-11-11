@@ -88,11 +88,9 @@ public sealed partial class SaveSystem
 
 		if ( string.IsNullOrWhiteSpace( resourcePath ) && sceneFile.Id != Guid.Empty )
 		{
-			var match = ResourceLibrary.GetAll<SceneFile>()
-				.FirstOrDefault( x => x.Id == sceneFile.Id && !string.IsNullOrWhiteSpace( x.ResourcePath ) );
+			var match = ResourceLibrary.GetAll<SceneFile>().FirstOrDefault( x => x.Id == sceneFile.Id && !string.IsNullOrWhiteSpace( x.ResourcePath ) );
 
-			if ( match is not null )
-				resourcePath = match.ResourcePath;
+			if ( match is not null ) resourcePath = match.ResourcePath;
 		}
 
 		if ( string.IsNullOrWhiteSpace( resourcePath ) )
@@ -108,19 +106,12 @@ public sealed partial class SaveSystem
 		} );
 	}
 
-	private SceneFile GetPrimarySceneFile()
-	{
-		if ( _loadedScenes.Count == 0 )
-			return null;
-
-		return ResourceLibrary.Get<SceneFile>( _loadedScenes[0].ResourcePath );
-	}
+	private SceneFile GetPrimarySceneFile() => _loadedScenes.Count == 0 ? null : ResourceLibrary.Get<SceneFile>( _loadedScenes[0].ResourcePath );
 
 	private static List<SceneFile> ResolveSceneSources( JsonArray sceneSources )
 	{
 		var sceneFiles = new List<SceneFile>();
-		if ( sceneSources is null )
-			return sceneFiles;
+		if ( sceneSources is null ) return sceneFiles;
 
 		foreach ( var node in sceneSources )
 		{

@@ -40,7 +40,7 @@ public static class CameraEffects
 		public bool IsRampBased; // uses ramp/hold logic vs simple duration fadeout
 	}
 
-	private static readonly List<ActiveEffect> activeEffects = new();
+	private static readonly List<ActiveEffect> _activeEffects = [];
 	private static float _lastTriggerTime = -1f;
 
 	// Public API
@@ -49,7 +49,7 @@ public static class CameraEffects
 	{
 		if ( IsForceDisabled ) return;
 
-		activeEffects.Add( new ActiveEffect
+		_activeEffects.Add( new ActiveEffect
 		{
 			Data = effect,
 			RollDirection = 1f,
@@ -69,9 +69,9 @@ public static class CameraEffects
 		if ( IsForceDisabled ) return;
 
 		// Find existing recoil effect for this weapon and update it, or push a new one
-		for ( int i = 0; i < activeEffects.Count; i++ )
+		for ( int i = 0; i < _activeEffects.Count; i++ )
 		{
-			var e = activeEffects[i];
+			var e = _activeEffects[i];
 			if ( !e.Data.AlternateRoll ) continue;
 
 			e.Data.Duration = weaponData.RecoilResetThreshold;
@@ -87,7 +87,7 @@ public static class CameraEffects
 			e.RampTime += e.Data.RampSpeed / 10f;
 			e.RampTime = Math.Clamp( e.RampTime, 0f, e.Data.RampSpeed );
 
-			activeEffects[i] = e;
+			_activeEffects[i] = e;
 			return;
 		}
 
@@ -103,7 +103,7 @@ public static class CameraEffects
 		}, -1f, weaponData.RecoilRampSpeed / 10f );
 	}
 
-	private static float trauma = 0f;
+	private static float _trauma = 0f;
 
 	/// <summary>
 	/// Accumulates trauma (0-1). Trauma is squared when applied to shake strength,
@@ -113,7 +113,7 @@ public static class CameraEffects
 	{
 		if ( IsForceDisabled ) return;
 
-		trauma = Math.Clamp( trauma + amount, 0f, 1f );
+		_trauma = Math.Clamp( _trauma + amount, 0f, 1f );
 	}
 
 	/// <summary>
@@ -149,9 +149,9 @@ public static class CameraEffects
 
 		if ( !IsForceDisabled )
 		{
-			for ( int i = activeEffects.Count - 1; i >= 0; i-- )
+			for ( int i = _activeEffects.Count - 1; i >= 0; i-- )
 			{
-				var e = activeEffects[i];
+				var e = _activeEffects[i];
 				bool finished = false;
 
 				if ( e.IsRampBased )
@@ -160,16 +160,16 @@ public static class CameraEffects
 					finished = UpdateFadeEffect( camera, ref e );
 
 				if ( finished )
-					activeEffects.RemoveAt( i );
+					_activeEffects.RemoveAt( i );
 				else
-					activeEffects[i] = e;
+					_activeEffects[i] = e;
 			}
 		}
 	}
 
 	public static void Reset()
 	{
-		activeEffects.Clear();
+		_activeEffects.Clear();
 		_lastTriggerTime = -1f;
 	}
 
@@ -215,8 +215,8 @@ public static class CameraEffects
 				e.RollDirection *= -1;
 
 			float recoilImpulse = Game.Random.Float( 6f, 8f ) * strength * e.RollDirection * e.Data.RollStrength;
-			e.TargetRoll = Math.Clamp( recoilImpulse, -maxRollAngle, maxRollAngle );
-			e.CurrentRoll = MoveTowards( e.CurrentRoll, e.TargetRoll, rollSpeed * WorldTime.Delta );
+			e.TargetRoll = Math.Clamp( recoilImpulse, -MaxRollAngle, MaxRollAngle );
+			e.CurrentRoll = MoveTowards( e.CurrentRoll, e.TargetRoll, RollSpeed * WorldTime.Delta );
 
 			camera.WorldRotation *= Rotation.From( new Angles( 0f, 0f, e.CurrentRoll ) );
 		}
@@ -246,7 +246,7 @@ public static class CameraEffects
 			return true;
 
 		// Trauma-based strength squaring for stacking hits
-		float traumaStrength = trauma * trauma;
+		float traumaStrength = _trauma * _trauma;
 		float t = e.Data.FalloffCurve.HasValue
 			? e.Data.FalloffCurve.Value.Evaluate( e.Timer / e.Data.Duration )
 			: 1f - Math.Clamp( e.Timer / e.Data.Duration, 0f, 1f );
@@ -275,7 +275,7 @@ public static class CameraEffects
 		camera.WorldRotation *= Rotation.From( delta );
 
 		// Decay trauma over time
-		trauma = Math.Max( trauma - WorldTime.Delta * 0.5f, 0f );
+		_trauma = Math.Max( _trauma - WorldTime.Delta * 0.5f, 0f );
 
 		return false;
 	}
@@ -286,17 +286,17 @@ public static class CameraEffects
 		ActiveEffect? ramp = null;
 		int rampCount = 0;
 
-		foreach ( var effect in activeEffects )
+		foreach ( var effect in _activeEffects )
 		{
 			if ( !effect.IsRampBased ) continue;
 			ramp ??= effect;
 			rampCount++;
 		}
 
-		int shakeCount = activeEffects.Count - rampCount;
+		int shakeCount = _activeEffects.Count - rampCount;
 
 		block.Header( "CAMERA EFFECTS DEBUG" );
-		block.Line( "Active effects", $"{activeEffects.Count}", Color.White );
+		block.Line( "Active effects", $"{_activeEffects.Count}", Color.White );
 		block.Line( "Recoil / Shake", $"{rampCount} / {shakeCount}", Color.Green );
 		block.Space();
 
@@ -321,7 +321,7 @@ public static class CameraEffects
 		{
 			block.Line( "Status", "Inactive", Color.White );
 		}
-		
+
 		block.Space();
 
 		if ( shakeCount == 0 )
@@ -332,7 +332,7 @@ public static class CameraEffects
 		else
 		{
 			int index = 0;
-			foreach ( var effect in activeEffects )
+			foreach ( var effect in _activeEffects )
 			{
 				if ( effect.IsRampBased ) continue;
 				index++;
@@ -350,11 +350,11 @@ public static class CameraEffects
 
 	// Config
 
-	public static float maxRollAngle = 3f;
-	public static float rollSpeed = 10f;
+	public const float MaxRollAngle = 3f;
+	public const float RollSpeed = 10f;
 
-	[ConVar( "ch_cameraeffect_debug", Help = "Show/Log CameraEffects debug" ),] public static bool IsDebug { get; set; } = false;
-	[ConVar( "ch_cameraeffect_disable", Help = "Force Disable CameraEffects" ),] public static bool IsForceDisabled { get; set; } = false;
+	[ConVar( "debug_cameraeffects", Help = "Show/Log CameraEffects debug." )] public static bool IsDebug { get; set; } = false;
+	[ConVar( "debug_cameraeffects_disable", Help = "Force disable CameraEffects." )] public static bool IsForceDisabled { get; set; } = false;
 
 	// Helpers
 

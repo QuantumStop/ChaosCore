@@ -25,21 +25,19 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 
 	ChatEntry[] _entries = new ChatEntry[_defaultMaxEntries];
 
-	int _start;
-	int _count;
-	int _nextId;
-	int _maxEntries = _defaultMaxEntries;
+	private int _start;
+	private int _nextId;
+	private int _maxEntries = _defaultMaxEntries;
 
 	public IReadOnlyList<ChatEntry> Entries => this;
 	public int Version { get; private set; }
-	public int Count => _count;
+	public int Count { get; private set; }
 
 	public ChatEntry this[int index]
 	{
 		get
 		{
-			if ( index < 0 || index >= _count )
-				throw new ArgumentOutOfRangeException( nameof( index ) );
+			if ( index < 0 || index >= Count ) throw new ArgumentOutOfRangeException( nameof( index ) );
 
 			return _entries[(_start + index) % _entries.Length];
 		}
@@ -89,15 +87,15 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 		if ( ContainsEntry( entry.Id ) )
 			return;
 
-		if ( _count == _entries.Length )
+		if ( Count == _entries.Length )
 		{
 			_entries[_start] = entry;
 			_start = (_start + 1) % _entries.Length;
 		}
 		else
 		{
-			_entries[(_start + _count) % _entries.Length] = entry;
-			_count++;
+			_entries[(_start + Count) % _entries.Length] = entry;
+			Count++;
 		}
 
 		_nextId = Math.Max( _nextId, entry.Id + 1 );
@@ -108,12 +106,12 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 
 	public void Clear()
 	{
-		if ( _count == 0 )
+		if ( Count == 0 )
 			return;
 
 		Array.Clear( _entries );
 		_start = 0;
-		_count = 0;
+		Count = 0;
 
 		Version++;
 		Changed?.Invoke();
@@ -139,7 +137,7 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 
 	bool ContainsEntry( int id )
 	{
-		for ( int i = 0; i < _count; i++ )
+		for ( int i = 0; i < Count; i++ )
 		{
 			if ( this[i].Id == id )
 				return true;
@@ -150,7 +148,7 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 
 	bool ContainsRecentDuplicate( string name, string message, long steamId, string channel, string extraClass, float createdAt )
 	{
-		for ( int i = _count - 1; i >= 0; i-- )
+		for ( int i = Count - 1; i >= 0; i-- )
 		{
 			var entry = this[i];
 			if ( createdAt - entry.CreatedAt > _duplicateWindow )
@@ -179,20 +177,20 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 
 	void Resize( int maxEntries )
 	{
-		var oldCount = _count;
-		var newCount = Math.Min( _count, maxEntries );
+		var oldCount = Count;
+		var newCount = Math.Min( Count, maxEntries );
 		var newEntries = new ChatEntry[maxEntries];
-		var sourceStart = _count - newCount;
+		var sourceStart = Count - newCount;
 
 		for ( int i = 0; i < newCount; i++ )
 			newEntries[i] = this[sourceStart + i];
 
 		_entries = newEntries;
 		_start = 0;
-		_count = newCount;
+		Count = newCount;
 		_maxEntries = maxEntries;
 
-		if ( _count != oldCount )
+		if ( Count != oldCount )
 		{
 			Version++;
 			Changed?.Invoke();
@@ -201,7 +199,7 @@ public sealed class ChatHistory : IReadOnlyList<ChatEntry>
 
 	public IEnumerator<ChatEntry> GetEnumerator()
 	{
-		for ( int i = 0; i < _count; i++ )
+		for ( int i = 0; i < Count; i++ )
 			yield return this[i];
 	}
 

@@ -4,7 +4,7 @@ using System;
 
 public abstract partial class GameManagerSystem
 {
-	[ConVar( "host_timescale", ConVarFlags.Replicated ), Description( "Affects the scale of time, making things faster or slower." )]
+	[ConVar( "host_timescale", ConVarFlags.Replicated, Help = "Affects the scale of time, making things faster or slower." )]
 	public static float TimeScale { get; set; } = 1f;
 
 	private bool _playerLockedForPause;

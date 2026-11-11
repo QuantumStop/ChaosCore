@@ -23,8 +23,8 @@ public partial class PlayerWalkControllerComplex : Component
 		}
 	}
 
-	[ConVar( "sv_noclipspeed", ConVarFlags.Cheat )] public static float NoclipSpeed { get; set; } = 5f;
-	[ConVar( "sv_noclipaccelerate", ConVarFlags.Cheat )] public static float NoclipAcceleration { get; set; } = 5f;
+	[ConVar( "sv_noclipspeed", ConVarFlags.Cheat, Help = "Noclip top speed" )] public static float NoclipSpeed { get; set; } = 5f;
+	[ConVar( "sv_noclipaccelerate", ConVarFlags.Cheat, Help = "How fast does it reach the top speed" )] public static float NoclipAcceleration { get; set; } = 5f;
 
 	public virtual void NoclipChange( bool oldValue, bool newValue )
 	{
