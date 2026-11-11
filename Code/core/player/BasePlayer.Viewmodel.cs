@@ -567,11 +567,11 @@ public partial class BasePlayer
 
 
 	/// <summary>Send shit to all parts of viewmodel</summary>
-	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Set( v, value );
+	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel</summary>
-	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Set( v, value );
+	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel </summary>
-	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Set( v, value );
+	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel</summary>
 	public void SetAllWeaponViewmodels( Model model ) => ViewmodelWeapon?.Model = model;
 
