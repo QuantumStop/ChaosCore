@@ -14,14 +14,18 @@
     {
       "_class": "TwoBoneIKNode",
       "Input": {
-        "Identifier": null,
-        "Output": null
+        "Identifier": "81b2cc3c-ece1-4ea8-a7e1-78d17ea004f1",
+        "Output": "Result"
       },
       "EffectorTarget": {
         "Identifier": "e4111354-3e19-45c2-9a86-46ec582a6360",
         "Output": "Target"
       },
       "Enable": {
+        "Identifier": null,
+        "Output": null
+      },
+      "Weight": {
         "Identifier": null,
         "Output": null
       },
@@ -51,6 +55,10 @@
         "Identifier": null,
         "Output": null
       },
+      "Weight": {
+        "Identifier": null,
+        "Output": null
+      },
       "BlendMode": "Effector",
       "IsTargetInWorldSpace": true,
       "ReferencePoseTwistWeight": 0,
@@ -76,9 +84,35 @@
       "Identifier": "5f4fc0bf-7fd1-42e8-897e-4068c225f5d3",
       "Position": "180,192",
       "HandleOffsets": {}
+    },
+    {
+      "_class": "PoseGroupNode",
+      "Name": "Pose Group",
+      "Contents": {
+        "Version": 1,
+        "nodes": [
+          {
+            "_class": "PoseResultNode",
+            "Pose": {
+              "Identifier": null,
+              "Output": null
+            },
+            "Identifier": "01da805b-e729-4ac0-a4a1-63e2b45212ef",
+            "Position": "400,0",
+            "HandleOffsets": {}
+          }
+        ]
+      },
+      "Identifier": "81b2cc3c-ece1-4ea8-a7e1-78d17ea004f1",
+      "Position": "-192,132",
+      "HandleOffsets": {}
     }
   ],
-  "Model": "models/weapons/viewmodel_glock.vmdl",
+  "Model": {
+    "Id": "7f5725a2-0060-46b1-8278-d1bceacac7ef",
+    "Path": "models/weapons/viewmodel_glock.vmdl"
+  },
+  "Skeleton": "animation/skeleton/viewmodel.skel",
   "parameters": [],
   "virtualParameters": [],
   "PreviewFocusBone": "UpperArm_R"
