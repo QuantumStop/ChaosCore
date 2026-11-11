@@ -1652,7 +1652,8 @@
 		model_archetype = ""
 		primary_associated_entity = ""
 		anim_graph_name = ""
-		skeleton_name = "animation/skeleton/viewmodel.skel"
+		animation_graph_name = resource:"animation/graphs/viewmodel/viewmodel.ag"
+		skeleton_name = resource:"animation/skeleton/viewmodel.skel"
 		base_model_name = ""
 	}
 }
