@@ -1,4 +1,5 @@
 using System;
+using Sandbox.Animation;
 
 namespace Core;
 
@@ -565,6 +566,15 @@ public partial class BasePlayer
 	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel</summary>
 	public void SetAllWeaponViewmodels( Model model ) => ViewmodelWeapon?.Model = model;
+
+	/// <summary>A hack to funnel events from a child GO to the root (player, aka this), please don't call this from anywhere else</summary>
+	/// <param name="data"></param>
+	public void AnimationEventHack( AnimationEvent data ) => OnAnimationEvent( data );
+
+	protected virtual void OnAnimationEvent( AnimationEvent data )
+	{
+		Log.Info( data );
+	}
 
 	/// <summary>
 	/// Process all animtags from animgraph

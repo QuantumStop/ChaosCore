@@ -68,7 +68,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		ViewmodelWeapon?.RenderType = ModelRenderer.ShadowRenderType.Off;
 		ViewmodelHands?.RenderType = ModelRenderer.ShadowRenderType.Off;
 
-		ViewmodelWeapon?.OnAnimTagEvent += HandleAnimTag;
+		ViewmodelWeaponObject.Components.GetOrCreate<ViewmodelProxy>();
+
 		PickupTrigger?.OnTriggerEnter += OnPickupTriggerEnter;
 		PickupTrigger?.OnTriggerExit += OnPickupTriggerExit;
 		Movement?.OnLanded += OnLandedEvent;
