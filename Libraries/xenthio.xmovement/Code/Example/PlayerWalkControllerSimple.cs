@@ -5,7 +5,6 @@ namespace XMovement;
 public partial class PlayerWalkControllerSimple : Component
 {
 	[RequireComponent] public PlayerMovement Controller { get; set; }
-	[RequireComponent] public CitizenAnimationHelper AnimationHelper { get; set; }
 	[Property] public SkinnedModelRenderer ModelRenderer { get; set; }
 	[Property, Group( "Head" )] public GameObject Head { get; set; }
 	[Property, Group( "Head" )] public float HeadHeight { get; set; } = 64f;
@@ -94,7 +93,6 @@ public partial class PlayerWalkControllerSimple : Component
 	[Rpc.Broadcast]
 	public void BroadcastPlayerJumped()
 	{
-		AnimationHelper?.TriggerJump();
 	}
 
 	private void BuildFrameInput()
@@ -186,10 +184,5 @@ public partial class PlayerWalkControllerSimple : Component
 		ModelRenderer.WorldRotation = ModelRenderer.WorldRotation.Clamp( targetAngle, 45.0f, out var shuffle ); // lock facing to within 45 degrees of look direction
 		rotateDifference = shuffle;
 
-		AnimationHelper.WithWishVelocity( Controller.WishVelocity );
-		AnimationHelper.WithVelocity( Controller.Velocity );
-		AnimationHelper.IsGrounded = Controller.IsOnGround;
-		AnimationHelper.WithLook( EyeAngles.Forward * 100, 1, 1, 1.0f );
-		AnimationHelper.DuckLevel = IsCrouching ? 100 : 0;
 	}
 }
