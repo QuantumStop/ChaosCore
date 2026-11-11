@@ -13,8 +13,26 @@ partial class Player
 
 	private void HeadLookAt()
 	{
-		Controller.BodyModelRenderer.Set( "HoldType", CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData.HoldType.ToString() : "None" );
-		Controller.BodyModelRenderer?.SetLookDirection( "aim_head", GetEyeAngles().Forward * 100, 1.0f );
+		if ( !Controller.BodyModelRenderer.Animation.IsValid ) return;
+
+		var parameters = Controller.BodyModelRenderer.Animation.Parameters;
+		var eye = GetEyeTransform();
+		var aimRotation = Controller.BodyModelRenderer.WorldRotation.Inverse * eye.Rotation;
+		var aimAngles = aimRotation.Angles();
+
+		parameters.TrySet( "aim_body", aimRotation.Forward );
+		parameters.TrySet( "aim_target", eye.Position + eye.Forward * 10000f );
+		parameters.TrySet( "aim_body_pitch", aimAngles.pitch );
+		parameters.TrySet( "aim_body_yaw", aimAngles.yaw );
+		parameters.TrySet( "aim_body_weight", 1 );
+		parameters.TrySet( "aim_head", aimRotation.Forward );
+		parameters.TrySet( "aim_head_pitch", aimAngles.pitch );
+		parameters.TrySet( "aim_head_yaw", aimAngles.yaw );
+		parameters.TrySet( "aim_head_weight", 1 );
+		parameters.TrySet( "aim_eyes", aimRotation.Forward );
+		parameters.TrySet( "aim_eyes_weight", 1 );
+
+		Controller.BodyModelRenderer.Animation.Parameters.TrySet( "holdtype", CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData.HoldType.ToString() : "none" );
 	}
 
 	private void FeetMovement()
@@ -23,17 +41,17 @@ partial class Player
 		var forward = Controller.BodyModelRenderer.WorldRotation.Forward.Dot( dir );
 		var sideward = Controller.BodyModelRenderer.WorldRotation.Right.Dot( dir );
 
-		Controller.BodyModelRenderer?.Set( "move_groundspeed", dir.WithZ( 0 ).Length );
-		Controller.BodyModelRenderer?.Set( "move_x", forward );
-		Controller.BodyModelRenderer?.Set( "move_y", sideward );
-		Controller.BodyModelRenderer?.Set( "move_z", dir.z );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "move_groundspeed", dir.WithZ( 0 ).Length );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "move_x", forward );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "move_y", sideward );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "move_z", dir.z );
 
-		if ( Controller is Core.PlayerController controller ) Controller.BodyModelRenderer?.Set( "duck", controller.DuckRatio );
+		if ( Controller is Core.PlayerController controller ) Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "duck", controller.DuckRatio );
 
-		Controller.BodyModelRenderer?.Set( "wish_groundspeed", dir.WithZ( 0 ).Length );
-		Controller.BodyModelRenderer?.Set( "wish_x", forward );
-		Controller.BodyModelRenderer?.Set( "wish_y", sideward );
-		Controller.BodyModelRenderer?.Set( "wish_z", dir.z );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "wish_groundspeed", dir.WithZ( 0 ).Length );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "wish_x", forward );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "wish_y", sideward );
+		Controller.BodyModelRenderer?.Animation.Parameters.TrySet( "wish_z", dir.z );
 	}
 
 	private float _animRotationSpeed;
