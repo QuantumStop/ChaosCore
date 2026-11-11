@@ -4,8 +4,8 @@
     "Path": "models/weapons/viewmodel_glock.vmdl"
   },
   "WeaponWorldmodel": {
-    "Id": "7f5725a2-0060-46b1-8278-d1bceacac7ef",
-    "Path": "models/weapons/viewmodel_glock.vmdl"
+    "Id": "e2f4db8c-5e4d-4b4d-b183-9fcf3959839e",
+    "Path": "models/weapons/worldmodel_glock.vmdl"
   },
   "BulletCasingModel": null,
   "BulletCasingParticle": null,
