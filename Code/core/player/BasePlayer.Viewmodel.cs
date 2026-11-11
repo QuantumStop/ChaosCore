@@ -573,26 +573,21 @@ public partial class BasePlayer
 
 	protected virtual void OnAnimationEvent( AnimationEvent data )
 	{
-		Log.Info( data );
+		// do the thing later
 	}
 
-	/// <summary>
-	/// Process all animtags from animgraph
-	/// </summary>
-	/// <param name="tag">Which tag</param>
-	protected virtual void HandleAnimTag( SceneModel.AnimTagEvent tag )
+	/// <summary>Process all animtags from animgraph</summary>
+	protected virtual void OnAnimTagEvent( SceneModel.AnimTagEvent tag )
 	{
 		if ( tag.Status != SceneModel.AnimTagStatus.End ) switch ( tag.Name )
 			{
 				case "mag_out":
-				case "reload_bodygroup": // closest i can think of to match
 					CurrentWeapon?.EventMagOut();
 					break;
 				case "mag_in":
 					CurrentWeapon?.EventMagIn();
 					break;
 				case "bolt_release":
-				case "reload_increment": // FP weapon support, they are stupid and dont have reload finish tags
 					CurrentWeapon?.EventBoltRelease();
 					break;
 				case "primary_fire":
@@ -613,9 +608,6 @@ public partial class BasePlayer
 			}
 		if ( tag.Status == SceneModel.AnimTagStatus.End ) switch ( tag.Name )
 			{
-				case "attack_discouraged":
-					CurrentWeapon?.EventDrawFinished();
-					break;
 				case "disallow_firing":
 					CurrentWeapon?.EventDisallowFiring( false );
 					break;
