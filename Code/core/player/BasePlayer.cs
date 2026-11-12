@@ -10,7 +10,7 @@ using FMODSbox;
 
 namespace Core;
 
-public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISaveEvents, ISaveRoot, IPlayerControllable
+public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISaveEvents, ISaveRoot, IPlayerControllable, Component.IAnimationEvent
 {
 	public static new BasePlayer Local => BasePawn.Local as BasePlayer;
 	public virtual string PlayerName { get; protected set; } = "Player";
@@ -68,7 +68,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		ViewmodelWeapon?.RenderType = ModelRenderer.ShadowRenderType.Off;
 		ViewmodelHands?.RenderType = ModelRenderer.ShadowRenderType.Off;
 
-		ViewmodelWeaponObject.Components.GetOrCreate<ViewmodelProxy>();
+		ViewmodelWeapon?.OnAnimTagEvent += OnAnimTagEvent;
 
 		PickupTrigger?.OnTriggerEnter += OnPickupTriggerEnter;
 		PickupTrigger?.OnTriggerExit += OnPickupTriggerExit;

@@ -569,11 +569,11 @@ public partial class BasePlayer
 
 	/// <summary>A hack to funnel events from a child GO to the root (player, aka this), please don't call this from anywhere else</summary>
 	/// <param name="data"></param>
-	public void AnimationEventHack( AnimationEvent data ) => OnAnimationEvent( data );
+	void IAnimationEvent.OnAnimationEvent( AnimationEvent data ) => OnAnimationEvent( data );
 
 	protected virtual void OnAnimationEvent( AnimationEvent data )
 	{
-		// do the thing later
+		Log.Info( $"data.ToString(): {data.ToString()}" );
 	}
 
 	/// <summary>Process all animtags from animgraph</summary>
