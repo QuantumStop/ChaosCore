@@ -24,6 +24,13 @@ public class WeaponParse : GameResource
 	[Order( 0 )] public WeaponType WeaponType { get; set; }
 	[Order( 0 )] public HoldType HoldType { get; set; }
 
+	[Space]
+
+	[Order( 0 )] public Sandbox.Animation.Graph AnimGraph { get; set; }
+	[Order( 0 ),Title( "Anim Graph: Staging" )] public Sandbox.Animation.Graph AnimGraphStaging { get; set; }
+	
+	[Space]
+	
 	[Order( 0 )] public CrosshairData WeaponCrosshair { get; set; } = null;
 
 	[Header( "Reloading" )]

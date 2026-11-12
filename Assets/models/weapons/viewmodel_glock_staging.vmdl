@@ -851,11 +851,116 @@
 					},
 				]
 			},
+			{
+				_class = "AttachmentList"
+				children = 
+				[
+					{
+						_class = "Attachment"
+						name = "muzzle"
+						parent_bone = "Gun_Muzzle"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ -90.0, 90.0, 180.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Hand_L"
+						parent_bone = "Hand_L"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Hand_R"
+						parent_bone = "Hand_R"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "gun_mag__post_mag_out_from_draw_offset"
+						parent_bone = "Hand_L"
+						relative_origin = [ -1.908663, 3.985202, 2.914296 ]
+						relative_angles = [ 12.79653, -152.246933, 142.37178 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "gun_mag__holster_offset"
+						parent_bone = "Thumb2_L"
+						relative_origin = [ 0.167478, 1.851166, 0.864971 ]
+						relative_angles = [ 72.836098, -85.655182, -96.404106 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "gun_mag__offscreen"
+						parent_bone = ""
+						relative_origin = [ -0.231453, 0.120718, -20.050678 ]
+						relative_angles = [ -41.601913, 112.227745, 56.898254 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "shell_eject"
+						parent_bone = "Gun_Main"
+						relative_origin = [ -0.699033, 2.040956, -1.701267 ]
+						relative_angles = [ -89.999947, -89.999947, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Gun_Attach_rule_R"
+						parent_bone = "Hand_R_To_Gun_IKRule"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Gun_Attach_rule_L"
+						parent_bone = "Hand_L_To_Gun_IKRule"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "MagDrop"
+						parent_bone = "Gun_Mag"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+			},
 		]
 		model_archetype = ""
 		primary_associated_entity = ""
 		anim_graph_name = ""
-		skeleton_name = "animation/skeleton/viewmodel_staging.skel"
+		animation_graph_name = 
+		{
+			Id = "750bca25-85d5-448a-b77e-580cbe06f5b0"
+			Path = resource:"animation/graphs/viewmodel/viewmodel_staging.ag"
+		}
+		skeleton_name = 
+		{
+			Id = "8a19b83d-92d7-49c6-a59d-b2067bc19232"
+			Path = resource:"animation/skeleton/viewmodel_staging.skel"
+		}
 		base_model_name = ""
 	}
 }

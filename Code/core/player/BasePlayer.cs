@@ -67,8 +67,8 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		// setup the gun
 		ViewmodelWeapon?.RenderType = ModelRenderer.ShadowRenderType.Off;
 		ViewmodelHands?.RenderType = ModelRenderer.ShadowRenderType.Off;
-
-		ViewmodelWeapon?.OnAnimTagEvent += HandleAnimTag;
+		BindViewmodelAnimEvents();
+		ForceWeaponChange();
 		PickupTrigger?.OnTriggerEnter += OnPickupTriggerEnter;
 		PickupTrigger?.OnTriggerExit += OnPickupTriggerExit;
 		Movement?.OnLanded += OnLandedEvent;

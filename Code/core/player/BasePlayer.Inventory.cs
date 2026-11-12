@@ -107,7 +107,9 @@ public partial class BasePlayer
 	}
 
 	/// <summary>Most holster actions want very specific state so we can just reuse it for all of them</summary>
-	protected bool _holsterOrActionCheck => CurrentWeapon.IsValid() && CurrentWeapon.GetViewmodel().IsValid() && !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading;
+	protected bool _holsterOrActionCheck => CurrentWeapon.IsValid() && CurrentWeapon.GetViewmodel().IsValid()
+		&& ViewmodelWeapon.IsValid() && ViewmodelWeapon.Animation.Graph is not null
+		&& !CurrentWeapon.IsHolstered && !CurrentWeapon.IsReloading;
 
 	// --- Weapon HUD/Selection ---
 	[ConVar( "hud_showemptyweaponslots", Help = "Show empty weapon slots in selection HUD." )] public static bool HudShowEmptyWeaponSlots { get; set; } = false;
@@ -132,13 +134,37 @@ public partial class BasePlayer
 	{
 		if ( AllowWeaponModelChange )
 		{
-			SetAllWeaponViewmodels( CurrentWeapon.IsValid() ? CurrentWeapon.GetViewmodel() : null );
+			SetAllWeaponModels( CurrentWeapon.IsValid() ? CurrentWeapon.GetViewmodel() : null,
+				GetViewmodelAnimGraph( CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData : null ) );
 			if ( !IsPossessedLocally ) WorldmodelVisible = CurrentWeapon.IsValid(); // the weaponswitch where "real" visibility setting is is not transmitted so we have to make due elsewhere, like here (only for proxies)
 			SetAllWeaponWorldmodels( CurrentWeapon.IsValid() ? CurrentWeapon.GetWorldmodel() : null );
 		}
 
 		GameObject _muzzleattachment = BaseCombatWeapon.GetWeaponAttachObject( this, "muzzle", out _ );
 		if ( _muzzleattachment.IsValid() ) CurrentWeapon?.ClearEffects( _muzzleattachment );
+	}
+
+	private static Sandbox.Animation.Graph GetViewmodelAnimGraph( WeaponParse weaponData )
+	{
+		if ( weaponData is null )
+			return null;
+
+		if ( UseStagingViewmodelAnimGraph && weaponData.AnimGraphStaging is not null )
+			return weaponData.AnimGraphStaging;
+
+		return weaponData.AnimGraph;
+	}
+
+	public void ApplyCurrentViewmodelAnimGraph()
+	{
+		if ( !ViewmodelWeapon.IsValid() )
+			return;
+
+		var weaponData = CurrentWeapon.IsValid() ? CurrentWeapon.WeaponData : null;
+
+		ViewmodelWeapon.Animation.Graph = GetViewmodelAnimGraph( weaponData );
+		
+		BindViewmodelAnimEvents();
 	}
 
 	/// <summary>Force ownership on every BaseCombatWeapon player has to be the player's again</summary>
@@ -222,6 +248,7 @@ public partial class BasePlayer
 
 		// it is important to send this to the correct viewmodel game object
 		var wpnobj = WeaponGameObject.Components.Create( weaponType, false ) as BaseCombatWeapon;
+		wpnobj.Owner = new BaseCombatWeapon.WeaponOwner( this );
 		wpnobj.WeaponData = data;
 
 		if ( param == "nofirstequip" || param == "noeq" ) wpnobj.FirstEquip = false;

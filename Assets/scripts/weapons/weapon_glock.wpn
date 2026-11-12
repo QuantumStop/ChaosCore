@@ -1,0 +1,198 @@
+{
+  "WeaponViewmodel": {
+    "Id": "2cfcf388-bc1c-4f83-840b-c93599093ab4",
+    "Path": "models/weapons/viewmodel_glock_staging.vmdl"
+  },
+  "WeaponWorldmodel": {
+    "Id": "9a78babc-2664-4bdb-ad42-683b9c33423d",
+    "Path": "models/weapons/worldmodel_glock.vmdl"
+  },
+  "BulletCasingModel": null,
+  "BulletCasingParticle": null,
+  "ExplosionParticle": null,
+  "WeaponType": "WEAPON_GENERIC",
+  "HoldType": "None",
+  "AnimGraph": {
+    "Id": "b929fc7b-cb6f-4a79-a07a-4e980538fd55",
+    "Path": "animation/graphs/viewmodel/viewmodel.ag"
+  },
+  "AnimGraphStaging": {
+    "Id": "750bca25-85d5-448a-b77e-580cbe06f5b0",
+    "Path": "animation/graphs/viewmodel/viewmodel_staging.ag"
+  },
+  "WeaponCrosshair": {
+    "Id": "3bd512fa-24b7-4a8f-8923-4a3e6314bb89",
+    "Path": "scripts/weapons/crosshairs/crosshair_nodot.crs"
+  },
+  "StageAmount": 3,
+  "FiresUnderwater": true,
+  "ReloadsSingly": false,
+  "MuzzleLightCookie": {
+    "$compiler": "texture",
+    "$source": "imagefile",
+    "data": {
+      "FilePath": "materials/cookies/muzzle_light01.tif",
+      "MaxSize": 4096,
+      "ConvertHeightToNormals": false,
+      "NormalScale": 1,
+      "Rotate": 0,
+      "FlipVertical": false,
+      "FlipHorizontal": false,
+      "Cropping": {
+        "Left": 0,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 0
+      },
+      "Padding": {
+        "Left": 0,
+        "Top": 0,
+        "Right": 0,
+        "Bottom": 0
+      },
+      "InvertColor": false,
+      "Tint": "1,1,1,1",
+      "Blur": 0,
+      "Sharpen": 0,
+      "Brightness": 1,
+      "Contrast": 1,
+      "Saturation": 1,
+      "Hue": 0,
+      "Colorize": false,
+      "TargetColor": "0,1,0,1",
+      "CacheToDisk": true,
+      "FormatOverride": "RGBA8888"
+    },
+    "compiled": "textures/generated/imagefile/352080f53e774548.vtex"
+  },
+  "MuzzleLightTime": 0.02,
+  "MuzzleLightFOV": 60,
+  "MuzzleLightBrightness": 1,
+  "MuzzleFlashEffect": null,
+  "TracerEffect": {
+    "Id": "a9714f83-b769-40c3-928c-1c8670aecc90",
+    "Path": "prefabs/game/particles/weapons/weapon_tracer.prefab"
+  },
+  "RecoilStrengthCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "ExplosionType": "Trace",
+  "ExplosionRadius": 180,
+  "ExplosionDamage": 100,
+  "ExplosionDuration": 0.05,
+  "ExplosionMaxVoxels": 10,
+  "ExplosionCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": -1,
+      "out": 1,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": -1,
+      "out": 1,
+      "mode": "Mirrored"
+    }
+  ],
+  "ExplosionPushBack": [
+    {
+      "x": 0,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "RecoilResetThreshold": 1,
+  "RecoilRampSpeed": 0.1,
+  "RecoilPushForce": 1,
+  "PrimaryAmmoType": {
+    "Id": "bff02cc6-2303-4715-b2c9-6b97e5ca8fd8",
+    "Path": "scripts/ammo/ammo_9mm.amn"
+  },
+  "PrimaryAmmoCapacity": 17,
+  "DefaultPrimaryAmmo": 17,
+  "BulletsPerShot": 1,
+  "PrimaryFireRateRPM": 171,
+  "SpreadDegreesPrimary": 6,
+  "SpreadProgressionCurve": [
+    {
+      "x": 0,
+      "y": 0,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "in": 0,
+      "out": 0,
+      "mode": "Mirrored"
+    }
+  ],
+  "SpreadType": "SPREAD_STATIC",
+  "DynamicSpreadType": "PER_CONSECUTIVE_SHOT",
+  "SpreadScale": 1,
+  "AttackSoundsPrimary": [
+    {
+      "Id": "1068f1c3-ce8e-49c4-bf68-7e8d189a0308",
+      "Path": "sound/weapons/glock/g_mi.sound"
+    },
+    {
+      "Id": "feb6af18-13d5-4ec8-b40d-3d45b81be4b6",
+      "Path": "sound/weapons/glock/g_lo.sound"
+    }
+  ],
+  "AttackSoundPrimaryThirdPerson": [],
+  "SecondaryAmmoType": null,
+  "SecondaryAmmoCapacity": 0,
+  "DefaultSecondaryAmmo": 0,
+  "SecondaryFireRateRPM": 1,
+  "SpreadDegreesSecondary": 1,
+  "AttackSoundsSecondary": [],
+  "AttackSoundSecondaryThirdPerson": [],
+  "Bucket": 1,
+  "Position": 0,
+  "Weight": 0,
+  "Icon": "resource\\ui\\player\\hud\\weapons icons\\pistol.svg",
+  "Name": "Glock",
+  "EquipSlot": "SLOT_TWOHANDED",
+  "BurstInterval": 1,
+  "RestMin": 1,
+  "RestMax": 5,
+  "CustomDataFloat": {
+    "BurstSize": 3,
+    "BurstCycleRate": 0.5,
+    "BurstFireRate": 650
+  },
+  "CustomDataString": {},
+  "IgnoreAmmo": false,
+  "HasPrimaryAmmoType": true,
+  "HasSecondaryAmmoType": false,
+  "__references": [],
+  "__version": 0
+}

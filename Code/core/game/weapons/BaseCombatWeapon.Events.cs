@@ -2,7 +2,8 @@ namespace Core;
 
 public partial class BaseCombatWeapon
 {
-	[ConVar( "debug_animevents" )] private static bool _debugAnimEvents { get; set; }
+	[ConVar( "viewmodel_animgraph_debug", Help = "Show viewmodel animation state and log weapon animation events." )] 
+	private static bool _debugAnimEvents { get; set; } = true;
 
 	/// <summary>
 	/// Cannot shoot
@@ -12,7 +13,7 @@ public partial class BaseCombatWeapon
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents ) Log.Info( "AnimEvent: DisallowFiring (" + disallow + ")" );
+		if ( _debugAnimEvents ) Log.Info( $"{GetType().Name} AnimEvent: DisallowFiring (" + disallow + ")" );
 
 		_disallowAttack = disallow;
 	}
@@ -23,10 +24,12 @@ public partial class BaseCombatWeapon
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents ) Log.Info( "AnimEvent: DrawFinished" );
+		if ( _debugAnimEvents ) Log.Info( $"{GetType().Name} AnimEvent: DrawFinished" );
 
 		IsHolstered = false;
 		ReadyToFire = true;
+		_disallowAttack = false;
+		ViewmodelAnimGraphAction = AnimGraphAction.action_idle;
 
 		if ( FirstEquip ) _currentReloadStage = 0;
 
@@ -39,12 +42,13 @@ public partial class BaseCombatWeapon
 	public virtual void EventHolsterFinished()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
+		if ( ViewmodelAnimGraphAction != AnimGraphAction.action_holster ) return;
 
 		IsHolstered = true;
 		ReadyToFire = false;
 
 		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: HolsterFinished" );
+			Log.Info( $"{GetType().Name} AnimEvent: HolsterFinished" );
 
 	}
 	/// <summary>
@@ -55,7 +59,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
 		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: PrimaryFire" );
+			Log.Info( $"{GetType().Name} AnimEvent: PrimaryFire" );
 	}
 
 	/// <summary>
@@ -66,7 +70,7 @@ public partial class BaseCombatWeapon
 		if ( Owner.Player.CurrentWeapon != this )
 			return;
 
-		if ( _debugAnimEvents ) Log.Info( "AnimEvent: MagOut" );
+		if ( _debugAnimEvents ) Log.Info( $"{GetType().Name} AnimEvent: MagOut" );
 
 		_currentReloadStage = 1; // next would be magin
 		MagOut = true;
@@ -79,7 +83,7 @@ public partial class BaseCombatWeapon
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents ) Log.Info( "AnimEvent: MagIn" );
+		if ( _debugAnimEvents ) Log.Info( $"{GetType().Name} AnimEvent: MagIn" );
 
 		_currentReloadStage = 2; // next would be boltrelease
 		MagOut = false;
@@ -91,7 +95,7 @@ public partial class BaseCombatWeapon
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents ) Log.Info( "AnimEvent: BoltRelease" );
+		if ( _debugAnimEvents ) Log.Info( $"{GetType().Name} AnimEvent: BoltRelease" );
 
 		_currentReloadStage = 3; // this is the last
 	}
@@ -102,9 +106,16 @@ public partial class BaseCombatWeapon
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents ) Log.Info( "AnimEvent: ReloadFinished" );
+		if ( _debugAnimEvents ) Log.Info( $"{GetType().Name} AnimEvent: ReloadFinished" );
+
+		if ( IsReloading )
+		{
+			FinishReload();
+			return;
+		}
 
 		if ( _disallowAttack ) EventDisallowFiring( false ); // a slight hack to help with weapons that have fucked event tags in animgraph
+		ViewmodelAnimGraphAction = AnimGraphAction.action_idle;
 	}
 
 }

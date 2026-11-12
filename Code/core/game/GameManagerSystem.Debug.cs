@@ -276,6 +276,9 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 
 		var columnBottoms = new List<float> { rightPos.y };
 
+		if ( BasePlayer.Local.IsValid() && BasePlayer.Local.CurrentWeapon.IsValid() )
+			DrawPanel( BasePlayer.Local.CurrentWeapon.GetDebugText() );
+
 		if ( CameraEffects.IsDebug )
 			DrawPanel( CameraEffects.GetDebugText() );
 
@@ -671,7 +674,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	{
 		return new( "", Color.White, 12, "Lucida Console" )
 		{
-			FontWeight = 550,
+			FontWeight = 600,
 			LineHeight = 1.45f,
 			Outline = new TextRendering.Outline
 			{

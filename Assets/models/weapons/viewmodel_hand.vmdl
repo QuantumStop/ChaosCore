@@ -46,6 +46,7 @@
 						[
 							{
 								_class = "RenderMeshMarkup"
+								disabled = true
 								material_search_path = ""
 								use_expensive_tangents = true
 								high_high_precision_texcoords = false
@@ -506,6 +507,7 @@
 		model_archetype = ""
 		primary_associated_entity = ""
 		anim_graph_name = ""
+		skeleton_name = ""
 		base_model_name = ""
 	}
 }

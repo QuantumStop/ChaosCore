@@ -3,7 +3,11 @@
 	_class = "CClipDocument"
 	m_nVersion = 1
 	m_sourceFilename = "animation/anims/viewmodel/glock_anims.fbx"
-	m_animationSkeletonName = "animation/skeleton/viewmodel.skel"
+	m_animationSkeletonName = 
+	{
+		Id = "0bbd6458-b242-431f-a138-f144c83db87e"
+		Path = "animation/skeleton/viewmodel.skel"
+	}
 	m_nTake = 0
 	m_nStartFrame = -1
 	m_nEndFrame = -1
@@ -18,5 +22,33 @@
 	m_secondaryAnimationSkeletonNames = [  ]
 	m_alignToClipFilename = ""
 	m_bExtractMotion = false
-	m_eventTracks = [  ]
+	m_eventTracks = 
+	[
+		{
+			m_eventClassName = "CGenericEvent"
+			m_bIsSyncTrack = false
+			m_bIsDisabled = false
+			m_events = 
+			[
+				{
+					m_startTime = 0
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "disallow_firing"
+					}
+				},
+				{
+					m_startTime = 7.8993
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "allow_firing"
+					}
+				},
+			]
+		},
+	]
 }

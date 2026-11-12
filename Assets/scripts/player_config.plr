@@ -1,5 +1,8 @@
 {
-  "ViewmodelHands": "models/weapons/viewmodel_hand.vmdl",
+  "ViewmodelHands": {
+    "Id": "997306c4-174c-471a-ba30-9e2e12807a0d",
+    "Path": "models/weapons/viewmodel_hand.vmdl"
+  },
   "BodyModel": null,
   "HudEntries": [
     {
@@ -16,6 +19,13 @@
     }
   ],
   "PlayerData": [],
+  "Damage": {
+    "Head": 0,
+    "Chest": 0,
+    "Stomach": 0,
+    "Arm": 0,
+    "Leg": 0
+  },
   "Faction": "PLAYER",
   "__references": [],
   "__version": 0

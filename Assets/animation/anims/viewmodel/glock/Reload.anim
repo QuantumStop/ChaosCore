@@ -3,7 +3,11 @@
 	_class = "CClipDocument"
 	m_nVersion = 1
 	m_sourceFilename = "animation/anims/viewmodel/glock_anims.fbx"
-	m_animationSkeletonName = "animation/skeleton/viewmodel.skel"
+	m_animationSkeletonName = 
+	{
+		Id = "0bbd6458-b242-431f-a138-f144c83db87e"
+		Path = "animation/skeleton/viewmodel.skel"
+	}
 	m_nTake = 25
 	m_nStartFrame = -1
 	m_nEndFrame = -1
@@ -36,6 +40,51 @@
 						stop_on_seq_change = true
 						use_layer_sequence = false
 						tags = ""
+					}
+				},
+				{
+					m_startTime = 5.456715
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "mag_out"
+					}
+				},
+				{
+					m_startTime = 32.39368
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "mag_in"
+					}
+				},
+				{
+					m_startTime = 0
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "disallow_firing"
+					}
+				},
+				{
+					m_startTime = 41.791363
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "allow_firing"
+					}
+				},
+				{
+					m_startTime = 54
+					m_duration = 0
+					m_name = "AE_GENERIC_EVENT"
+					m_eventData = 
+					{
+						TypeName = "reload_finished"
 					}
 				},
 			]

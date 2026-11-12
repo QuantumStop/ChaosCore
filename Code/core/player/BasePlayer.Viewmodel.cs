@@ -75,6 +75,22 @@ public partial class BasePlayer
 	[ConVar( "viewmodel_fov", Saved = true )]
 	public static float ViewmodelFOV { get; set; } = 55f;
 
+	private static bool _useStagingViewmodelAnimGraph;
+
+	[ConVar( "viewmodel_animgraph_staging", Saved = true )]
+	public static bool UseStagingViewmodelAnimGraph
+	{
+		get => _useStagingViewmodelAnimGraph;
+		set
+		{
+			if ( _useStagingViewmodelAnimGraph == value )
+				return;
+
+			_useStagingViewmodelAnimGraph = value;
+			Local?.ApplyCurrentViewmodelAnimGraph();
+		}
+	}
+
 	[Property, Feature( "Viewmodel" ), Range( 1f, 179f )]
 	public float ViewmodelFOVOverride { get; set; } = 0f;
 
@@ -173,19 +189,20 @@ public partial class BasePlayer
 
 	protected virtual void ViewmodelFixedUpdate()
 	{
-		if ( _allowSway )
-		{
-			SetAllAnimgraphParams( "f_walking", Movement.Velocity.Length / (Controller.IsRunning ? 320 : 190) );
-			SetAllAnimgraphParams( "f_timesincewishsprint", (Controller as PlayerController).TimeSinceWishSprint() );
-			SetAllAnimgraphParams( "f_wishsprint", (Controller as PlayerController).WishSprint() );
-			SetAllAnimgraphParams( "b_sprint", Controller.IsRunning );
-			SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
-			SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
-			SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
-			SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
-			SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
-		}
-
+		CurrentWeapon?.SyncViewmodelAnimGraphPlayerState( this );
+		SetAllAnimgraphParams( "f_walking", Local.Movement.Velocity.Length / (Local.Controller.IsRunning ? 320 : 190) );
+		SetAllAnimgraphParams( "f_timesincewishsprint", (Local.Controller as PlayerController).TimeSinceWishSprint() );
+		SetAllAnimgraphParams( "f_wishsprint", (Local.Controller as PlayerController).WishSprint() );
+		SetAllAnimgraphParams( "b_sprint", Local.Controller.IsRunning );
+		SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
+		SetAllAnimgraphParams( "view_aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
+		SetAllAnimgraphParams( "view_aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
+		SetAllAnimgraphParams( "view_aim_yaw", _smoothedRoll );
+		SetAllAnimgraphParams( "view_aim_pitch", _aimPitchLean );
+		SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
+		SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
+		SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
+		SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
 		ApplyInertia();
 		ApplyVelocity();
 
@@ -577,16 +594,50 @@ public partial class BasePlayer
 
 
 	/// <summary>Send shit to all parts of viewmodel</summary>
-	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Set( v, value );
+	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel</summary>
-	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Set( v, value );
+	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel </summary>
-	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Set( v, value );
+	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+	/// <summary>
+	/// Send shit to all parts of viewmodel
+	/// </summary>
+	public void SetAllAnimgraphParams( string v, string value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+
+	/// <summary>Sets a viewmodel enum parameter by name.</summary>
+	public void SetAllAnimgraphParams<T>( string v, T value ) where T : struct, Enum => SetAllAnimgraphParams( v, value.ToString() );
+
 	/// <summary>Send shit to all parts of viewmodel</summary>
 	public void SetAllWeaponViewmodels( Model model ) => ViewmodelWeapon?.Model = model;
 
 	/// <summary>
-	/// Process all animtags from animgraph
+	/// Send shit to all parts of viewmodel
+	/// </summary>
+	public void SetAllWeaponModels( Model model, Sandbox.Animation.Graph animGraph )
+	{
+		if ( !ViewmodelWeapon.IsValid() )
+			return;
+
+		ViewmodelWeapon.Model = model;
+		ViewmodelWeapon.Animation.Graph = animGraph;
+		BindViewmodelAnimEvents();
+	}
+
+	private void BindViewmodelAnimEvents()
+	{
+		if ( !ViewmodelWeapon.IsValid() )
+			return;
+
+		ViewmodelWeapon.OnAnimTagEvent -= HandleAnimTag;
+		ViewmodelWeapon.OnAnimTagEvent += HandleAnimTag;
+
+		ViewmodelWeapon.OnGenericEvent -= HandleGenericAnimEvent;
+		ViewmodelWeapon.OnGenericEvent += HandleGenericAnimEvent;
+
+	}
+
+	/// <summary>
+	/// Process animation graph tags and timed state events.
 	/// </summary>
 	/// <param name="tag">Which tag</param>
 	protected virtual void HandleAnimTag( SceneModel.AnimTagEvent tag )
@@ -629,6 +680,47 @@ public partial class BasePlayer
 					CurrentWeapon?.EventDisallowFiring( false );
 					break;
 			}
+	}
+
+	/// <summary>
+	/// Process generic animation clip events.
+	/// </summary>
+	/// <param name="evt">Which event</param>
+	protected virtual void HandleGenericAnimEvent( SceneModel.GenericEvent evt )
+	{
+		switch ( evt.Type )
+		{
+			case "mag_out":
+			case "reload_bodygroup":
+				CurrentWeapon?.EventMagOut();
+				break;
+			case "mag_in":
+				CurrentWeapon?.EventMagIn();
+				break;
+			case "bolt_release":
+			case "reload_increment":
+				CurrentWeapon?.EventBoltRelease();
+				break;
+			case "primary_fire":
+				CurrentWeapon?.EventPrimaryFire();
+				break;
+			case "draw_finished":
+				CurrentWeapon?.EventDrawFinished();
+				break;
+			case "reload_finished":
+				CurrentWeapon?.EventReloadFinished();
+				break;
+			case "holster_finished":
+				CurrentWeapon?.EventHolsterFinished();
+				break;
+			case "disallow_firing":
+				CurrentWeapon?.EventDisallowFiring( true );
+				break;
+			case "allow_firing":
+			case "firing_allowed":
+				CurrentWeapon?.EventDisallowFiring( false );
+				break;
+		}
 	}
 
 	protected virtual float GetViewmodelFOV() => ViewmodelFOVOverride > 0f ? ViewmodelFOVOverride : ViewmodelFOV;

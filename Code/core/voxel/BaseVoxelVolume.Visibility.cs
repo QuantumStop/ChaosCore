@@ -24,9 +24,8 @@ public partial class BaseVoxelVolume<T> where T : struct
 			if ( (wpos - origin).Length > radius ) continue;
 
 			// Skip solid voxels (assume bit 0 is solid)
-			dynamic voxelValue = GetVoxel( v );
 			bool solid = false;
-			if ( voxelValue is byte b ) solid = (b & 0x1) != 0;
+			if (  GetVoxel( v ) is byte b ) solid = (b & 0x1) != 0;
 			if ( solid ) continue;
 
 			// Mark visible
@@ -63,9 +62,8 @@ public partial class BaseVoxelVolume<T> where T : struct
 
 					if ( !InBounds( v ) ) continue;
 
-					dynamic voxelValue = GetVoxel( v );
 					bool solid = false;
-					if ( voxelValue is byte b ) solid = (b & 0x1) != 0;
+					if ( GetVoxel( v ) is byte b ) solid = (b & 0x1) != 0;
 
 					if ( !solid )
 						visible++;

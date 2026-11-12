@@ -126,11 +126,26 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual void ChangeReloadStage()
 	{
 		Owner.Player?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
+		ViewmodelAnimGraphWeaponReloadStage = GetViewmodelAnimGraphReloadStage( _currentReloadStage );
 		if ( DebugReloadStage ) Log.Info( WeaponData.Name + "'s stage has changed to " + _currentReloadStage );
 		if ( _isLastStage ) FinishReload();
 	}
 
-	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
+	private static AnimGraphWeaponReloadStage GetViewmodelAnimGraphReloadStage( int stage ) => stage switch
+	{
+		1 => AnimGraphWeaponReloadStage.reload_stage_1,
+		2 => AnimGraphWeaponReloadStage.reload_stage_2,
+		3 => AnimGraphWeaponReloadStage.reload_stage_3,
+		4 => AnimGraphWeaponReloadStage.reload_stage_4,
+		5 => AnimGraphWeaponReloadStage.reload_stage_5,
+		_ => AnimGraphWeaponReloadStage.reload_stage_ready
+	};
+
+	protected virtual void ChangePrimaryAmmo()
+	{
+		Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
+		SyncViewmodelAnimGraphAmmo();
+	}
 	protected virtual void ChangeEmpty() => Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
 
 	[ConVar( "debug_reloadstage" )] static public bool DebugReloadStage { get; set; }
@@ -148,6 +163,8 @@ public partial class BaseCombatWeapon : BaseEntity
 		Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
 		Owner.Player?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
 		Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
+		
+		SyncViewmodelAnimGraphState();
 	}
 
 	protected override void OnEnabled()
@@ -211,6 +228,8 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		// dont run the whole update if its not equipped
 		if ( !ReadyToFire ) return;
+
+		TickViewmodelAnimGraphActionState();
 
 		if ( Owner.Player.IsValid() )
 		{
@@ -343,7 +362,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		Owner.Player.HolsterOwner = BasePlayer.HolsterType.None; // clear the owner
 
 		SyncAnimgraphState();
-		Owner.Player?.SetAllAnimgraphParams( "b_equipped", true );
+		ViewmodelAnimGraphAction = AnimGraphAction.action_deploy;
 
 		Enabled = true;
 		if ( !GetViewmodel().IsValid() ) ReadyToFire = true;
@@ -359,6 +378,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		Owner.Player?.HolsterOwner = type; // new owner
 
 		Owner.Player?.SetAllAnimgraphParams( "b_equipped", false );
+		ViewmodelAnimGraphAction = AnimGraphAction.action_holster;
 
 		if ( !GetViewmodel().IsValid() ) ReadyToFire = false;
 		Enabled = false;    // very important to disable the holstered gun component
@@ -405,6 +425,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		LastAttackTime = WorldTime.Now;
 
+		StartViewmodelAnimGraphAttack( AnimGraphWeaponAttackType.attack_primary );
 		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
 
 		AttackSound();
@@ -475,6 +496,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( _nextEmptyAttack <= WorldTime.Now && !IsReloading )
 		{
+			StartViewmodelAnimGraphAttack( AnimGraphWeaponAttackType.attack_primary );
 			Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
 			_nextEmptyAttack = WorldTime.Now + delay;
 		}
@@ -489,6 +511,8 @@ public partial class BaseCombatWeapon : BaseEntity
 		if ( !UsesSecondary() ) return;
 
 		LastAttackTime = WorldTime.Now;
+
+		StartViewmodelAnimGraphAttack( AnimGraphWeaponAttackType.attack_secondary );
 
 		// unimplemented by default	
 	}
@@ -521,6 +545,9 @@ public partial class BaseCombatWeapon : BaseEntity
 				if ( !_isLastStage )
 					Owner.Player?.SetAllAnimgraphParams( "b_reload", true );
 
+				ViewmodelAnimGraphAction = AnimGraphAction.action_reload;
+				_disallowAttack = true;
+
 				IsReloading = true;
 
 				if ( !GetViewmodel().IsValid() ) FinishReload();
@@ -544,9 +571,6 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( reloadPrimary )
 		{
-			if ( _debugAnimEvents )
-				Log.Info( "(not) AnimEvent: FinishReload" );
-
 			// since its looking for the smallest value, when having no reserve and trying to reload, it will be the smallest, and will try to add nothing
 			// in that case just pretend the reserve is always bigger than current ammo
 			var minHack = !BasePlayer.InfiniteAmmo ? Owner.Player.GetReserveAmmo( WeaponData.PrimaryAmmoType.ResourceName ) : GetPrimaryCapacity() + 5;
@@ -560,6 +584,8 @@ public partial class BaseCombatWeapon : BaseEntity
 			PrimaryAmmoInChamber = Math.Min( 1, PrimaryAmmoLoaded );
 
 			Owner.Player?.SetAllAnimgraphParams( "b_reload", false );
+			ViewmodelAnimGraphAction = AnimGraphAction.action_idle;
+			_disallowAttack = false;
 
 			IsReloading = false;
 

@@ -18,5 +18,26 @@
 	m_secondaryAnimationSkeletonNames = [  ]
 	m_alignToClipFilename = ""
 	m_bExtractMotion = false
-	m_eventTracks = [  ]
+	m_eventTracks = 
+	[
+		{
+			m_eventClassName = "CGenericEvent"
+			m_bIsSyncTrack = false
+			m_bIsDisabled = false
+			m_events = [  ]
+		},
+		{
+			m_eventClassName = "CIDEvent"
+			m_bIsSyncTrack = false
+			m_bIsDisabled = false
+			m_events = 
+			[
+				{
+					m_startTime = 12
+					m_duration = 3
+					m_ID = "out_transition"
+				},
+			]
+		},
+	]
 }
