@@ -35,6 +35,12 @@ public partial class AIBehavior : AIModule, IJsonConvert
 	public virtual void UpdateAnimation() { }
 
 	/// <summary>
+	/// Plays this behavior's melee attack animation.
+	/// </summary>
+	public virtual void PlayMeleeAttackAnimation()
+		=> Controller.BodyModel.Animation.Parameters.TrySet( "b_MeleeAttack", true );
+
+	/// <summary>
 	/// Multiplier applied to movement acceleration.
 	/// </summary>
 	public virtual float MotorAccelerationScale => 1f;

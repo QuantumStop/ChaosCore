@@ -371,7 +371,11 @@ public partial class BasePlayer
 		var velocity = state.Body.PhysicsBody.Velocity + playerVelocity;
 		velocity = velocity.ClampLength( 350f );
 
-		if ( punt ) velocity += puntDirection * 400f;
+		if ( punt ) 
+		{
+			velocity += puntDirection * 400f;
+			OnObjectPunted( state, velocity );
+		}
 
 		state.Body.PhysicsBody.Velocity = velocity;
 
@@ -380,6 +384,11 @@ public partial class BasePlayer
 
 		state.Body.PhysicsBody.AngularVelocity *= 0.3f;
 	}
+
+	/// <summary>
+	/// Called after a held object is launched.
+	/// </summary>
+	protected virtual void OnObjectPunted( GrabState state, Vector3 velocity ) { }
 
 	private void CleanupHeldProp()
 	{

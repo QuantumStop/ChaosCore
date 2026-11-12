@@ -11,9 +11,19 @@ namespace Core;
 public class ui_text : BaseEntity
 {
 	/// <summary>
-	/// Message to display onscreen. \n signifies a new line in the text.
+	/// Message to display onscreen.
 	/// </summary>
 	[Property, TextArea] public TextRendering.Scope MessageText { get; set; }
+
+	/// <summary>
+	/// Set the text for the MessageText.
+	/// </summary>
+	public void SetText( [TextArea] string text )
+	{
+		var scope = MessageText;
+		scope.Text = text;
+		MessageText = scope;
+	}
 
 	[Property, PresetSelector] public GenericPresetResource Preset { get; set; }
 

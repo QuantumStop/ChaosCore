@@ -31,7 +31,7 @@ public class NpcTargetingSensor
 
 		public SensorData Decayed( float dt, float decayRate ) => new(
 			Type, Target, false, WasEverSeen,
-			LastKnownPosition + LastKnownVelocity * dt,
+			LastKnownPosition,
 			LastKnownVelocity,
 			LostTime + dt * decayRate,
 			ThreatScore
@@ -87,6 +87,41 @@ public class NpcTargetingSensor
 	}
 
 	public BaseEntity GetPrimaryTarget() => PrimaryTarget?.Target;
+
+	/// <summary>
+	/// Receives an observed enemy position from a squad member.
+	/// </summary>
+	public void ReceiveSquadContact( SensorData contact )
+	{
+		if ( !contact.Target.IsValid() || !contact.Tracking
+			|| (contact.Target is BasePlayer && AIController.NoTarget)
+			|| !(Owner.BehaviorModule?.ShouldTarget( contact.Target ) ?? true) )
+			return;
+
+		KnownTargets.TryGetValue( contact.Target.GameObject.Id, out var existing );
+		if ( existing.Tracking ) return;
+
+		KnownTargets[contact.Target.GameObject.Id] = new SensorData( contact.Type, contact.Target,
+			false, existing.WasEverSeen, contact.LastKnownPosition, contact.LastKnownVelocity, 0f, contact.ThreatScore );
+		UpdatePrimaryTarget();
+		UpdateWorldState();
+	}
+
+	/// <summary>
+	/// Forgets an unseen enemy after searching its recorded position.
+	/// </summary>
+	public void ForgetSearchedTarget( BaseEntity target, Vector3 searchedPosition )
+	{
+		if ( !target.IsValid() || !KnownTargets.TryGetValue( target.GameObject.Id, out var contact )
+			|| contact.Tracking || contact.LastKnownPosition.Distance( searchedPosition ) > 1f )
+			return;
+
+		KnownTargets.Remove( target.GameObject.Id );
+		if ( Owner.Blackboard.combatMemory?.Enemy == target )
+			Owner.Blackboard.combatMemory = null;
+		UpdatePrimaryTarget();
+		UpdateWorldState();
+	}
 
 	public bool IsVisible( TargetSignature target ) => _visibleScratch.Contains( target );
 
@@ -218,7 +253,8 @@ public class NpcTargetingSensor
 			var targetEntity = sig.GameObject.GetComponent<BaseEntity>();
 			if ( IsAlly( targetEntity ) ) continue;
 
-			Vector3 toTarget = sig.WorldPos - eyePos;
+			// Test the body point used by the visibility trace, rather than the feet.
+			Vector3 toTarget = sig.WorldPos + Vector3.Up * 40f - eyePos;
 			float distSq = toTarget.LengthSquared;
 			float dist = MathF.Sqrt( distSq );
 			if ( dist < 0.001f ) continue;
@@ -471,7 +507,6 @@ public class NpcTargetingSensor
 		if ( mem is null || !mem.IsValid ) return;
 
 		mem.Confidence -= 0.15f * Time.Delta;
-		mem.LastKnownPosition += mem.LastKnownVelocity * Time.Delta;
 
 		if ( mem.Confidence <= 0f || !mem.Enemy.IsValid )
 			Owner.Blackboard.combatMemory = null;
@@ -497,115 +532,68 @@ public class NpcTargetingSensor
 		_expiredScratch.Clear();
 	}
 
-	private static Material _ghost => Material.Load( "materials/dev/ghost.vmat" );
-
 	public void DrawGizmos()
 	{
 		if ( !AIManager.AIDebugVisionSensing ) return;
 
-		var eye = Owner.BodyModel.GetAttachment( Owner.GetEyeAttachmentName() );
-		var eyePos = new Vector3();
-		var eyeFwd = new Vector3();
-		var eyeUp = new Vector3();
-		var eyeRight = new Vector3();
+		using var scope = Gizmo.Scope( "AI vision sensing", new Transform( Vector3.Zero ) );
+		var eyePos = Owner.WorldPosition + Vector3.Up * (Owner.BodyModel.Bounds.Size.z * 0.8f);
+		var rotation = Owner.WorldRotation;
+		Gizmo.Draw.IgnoreDepth = false;
 
+		DrawCone( eyePos, rotation.Forward, rotation.Up, rotation.Right,
+			VisionRange, VisionFOV, Color.Cyan.WithAlpha( 0.15f ), segments: 32 );
+		DrawCone( eyePos, rotation.Forward, rotation.Up, rotation.Right,
+			PeripheralRange, PeripheralFOV, Color.Yellow.WithAlpha( 0.08f ), segments: 24 );
 
-
-		eyePos = Owner.WorldPosition + (Vector3.Up * (Owner.BodyModel.Bounds.Size.z * 0.8f)); // approximate
-		eyeFwd = Owner.WorldRotation.Forward;
-		eyeUp = Owner.WorldRotation.Up;
-		eyeRight = Owner.WorldRotation.Right;
-
-
-		DrawCone( eyePos, eyeFwd, eyeUp, eyeRight,
-			VisionRange, VisionFOV,
-			Color.Cyan.WithAlpha( 0.15f ),
-			segments: 32 );
-
-		DrawCone( eyePos, eyeFwd, eyeUp, eyeRight,
-			PeripheralRange, PeripheralFOV,
-			Color.Yellow.WithAlpha( 0.08f ),
-			segments: 24 );
-
-		foreach ( var kvp in KnownTargets )
+		foreach ( var target in KnownTargets.Values )
 		{
-			var t = kvp.Value;
+			var color = target.Tracking ? Color.Red : target.LostTime < 5f ? Color.Orange : Color.Gray;
+			float height = target.Target is AIController npc && npc.Agent.IsValid() ? npc.Agent.Height : 72f;
+			var position = target.LastKnownPosition;
+			var bounds = new BBox( position + new Vector3( -16f, -16f, 0f ),
+				position + new Vector3( 16f, 16f, height ) );
+
+			Gizmo.Draw.IgnoreDepth = false;
+			Gizmo.Draw.Color = color.WithAlpha( 20f / 255f );
+			Gizmo.Draw.SolidBox( bounds );
+			Gizmo.Draw.Color = color;
+			Gizmo.Draw.LineBBox( bounds );
 
 			Gizmo.Draw.IgnoreDepth = true;
-
-
-			Gizmo.Draw.Color = t.Tracking ? Color.Red
-							 : t.LostTime < 5f ? Color.Orange
-							 : Color.Gray;
-
-			Gizmo.Draw.LineCapsule(
-				new Capsule( t.LastKnownPosition,
-							 t.LastKnownPosition + Vector3.Up * 70f, 18f ) );
-			if ( t.Target is BasePlayer ply )
+			if ( target.Tracking )
 			{
-				var velocity = t.LastKnownVelocity;
-
-				var rotation = velocity.IsNearZeroLength
-					? t.Target.WorldRotation
-					: Rotation.LookAt( velocity.Normal );
-
-				Gizmo.Draw.Model(
-					"models/editor/playerstart.vmdl",
-					new Transform( t.LastKnownPosition, rotation )
-#if IGNIS
-					,
-					_ghost
-#endif
-				);
-			}
-			else if ( t.Target is AIController npc )
-			{
-				Gizmo.Draw.Model( npc.Definition.Models.FirstOrDefault().Name );
-			}
-
-			// Line from eye to target
-			if ( t.Tracking )
-			{
-				Gizmo.Draw.Color = Color.Red.WithAlpha( 0.5f );
-				Gizmo.Draw.Line( eyePos, t.LastKnownPosition );
+				Gizmo.Draw.Color = color.WithAlpha( 0.5f );
+				Gizmo.Draw.Line( eyePos, position + Vector3.Up * 40f );
 			}
 
 			Gizmo.Draw.Color = Color.White;
-			Gizmo.Draw.Text(
-				$"{t.Target?.GetType().Name ?? "?"}\n" +
-				$"lost:{t.LostTime:F1}s\n" +
-				$"score:{t.ThreatScore:F2}",
-				new Transform( t.LastKnownPosition + Vector3.Up * 80f ),
-				flags: TextFlag.LeftTop );
+			Gizmo.Draw.Text( $"{target.Target?.GameObject.Name ?? "Unknown"}\n"
+				+ $"{(target.Tracking ? "Visible" : $"Lost {target.LostTime:0.0}s")} / Score {target.ThreatScore:0.00}",
+				new Transform( position + Vector3.Up * (height + 8f) ), flags: TextFlag.LeftTop );
 		}
 
-		foreach ( var snd in KnownSounds.Values )
-		{
-			if ( !snd.Registered ) continue;
+		if ( PrimaryTarget is SensorData primary )
+			AIManager.DrawDebugArrow( Owner.WorldPosition, primary.LastKnownPosition, Color.Magenta );
 
-			Gizmo.Draw.Color = snd.SoundType switch
+		Gizmo.Draw.IgnoreDepth = true;
+		foreach ( var sound in KnownSounds.Values )
+		{
+			if ( !sound.Registered ) continue;
+			Gizmo.Draw.Color = sound.SoundType switch
 			{
-				var s when s.ToString().StartsWith( "STENCH_" ) => Gizmo.Colors.Green,
-				var s when s.ToString().StartsWith( "ALERT_" ) => Gizmo.Colors.Red,
+				var type when type.ToString().StartsWith( "STENCH_" ) => Gizmo.Colors.Green,
+				var type when type.ToString().StartsWith( "ALERT_" ) => Gizmo.Colors.Red,
 				_ => Gizmo.Colors.Blue,
 			};
-
-			Gizmo.Draw.LineSphere( snd.Position, 16f );
-			Gizmo.Draw.Text( $"{snd.SoundType}",
-				new Transform( snd.Position + Vector3.Up * 20f ),
+			Gizmo.Draw.LineSphere( sound.Position, 16f );
+			Gizmo.Draw.Text( $"{sound.SoundType}", new Transform( sound.Position + Vector3.Up * 20f ),
 				flags: TextFlag.LeftTop );
-		}
-
-		if ( PrimaryTarget.HasValue )
-		{
-			Gizmo.Draw.Color = Color.Red;
-			Gizmo.Draw.Line( eyePos, PrimaryTarget.Value.LastKnownPosition );
 		}
 	}
 
-	private static void DrawCone(
-		Vector3 origin, Vector3 forward, Vector3 up, Vector3 right,
-		float range, float fovDegrees, Color color, int segments = 12 )
+	private static void DrawCone( Vector3 origin, Vector3 forward, Vector3 up, Vector3 right, float range, 
+	float fovDegrees, Color color, int segments = 12 )
 	{
 		Gizmo.Draw.Color = color;
 

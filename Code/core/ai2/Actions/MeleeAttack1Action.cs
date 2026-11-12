@@ -50,15 +50,13 @@ public sealed class MeleeAttack1Action : AIAction
 
 	private void Finish()
 	{
-
 		Owner.CanMove = true;
 		Owner.LastMeleeAttack1Time = WorldTime.Now;
 
 		if ( Owner.Blackboard.activeEnemy is not null && (Owner.Blackboard.activeEnemy.WorldPosition - Owner.WorldPosition).Length <= 250 )
 		{
-
 			var dmg = new DamageInfo( 15, Owner.GameObject, Owner.GameObject );
-			dmg.Tags.Add( "blunt" );
+			dmg.Tags.Add( "club" );
 
 			if ( Owner.Blackboard.activeEnemy is BasePlayer player )
 			{

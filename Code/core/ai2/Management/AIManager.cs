@@ -313,6 +313,9 @@ public class AIManager : GameObjectSystem<AIManager>
 	public static void NPCGo()
 	{
 		var scene = Game.ActiveScene;
+		var manager = Current;
+		if ( !scene.IsValid() || manager is null || manager.Scene != scene )
+			return;
 		var system = DebugOverlaySystem.Current;
 		var camera = scene.Camera;
 #if IGNIS
@@ -336,8 +339,10 @@ public class AIManager : GameObjectSystem<AIManager>
 			.WithoutTags( "player" )
 			.Run();
 
-		foreach ( var npc in Current.selectedNPCs )
+		foreach ( var npc in manager.selectedNPCs.ToArray() )
 		{
+			if ( !npc.IsValid() || !npc.IsAlive || npc.Scene != scene )
+				continue;
 			Vector3? movepos = trace.EndPosition;
 
 			var pointOnNav = scene.NavMesh.GetClosestPoint( movepos.Value );
@@ -467,18 +472,25 @@ public class AIManager : GameObjectSystem<AIManager>
 			Gizmo.Draw.LineBBox( bounds );
 		}
 
-		if ( AIMotor.DebugLevel == 2 || destination is not Vector3 goal )
+		if ( AINavigation.DebugLevel == 2 || destination is not Vector3 goal )
 			return;
 
-		using ( Gizmo.Scope( "NPC forced movement", new Transform( Vector3.Zero ) ) )
+		DrawDebugArrow( npc.WorldPosition, goal, Color.Magenta );
+	}
+
+	/// <summary>
+	/// Draws a destination box and an open arrow with a fixed head size.
+	/// </summary>
+	public static void DrawDebugArrow( Vector3 start, Vector3 goal, Color color )
+	{
+		using ( Gizmo.Scope( "NPC destination", new Transform( Vector3.Zero ) ) )
 		{
 			Gizmo.Draw.IgnoreDepth = true;
-			Gizmo.Draw.Color = Color.Magenta;
+			Gizmo.Draw.Color = color;
 			Gizmo.Draw.LineBBox( new BBox( goal - 5f, goal + 5f ) );
 
-			var start = npc.WorldPosition;
 			var delta = (goal - start).WithZ( 0f );
-			var forward = delta.Length > 0.001f ? delta.Normal : npc.WorldRotation.Forward.WithZ( 0f ).Normal;
+			var forward = delta.Length > 0.001f ? delta.Normal : Vector3.Forward;
 			var side = Vector3.Cross( forward, Vector3.Up ) * 8f;
 			var neck = goal - forward * 32f;
 

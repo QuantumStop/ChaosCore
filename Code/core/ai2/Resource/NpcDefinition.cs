@@ -1,6 +1,8 @@
 ﻿namespace Core.AI;
 
 using Core;
+using Sandbox.Engine.Resources;
+
 #if FMOD
 using FMODSbox;
 #endif
@@ -21,6 +23,7 @@ public class NpcDefinition : GameResource
 	}
 
 	[Category( "Model Config" )] public List<Model> Models { get; set; }
+	[Category( "Model Config" )] public Sandbox.Animation.Graph AnimationGraph { get; set; }
 	[Category( "Model Config" ), AttachmentSelector] public string EyeAttachment { get; set; }
 	[Category( "Model Config" ), AttachmentSelector] public List<string> FootAttachments { get; set; }
 	/// <summary>Attachment for big weapon holster on the back</summary>
@@ -57,6 +60,24 @@ public class NpcDefinition : GameResource
 	[Category( "Agent" )] public float AgentAccel { get; set; }
 	[Category( "Agent" )] public float AgentMaxSpeed { get; set; }
 	[Category( "Agent" )] public float AgentSeparation { get; set; }
+
+	/// <summary>Use the ground motor to jump and climb navigation links.</summary>
+	[Category( "Link Traversal" )] public bool UseGroundLinkTraversal { get; set; }
+	/// <summary>Traversal types this NPC is allowed to use.</summary>
+	[Category( "Link Traversal" )] public LinkMoveType AllowedLinkTraversals { get; set; }
+		= LinkMoveType.MOVE_JUMP | LinkMoveType.MOVE_CLIMB | LinkMoveType.MOVE_DROP;
+	/// <summary>Maximum upward jump height in units.</summary>
+	[Category( "Link Traversal" )] public float MaxJumpHeight { get; set; } = 32f;
+	/// <summary>Upward links above this height use ledge climbing.</summary>
+	[Category( "Link Traversal" )] public float ClimbHeightThreshold { get; set; } = 32f;
+	/// <summary>Maximum ledge height in units. Zero disables climbing.</summary>
+	[Category( "Link Traversal" )] public float MaxClimbHeight { get; set; } = 96f;
+	/// <summary>Maximum horizontal link distance in units.</summary>
+	[Category( "Link Traversal" )] public float MaxLinkDistance { get; set; } = 128f;
+	/// <summary>Maximum downward link height in units.</summary>
+	[Category( "Link Traversal" )] public float MaxDropHeight { get; set; } = 128f;
+	/// <summary>Navigation areas this NPC must avoid, including marked links.</summary>
+	[Category( "Agent" )] public List<NavMeshAreaDefinition> ForbiddenNavigationAreas { get; set; } = [];
 
 	[Category( "Sensing" )] public float VisionRange { get; set; } = 5000f;
 	[Category( "Sensing" )] public float VisionFOV { get; set; } = 100f;
@@ -154,6 +175,9 @@ public class AIActionDefinition : GameResource
 		ActionBarnacleLift,
 		ActionBarnacleEat,
 
+		// Roamer
+		ActionRoamerMoveToPoint,
+
 		// Houndeye
 		ActionHoundeyeRegroup,
 		ActionHoundeyeFindRestingPoint,
@@ -175,6 +199,13 @@ public class AIActionDefinition : GameResource
 		ActionFollowPlayer,
 		ActionHoundeyeLeaderCommand,
 		SniffOutScent,
+		ActionRoamerPatrol,
+		ActionRoamerPatrolReaction,
+		ActionRoamerSearch,
+		ActionRoamerMelee,
+		ActionRoamerHearSound,
+		ActionRoamerPhysicsFlinch,
+		ActionRoamerChaseFailed,
 	}
 
 	public string Name { get; set; }

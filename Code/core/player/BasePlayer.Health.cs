@@ -320,6 +320,19 @@ public partial class BasePlayer
 					Sound.Play( "pl_fallpain" );
 #endif
 					break;
+				case DamageTypes.DMG_CLUB:
+					ScreenFlash.Set( Color.Red, 1f, severityFactor );
+					CameraEffects.AddTrauma( t * 0.4f );
+					// Sharp directional punch toward hit origin
+					CameraEffects.AddShake( strength * 1.45f, duration * 0.2f, frequency: 16f, shakePitch: true, shakeYaw: true, shakeRoll: false, sourcePosition: dmginfo.Position );
+					// Brief roll snap
+					CameraEffects.AddShake( strength * 0.85f, duration * 0.4f, frequency: 8f, shakePitch: false, shakeYaw: false, shakeRoll: true, delay: duration * 0.05f, sourcePosition: dmginfo.Position );
+#if FMOD
+					FMODSound.Play( "event:/Player/PainGeneric" );
+#else
+					Sound.Play( "pl_pain" );
+#endif
+					break;
 				case DamageTypes.DMG_BLAST:
 					CameraEffects.AddShake( strength * 1.5f, duration * 2f, frequency: 4f, shakePitch: true, shakeYaw: true, shakeRoll: true, sourcePosition: dmginfo.Position );
 					break;
@@ -339,8 +352,6 @@ public partial class BasePlayer
 #else
 					Sound.Play( "pl_fallpain" );
 #endif
-					break;
-				case DamageTypes.DMG_CLUB:
 					break;
 			}
 		}

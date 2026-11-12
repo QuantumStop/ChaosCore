@@ -2,7 +2,7 @@ using System;
 
 namespace Core.AI;
 
-public abstract partial class AIMotor
+public partial class AINavigation
 {
     [ConVar( "ai_debug_navigation", Help = "Show navigation debug for NPCs that have Debug Navigation enabled. 0 = off, 1 = basic, 2 = detailed." )]
     public static int DebugLevel { get; set; }
@@ -111,7 +111,7 @@ public abstract partial class AIMotor
         Gizmo.Draw.SolidTriangle( origin - side, shoulder + side, origin + side );
         Gizmo.Draw.SolidTriangle( shoulder - side, tip, shoulder + side );
 
-        if ( agent.IsNavigating && FacingYaw is float yaw )
+        if ( agent.IsNavigating && Motor.FacingYaw is float yaw )
             DrawTurn( npc, center, radius, yaw );
 
         if ( _destination is Vector3 destination )
@@ -124,7 +124,7 @@ public abstract partial class AIMotor
     private static void DrawTurn( AIController npc, Vector3 center, float radius, float yaw )
     {
         float startYaw = npc.WorldRotation.Yaw();
-        float delta = AngleDelta( yaw, startYaw );
+        float delta = AIMotor.AngleDelta( yaw, startYaw );
         Vector3 direction = Rotation.FromYaw( yaw ).Forward;
         float turnRadius = radius * 0.76f;
         Vector3 origin = center + Vector3.Up * 0.6f;
@@ -208,7 +208,7 @@ public abstract partial class AIMotor
         }
     }
 
-    public DebugTextBlock GetLocomotionDebugText()
+    public DebugTextBlock GetNavigationDebugText()
     {
         var block = new DebugTextBlock();
         var npc = Owner;
@@ -228,21 +228,21 @@ public abstract partial class AIMotor
         float arrival = npc.CurrentAction is MoveToAction move ? move.ArrivalDistance : agent.Radius;
 
         block.Line( "NPC", npc.GameObject.Name, Color.White );
-        block.Line( "Motor", GetType().Name, Color.White );
+        block.Line( "Motor", Motor.GetType().Name, Color.White );
         block.Line( "Status", GetMovementStatus( npc, arrival ), Color.White );
         block.Line( "Path result", _pathStatus, Color.Orange );
         block.Line( "Speed / Wish", $"{agent.Velocity.Length:0} / {agent.WishVelocity.Length:0}", Color.Green );
-        block.Line( "Cruise / Cap", $"{RequestedSpeed ?? npc.Definition.AgentMaxSpeed:0} / {SpeedLimit:0}", Color.Green );
-        block.Line( "Accel / Brake", $"{EffectiveAcceleration:0} / {Math.Max( 1f, BrakingDeceleration ?? EffectiveAcceleration ):0}", Color.Green );
+        block.Line( "Cruise / Cap", $"{Motor.RequestedSpeed ?? npc.Definition.AgentMaxSpeed:0} / {Motor.SpeedLimit:0}", Color.Green );
+        block.Line( "Accel / Brake", $"{Motor.EffectiveAcceleration:0} / {Math.Max( 1f, Motor.BrakingDeceleration ?? Motor.EffectiveAcceleration ):0}", Color.Green );
         block.Line( "Path pts / length", $"{_points.Length} / {length:0}u", Color.Orange );
         block.Line( "Goal distance", target.HasValue ? $"{npc.WorldPosition.Distance( target.Value ):0}u" : "-", Color.Orange );
         block.Line( "Arrival radius", target.HasValue ? $"{arrival:0}u" : "-", Color.Cyan );
 
-        var corner = this is AIGroundMotor ground && ground.NextCorner is Vector3 cornerPosition
+        var corner = Motor is AIGroundMotor ground && ground.NextCorner is Vector3 cornerPosition
             ? $"{ground.CornerSpeed:0} / {npc.WorldPosition.Distance( cornerPosition ):0}u" : "-";
         block.Line( "Corner spd / dist", corner, Color.Cyan );
-        block.Line( "Facing error", FacingYaw is float yaw ? $"{AngleDelta( yaw, npc.WorldRotation.Yaw() ):0} deg" : "-", Color.Cyan );
-        block.Line( "Turn rate", $"{TurnRate:0} deg/s", Color.Cyan );
+        block.Line( "Facing error", Motor.FacingYaw is float yaw ? $"{AIMotor.AngleDelta( yaw, npc.WorldRotation.Yaw() ):0} deg" : "-", Color.Cyan );
+        block.Line( "Turn rate", $"{Motor.TurnRate:0} deg/s", Color.Cyan );
         return block;
     }
 
@@ -252,6 +252,11 @@ public abstract partial class AIMotor
 
         if ( !npc.CanMove )
             return "Movement disabled";
+
+        if ( IsYielding )
+            return "Waiting for NPC";
+        if ( IsPassingNPC )
+            return "Passing NPC";
 
         var destination = agent.TargetPosition ?? _destination;
         bool withinArrival = destination.HasValue && npc.WorldPosition.Distance( destination.Value ) <= arrival;

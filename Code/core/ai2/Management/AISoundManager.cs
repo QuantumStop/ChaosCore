@@ -44,14 +44,14 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 	[Property] public bool DrawDebug { get; set; } = false;
 	[Property, ReadOnly] public Dictionary<Guid, NpcSound> NpcSounds { get; set; } = [];
 
-	public static Guid AddSound( SoundType type, Vector3 position, GameObject owner )
+	public static Guid AddSound( SoundType type, Vector3 position, GameObject owner, float? radius = null )
 	{
 		NpcSound sound = new()
 		{
 			SoundType = type,
 			Position = position,
 			Owner = owner,
-			MaxRadius = GetMaxRadius( type ),
+			MaxRadius = radius ?? GetMaxRadius( type ),
 			Timeline = 0f
 		};
 
@@ -84,6 +84,7 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 		{
 			SoundType.STENCH_CARCASS => 500f,
 			SoundType.ALERT_TALKER_CONCEPT => 1f,
+			SoundType.SOUND_PHYSICS_DANGER => 0.5f,
 			// SOUND_
 			SoundType.SOUND_WORLD or
 			SoundType.SOUND_PLAYER or
@@ -93,7 +94,6 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 			SoundType.SOUND_FOOTSTEP or
 			SoundType.SOUND_COMBAT or
 			SoundType.SOUND_BULLET_IMPACT or
-			SoundType.SOUND_PHYSICS_DANGER or
 			SoundType.SOUND_GRENADE or
 			SoundType.SOUND_DANGER or
 			SoundType.SOUND_THUMPER => 1f,
@@ -114,6 +114,7 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 		{
 			SoundType.SOUND_GUNFIRE => 2500f,
 			SoundType.SOUND_FOOTSTEP => 420f,
+			SoundType.SOUND_PHYSICS_DANGER => 128f,
 			SoundType.SOUND_BULLET_IMPACT => 90f,
 			SoundType.ALERT_TALKER_CONCEPT => 400f,
 			// SOUND
@@ -122,7 +123,6 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 			SoundType.SOUND_PLAYER_VEHICLE or
 			SoundType.SOUND_PHYSICS or
 			SoundType.SOUND_COMBAT or
-			SoundType.SOUND_PHYSICS_DANGER or
 			SoundType.SOUND_GRENADE or
 			SoundType.SOUND_DANGER or
 			SoundType.SOUND_THUMPER => 512f,
@@ -154,6 +154,7 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 	{
 		return type switch
 		{
+			SoundType.SOUND_PHYSICS_DANGER => 0.5f,
 			SoundType.STENCH_CARCASS or
 			SoundType.STENCH_MEAT or
 			SoundType.STENCH_GARBAGE or
@@ -203,7 +204,14 @@ public class NpcSoundManager : GameObjectSystem<NpcSoundManager>
 			// send to npcs
 			foreach ( var npc in Scene.Components.GetAll<AIController>() )
 			{
-				if ( npc.WorldPosition.Distance( snd.Position ) < snd.CurrentRadius && !npc.TargetingSensor.KnownSounds.ContainsKey( sound.Key ) )
+				if ( !npc.IsAlive || npc.TargetingSensor is null )
+					continue;
+				if ( snd.Owner.IsValid() && snd.Owner.Components.Get<AIController>( FindMode.EverythingInSelfAndAncestors ) == npc )
+					continue;
+
+				float hearingRadius = Math.Min( snd.CurrentRadius, npc.Definition.HearingRange );
+				if ( npc.WorldPosition.DistanceSquared( snd.Position ) <= hearingRadius * hearingRadius
+					&& !npc.TargetingSensor.KnownSounds.ContainsKey( sound.Key ) )
 				{
 					NpcTargetingSensor.AISoundMemory sndmem = new()
 					{

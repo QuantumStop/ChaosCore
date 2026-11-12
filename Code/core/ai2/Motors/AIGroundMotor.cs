@@ -6,16 +6,19 @@ using System;
 /// Motor for ground movement.
 /// 
 /// Plans speed and facing by looking ahead along the path.
-/// Meanwwhile NavMeshAgent follows the current path and handles avoidance and position.
+/// Meanwhile NavMeshAgent follows the current path and handles avoidance and position.
 /// 
 /// Inspired by blended movement motor from Source.
 /// </summary>
-public sealed class AIGroundMotor : AIMotor
+public sealed partial class AIGroundMotor : AIMotor
 {
     internal const float MinSegmentLength = 1f;
 
-	public override void MoveTo( Vector3 position ) => Owner.Agent.MoveTo( position );
-    public override void Stop() => Owner.Agent.Stop();
+    public override void Stop()
+    {
+        ResetLinkTraversal();
+        base.Stop();
+    }
 
     public Vector3? NextCorner { get; private set; }
     public float CornerSpeed { get; private set; }
@@ -39,32 +42,23 @@ public sealed class AIGroundMotor : AIMotor
         return Math.Min( cruise, speed );
     }
 
-    public override void Tick()
+    protected override float PrepareMovement()
     {
-        var npc = Owner;
         NextCorner = null;
         CornerSpeed = 0f;
+        return base.PrepareMovement();
+    }
 
+    protected override void TickMovement()
+    {
+        var npc = Owner;
         var agent = npc.Agent;
-       
-        if ( !agent.IsValid() ) 
-            return;
-
-        agent.UpdateRotation = false; // Motor owns this!
-
-        float cruise = PrepareMovement();
-       
-        if ( Math.Abs( agent.Acceleration - EffectiveAcceleration ) > 0.01f )
-            agent.Acceleration = EffectiveAcceleration;
-
+        float cruise = CruiseSpeed;
         float acceleration = EffectiveAcceleration;
         float deceleration = Math.Max( 1f, BrakingDeceleration ?? acceleration );
 
-        // MaxSpeed is configuration, not a continuously changing speed command.
-        if ( Math.Abs( agent.MaxSpeed - cruise ) > 0.01f )
-            agent.MaxSpeed = cruise;
-
         var wish = agent.WishVelocity.WithZ( 0 );
+
         if ( wish.LengthSquared > 1f )
             FacingYaw = Rotation.LookAt( wish ).Yaw();
 
@@ -93,7 +87,8 @@ public sealed class AIGroundMotor : AIMotor
             }
 
             bool isTerminal = i == points.Length - 1;
-            float cornerSpeed = 0f;
+            float cornerSpeed = isTerminal && npc.CurrentAction is MoveToAction { StopAtDestination: false }
+                ? cruise : 0f;
 
             if ( !isTerminal )
             {
@@ -131,7 +126,7 @@ public sealed class AIGroundMotor : AIMotor
             float buffer = Math.Max( agent.Radius * 0.5f, velocity.Length * 0.05f );
             if ( isTerminal )
             {
-                float arrival = npc.CurrentAction is MoveToAction move
+                float arrival = npc.Navigation.IsPassingNPC ? 8f : npc.CurrentAction is MoveToAction move
                     ? move.ArrivalDistance : agent.Radius;
                 // Reach zero inside the completion region. Stopping at its outer edge
                 // leaves the agent held in a running pose before the action completes.

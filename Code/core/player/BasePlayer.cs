@@ -204,7 +204,7 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		PlayFootstepSound( e.Transform.Position, e.Volume, e.FootId );
 	}
 
-	public void PlayFootstepSound( Vector3 worldPosition, float volume, int foot )
+	public virtual void PlayFootstepSound( Vector3 worldPosition, float volume, int foot )
 	{
 		var tr = Scene.Trace
 			.Ray( worldPosition + Vector3.Up * 10, worldPosition + Vector3.Down * 20 )

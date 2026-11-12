@@ -48,7 +48,8 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 		BaseGUIManager.Local?.OnUnpause -= OnGameUnpaused;
 
 		IsPaused = false;
-		Current = null;
+		if ( Current == this )
+			Current = null;
 		GC.SuppressFinalize( this ); // the three dots suggest i add it, i dont know why or if its bad or not
 		base.Dispose();
 	}

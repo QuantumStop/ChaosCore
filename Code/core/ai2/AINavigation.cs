@@ -11,8 +11,18 @@ public struct NavData()
 	public GoalType GoalType;
 }
 
-public class AINavigation : AIModule
+public partial class AINavigation : AIModule
 {
+	public int FailureRevision { get; private set; }
+
+	/// <summary>
+	/// Records a failed movement attempt.
+	/// </summary>
+	public void ReportFailure()
+	{
+		FailureRevision++;
+		Owner.NavStatus = NavigationStatus.NAVIGATION_IN_ERROR;
+	}
 	public AIMotor Motor { get; private set; }
 	public AIGroundMotor GroundMotor => Motor as AIGroundMotor;
 
@@ -32,12 +42,17 @@ public class AINavigation : AIModule
 
 		// Clean a previous motor to be able to switch motors 
 		// and to make sure we're using the correct one
+		ClearLocalMovement();
 		Motor?.Terminate();
 		motor.Init( Owner );
 		Motor = motor;
 	}
 
-	public override void Terminate() => Motor?.Terminate();
+	public override void Terminate()
+    {
+        ClearLocalMovement();
+        Motor?.Terminate();
+    }
 
 	public NavData? Data;
 	public MoveType ControllerMoveType;
@@ -57,8 +72,8 @@ public class AINavigation : AIModule
 	public void NavigationDoMovement( NavData data )
 	{
 		// Keep the current path when an action refreshes an unchanged destination.
-		if ( Motor is AIGroundMotor && Owner.Agent.IsValid() && Owner.Agent.IsNavigating
-			&& Owner.Agent.TargetPosition is Vector3 target && target.Distance( data.Position ) < 1f )
+		if ( Motor is AIGroundMotor && Owner.Agent.IsValid() && Owner.Agent.IsNavigating && !Owner.Agent.IsTraversingLink
+			&& Destination is Vector3 destination && destination.Distance( data.Position ) < 1f )
 		{
 			Data = data;
 			Owner.IsMoving = true;
@@ -73,7 +88,7 @@ public class AINavigation : AIModule
 		if ( ControllerMoveType == MoveType.MOVE_NONE || Motor is null )
 			return;
 
-		Motor.MoveTo( data.Position );
+		MoveTo( data.Position );
 
 		if ( Motor is AIGroundMotor )
 			Path = Owner.Agent.GetPath();
@@ -118,7 +133,7 @@ public class AINavigation : AIModule
 
 		Owner.CurrentMoveGoal = GoalType.GOALTYPE_NONE;
 		Owner.IsMoving = false;
-		Motor?.Stop();
+		Stop();
 
 	}
 
@@ -132,6 +147,13 @@ public class AINavigation : AIModule
 
 	public void NavigationCheckForErrors()
 	{
+		if ( Owner.Agent.IsTraversingLink || IsYielding )
+		{
+			_velocitySamples.Clear();
+			_sampleTimer = 0f;
+			return;
+		}
+
 		if ( !Owner.Agent.IsNavigating )
 		{
 			_velocitySamples.Clear();
@@ -167,6 +189,7 @@ public class AINavigation : AIModule
 			Log.Warning( $"[AINavigation] {Owner.GameObject.Name} is stuck!!! stopping navigation." );
 			_velocitySamples.Clear();
 			NavigationStopMovement();
+			ReportFailure();
 		}
 	}
 }

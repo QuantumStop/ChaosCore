@@ -112,10 +112,14 @@ public static partial class AttackManager
 			}
 
 			// second trace for near misses (sounds or some other effects)
-			List<GameObject> npcs = [];
+			HashSet<AIController> npcs = [];
 			foreach ( var tr2 in Game.ActiveScene.Trace.Ray( transform.Position, transform.Position + transform.Forward * 5000f ).Radius( 40f ).UseHitboxes().IgnoreGameObjectHierarchy( coreDamageInfo.Attacker ).RunAll() )
 			{
-				if ( tr2.Hit && !npcs.Contains( tr2.GameObject ) && tr2.GameObject.Components.Get<AIController>().IsValid() )
+				if ( !tr2.Hit )
+					continue;
+
+				var npc = tr2.GameObject.Components.Get<AIController>( FindMode.EverythingInSelfAndAncestors );
+				if ( npc.IsValid() && npc.TargetingSensor is not null && npcs.Add( npc ) )
 				{
 					NpcTargetingSensor.AISoundMemory sndmem = new()
 					{
@@ -126,8 +130,7 @@ public static partial class AttackManager
 						TimeToForget = 6f
 					};
 
-					npcs.Add( tr2.GameObject );
-					tr2.GameObject.Components.Get<NpcTargetingSensor>().KnownSounds.Add( Guid.NewGuid(), sndmem );
+					npc.TargetingSensor.KnownSounds.Add( Guid.NewGuid(), sndmem );
 				}
 			}
 			return attack;

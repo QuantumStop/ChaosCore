@@ -245,7 +245,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	/// <summary>
 	/// Handles rendering of debug convars like cl_showpos
 	/// </summary>
-	private static void DebugConvars()
+	private void DebugConvars()
 	{
 		Vector2 pos = new( 32, 32 );
 		Vector2 rightPos = new( 32, 32 );
@@ -275,18 +275,17 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		}
 
 		var columnBottoms = new List<float> { rightPos.y };
-
 		
-		if ( AIMotor.DebugLevel >= 2 )
+		if ( AINavigation.DebugLevel >= 2 )
 		{
 			DebugTextBlock navigation = null;
 			
-			foreach ( var npc in Current.Scene.GetAll<AIController>() )
+			foreach ( var npc in Scene.GetAll<AIController>() )
 			{
 				if ( !npc.DebugNavigation || !npc.Enabled || !npc.Agent.IsValid() || npc.Navigation?.Motor is null )
 					continue;
 
-				var block = npc.Navigation.Motor.GetLocomotionDebugText();
+				var block = npc.Navigation.GetNavigationDebugText();
 				
 				if ( block is null ) 
 					continue;
@@ -312,7 +311,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 
 		if ( BaseGrenade.GrenadeDebug )
 		{
-			foreach ( var grenade in Current.Scene.GetAll<BaseGrenade>() )
+			foreach ( var grenade in Scene.GetAll<BaseGrenade>() )
 			{
 				DrawPanel( grenade.GetDebugText() );
 			}
@@ -320,7 +319,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 
 		if ( SpatialDirector.DebugMode > 0 || SpatialProbe.DebugMode > 0 )
 		{
-			foreach ( var director in Current.Scene.GetAll<SpatialDirector>() )
+			foreach ( var director in Scene.GetAll<SpatialDirector>() )
 			{
 				if ( !director.Active || !director.IsSupportedView || !director.Camera.IsValid() )
 					continue;
@@ -329,6 +328,8 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 				DrawPanel( director.Probe.GetDebugText() );
 			}
 		}
+
+		DrawDebugText( DrawPanel );
 
 		if ( BasePlayer.Local.IsValid() && BasePlayer.Local.Controller.IsValid() && BasePlayer.Local.Controller.IsNoclipping )
 		{
@@ -372,7 +373,12 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 
 	}
 
-	private static void DrawWorldTime( ref Vector2 pos )
+	/// <summary>
+	/// Override to draw additional debug text.
+	/// </summary>
+	public virtual void DrawDebugText( Action<DebugTextBlock> draw ) { }
+
+	private void DrawWorldTime( ref Vector2 pos )
 	{
 		var scope = InitDebugTextScope();
 		scope.FontVariantNumeric = FontVariantNumeric.TabularNums;
@@ -384,7 +390,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		DrawWorldTimeLine( "Time.Now", Time.Now, Color.White );
 		DrawWorldTimeLine( "WorldTime.Now", WorldTime.Now, Color.Green );
 		DrawWorldTimeLine( "WorldTime.Delta", WorldTime.Delta, Color.Orange );
-		DrawWorldTimeLine( "WorldTime.Offset", Current.WorldTimeOffset, Color.Cyan );
+		DrawWorldTimeLine( "WorldTime.Offset", WorldTimeOffset, Color.Cyan );
 		pos.y = y;
 
 		void DrawWorldTimeLine( string label, float value, Color color )

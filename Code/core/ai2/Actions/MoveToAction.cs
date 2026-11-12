@@ -10,6 +10,11 @@ public abstract class MoveToAction : AIAction
 	/// Distance at which this movement action considers its goal reached.
 	/// </summary>
 	public virtual float ArrivalDistance => _stoppingDistance;	
+
+	/// <summary>
+	/// Whether the motor should brake to a stop at the destination.
+	/// </summary>
+	public virtual bool StopAtDestination => true;
 	protected float _stoppingDistance => Owner.Agent.Radius;
 
 	protected bool _arrived = false;

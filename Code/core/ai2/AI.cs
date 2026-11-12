@@ -72,7 +72,26 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		MOVE_FLY,
 		MOVE_CRAWL,
 		MOVE_SWIM
+	}
 
+	/// <summary>How this npc can traverse a navigation link</summary>
+	[Flags]
+	public enum LinkMoveType
+	{
+		MOVE_NONE = 0,
+		MOVE_CRAWL = 1 << 0,
+		MOVE_CROUCH = 1 << 1,
+		MOVE_WALK = 1 << 2,
+		MOVE_JUMP = 1 << 3,
+		MOVE_CLIMB = 1 << 4,
+		MOVE_LADDER = 1 << 5,
+		MOVE_VAULT = 1 << 6,
+		MOVE_DROP = 1 << 7,
+		MOVE_SWIM = 1 << 8,
+		MOVE_FLY = 1 << 9,
+		MOVE_TRANSITION = 1 << 10,
+		MOVE_BLINK = 1 << 11,
+		MOVE_PHASE = 1 << 12,
 	}
 
 	/// <summary>The type of scripting which we are currently under.</summary>
@@ -581,6 +600,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 		PhysModel.MotionEnabled = false;
 
 		BodyModel.Model = Definition.Models[0];
+		if ( Definition.AnimationGraph is not null )
+			BodyModel.Animation.Graph = Definition.AnimationGraph;
 		BodyModel.CreateBoneObjects = true;
 		PhysModel.Model = BodyModel.Model;
 
@@ -594,6 +615,8 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			Agent.Radius = Definition.AgentRadius;
 			Agent.Height = Definition.AgentHeight;
 			Agent.Separation = Definition.AgentSeparation;
+			if ( Definition.ForbiddenNavigationAreas is not null )
+				Agent.ForbiddenAreas.UnionWith( Definition.ForbiddenNavigationAreas );
 
 		}
 
@@ -767,7 +790,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			if ( !string.IsNullOrWhiteSpace( Definition.BehaviorClass ) )
 			{
 				var behaviorType = Game.TypeLibrary.GetType<AIBehavior>( Definition.BehaviorClass );
-				
+
 				if ( behaviorType is not null )
 					BehaviorModule = behaviorType.Create<AIBehavior>();
 				else
@@ -1743,7 +1766,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// <param name="pos"></param>
 	public void SetForcedMovePosition( Vector3? pos )
 	{
-		if ( _forcedMovePosition != null )
+		if ( !pos.HasValue )
 		{
 			ClearForcedMovePosition();
 			return;
@@ -1753,6 +1776,7 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 		FollowingForcedMovementPath = false;
 		ForcedMoveComplete = false;
+		HasReachedCine = false;
 	}
 
 	/// <summary>
@@ -1761,8 +1785,11 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	public void ClearForcedMovePosition()
 	{
 		_forcedMovePosition = null;
+		FollowingForcedMovementPath = false;
+		InCine = false;
 
-		Agent.Stop();
+		if ( Navigation?.Motor is { } motor ) motor.Stop();
+		else Agent.Stop();
 		SetAIState( AI_BehaviorState.BEHAVIORSTATE_DEFAULT );
 		HasReachedCine = true;
 		CurrentMoveGoal = GoalType.GOALTYPE_NONE;
@@ -1808,6 +1835,11 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 				break;
 
 			case ScriptingContext.SCRIPT_FORCED_MOVE:
+				if ( !_forcedMovePosition.HasValue )
+				{
+					ClearForcedMovePosition();
+					break;
+				}
 				FollowingForcedMovementPath = true;
 				//data.Controller = this;
 				//data.position = forcedMovePosition.Value;
@@ -2052,9 +2084,12 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 		if ( AIManager.AIDebugVisionSensing )
 			TargetingSensor.DrawGizmos();
-			
+
 		if ( IsAlive && DebugNavigation && Agent.IsValid() )
+		{
+			Navigation.DrawDebug();
 			Navigation.Motor?.DrawDebug();
+		}
 
 		base.OnUpdate();
 	}
@@ -2067,9 +2102,9 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 			case SleepState.SLEEPSTATE_NONE:
 
 				DecayLookTargets( Time.Delta );
-			
+
 				if ( IsAlive )
-					Navigation.Motor?.Tick();
+					Navigation.Tick();
 
 				UpdateFacing( LookAtTarget );
 				TickAbilities();
@@ -2194,6 +2229,13 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 	/// </summary>
 	public void UpdateFacing( bool lookAtTarget )
 	{
+		if ( Navigation?.Motor is AIMotor motor
+			&& motor.CurrentLinkMovement != AIController.LinkMoveType.MOVE_NONE && motor.FacingYaw is float linkYaw )
+		{
+			WorldRotation = Rotation.FromYaw( AIMotor.ApproachYaw( WorldRotation.Yaw(), linkYaw, Time.Delta, motor.TurnRate ) );
+			return;
+		}
+
 		if ( StaticEnemy )
 			return; // static npcs do not face enemies
 
@@ -2247,13 +2289,16 @@ public class AIController : BaseEntity, Component.IDamageable, Component.ICollis
 
 		var vmdl = Model.Load( editorvis );
 		Gizmo.Hitbox.Model( vmdl );
-		Gizmo.Draw.Model( vmdl ).Flags.CastShadows = true;
+		var gizmoModel = Gizmo.Draw.Model( vmdl );
 
-		Color currentColor = Gizmo.Draw.Model( vmdl ).ColorTint;
+		gizmoModel.Flags.CastShadows = true;
+		gizmoModel.Update( Time.Delta );
+
+		Color currentColor = gizmoModel.ColorTint;
 		if ( CurrentSleepState > 0 )
 			currentColor.a = 0.1f;
 
-		Gizmo.Draw.Model( vmdl ).ColorTint = currentColor;
+		gizmoModel.ColorTint = currentColor;
 
 		if ( Gizmo.IsSelected )
 		{

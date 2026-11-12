@@ -2,6 +2,8 @@
 
 public class MoveToEnemyAction : MoveToAction
 {
+	public override bool StopAtDestination => false;
+
 	public MoveToEnemyAction( AIController owner )
 	{
 		RegisterActionDefinition( AIActionDefinition.ActionList.ActionChaseEnemy, owner );
@@ -10,6 +12,9 @@ public class MoveToEnemyAction : MoveToAction
 
 	public override void OnEnter( AIController agent )
 	{
+		_arrived = false;
+		_hasStarted = false;
+		NextMoveUpdate = 0f;
 
 		if ( !agent.Blackboard.activeEnemy.IsValid() )
 		{
@@ -27,10 +32,10 @@ public class MoveToEnemyAction : MoveToAction
 		if ( agent.Blackboard.activeEnemy.IsValid() )
 			_targetPosition = agent.EnemyLKP.Value;
 
-		// Directly drive the navmesh agent, bypass the request stuff for right now. slow it down in the action and pray
+		// Keep the navigation goal in sync with the moving target.
 		if ( WorldTime.Now >= NextMoveUpdate )
 		{
-			agent.Agent.MoveTo( _targetPosition );
+			agent.DoMovement( _targetPosition, AIController.GoalType.GOALTYPE_LOCATION );
 			NextMoveUpdate = WorldTime.Now + 0.2f;
 		}
 

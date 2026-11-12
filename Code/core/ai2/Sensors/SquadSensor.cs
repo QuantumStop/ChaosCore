@@ -54,6 +54,7 @@ public sealed class SquadSensor : BaseSensor<SquadPacket>
 
 		BaseEntity bestEnemy = null;
 		float bestEnemyDist = float.MaxValue;
+		NpcTargetingSensor.SensorData? bestContact = null;
 
 		foreach ( var member in squad.members )
 		{
@@ -66,37 +67,36 @@ public sealed class SquadSensor : BaseSensor<SquadPacket>
 			if ( member == squad.Leader && member.IsAlive )
 				leaderAlive = true;
 
-			var enemy = member.Blackboard.activeEnemy;
-
 			if ( squad.Leader == Agent )
 				isSquadLeader = true;
 
-			if ( !enemy.IsValid() || !enemy.IsValid )
+			var contact = member.TargetingSensor?.PrimaryTarget;
+			if ( !member.IsAlive || !contact.HasValue || !contact.Value.Tracking || !contact.Value.Target.IsValid() )
 				continue;
 
 			enemyContactCount++;
 
-			float dist = member.WorldPosition.Distance( enemy.WorldPosition );
+			float dist = Agent.WorldPosition.Distance( contact.Value.LastKnownPosition );
 			if ( dist < bestEnemyDist )
 			{
 				bestEnemyDist = dist;
-				bestEnemy = enemy;
+				bestEnemy = contact.Value.Target;
+				bestContact = contact;
 			}
 		}
-
+		
 		// TODO: update this part with the new squad context, and make a method for transmitting a squad context message
-		context.activeEnemy = bestEnemy;
-		// send out context to our squad
-		if ( context.activeEnemy.IsValid() )
+		context.enemyVisible = bestContact.HasValue;
+		if ( bestContact.HasValue )
 		{
-			foreach ( var member in squad.members )
-			{
-				if ( !member.IsValid() || !member.IsAlive )
-					continue;
-
-				member.Blackboard.activeEnemy = context.activeEnemy;
-
-			}
+			context.activeEnemy = bestEnemy;
+			context.lastKnownPosition = bestContact.Value.LastKnownPosition;
+			context.lastSeenEnemyTime = 0f;
+			Agent.TargetingSensor.ReceiveSquadContact( bestContact.Value );
+		}
+		else if ( !context.activeEnemy.IsValid() || context.lastSeenEnemyTime > Agent.Definition.LostTargetTimeout )
+		{
+			context.activeEnemy = null;
 		}
 
 		float distToLeader = float.MaxValue;
@@ -121,7 +121,7 @@ public sealed class SquadSensor : BaseSensor<SquadPacket>
 		Packet.SquadCohesionOK = CheckSquadCohesion();
 		Packet.SquadIsBroken = aliveCount <= 1;
 
-		Packet.ActiveEnemy = bestEnemy;
+		Packet.ActiveEnemy = context.activeEnemy;
 	}
 
 	public SquadPacket GetOutputPacketData()

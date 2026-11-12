@@ -220,7 +220,8 @@ public class ProcessPainAction : AIAction
 		agent.WorldState.Set( "mediumPain", false );
 		agent.WorldState.Set( "highPain", false );
 
-		agent.Agent.Stop();
+		if ( agent.Navigation?.Motor is { } motor ) motor.Stop();
+		else agent.Agent.Stop();
 	}
 
 	public override bool IsDone() => _done;

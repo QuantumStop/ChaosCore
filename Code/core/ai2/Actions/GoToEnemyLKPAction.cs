@@ -59,7 +59,8 @@ public class GoToEnemyLKPAction : MoveToAction
 
 	public override void OnExit( AIController agent )
 	{
-		agent.Agent.Stop();
+		if ( agent.Navigation?.Motor is { } motor ) motor.Stop();
+		else agent.Agent.Stop();
 		agent.Navigation.NavigationStopMovement();
 	}
 }
