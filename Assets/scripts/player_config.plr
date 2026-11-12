@@ -1,5 +1,8 @@
 {
-  "ViewmodelHands": "models/weapons/viewmodel_hand.vmdl",
+  "ViewmodelHands": {
+    "Id": "edb12798-1412-44a5-aaaf-3963e1a5f5c6",
+    "Path": "models/weapons/viewmodel_hand.vmdl"
+  },
   "BodyModel": null,
   "HudEntries": [
     {
@@ -9,13 +12,16 @@
     {
       "RazorPath": "..\\Code\\UI\\SDK\\HUD\\ChaosChatOverlay.razor",
       "RequireSuitToDraw": false
-    },
-    {
-      "RazorPath": "..\\Code\\ui\\SDK\\HUD\\ChaosHUD.razor",
-      "RequireSuitToDraw": false
     }
   ],
   "PlayerData": [],
+  "Damage": {
+    "Head": 0,
+    "Chest": 0,
+    "Stomach": 0,
+    "Arm": 0,
+    "Leg": 0
+  },
   "Faction": "PLAYER",
   "__references": [],
   "__version": 0

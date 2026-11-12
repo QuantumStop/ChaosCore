@@ -106,7 +106,12 @@
   "SpreadType": "SPREAD_STATIC",
   "DynamicSpreadType": "PER_CONSECUTIVE_SHOT",
   "SpreadScale": 1,
-  "AttackSoundsPrimary": [],
+  "AttackSoundsPrimary": [
+    {
+      "Id": "81a0f15e-8848-49f7-952e-25b24e813ab6",
+      "Path": "sound/weapons/glock/pistol_shot.sound"
+    }
+  ],
   "AttackSoundPrimaryThirdPerson": [],
   "SecondaryAmmoType": null,
   "SecondaryAmmoCapacity": 0,
