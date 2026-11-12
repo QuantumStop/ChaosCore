@@ -25,7 +25,7 @@ public class weapon_smg : Core.BaseCombatWeapon
 	{
 		base.PrimaryAttack();
 
-		Owner.Player?.SetAllAnimgraphParams( "b_attack", true ); // FP guns have a different naming scheme than us
+		Owner.Player?.SetAnimgraphParameter( "b_attack", true ); // FP guns have a different naming scheme than us
 	}
 
 	/// <summary>
@@ -35,7 +35,7 @@ public class weapon_smg : Core.BaseCombatWeapon
 	public override void Draw( BasePlayer.HolsterType type = BasePlayer.HolsterType.Weapon, bool force = false )
 	{
 		base.Draw();
-		Owner.Player?.SetAllAnimgraphParams( "b_holster", false );
+		Owner.Player?.SetAnimgraphParameter( "b_holster", false );
 	}
 	/// <summary>
 	/// Holster the weapon.
@@ -44,6 +44,6 @@ public class weapon_smg : Core.BaseCombatWeapon
 	public override void Holster( BasePlayer.HolsterType type = BasePlayer.HolsterType.Weapon, bool force = false )
 	{
 		base.Holster();
-		Owner.Player?.SetAllAnimgraphParams( "b_holster", true );
+		Owner.Player?.SetAnimgraphParameter( "b_holster", true );
 	}
 }

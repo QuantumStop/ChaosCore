@@ -107,7 +107,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 		IsCooking = true;
 		CookStartTime = WorldTime.Now;
 
-		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+		Owner.Player?.SetAnimgraphParameter( "b_attack1", true );
 		OnBeginCook();
 	}
 
@@ -151,7 +151,7 @@ public abstract partial class BaseGrenade : BaseCombatWeapon
 
 		if ( !BasePlayer.InfiniteAmmo ) PrimaryAmmoLoaded = Math.Max( 0, PrimaryAmmoLoaded - 1 );
 
-		Owner.Player?.SetAllAnimgraphParams( "b_attack1", false );
+		Owner.Player?.SetAnimgraphParameter( "b_attack1", false );
 
 		SpawnLiveGrenade( fuse, force );
 	}

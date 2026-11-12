@@ -90,8 +90,8 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// <summary>Non-empty reload has one less stage - no bolt pull/slide release</summary>
 	[Property, ReadOnly, Feature( "Debug" )] private int _reloadStageAmount => WeaponData.StageAmount - (PrimaryAmmoLoaded > 0 ? 1 : 0);
 	/// <summary>Is current stage last? Technically a useless check due to instantly resetting to 0 after reaching last</summary>
-	[Property, ReadOnly, Feature( "Debug" )] private bool _isLastStage => _currentReloadStage >= _reloadStageAmount;
-	/// <summary>Is the gun empty</summary>
+	[Property, ReadOnly, Feature( "Debug" )] private bool _isLastStage => CurrentReloadStage.AsInt() >= _reloadStageAmount;
+	/// <summary>Is the gun empty? Used in detection when to auto-reload.</summary>
 	[Property, ReadOnly, Feature( "Debug" )]
 	private bool _gunEmpty
 	{
@@ -106,32 +106,49 @@ public partial class BaseCombatWeapon : BaseEntity
 		}
 	} = false;
 	/// <summary>Used to track whether we are storing a staged reloading state</summary>
-	[Property, ReadOnly, Feature( "Debug" )] protected bool _inStagedReload => _currentReloadStage > 0;
+	[Property, ReadOnly, Feature( "Debug" )] protected bool _inStagedReload => CurrentReloadStage > 0;
 	/// <summary>Is this weapon currently reloading (stage agnostic, some don't care)</summary>
 	[Property, ReadOnly, Feature( "Debug" )] public bool IsReloading { get; protected set; }
 	/// <summary>What stage of reloading I'm on</summary>
 	[Property, ReadOnly, Feature( "Debug" )]
-	protected int _currentReloadStage
+	public ReloadStage CurrentReloadStage
 	{
 		get;
-		set
+		protected set
 		{
 			if ( field != value )
 			{
 				field = value;
-				ChangeReloadStage(); // methods instead of inline so the methods can be virtual now and then overriden if needed
+				OnReloadStageChanged(); // methods instead of inline so the methods can be virtual now and then overriden if needed
 			}
 		}
 	}
-	protected virtual void ChangeReloadStage()
+	protected virtual void OnReloadStageChanged()
 	{
-		Owner.Player?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
-		if ( DebugReloadStage ) Log.Info( WeaponData.Name + "'s stage has changed to " + _currentReloadStage );
+		Owner.Player?.SetAnimgraphParameter( CurrentReloadStage );
+		if ( DebugReloadStage ) Log.Info( WeaponData.Name + "'s stage has changed to " + CurrentReloadStage );
 		if ( _isLastStage ) FinishReload();
 	}
 
-	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
-	protected virtual void ChangeEmpty() => Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
+	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAnimgraphParameter( "i_ammo_loaded", PrimaryAmmoLoaded );
+	protected virtual void ChangeEmpty() => Owner.Player?.SetAnimgraphParameter( "b_empty", _gunEmpty );
+
+	/// <summary>Our current performing action, for animgraph sake</summary>
+	[Property, ReadOnly, Feature( "Debug" )]
+	public ActionState CurrentAction
+	{
+		get;
+		protected set
+		{
+			if ( field != value )
+			{
+				field = value;
+				OnActionStateChanged();
+			}
+		}
+	}
+
+	protected virtual void OnActionStateChanged() => Owner.Player?.SetAnimgraphAction( CurrentAction );
 
 	[ConVar( "debug_reloadstage", Help = "Print the number of the reload stage that's happening." )] static public bool DebugReloadStage { get; set; }
 	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat, Help = "What do you think this does" )] static public bool DebugNoRecoil { get; set; }
@@ -143,11 +160,11 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		FirstEquip = FirstEquip && DoFirstSetup;
 
-		Owner.Player?.SetAllAnimgraphParams( "b_first_equip", FirstEquip );
-		Owner.Player?.SetAllAnimgraphParams( "b_mag_out", MagOut );
-		Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
-		Owner.Player?.SetAllAnimgraphParams( "i_reload_stage", _currentReloadStage );
-		Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
+		Owner.Player?.SetAnimgraphParameter( "action_init", FirstEquip );
+		Owner.Player?.SetAnimgraphParameter( "b_mag_out", MagOut );
+		Owner.Player?.SetAnimgraphParameter( "weapon_ammo", PrimaryAmmoLoaded );
+		Owner.Player?.SetAnimgraphParameter( CurrentReloadStage );
+		Owner.Player?.SetAnimgraphParameter( "b_empty", _gunEmpty );
 	}
 
 	protected override void OnEnabled()
@@ -169,9 +186,6 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		if ( (Owner.Player.IsValid() && !Owner.Player.IsControlledLocally) || IsProxy ) return;
 
-		//		if ( BasePlayer.Local.CurrentWeapon != this )
-		//			return;
-
 		FirstSetup();
 		SetupCustomData();
 
@@ -188,7 +202,7 @@ public partial class BaseCombatWeapon : BaseEntity
 			if ( !WasOnTheGround ) PrimaryAmmoLoaded = WeaponData.PrimaryAmmoCapacity;
 			PrimaryAmmoInChamber = 1;
 
-			_currentReloadStage = 0;
+			CurrentReloadStage = ReloadStage.FULL;
 
 			IsHolstered = true;
 
@@ -251,7 +265,7 @@ public partial class BaseCombatWeapon : BaseEntity
 			{
 				if ( _nextSecondaryAttack < 0 )
 				{
-					BasePlayer.Local?.SetAllAnimgraphParams( "b_attack2", true );
+					BasePlayer.Local?.SetAnimgraphParameter( "b_attack2", true );
 					_nextSecondaryAttack = WorldTime.Now + 0.2f;
 				}
 				return;
@@ -279,7 +293,7 @@ public partial class BaseCombatWeapon : BaseEntity
 			{
 				if ( _nextPrimaryAttack < 0 )
 				{
-					Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+					Owner.Player?.SetAnimgraphParameter( "b_attack1", true );
 					_nextPrimaryAttack = WorldTime.Now + 0.2f;
 				}
 				return;
@@ -343,7 +357,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		Owner.Player.HolsterOwner = BasePlayer.HolsterType.None; // clear the owner
 
 		SyncAnimgraphState();
-		Owner.Player?.SetAllAnimgraphParams( "b_equipped", true );
+		CurrentAction = ActionState.ACTION_DRAW;
 
 		Enabled = true;
 		if ( !GetViewmodel().IsValid() ) ReadyToFire = true;
@@ -358,7 +372,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		Owner.Player?.HolsterOwner = type; // new owner
 
-		Owner.Player?.SetAllAnimgraphParams( "b_equipped", false );
+		CurrentAction = ActionState.ACTION_HOLSTER;
 
 		if ( !GetViewmodel().IsValid() ) ReadyToFire = false;
 		Enabled = false;    // very important to disable the holstered gun component
@@ -388,9 +402,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected SoundHandle _shootHandle;
 #endif
 
-	/// <summary>
-	/// The main weapon shot, usually left mouse click.
-	/// </summary>
+	/// <summary>The main weapon shot, usually left mouse click.</summary>
 	protected virtual void PrimaryAttack()
 	{
 		if ( !AttackConditions() ) return;
@@ -402,8 +414,7 @@ public partial class BaseCombatWeapon : BaseEntity
 		++_shotsFired;
 
 		LastAttackTime = WorldTime.Now;
-
-		Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+		CurrentAction = ActionState.ACTION_ATTACK;
 
 		AttackSound();
 
@@ -429,9 +440,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual int _amountPerShot => WeaponData.BulletsPerShot;
 	protected virtual bool _isProjectile => false;
 
-	/// <summary>
-	/// Actually fire the AttackResult bullets	
-	/// </summary>
+	/// <summary>Actually fire the AttackResult bullets</summary>
 	/// <param name="isPlayer">Is the damage dealt by player?</param>
 	/// <param name="isPrimary">Is this PrimaryAttack()?</param>
 	public virtual void FireBullet( bool isPlayer = true, bool isPrimary = true )
@@ -473,7 +482,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( _nextEmptyAttack <= WorldTime.Now && !IsReloading )
 		{
-			Owner.Player?.SetAllAnimgraphParams( "b_attack1", true );
+			Owner.Player?.SetAnimgraphParameter( "b_attack1", true );
 			_nextEmptyAttack = WorldTime.Now + delay;
 		}
 	}
@@ -517,7 +526,7 @@ public partial class BaseCombatWeapon : BaseEntity
 				}
 
 				if ( !_isLastStage )
-					Owner.Player?.SetAllAnimgraphParams( "b_reload", true );
+					Owner.Player?.SetAnimgraphParameter( "b_reload", true );
 
 				IsReloading = true;
 
@@ -542,7 +551,7 @@ public partial class BaseCombatWeapon : BaseEntity
 	{
 		if ( reloadPrimary )
 		{
-			if ( _debugAnimEvents )
+			if ( DebugAnimEvents )
 				Log.Info( "(not) AnimEvent: FinishReload" );
 
 			// since its looking for the smallest value, when having no reserve and trying to reload, it will be the smallest, and will try to add nothing
@@ -557,11 +566,11 @@ public partial class BaseCombatWeapon : BaseEntity
 			PrimaryAmmoLoaded += primary;
 			PrimaryAmmoInChamber = Math.Min( 1, PrimaryAmmoLoaded );
 
-			Owner.Player?.SetAllAnimgraphParams( "b_reload", false );
+			Owner.Player?.SetAnimgraphParameter( "b_reload", false );
 
 			IsReloading = false;
 
-			_currentReloadStage = 0;
+			CurrentReloadStage = 0;
 		}
 
 	}

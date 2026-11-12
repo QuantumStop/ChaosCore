@@ -160,15 +160,15 @@ public partial class BasePlayer
 	{
 		if ( _allowSway )
 		{
-			SetAllAnimgraphParams( "f_walking", Movement.Velocity.Length / (Controller.IsRunning ? 320 : 190) );
-			SetAllAnimgraphParams( "f_timesincewishsprint", Controller.TimeSinceWishSprint() );
-			SetAllAnimgraphParams( "f_wishsprint", Controller.WishSprint() );
-			SetAllAnimgraphParams( "b_sprint", Controller.IsRunning );
-			SetAllAnimgraphParams( "b_grounded", Controller.Controller.IsOnGround );
-			SetAllAnimgraphParams( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
-			SetAllAnimgraphParams( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
-			SetAllAnimgraphParams( "aim_yaw", _smoothedRoll );
-			SetAllAnimgraphParams( "aim_pitch", _aimPitchLean );
+			SetAnimgraphParameter( "f_walking", Movement.Velocity.Length / (Controller.IsRunning ? 320 : 190) );
+			SetAnimgraphParameter( "f_timesincewishsprint", Controller.TimeSinceWishSprint() );
+			SetAnimgraphParameter( "f_wishsprint", Controller.WishSprint() );
+			SetAnimgraphParameter( "b_sprint", Controller.IsRunning );
+			SetAnimgraphParameter( "b_grounded", Controller.Controller.IsOnGround );
+			SetAnimgraphParameter( "aim_pitch_inertia", -_aimPitchLeanSmoothed + _viewPitchInertia * ViewmodelPitchInertiaScale );
+			SetAnimgraphParameter( "aim_yaw_inertia", _viewYawInertia * ViewmodelYawInertiaScale + _smoothedYawOffset );
+			SetAnimgraphParameter( "aim_yaw", _smoothedRoll );
+			SetAnimgraphParameter( "aim_pitch", _aimPitchLean );
 		}
 
 		ApplyInertia();
@@ -559,11 +559,16 @@ public partial class BasePlayer
 
 
 	/// <summary>Send shit to all parts of viewmodel</summary>
-	public void SetAllAnimgraphParams( string v, float value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+	public void SetAnimgraphParameter( string v, float value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel</summary>
-	public void SetAllAnimgraphParams( string v, bool value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+	public void SetAnimgraphParameter( string v, bool value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
 	/// <summary>Send shit to all parts of viewmodel </summary>
-	public void SetAllAnimgraphParams( string v, int value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+	public void SetAnimgraphParameter( string v, int value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+	/// <summary>Send shit to all parts of viewmodel </summary>
+	public void SetAnimgraphParameter( string v, string value ) => ViewmodelWeapon?.Animation.Parameters.TrySet( v, value );
+	/// <summary>Send shit to all parts of viewmodel </summary>
+	public void SetAnimgraphAction( BaseCombatWeapon.ActionState value ) => ViewmodelWeapon?.Animation.Parameters.Set( "action", value );
+	public void SetAnimgraphParameter( BaseCombatWeapon.ReloadStage value ) => ViewmodelWeapon?.Animation.Parameters.Set( "weapon_reload_stage", value );
 	/// <summary>Send shit to all parts of viewmodel</summary>
 	public void SetAllWeaponViewmodels( Model model ) => ViewmodelWeapon?.Model = model;
 
@@ -573,12 +578,14 @@ public partial class BasePlayer
 
 	protected virtual void OnAnimationEvent( AnimationEvent data )
 	{
-		Log.Info( $"data.ToString(): {data.ToString()}" );
+
 	}
 
 	/// <summary>Process all animtags from animgraph</summary>
 	protected virtual void OnAnimTagEvent( SceneModel.AnimTagEvent tag )
 	{
+		if ( BaseCombatWeapon.DebugAnimEvents ) Log.Info( $"{tag.Name} {tag.Status}" );
+
 		if ( tag.Status != SceneModel.AnimTagStatus.End ) switch ( tag.Name )
 			{
 				case "mag_out":
@@ -686,25 +693,25 @@ public partial class BasePlayer
 
 	private float RemapSpeedNormalized( float crouch, float walk, float normal, float run, float speed )
 	{
-		// Clamp to valid range
+		// clamp to valid range
 		speed = Math.Clamp( speed, crouch, run );
 
-		// Map speed to a normalized [0,1] range across 4 tiers:
+		// map speed to a normalized [0, 1] range across 4 states:
 		// 0.0 = crouch, 0.33 = walk, 0.66 = normal, 1.0 = run
 
 		if ( speed <= walk )
 		{
-			// From crouch to walk [0.0 -> 0.33]
+			// crouch -> walk (0.0 -> 0.33)
 			return RemapClamped( crouch, walk, speed ) * (1f / 3f);
 		}
 		else if ( speed <= normal )
 		{
-			// From walk to default [0.33 -> 0.66]
+			// walk -> run (0.33 -> 0.66)
 			return (1f / 3f) + RemapClamped( walk, normal, speed ) * (1f / 3f);
 		}
 		else
 		{
-			// From default to run [0.66 -> 1.0]
+			// default -> run (0.66 -> 1.0)
 			return (2f / 3f) + RemapClamped( normal, run, speed ) * (1f / 3f);
 		}
 	}

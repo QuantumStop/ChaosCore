@@ -165,4 +165,21 @@ public partial class BaseCombatWeapon
 
 		return baseSpread * WeaponData.SpreadScale;
 	}
+
+	/// <summary>With this we reset back everything we need to reset specifically at end of an Update, so animgraph had time to actually catch whatever we are resetting now.</summary>
+	public static void ResetGraphStates()
+	{
+		BasePlayer.Local?.CurrentWeapon?.ClearReset();
+		BasePlayer.Local?.CurrentWeapon?.ClearAttack();
+	}
+
+	protected void ResetAction() => Owner.Player?.SetAnimgraphParameter( "action_reset", true );
+
+	/// <summary>GameManager handles the self-reset, don't call this please</summary>
+	private void ClearReset() => Owner.Player?.SetAnimgraphParameter( "action_reset", false );
+	/// <summary>If we have triggered the attack state, reset it, don't call this manually</summary>
+	private void ClearAttack()
+	{
+		if ( CurrentAction == ActionState.ACTION_ATTACK ) CurrentAction = ActionState.ACTION_IDLE;
+	}
 }

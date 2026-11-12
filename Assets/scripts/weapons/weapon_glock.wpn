@@ -85,7 +85,7 @@
   "PrimaryAmmoCapacity": 17,
   "DefaultPrimaryAmmo": 17,
   "BulletsPerShot": 1,
-  "PrimaryFireRateRPM": 100,
+  "PrimaryFireRateRPM": 600,
   "SpreadDegreesPrimary": 1,
   "SpreadProgressionCurve": [
     {

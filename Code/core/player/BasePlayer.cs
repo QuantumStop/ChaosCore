@@ -452,4 +452,13 @@ public abstract partial class BasePlayer : BasePawn, Component.IDamageable, ISav
 		Controller.Head.Components.GetOrCreate<AudioListener>().Enabled = false;
 #endif
 	}
+
+	protected override void OnDestroy()
+	{
+		ViewmodelWeapon?.OnAnimTagEvent -= OnAnimTagEvent;
+
+		PickupTrigger?.OnTriggerEnter -= OnPickupTriggerEnter;
+		PickupTrigger?.OnTriggerExit -= OnPickupTriggerExit;
+		Movement?.OnLanded -= OnLandedEvent;
+	}
 }

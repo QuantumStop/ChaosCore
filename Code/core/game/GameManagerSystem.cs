@@ -23,6 +23,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 			Listen( Stage.SceneLoaded, 1, OnStart, "GameManager OnStart" );
 			Listen( Stage.StartUpdate, 1, OnUpdate, "GameManager OnUpdate" );
 			Listen( Stage.StartFixedUpdate, 1, OnFixedUpdate, "GameManager OnFixedUpdate" );
+			Listen( Stage.FinishUpdate, 5, OnUpdateEnd, "GameManager OnUpdateEnd" );
 		}
 		else
 		{
@@ -75,8 +76,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 	{
 		UpdateWorldTime();
 #if IGNIS || STANDALONE
-		if ( Input.Pressed( "Pause" ) )
-			TogglePause();
+		if ( Input.Pressed( "Pause" ) ) TogglePause();
 #endif
 
 		Rules?.GameFrame();
@@ -105,13 +105,11 @@ public abstract partial class GameManagerSystem : GameObjectSystem, ISceneStartu
 		PostSpawn();
 	}
 
-	/// <summary>
-	/// Game was paused
-	/// </summary>
+	protected virtual void OnUpdateEnd() => BaseCombatWeapon.ResetGraphStates();
+
+	/// <summary>Game was paused</summary>
 	protected virtual void OnGamePaused() { }
-	/// <summary>
-	/// Game was unpaused
-	/// </summary>
+	/// <summary>Game was unpaused</summary>
 	protected virtual void OnGameUnpaused() { }
 
 	public virtual void OnHostPreInitialize( SceneFile scene ) { }

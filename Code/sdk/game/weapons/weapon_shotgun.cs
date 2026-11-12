@@ -23,14 +23,14 @@ public class weapon_shotgun : Core.BaseCombatWeapon
 
 	protected override void HandleWeaponInput()
 	{
-		if ( Input.Released( "attack1" ) ) Owner.Player?.SetAllAnimgraphParams( "b_attack", false ); // FP guns have a different idea of how a shotgun should work
+		if ( Input.Released( "attack1" ) ) Owner.Player?.SetAnimgraphParameter( "b_attack", false ); // FP guns have a different idea of how a shotgun should work
 	}
 
 	protected override void PrimaryAttack()
 	{
 		base.PrimaryAttack();
 
-		Owner.Player?.SetAllAnimgraphParams( "b_attack", true ); // FP guns have a different naming scheme than us
+		Owner.Player?.SetAnimgraphParameter( "b_attack", true ); // FP guns have a different naming scheme than us
 	}
 
 	/// <summary>
@@ -40,7 +40,7 @@ public class weapon_shotgun : Core.BaseCombatWeapon
 	public override void Draw( BasePlayer.HolsterType type = BasePlayer.HolsterType.Weapon, bool force = false )
 	{
 		base.Draw();
-		Owner.Player?.SetAllAnimgraphParams( "b_holster", false );
+		Owner.Player?.SetAnimgraphParameter( "b_holster", false );
 	}
 	/// <summary>
 	/// Holster the weapon.
@@ -49,6 +49,6 @@ public class weapon_shotgun : Core.BaseCombatWeapon
 	public override void Holster( BasePlayer.HolsterType type = BasePlayer.HolsterType.Weapon, bool force = false )
 	{
 		base.Holster();
-		Owner.Player?.SetAllAnimgraphParams( "b_holster", true );
+		Owner.Player?.SetAnimgraphParameter( "b_holster", true );
 	}
 }
