@@ -2,16 +2,67 @@
   "BaseSurface": "surfaces/default.surface",
   "AudioSurface": "Leather",
   "Description": "",
-  "Friction": 0.0,
+  "Friction": 0,
   "Elasticity": 0.3,
   "Density": 900,
-  "Thickness": 0.3,
-  "Dampening": 0,
+  "RollingResistance": 0,
   "BounceThreshold": 40,
-  "ImpactEffects": {},
-  "ScrapeEffects": {},
-  "Sounds": {},
-  "Breakables": {},
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
+  "ScrapeEffects": {
+    "RoughnessFactor": 1,
+    "RoughThreshold": 0.5,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
+  "Dampening": 0,
+  "ImpactEffects": {
+    "Regular": null,
+    "Bullet": null,
+    "BulletDecal": null,
+    "SoftParticles": null,
+    "SoftDecal": null,
+    "HardParticles": null,
+    "HardDecal": null
+  },
+  "Sounds": {
+    "FootLeft": null,
+    "FootRight": null,
+    "FootLaunch": null,
+    "FootLand": null,
+    "Bullet": null,
+    "ImpactHard": null,
+    "ImpactSoft": null,
+    "ScrapeRough": null,
+    "ScrapeSmooth": null
+  },
+  "PrefabCollection": {
+    "BulletImpact": null,
+    "BulletImpactDecal": null,
+    "BluntImpact": null
+  },
+  "SoundCollection": {
+    "FootLeft": null,
+    "FootRight": null,
+    "FootLaunch": null,
+    "FootLand": null,
+    "Bullet": null,
+    "ImpactHard": null,
+    "ImpactSoft": null,
+    "ScrapeRough": null,
+    "ScrapeSmooth": null,
+    "Break": null
+  },
+  "Splatter": {
+    "Decals": [],
+    "Distance": 96,
+    "Scale": "1",
+    "FadeIn": 0.25,
+    "CoverageRange": 0.33
+  },
   "Tags": null,
-  "__references": []
+  "__references": [],
+  "__version": 0
 }

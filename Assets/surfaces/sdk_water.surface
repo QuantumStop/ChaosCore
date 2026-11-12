@@ -5,9 +5,18 @@
   "Friction": 0.7,
   "Elasticity": 0.25,
   "Density": 1000,
-  "Thickness": 0,
   "RollingResistance": 0,
   "BounceThreshold": 0,
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
+  "ScrapeEffects": {
+    "RoughnessFactor": 0,
+    "RoughThreshold": 0,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": null,
@@ -17,14 +26,6 @@
     "SoftDecal": null,
     "HardParticles": null,
     "HardDecal": null
-  },
-  "ScrapeEffects": {
-    "RoughnessFactor": 0,
-    "RoughThreshold": 0,
-    "SmoothParticles": null,
-    "RoughParticles": null,
-    "SmoothDecal": null,
-    "RoughDecal": null
   },
   "Sounds": {
     "FootLeft": null,
@@ -39,6 +40,7 @@
   },
   "PrefabCollection": {
     "BulletImpact": null,
+    "BulletImpactDecal": null,
     "BluntImpact": null
   },
   "SoundCollection": {
@@ -46,12 +48,28 @@
     "FootRight": null,
     "FootLaunch": null,
     "FootLand": null,
-    "Bullet": "sounds/water/water_bullet_impact.sound",
-    "ImpactHard": "sounds/water/water_splash_medium.sound",
-    "ImpactSoft": "sounds/water/water_bullet_impact.sound",
+    "Bullet": {
+      "Id": "d1b59834-6e5a-4098-90f4-e043fa9e8d07",
+      "Path": "sounds/water/water_bullet_impact.sound"
+    },
+    "ImpactHard": {
+      "Id": "db890aae-3f16-4da8-adec-89328ba730cb",
+      "Path": "sounds/water/water_splash_medium.sound"
+    },
+    "ImpactSoft": {
+      "Id": "d1b59834-6e5a-4098-90f4-e043fa9e8d07",
+      "Path": "sounds/water/water_bullet_impact.sound"
+    },
     "ScrapeRough": null,
     "ScrapeSmooth": null,
     "Break": null
+  },
+  "Splatter": {
+    "Decals": [],
+    "Distance": 96,
+    "Scale": "1",
+    "FadeIn": 0.25,
+    "CoverageRange": 0.33
   },
   "Tags": null,
   "__references": [],

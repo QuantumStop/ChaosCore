@@ -5,9 +5,18 @@
   "Friction": 0.07,
   "Elasticity": 0.68,
   "Density": 446,
-  "Thickness": -1,
   "RollingResistance": 0,
   "BounceThreshold": 40,
+  "FluidLinearDrag": 0.1,
+  "FluidAngularDrag": 0.1,
+  "ScrapeEffects": {
+    "RoughnessFactor": 0,
+    "RoughThreshold": 0,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": [],
@@ -17,14 +26,6 @@
     "SoftDecal": [],
     "HardParticles": [],
     "HardDecal": []
-  },
-  "ScrapeEffects": {
-    "RoughnessFactor": 0,
-    "RoughThreshold": 0,
-    "SmoothParticles": null,
-    "RoughParticles": null,
-    "SmoothDecal": null,
-    "RoughDecal": null
   },
   "Sounds": {
     "FootLeft": null,
@@ -39,6 +40,7 @@
   },
   "PrefabCollection": {
     "BulletImpact": null,
+    "BulletImpactDecal": null,
     "BluntImpact": null
   },
   "SoundCollection": {
@@ -52,6 +54,13 @@
     "ScrapeRough": null,
     "ScrapeSmooth": null,
     "Break": null
+  },
+  "Splatter": {
+    "Decals": [],
+    "Distance": 96,
+    "Scale": "1",
+    "FadeIn": 0.25,
+    "CoverageRange": 0.33
   },
   "Tags": null,
   "__references": [],

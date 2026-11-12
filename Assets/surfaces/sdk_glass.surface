@@ -9,6 +9,14 @@
   "BounceThreshold": 40,
   "FluidLinearDrag": 0.1,
   "FluidAngularDrag": 0.1,
+  "ScrapeEffects": {
+    "RoughnessFactor": 0,
+    "RoughThreshold": 0,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": null,
@@ -18,14 +26,6 @@
     "SoftDecal": null,
     "HardParticles": null,
     "HardDecal": null
-  },
-  "ScrapeEffects": {
-    "RoughnessFactor": 0,
-    "RoughThreshold": 0,
-    "SmoothParticles": null,
-    "RoughParticles": null,
-    "SmoothDecal": null,
-    "RoughDecal": null
   },
   "Sounds": {
     "FootLeft": null,
@@ -44,16 +44,32 @@
     "BluntImpact": null
   },
   "SoundCollection": {
-    "FootLeft": "sounds/footsteps/footstep-glass.sound",
-    "FootRight": "sounds/footsteps/footstep-glass.sound",
+    "FootLeft": {
+      "Id": "e8c6ae7c-bd46-41f3-b32c-3c8704ba245a",
+      "Path": "sounds/footsteps/footstep-glass.sound"
+    },
+    "FootRight": {
+      "Id": "e8c6ae7c-bd46-41f3-b32c-3c8704ba245a",
+      "Path": "sounds/footsteps/footstep-glass.sound"
+    },
     "FootLaunch": null,
     "FootLand": null,
-    "Bullet": "sounds/impacts/bullets/impact-bullet-glass.sound",
+    "Bullet": {
+      "Id": "e927fb62-1905-49a5-bf42-3ce4ae1a76b7",
+      "Path": "sounds/impacts/bullets/impact-bullet-glass.sound"
+    },
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,
     "ScrapeSmooth": null,
     "Break": null
+  },
+  "Splatter": {
+    "Decals": [],
+    "Distance": 96,
+    "Scale": "1",
+    "FadeIn": 0.25,
+    "CoverageRange": 0.33
   },
   "Tags": null,
   "__references": [],

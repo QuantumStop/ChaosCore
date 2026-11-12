@@ -9,6 +9,14 @@
   "BounceThreshold": 35,
   "FluidLinearDrag": 0.1,
   "FluidAngularDrag": 0.1,
+  "ScrapeEffects": {
+    "RoughnessFactor": 0,
+    "RoughThreshold": 0,
+    "SmoothParticles": [],
+    "RoughParticles": [],
+    "SmoothDecal": [],
+    "RoughDecal": []
+  },
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": [],
@@ -22,14 +30,6 @@
     "SoftDecal": [],
     "HardParticles": [],
     "HardDecal": []
-  },
-  "ScrapeEffects": {
-    "RoughnessFactor": 0,
-    "RoughThreshold": 0,
-    "SmoothParticles": [],
-    "RoughParticles": [],
-    "SmoothDecal": [],
-    "RoughDecal": []
   },
   "Sounds": {
     "FootLeft": "sounds/footsteps/footstep-concrete.sound",
@@ -51,16 +51,38 @@
     "BluntImpact": null
   },
   "SoundCollection": {
-    "FootLeft": "sounds/footsteps/footstep-concrete.sound",
-    "FootRight": "sounds/footsteps/footstep-concrete.sound",
-    "FootLaunch": "sounds/footsteps/footstep-concrete-jump.sound",
-    "FootLand": "sounds/footsteps/footstep-concrete-land.sound",
-    "Bullet": "sounds/impacts/bullets/impact-bullet-concrete.sound",
+    "FootLeft": {
+      "Id": "f0bc2d56-5db9-4c85-acc5-cf5cb1f05df5",
+      "Path": "sounds/footsteps/footstep-concrete.sound"
+    },
+    "FootRight": {
+      "Id": "f0bc2d56-5db9-4c85-acc5-cf5cb1f05df5",
+      "Path": "sounds/footsteps/footstep-concrete.sound"
+    },
+    "FootLaunch": {
+      "Id": "0b153a23-92fb-4744-86cc-01c379192cc2",
+      "Path": "sounds/footsteps/footstep-concrete-jump.sound"
+    },
+    "FootLand": {
+      "Id": "cd28c7c4-3086-408e-b89d-14a1b5d1af7c",
+      "Path": "sounds/footsteps/footstep-concrete-land.sound"
+    },
+    "Bullet": {
+      "Id": "8541dd3a-eb04-4c50-8165-bd7b10579c71",
+      "Path": "sounds/impacts/bullets/impact-bullet-concrete.sound"
+    },
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,
     "ScrapeSmooth": null,
     "Break": null
+  },
+  "Splatter": {
+    "Decals": [],
+    "Distance": 96,
+    "Scale": "1",
+    "FadeIn": 0.25,
+    "CoverageRange": 0.33
   },
   "Tags": null,
   "__references": [],

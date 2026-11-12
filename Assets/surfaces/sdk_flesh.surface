@@ -9,6 +9,14 @@
   "BounceThreshold": 40,
   "FluidLinearDrag": 0.1,
   "FluidAngularDrag": 0.1,
+  "ScrapeEffects": {
+    "RoughnessFactor": 0.25,
+    "RoughThreshold": 0.5,
+    "SmoothParticles": null,
+    "RoughParticles": null,
+    "SmoothDecal": null,
+    "RoughDecal": null
+  },
   "Dampening": 0,
   "ImpactEffects": {
     "Regular": [],
@@ -22,14 +30,6 @@
     "SoftDecal": null,
     "HardParticles": null,
     "HardDecal": null
-  },
-  "ScrapeEffects": {
-    "RoughnessFactor": 0.25,
-    "RoughThreshold": 0.5,
-    "SmoothParticles": null,
-    "RoughParticles": null,
-    "SmoothDecal": null,
-    "RoughDecal": null
   },
   "Sounds": {
     "FootLeft": null,
@@ -52,12 +52,22 @@
     "FootRight": null,
     "FootLaunch": null,
     "FootLand": null,
-    "Bullet": "sounds/impacts/bullets/impact-bullet-flesh.sound",
+    "Bullet": {
+      "Id": "fc91047d-a99c-4fb6-8b18-347a9af71dcc",
+      "Path": "sounds/impacts/bullets/impact-bullet-flesh.sound"
+    },
     "ImpactHard": null,
     "ImpactSoft": null,
     "ScrapeRough": null,
     "ScrapeSmooth": null,
     "Break": null
+  },
+  "Splatter": {
+    "Decals": [],
+    "Distance": 96,
+    "Scale": "1",
+    "FadeIn": 0.25,
+    "CoverageRange": 0.33
   },
   "Tags": null,
   "__references": [],
