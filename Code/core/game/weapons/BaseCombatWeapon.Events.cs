@@ -2,11 +2,9 @@ namespace Core;
 
 public partial class BaseCombatWeapon
 {
-	[ConVar( "debug_animevents" )] private static bool _debugAnimEvents { get; set; }
+	[ConVar( "debug_animevents", Help = "Print when all of the animgraph events happen" )] private static bool _debugAnimEvents { get; set; }
 
-	/// <summary>
-	/// Cannot shoot
-	/// </summary>
+	/// <summary>Cannot shoot</summary>
 	/// <param name="disallow">True = not allow; False = allow</param>
 	public virtual void EventDisallowFiring( bool disallow )
 	{
@@ -16,9 +14,7 @@ public partial class BaseCombatWeapon
 
 		_disallowAttack = disallow;
 	}
-	/// <summary>
-	/// Putting the gun back on the screen has finished
-	/// </summary>
+	/// <summary>Putting the gun back on the screen has finished</summary>
 	public virtual void EventDrawFinished()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
@@ -33,9 +29,7 @@ public partial class BaseCombatWeapon
 		Owner.Player.SetAllAnimgraphParams( "b_first_equip", false );
 		FirstEquip = false;
 	}
-	/// <summary>
-	/// Putting the gun away was finished
-	/// </summary>
+	/// <summary>Putting the gun away was finished</summary>
 	public virtual void EventHolsterFinished()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
@@ -43,24 +37,17 @@ public partial class BaseCombatWeapon
 		IsHolstered = true;
 		ReadyToFire = false;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: HolsterFinished" );
-
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: HolsterFinished" );
 	}
-	/// <summary>
-	/// Gun has been fired
-	/// </summary>
+	/// <summary>Gun has been fired</summary>
 	public virtual void EventPrimaryFire()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
 
-		if ( _debugAnimEvents )
-			Log.Info( "AnimEvent: PrimaryFire" );
+		if ( _debugAnimEvents ) Log.Info( "AnimEvent: PrimaryFire" );
 	}
 
-	/// <summary>
-	/// The first reload event, starting from here the
-	/// </summary>
+	/// <summary>The first reload event, starting from here the</summary>
 	public virtual void EventMagOut()
 	{
 		if ( Owner.Player.CurrentWeapon != this )
@@ -72,9 +59,7 @@ public partial class BaseCombatWeapon
 		MagOut = true;
 	}
 
-	/// <summary>
-	/// Usually the second in order event, magazine is back in
-	/// </summary>
+	/// <summary>Usually the second in order event, magazine is back in</summary>
 	public virtual void EventMagIn()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
@@ -84,9 +69,7 @@ public partial class BaseCombatWeapon
 		_currentReloadStage = 2; // next would be boltrelease
 		MagOut = false;
 	}
-	/// <summary>
-	/// Usually the third and last (for full/empty reloads) in order event, bolt is released and you now can shoot
-	/// </summary>
+	/// <summary>Usually the third and last (for full/empty reloads) in order event, bolt is released and you now can shoot</summary>
 	public virtual void EventBoltRelease()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;
@@ -95,9 +78,7 @@ public partial class BaseCombatWeapon
 
 		_currentReloadStage = 3; // this is the last
 	}
-	/// <summary>
-	/// Reload has been finished, hooray!
-	/// </summary>
+	/// <summary>Reload has been finished, hooray!</summary>
 	public virtual void EventReloadFinished()
 	{
 		if ( Owner.Player.CurrentWeapon != this ) return;

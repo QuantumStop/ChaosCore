@@ -4,18 +4,21 @@ using Core;
 public class info_player_start : BaseEntity
 {
 	protected override string GetEditorVis() => "models/editor/playerstart.vmdl";
-	[Property] public bool Primary { get; set; }
-
-	protected override void OnValidate()
+	[Property]
+	public bool Primary
 	{
-		base.OnValidate();
-
-		if ( Primary ) foreach ( var component in Scene.Components.GetAll<info_player_start>() )
+		get;
+		set
 		{
-			if ( component == this )
-				continue;
+			if ( field == value ) return;
+			field = value;
 
-			component.Primary = false;
+			if ( value ) foreach ( var component in Scene.Components.GetAll<info_player_start>() )
+			{
+				if ( component == this ) continue;
+
+				component.Primary = false;
+			}
 		}
 	}
 

@@ -8,11 +8,12 @@ public partial class BasePlayer
 	// it still exists to this day, which can be found here in sbox, not letting me override it :(
 	public virtual float DefaultFOV => GameSettings.FieldOfView;
 
-	[ConVar( "cl_drawhud", Saved = true ), Description( "Show HUD (health, armor, ammo, all of that). Doesn't affect crosshair." )] public static bool ShowHud { get; set; } = true;
-	[ConVar( "cl_drawcrosshair", Saved = true ), Description( "Show (any) crosshair." )] public static bool ShowCrosshair { get; set; } = true;
+	[ConVar( "cl_drawhud", Saved = true, Help = "Show HUD (health, armor, ammo, all of that). Doesn't affect crosshair." )] public static bool ShowHud { get; set; } = true;
+	[ConVar( "cl_drawcrosshair", Saved = true, Help = "Show whatever crosshair is supposed to be shown." )] public static bool ShowCrosshair { get; set; } = true;
 	[Property, Title( "HUD GameObject" ), Feature( "Defines" )] public GameObject HUDGameObject { get; set; }
-
-	[ConVar( "cl_showexpo" ), Description( "Show exposure metering debug" )] public static bool ShowExpo { get; set; } = false;
+#if PLU
+	[ConVar( "cl_showexpo", Help = "Show exposure metering debug" )] public static bool ShowExpo { get; set; } = false;
+#endif
 
 	// helper shit cus good luck remembering fuckin' "Local.Controller.Head.LocalPosition"
 	public Angles GetEyeAngles() => Controller.EyeAngles;
@@ -28,8 +29,6 @@ public partial class BasePlayer
 
 		return Controller.Head.Transform.World;
 	}
-
-	public Vector3 GetPos() => WorldPosition;
 
 	[Flags]
 	public enum HIDEHUD_FLAGS

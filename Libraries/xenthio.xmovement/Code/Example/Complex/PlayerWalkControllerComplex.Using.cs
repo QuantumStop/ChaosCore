@@ -73,15 +73,25 @@ public partial class PlayerWalkControllerComplex : Component
 
 	public Component FindUsable()
 	{
-		var tr = Scene.Trace.Ray( AimRay, UseDistance )
+		var traceRegular = Scene.Trace.Ray( AimRay, UseDistance )
 			.IgnoreGameObjectHierarchy( GameObject )
 			.WithoutTags( "trigger" )
 			.Run();
 
-		if ( tr.GameObject.IsValid() )
+		var traceHitbox = Scene.Trace.Ray( AimRay, UseDistance )
+			.IgnoreGameObjectHierarchy( GameObject )
+			.UsePhysicsWorld( false )
+			.UseHitboxes()
+			.Run();
+
+		// cast a regular trace and a trace just for stuff we can interact with, if we ever find one, prefer that, otherwise default to the regular trace
+		// a bit of bullshit so that we can interact with hand authored hitboxes where we want them instead of relying on trigger boxes (which if you see traceRegular above can't work for us)
+		SceneTraceResult finalTrace = traceHitbox.Hitbox is not null && traceHitbox.Hitbox.Tags.Has( "interact" ) ? traceHitbox : traceRegular;
+
+		if ( finalTrace.GameObject.IsValid() )
 		{
 			// if we have multiple IPressable components on one thing, filter out the ones that can't press and do the first match of those who can
-			foreach ( var press in tr.GameObject.Components.GetAll<IPressable>( FindMode.EverythingInSelfAndParent ) )
+			foreach ( var press in finalTrace.GameObject.Components.GetAll<IPressable>( FindMode.EverythingInSelfAndParent ) )
 			{
 				if ( press is not null && press.CanPress( new IPressable.Event() { Ray = AimRay, Source = this } ) )
 					return press as Component;

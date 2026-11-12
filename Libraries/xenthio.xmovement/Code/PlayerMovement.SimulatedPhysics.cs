@@ -5,10 +5,9 @@ namespace XMovement;
 
 public partial class PlayerMovement : Component
 {
-	[Sync]
-	public Vector3 PhysicsBodyVelocity { get; set; }
+	[Sync] public Vector3 PhysicsBodyVelocity { get; set; }
 
-	[ConVar] public static bool debug_playermovement { get; set; } = false;
+	[ConVar( "debug_playermovement" )] public static bool DebugPlayerMovement { get; set; } = false;
 	[Property, FeatureEnabled( "Physics Integration" )] public bool PhysicsIntegration { get; set; } = true;
 	[Property, Feature( "Physics Integration" )] public float Mass { get; set; } = 85;
 	[Property, Feature( "Physics Integration" )] public float PushScale { get; set; } = 0.7f;
@@ -19,7 +18,7 @@ public partial class PlayerMovement : Component
 	[Property, Feature( "Physics Integration" ), Group( "Body" )] public GameObject PhysicsBody { get; set; }
 	[Property, Feature( "Physics Integration" ), Group( "Body" )] public Rigidbody PhysicsBodyRigidbody;
 	[Property, Feature( "Physics Integration" ), Group( "Body" )] public HullCollider PhysicsBodyCollider;
-	bool PreviouslyOnGround = false;
+	private bool _previouslyOnGround = false;
 
 	/// <summary>
 	/// You can pre-create the shadow objects if you want to do so, otherwise they will be created at runtime.
@@ -95,8 +94,11 @@ public partial class PlayerMovement : Component
 		SyncPlayerHullCollider( PhysicsShadowCollider );
 		SyncPlayerHullCollider( PhysicsBodyCollider );
 
-		if ( debug_playermovement ) DebugOverlay.Box( PhysicsShadowRigidbody.PhysicsBody.GetBounds(), Color.Blue, 1 );
-		if ( debug_playermovement ) DebugOverlay.Box( PhysicsBodyRigidbody.PhysicsBody.GetBounds(), Color.Green, 1 );
+		if ( DebugPlayerMovement )
+		{
+			DebugOverlay.Box( PhysicsShadowRigidbody.PhysicsBody.GetBounds(), Color.Blue, 1 );
+			DebugOverlay.Box( PhysicsBodyRigidbody.PhysicsBody.GetBounds(), Color.Green, 1 );
+		}
 	}
 	void UpdateFromSimulatedShadow()
 	{
@@ -150,7 +152,7 @@ public partial class PlayerMovement : Component
 		if ( OnDynamicGeometry )
 		{
 			var a = PhysicsBodyRigidbody.AngularVelocity;
-			var angles = new Angles( a.x, a.y, a.z );
+			//	var angles = new Angles( a.x, a.y, a.z );
 
 			var axis = a.WithX( 0 ).WithY( 0 );
 
@@ -184,7 +186,7 @@ public partial class PlayerMovement : Component
 		locking.Yaw = IsOnGround && !OnDynamicGeometry;
 		PhysicsBodyRigidbody.Locking = locking;
 
-		PreviouslyOnGround = GroundObject.IsValid();
+		_previouslyOnGround = GroundObject.IsValid();
 		ResetPhysSimPosition();
 		ResetPhysSimVelocity();
 	}

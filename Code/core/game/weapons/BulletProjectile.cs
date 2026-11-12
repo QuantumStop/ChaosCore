@@ -2,17 +2,17 @@ namespace Core;
 
 public class BulletProjectile : BaseProjectile
 {
-	// Speed in Feet per second / 50 physics fps = speed in feet (12hu) per tick
+	/// <summary>Speed in Feet per second / 50 physics fps = speed travelled per one FixedUpdate</summary>
 	protected override float _velocityPerTick => Ammo.FtPerSec * 12f / ProjectSettings.Physics.FixedUpdateFrequency; // this feels... uhhhhhhhhh
-	/// <summary>Gravitational Constant G = 9.80665f, thank you Issac Newton</summary>
-	private static float _dropPerSecond => MathX.MeterToInch( 9.80665f );
+	/// <summary>Gravitational Constant G = 9.80665 meters per second, thank you Issac Newton (converted to inches)</summary>
+	private const float _dropPerSecond = 9.80665f * 39.37007f;
 	protected override float _entityGizmoSize => 8f;
 	[Property, Feature( "Debug" ), ReadOnly] public CoreDamageInfo DamageInfo { get; set; }
 
 	[Property, Feature( "Debug" ), ReadOnly] private TimeSince _travelTime { get; set; }
 
 	[Property, Feature( "Debug" ), ReadOnly] private Vector3 _startPos { get; set; }
-	[ConVar( "debug_bullet_distance", Help = "Show info of the travel (distance, drop)" )] static public bool TravelDebug { get; set; } = false;
+	[ConVar( "debug_bullet_distance", Help = "Print info of the travel (distance, drop)" )] static public bool TravelDebug { get; set; } = false;
 	[ConVar( "debug_bullet_rays", Help = "Show the bullet trajectory, the number is how long the debug stays on (in seconds)" )] static public float RayDebug { get; set; } = 0;
 
 	[Property, Feature( "Debug" ), ReadOnly] public Vector3 Spread { get; set; }
@@ -30,13 +30,13 @@ public class BulletProjectile : BaseProjectile
 		//	Log.Info( "shot speed: " + VelocityPerTick );
 	}
 
-	[ConVar( "debug_bullet_cast" )] static public bool CountDebug { get; set; } = false;
+	[ConVar( "debug_bullet_count", Help = "Count the number of rays that's cast per bullet" )] static public bool CountDebug { get; set; } = false;
 
 	protected override void FixedThink()
 	{
 		AttackManager.AttackResult trace = AttackManager.TraceGenericAttack( new Ray( LocalPosition, LocalTransform.Forward ), _velocityPerTick, DamageInfo );
 
-		if ( CountDebug ) Log.Info( "This is bullet ray number " + _castCount );
+		if ( CountDebug ) Log.Info( $"This is bullet ray number {_castCount}" );
 
 		if ( RayDebug > 0 )
 		{
@@ -66,9 +66,9 @@ public class BulletProjectile : BaseProjectile
 			if ( TravelDebug )
 			{
 				var distance = Vector3.DistanceBetween( _startPos, trace.Last.HitPosition );
-				Log.Info( "Distance: " + MathX.InchToMeter( distance ) + "m / " + distance + "in at the speed of " + MathX.InchToMeter( _velocityPerTick * ProjectSettings.Physics.FixedUpdateFrequency ) + "m/s or " + Ammo.FtPerSec + "ft/s" );
-				Log.Info( "Time: " + _travelTime.Relative + "s" );
-				Log.Info( "Drop: " + MathX.InchToMeter( _dropFormula ) + "m / " + _dropFormula + "in" );
+				Log.Info( $"Distance: {MathX.InchToMeter( distance )}m / {distance}in at the speed of {MathX.InchToMeter( _velocityPerTick * ProjectSettings.Physics.FixedUpdateFrequency )}m/s or {Ammo.FtPerSec}ft/s" );
+				Log.Info( $"Time: {_travelTime.Relative}s" );
+				Log.Info( $"Drop: {MathX.InchToMeter( _dropFormula )}m / {_dropFormula}in" );
 			}
 
 			AttackManager.HandleHitBullet( trace, DamageInfo, LocalTransform );

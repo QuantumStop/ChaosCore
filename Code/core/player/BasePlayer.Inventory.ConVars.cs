@@ -5,11 +5,6 @@ namespace Core;
 
 partial class BasePlayer
 {
-	/// <summary>
-	/// The give console command
-	/// </summary>
-	/// <param name="name">Name of thing to give</param>
-	/// <param name="parameter">Additional parameters</param>
 	[ConCmd( "give", ConVarFlags.Cheat, Help = "Give the player a certain item like a weapon or a healthkit" )]
 	public static void CmdGive( string name, string parameter = null )
 	{
@@ -41,10 +36,7 @@ partial class BasePlayer
 			Log.Info( "'" + name + "' is not a recognized weapon or item" );
 		}
 	}
-	/// <summary>
-	/// Fill the ammo for current gun
-	/// </summary>
-	[ConCmd( "givecurrentammo" )]
+	[ConCmd( "givecurrentammo", Help = "Fill ammo for the currently held gun." )]
 	public static void CmdGiveCurrentAmmo()
 	{
 		if ( !Local.CurrentWeapon.IsValid() )
@@ -57,16 +49,8 @@ partial class BasePlayer
 		Local.PlayPickupSteal( "ammo_pickup", 0, Local.WorldPosition );
 #endif
 	}
-	/// <summary>
-	/// Alias for take
-	/// </summary>
-	[ConCmd( "remove" )] public static void CmdRemove( string name, string parameter = null ) { CmdTake( name, parameter ); }
-	/// <summary>
-	/// Remove ammo or item
-	/// </summary>
-	/// <param name="name">Name of thing</param>
-	/// <param name="parameter"></param>
-	[ConCmd( "take" )]
+	[ConCmd( "remove", Help = "Alias for take, does the same." )] public static void CmdRemove( string name, string parameter = null ) { CmdTake( name, parameter ); }
+	[ConCmd( "take", Help = "Remove ammo or an item from your inventory." )]
 	public static void CmdTake( string name, string parameter = null )
 	{
 		if ( name.StartsWith( "weapon" ) )

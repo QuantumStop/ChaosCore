@@ -133,8 +133,8 @@ public partial class BaseCombatWeapon : BaseEntity
 	protected virtual void ChangePrimaryAmmo() => Owner.Player?.SetAllAnimgraphParams( "i_ammo_loaded", PrimaryAmmoLoaded );
 	protected virtual void ChangeEmpty() => Owner.Player?.SetAllAnimgraphParams( "b_empty", _gunEmpty );
 
-	[ConVar( "debug_reloadstage" )] static public bool DebugReloadStage { get; set; }
-	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat )] static public bool DebugNoRecoil { get; set; }
+	[ConVar( "debug_reloadstage", Help = "Print the number of the reload stage that's happening." )] static public bool DebugReloadStage { get; set; }
+	[ConVar( "debug_disable_recoil", ConVarFlags.Cheat, Help = "What do you think this does" )] static public bool DebugNoRecoil { get; set; }
 
 	/// <summary>
 	/// Syncs all animgraph parameters on Player to reflect current weapon state.
@@ -214,7 +214,7 @@ public partial class BaseCombatWeapon : BaseEntity
 
 		if ( Owner.Player.IsValid() )
 		{
-			HandleWeaponInput();
+			if ( Owner.Player.IsControllingSelf ) HandleWeaponInput();
 			HandleWeaponStates();
 			return;
 		}
@@ -393,11 +393,9 @@ public partial class BaseCombatWeapon : BaseEntity
 	/// </summary>
 	protected virtual void PrimaryAttack()
 	{
-		if ( !AttackConditions() )
-			return;
+		if ( !AttackConditions() ) return;
 
-		if ( !UsesPrimary() )
-			return;
+		if ( !UsesPrimary() ) return;
 
 		if ( (WorldTime.Now - LastAttackTime) > (GetPrimaryFireRate() + 0.1f) ) _shotsFired = 0;
 

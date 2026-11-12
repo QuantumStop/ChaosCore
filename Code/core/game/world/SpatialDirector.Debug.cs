@@ -5,114 +5,49 @@ using System;
 
 public sealed partial class SpatialDirector
 {
-	[ConVar( "spatialdirector_debug", Help = "Spatial director debug. 0=off, 1=text, 2=text+world." )]
+	[ConVar( "debug_spatialdirector", Help = "Spatial director debug. 0 = Off, 1 = Text, 2 = Text + World." )]
 	public static int DebugMode { get; set; } = 0;
 
-	[ConVar( "spatialdirector_debug_shader", Help = "Shader debug. 0=off, 1=surface classes, 2=cutaway masks, 3=fog masks, 4=interior shading, 5=depth gate." )]
+	[ConVar( "debug_spatialdirector_shader", Help = "Shader debug. 0 = Off, 1 = Surface classes, 2 = Cutaway masks, 3 = Fog masks, 4 = Interior shading, 5 = Depth gate." )]
 	public static int ShaderDebugMode { get; set; } = 0;
 
-	[Property, Feature( "Debug" ), ReadOnly]
-	public CameraComponent Camera { get; private set; }
+	[Property, Feature( "Debug" ), ReadOnly] public CameraComponent Camera { get; private set; }
+
+	[Property, Feature( "Debug" ), ReadOnly] public BasePawn Target { get; private set; }
+
+	[Property, Feature( "Debug" ), ReadOnly] public PlayerController Controller => Target is not BasePlayer player ? null : player.Controller;
 
 	[Property, Feature( "Debug" ), ReadOnly]
-	public BasePawn Target { get; private set; }
+	public Vector3 VisionWorldPosition => !Target.IsValid() ? Vector3.Zero : Controller.IsValid()
+				? Target.WorldPosition + Vector3.Up * Controller.HeadHeight + VisionOffset
+				: Target.WorldPosition + VisionOffset;
 
-	[Property, Feature( "Debug" ), ReadOnly]
-	public PlayerController Controller
-	{
-		get
-		{
-			if ( Target is not BasePlayer player )
-				return null;
+	[Property, Feature( "Debug" ), ReadOnly] public float PlayerFloorZ => !Target.IsValid() ? 0f : Target.WorldPosition.z;
 
-			return player.Controller as PlayerController;
-		}
-	}
+	[Property, Feature( "Debug" ), ReadOnly] public float PlayerHeight => Controller.IsValid() ? Controller.Height : 0f;
 
-	[Property, Feature( "Debug" ), ReadOnly]
-	public Vector3 VisionWorldPosition
-	{
-		get
-		{
-			if ( !Target.IsValid() )
-				return Vector3.Zero;
+	[Property, Feature( "Debug" ), ReadOnly] public float PlayerTopZ => !Target.IsValid() ? 0f : PlayerFloorZ + PlayerHeight;
 
-			var controller = Controller;
+	[Property, Feature( "Debug" ), ReadOnly] public bool TargetTraceBlocked { get; private set; }
 
-			if ( controller.IsValid() )
-				return Target.WorldPosition + Vector3.Up * controller.HeadHeight + VisionOffset;
+	[Property, Feature( "Debug" ), ReadOnly] public float CutawayStrength { get; private set; }
 
-			return Target.WorldPosition + VisionOffset;
-		}
-	}
+	[Property, Feature( "Debug" ), ReadOnly] public bool IsTargetInside { get; private set; }
 
-	[Property, Feature( "Debug" ), ReadOnly]
-	public float PlayerFloorZ
-	{
-		get
-		{
-			if ( !Target.IsValid() )
-				return 0f;
+	[Property, Feature( "Debug" ), ReadOnly] public float ViewBlend { get; private set; }
 
-			return Target.WorldPosition.z;
-		}
-	}
+	[Property, Feature( "Debug" ), ReadOnly] public Vector3 CutawayHitNormalWorld { get; private set; }
 
-	[Property, Feature( "Debug" ), ReadOnly]
-	public float PlayerHeight
-	{
-		get
-		{
-			var controller = Controller;
+	[Property, Feature( "Debug" ), ReadOnly] public Vector3 InteriorProbeHitNormalWorld { get; private set; }
 
-			if ( controller.IsValid() )
-				return controller.Height;
+	[Property, Feature( "Debug" ), ReadOnly] public Vector3 CutawayEndWorld { get; private set; }
 
-			return 0f;
-		}
-	}
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public float PlayerTopZ
-	{
-		get
-		{
-			if ( !Target.IsValid() )
-				return 0f;
-
-			return PlayerFloorZ + PlayerHeight;
-		}
-	}
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public bool TargetTraceBlocked { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public float CutawayStrength { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public bool IsTargetInside { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public float ViewBlend { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public Vector3 CutawayHitNormalWorld { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public Vector3 InteriorProbeHitNormalWorld { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public Vector3 CutawayEndWorld { get; private set; }
-
-	[Property, Feature( "Debug" ), ReadOnly]
-	public Vector3 CutawayHitWorld { get; private set; }
+	[Property, Feature( "Debug" ), ReadOnly] public Vector3 CutawayHitWorld { get; private set; }
 
 	/// <summary>
 	/// Refresh the spatial probe every frame. Useful for precise debugging.
 	/// </summary>
-	[Property, Feature( "Debug" )]
-	public bool FastSpatialProbeDebug { get; set; } = false;
+	[Property, Feature( "Debug" )] public bool FastSpatialProbeDebug { get; set; } = false;
 
 	public Texture VisibilityTexture => _visibilityTexture;
 
@@ -134,17 +69,13 @@ public sealed partial class SpatialDirector
 	private void RecordRendererCullingDebug( ModelRenderer renderer, bool visible )
 	{
 		var outOfRange = !visible && !renderer.GameObject.IsStatic && _rendererSamplesInRange == 0;
-	
-		if ( visible )
-			_rendererCullingVisible++;
-		else
-			_rendererCullingHidden++;
-		
-		if ( outOfRange )
-			_rendererCullingOutOfRange++;
 
-		if ( DebugMode < 2 )
-			return;
+		if ( visible ) _rendererCullingVisible++;
+		else _rendererCullingHidden++;
+
+		if ( outOfRange ) _rendererCullingOutOfRange++;
+
+		if ( DebugMode < 2 ) return;
 
 		var color = visible ? Color.Green : outOfRange ? Color.Yellow : Color.Red;
 		var reason = visible ? "visible" : outOfRange ? "outside range/arc"
@@ -157,8 +88,7 @@ public sealed partial class SpatialDirector
 
 	private static void DrawRendererSampleDebug( Vector3 origin, Vector3 point, Color color )
 	{
-		if ( DebugMode < 2 )
-			return;
+		if ( DebugMode < 2 ) return;
 
 		var debug = DebugOverlaySystem.Current;
 		debug.Line( new Line( origin, point ), color, 0f, overlay: true );
@@ -178,9 +108,8 @@ public sealed partial class SpatialDirector
 	{
 		var block = new DebugTextBlock();
 
-		if ( DebugMode <= 0 || !Active || !IsSupportedView || !Camera.IsValid() )
-			return null;
-		
+		if ( DebugMode <= 0 || !Active || !IsSupportedView || !Camera.IsValid() ) return null;
+
 		block.Header( "SPATIAL DIRECTOR DEBUG" );
 		block.Line( "Director", GameObject.Name, Color.White );
 		block.Space();
@@ -246,7 +175,7 @@ public sealed partial class SpatialDirector
 		block.Line( "3", "LOS / Distance / Peek", Color.White );
 		block.Line( "4", "Interior shading", Color.White );
 		block.Line( "5", "Interior depth gate", Color.White );
-	
+
 		return block;
 	}
 

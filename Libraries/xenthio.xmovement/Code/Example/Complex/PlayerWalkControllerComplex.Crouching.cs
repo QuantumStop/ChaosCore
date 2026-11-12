@@ -4,14 +4,14 @@ namespace XMovement;
 public partial class PlayerWalkControllerComplex : Component
 {
 	public float EyeHeightOffset;
-	protected float LastEyeHeightOffset = 0;
+	protected float _lastEyeHeightOffset = 0;
 
 	public virtual void UpdateCrouching()
 	{
 		DoCrouching();
 		Controller.Height = Height + EyeHeightOffset;
 		// This moves our feet up when crouching in air
-		var delta = LastEyeHeightOffset - EyeHeightOffset;
+		var delta = _lastEyeHeightOffset - EyeHeightOffset;
 		if ( !Controller.IsOnGround )
 		{
 			var delmove = delta;
@@ -29,7 +29,7 @@ public partial class PlayerWalkControllerComplex : Component
 		}
 
 		Head.LocalPosition = new Vector3( 0, 0, HeadHeight + EyeHeightOffset );
-		LastEyeHeightOffset = EyeHeightOffset;
+		_lastEyeHeightOffset = EyeHeightOffset;
 	}
 	public virtual void DoCrouching()
 	{

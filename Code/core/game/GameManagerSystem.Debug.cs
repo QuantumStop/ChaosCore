@@ -44,7 +44,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		set => Current?.ShowEjectCamera = value;
 	}
 
-	[ConCmd( "ent_text" )]
+	[ConCmd( "ent_text", Help = "Show the debug text attach to the entity in question" )]
 	public static void EntText( string cmd = "!picker" )
 	{
 		var scene = Game.ActiveScene;
@@ -56,9 +56,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			return;
 		}
 
-		//
 		// Clear All
-		//
 		if ( cmd.Equals( "!clearall", StringComparison.OrdinalIgnoreCase ) )
 		{
 			DebugOverlaySystem.Current.ClearAllEntries();
@@ -66,9 +64,8 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			Log.Info( "[ent_text] Cleared all debug overlays." );
 			return;
 		}
-		//
+
 		// Picker Mode
-		//
 		if ( cmd.Equals( "!picker", StringComparison.OrdinalIgnoreCase ) )
 		{
 			var camera = scene.Camera;
@@ -121,9 +118,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			return;
 		}
 
-		//
 		// Name / Type Match Mode
-		//
 		int changedCount = 0;
 
 		// This should be just components, but for now I'm doing just BaseEntity
@@ -143,9 +138,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 				(gameName is not null && gameName.Contains( cmdLower ));
 		} );
 
-		Log.Info(
-			$"[ent_text] Search '{cmd}' found {matches.Count<Component>()} candidates."
-		);
+		Log.Info( $"[ent_text] Search '{cmd}' found {matches.Count<Component>()} candidates." );
 
 		foreach ( var comp in matches )
 		{
@@ -162,14 +155,10 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			changedCount++;
 		}
 
-		Log.Info(
-			$"[ent_text] Toggled overlay text debug for {changedCount} entities."
-		);
+		Log.Info( $"[ent_text] Toggled overlay text debug for {changedCount} entities." );
 	}
 #endif
-	/// <summary>
-	/// Internal function to collect all types of gizmo draws or debug overlays and put it OnUpdate()
-	/// </summary>
+	/// <summary>Internal function to collect all types of gizmo draws or debug overlays and put it OnUpdate()</summary>
 	private void DrawAllDebugGizmos()
 	{
 #if !STANDALONE && IGNIS
@@ -199,7 +188,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			return false;
 
 		var latestEditorCamera = Scene.GetAllObjects( true ).LastOrDefault( x => x?.Name == "editor_camera" );
-		if ( latestEditorCamera?.IsValid() == true )
+		if ( latestEditorCamera.IsValid() )
 		{
 			transform = latestEditorCamera.Transform.World;
 			return true;
@@ -306,6 +295,37 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			DrawPanel( navigation );
 		}
 
+		
+		if ( AIMotor.DebugLevel >= 2 )
+		{
+			DebugTextBlock navigation = null;
+			
+			foreach ( var npc in Current.Scene.GetAll<AIController>() )
+			{
+				if ( !npc.DebugNavigation || !npc.Enabled || !npc.Agent.IsValid() || npc.Navigation?.Motor is null )
+					continue;
+
+				var block = npc.Navigation.Motor.GetLocomotionDebugText();
+				
+				if ( block is null ) 
+					continue;
+
+				if ( navigation is null )
+				{
+					navigation = new DebugTextBlock();
+					navigation.Header( "AI NAVIGATION DEBUG" );
+				}
+				else
+				{
+					navigation.Space();
+				}
+				
+				navigation.Append( block );
+			}
+			
+			DrawPanel( navigation );
+		}
+
 		if ( CameraEffects.IsDebug )
 			DrawPanel( CameraEffects.GetDebugText() );
 
@@ -353,13 +373,13 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 
 		void DrawPanel( DebugTextBlock block )
 		{
-			if ( block is null || block.Height <= 0f ) 
+			if ( block is null || block.Height <= 0f )
 				return;
 
 			// Fill available space before opening another column to the left.
 			int column = 0;
 			while ( column < columnBottoms.Count && columnBottoms[column] + block.Height > Screen.Height - 32f )
-			{	
+			{
 				column++;
 			}
 

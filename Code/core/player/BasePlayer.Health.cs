@@ -23,9 +23,7 @@ public partial class BasePlayer
 
 	/// <summary> Returns true if player is underwater. </summary>
 	public bool IsUnderwater => WaterLevel == WaterLvl.Full;
-	/// <summary>
-	/// Where is the eye level compared to the player height (0-1)
-	/// </summary>
+	/// <summary>Where is the eye level compared to the player height (0-1)</summary>
 	public float HeadRatio => Controller.HeadHeight / Controller.Height;
 
 	protected virtual void CheckWaterLevel()
@@ -49,45 +47,27 @@ public partial class BasePlayer
 	/// </summary>
 	public enum WaterLvl
 	{
-		/// <summary>
-		/// Not in water
-		/// </summary>
+		/// <summary>Not in water</summary>
 		None,
-		/// <summary>
-		/// Feet are in water
-		/// </summary>
+		/// <summary>Feet are in water</summary>
 		Feet,
-		/// <summary>
-		/// Up to waist
-		/// </summary>
+		/// <summary>Up to waist</summary>
 		Waist,
-		/// <summary>
-		/// Underwater
-		/// </summary>
+		/// <summary>Underwater</summary>
 		Full
 	}
 
-	/// <summary>
-	/// How severe our damage was relative to expected Health.
-	/// </summary>
+	/// <summary>How severe our damage was relative to expected Health.</summary>
 	public enum DamageSeverity
 	{
 		None,
-		/// <summary>
-		/// This but a scratch
-		/// </summary>
+		/// <summary>This but a scratch</summary>
 		Minor,
-		/// <summary>
-		/// This is visible damage now
-		/// </summary>
+		/// <summary>This is visible damage now</summary>
 		Medium,
-		/// <summary>
-		/// One could survive this, potentially
-		/// </summary>
+		/// <summary>One could survive this, potentially</summary>
 		Major,
-		/// <summary>
-		/// Literal dealth
-		/// </summary>
+		/// <summary>Literal dealth</summary>
 		Terminal
 	}
 
@@ -130,7 +110,7 @@ public partial class BasePlayer
 	/// <summary> No damage whatsoever</summary>
 	public static bool God { get; set; } = false;
 
-	[ConCmd( "god" )]
+	[ConCmd( "god", Help = "All damage is ignored" )]
 	private static void ToggleGod()
 	{
 		God = !God;
@@ -140,7 +120,7 @@ public partial class BasePlayer
 	}
 
 	public static bool Buddha { get; set; } = false;
-	[ConCmd( "buddha" )]
+	[ConCmd( "buddha", Help = "All damage is not ignored but you can't go below 1 HP, making you unable to die." )]
 	private static void ToggleBuddha()
 	{
 		Buddha = !Buddha;
@@ -225,9 +205,7 @@ public partial class BasePlayer
 		}
 	}
 
-	/// <summary>
-	/// What happens on player death
-	/// </summary>
+	/// <summary>What happens on player death</summary>
 	/// <param name="dmginfo">Damage Information</param>
 	public virtual void OnDeath( DamageInfo dmginfo )
 	{

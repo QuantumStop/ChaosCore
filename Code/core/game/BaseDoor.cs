@@ -22,12 +22,8 @@ public class BaseDoor : BaseUsable
 
 		switch ( State )
 		{
-			case DoorState.Sleeping:
-				Open( basePlayer.WorldPosition ); // i dont know why this works
-				break;
-			case DoorState.Ajar:
-				Close( basePlayer.WorldPosition );
-				break;
+			case DoorState.Sleeping: Open( basePlayer.WorldPosition ); break;
+			case DoorState.Ajar: Close( basePlayer.WorldPosition ); break;
 		}
 
 		return true;
@@ -77,6 +73,7 @@ public class BaseDoor : BaseUsable
 
 		if ( !string.IsNullOrWhiteSpace( Data?.HingeAttachment ) && !HingeObj.IsValid() ) HingeObj = ModelRenderer.GetAttachmentObject( Data?.HingeAttachment );
 		Hinge ??= HingeObj?.Components.GetOrCreate<HingeJoint>();
+		Hinge?.LimitEnabled = true;
 		Hinge?.MaxAngle = ArcAngle * 0.5f;
 		Hinge?.MinAngle = -ArcAngle * 0.5f;
 
@@ -96,12 +93,8 @@ public class BaseDoor : BaseUsable
 				if ( IsMoving && IsClosed ) Latch();
 				MoveSound();
 				break;
-			case DoorState.Opening:
-				if ( MathF.Abs( Hinge.Angle ) >= MathF.Abs( Hinge.TargetAngle ) ) Ajar();
-				break;
-			case DoorState.Latching:
-				if ( Hinge.Angle.AlmostEqual( 0, 0.1f ) ) Sleep();
-				break;
+			case DoorState.Opening: if ( MathF.Abs( Hinge.Angle ) >= MathF.Abs( Hinge.TargetAngle ) ) Ajar(); break;
+			case DoorState.Latching: if ( Hinge.Angle.AlmostEqual( 0, 0.1f ) ) Sleep(); break;
 		}
 	}
 	/// <summary>
@@ -179,7 +172,6 @@ public class BaseDoor : BaseUsable
 
 	private void FastMove( bool on, bool fast = true, float angle = 0f )
 	{
-		if ( on ) Log.Info( angle );
 		if ( fast ) // this is really only for teleporting the hinge back to 0 when latching, every other movement uses slower methods
 		{
 			Hinge?.Motor = on ? HingeJoint.MotorMode.TargetAngle : HingeJoint.MotorMode.Disabled;
@@ -188,13 +180,15 @@ public class BaseDoor : BaseUsable
 		}
 		else
 		{
+			Hinge?.Motor = HingeJoint.MotorMode.Disabled; // make sure its off
 			Hinge?.TargetAngle = angle;
-			Rigidbody?.ApplyImpulseAt( HandleObj.WorldPosition, (angle > 0 ? WorldRotation.Forward : WorldRotation.Backward) * Rigidbody.Mass * 0.75f * MathF.Abs( angle ) );
+			var force = (angle > 0 ? WorldRotation.Forward : WorldRotation.Backward) * Rigidbody.Mass * (State == DoorState.Opening ? 2 : 0.75f) * MathF.Abs( angle );
+			Rigidbody?.ApplyImpulseAt( HandleObj.WorldPosition, force );
 
 			if ( DebugDoorForce )
 			{
-				DebugOverlay.Line( HandleObj.WorldPosition, HandleObj.WorldPosition + (angle > 0 ? WorldRotation.Forward : WorldRotation.Backward) * 12, Color.White, 5, default, true );
-				DebugOverlay.Box( HandleObj.WorldPosition + (angle > 0 ? WorldRotation.Forward : WorldRotation.Backward) * 12, 2, Color.White, 5, default, true );
+				DebugOverlay.Line( HandleObj.WorldPosition, HandleObj.WorldPosition + force, Color.White, 5, default, true );
+				DebugOverlay.Box( HandleObj.WorldPosition + force, 2, Color.White, 5, default, true );
 			}
 		}
 	}

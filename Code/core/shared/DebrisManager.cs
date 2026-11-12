@@ -14,7 +14,8 @@ public class DebrisManager : BaseEntity
 	public static DebrisManager Instance { get; set; }
 	[Property, ReadOnly, Feature( "Debug" )] public int TrackedDebris { get; set; } = 0;
 
-	[ConVar( "debug_surfacedecal", ConVarFlags.Cheat )] public static bool ShowSurfaceDebug { get; set; } = false;
+	[ConVar( "debug_surfacedecal", ConVarFlags.Cheat, Help = "Print various warnings about hit surface decals" )] public static bool ShowSurfaceDebug { get; set; } = false;
+
 	[Property, Feature( "Debug" ), Title( "Show Debris Objects" )]
 	public bool DisplayDebrisObj
 	{
@@ -50,7 +51,7 @@ public class DebrisManager : BaseEntity
 		GameObject.Name = "Debris Manager";
 	}
 
-	[ConCmd( "cleardecals" )]
+	[ConCmd( "cleardecals", Help = "Clear all player made decals like bulletholes." )]
 	static void ClearDecals()
 	{
 		var damn = Instance._debrisObjects.ToList();

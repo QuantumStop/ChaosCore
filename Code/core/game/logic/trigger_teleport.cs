@@ -113,8 +113,7 @@ public class triggerTeleport : BaseEntity, Component.ITriggerListener
 	{
 		if ( !RemoteDestination.IsValid() )
 		{
-			if ( IsDebug )
-				Log.Warning( "trigger_teleport: No RemoteDestination set!" );
+			if ( IsDebug ) Log.Warning( "trigger_teleport: No RemoteDestination set!" );
 
 			return;
 		}
@@ -125,8 +124,7 @@ public class triggerTeleport : BaseEntity, Component.ITriggerListener
 			return;
 		}
 
-		if ( inTriggerItems is null )
-			return;
+		if ( inTriggerItems is null ) return;
 
 		foreach ( var item in inTriggerItems )
 		{

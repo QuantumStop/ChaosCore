@@ -546,7 +546,7 @@ public partial class PlayerMovement : Component
 
 	int _stuckTries;
 
-	[ConVar] public static bool DebugPlayermovementUnstick { get; set; } = false;
+	public static bool DebugPlayermovementUnstick { get; set; } = false;
 	Transform _previousTransform;
 	bool TryUnstuck()
 	{

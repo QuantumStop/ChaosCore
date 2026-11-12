@@ -7,23 +7,23 @@ public partial class PlayerWalkControllerComplex : Component
 	[Property, FeatureEnabled( "Ladders" )] public bool EnableLadders { get; set; } = true;
 	[Property, Feature( "Ladders" )] public float ClimbSpeed { get; set; } = 100.0f;
 	[Property, Feature( "Ladders" )] public string LadderTag { get; set; } = "ladder";
-	bool IsTouchingLadder = false;
-	Vector3 LadderNormal;
+	protected bool _isTouchingLadder = false;
+	protected Vector3 _ladderNormal;
 
-	Vector3 LastNonZeroWishLadderVelocity;
+	protected Vector3 _lastNonZeroWishLadderVelocity;
 	public virtual void CheckLadder()
 	{
-		if ( !EnableLadders ) { IsTouchingLadder = false; return; }
+		if ( !EnableLadders ) { _isTouchingLadder = false; return; }
 		var wishvel = new Vector3( WishMove.x.Clamp( -1f, 1f ), WishMove.y.Clamp( -1f, 1f ), 0 );
 
 		// this is for latching
-		if ( wishvel.Length > 0 ) LastNonZeroWishLadderVelocity = wishvel;
-		if ( TryLatchNextTickCounter > 0 ) wishvel = LastNonZeroWishLadderVelocity * -1;
+		if ( wishvel.Length > 0 ) _lastNonZeroWishLadderVelocity = wishvel;
+		if ( _tryLatchNextTickCounter > 0 ) wishvel = _lastNonZeroWishLadderVelocity * -1;
 
 		wishvel *= EyeAngles.WithPitch( 0 ).ToRotation();
 		wishvel = wishvel.Normal;
 
-		if ( IsTouchingLadder )
+		if ( _isTouchingLadder )
 		{
 			if ( Input.Pressed( "jump" ) )
 			{
@@ -32,21 +32,21 @@ public partial class PlayerWalkControllerComplex : Component
 
 				var Eject = new Vector3
 				{
-					x = LadderNormal.x * sidem,
-					y = LadderNormal.y * sidem,
+					x = _ladderNormal.x * sidem,
+					y = _ladderNormal.y * sidem,
 					z = (3 * upm).Clamp( 0, 1 )
 				};
 
 				Controller.Velocity += (Eject * 180.0f) * WorldScale;
 
-				IsTouchingLadder = false;
+				_isTouchingLadder = false;
 
 				return;
 
 			}
-			else if ( Controller.GroundObject.IsValid() && LadderNormal.Dot( wishvel ) > 0 )
+			else if ( Controller.GroundObject.IsValid() && _ladderNormal.Dot( wishvel ) > 0 )
 			{
-				IsTouchingLadder = false;
+				_isTouchingLadder = false;
 
 				return;
 			}
@@ -54,7 +54,7 @@ public partial class PlayerWalkControllerComplex : Component
 
 		const float ladderDistance = 1.0f;
 		var start = WorldPosition;
-		Vector3 end = start + (IsTouchingLadder ? (LadderNormal * -1.0f) : wishvel) * ladderDistance;
+		Vector3 end = start + (_isTouchingLadder ? (_ladderNormal * -1.0f) : wishvel) * ladderDistance;
 
 		var pm = Scene.Trace.Ray( start, end )
 					.Size( Controller.BoundingBox.Mins, Controller.BoundingBox.Maxs )
@@ -64,12 +64,12 @@ public partial class PlayerWalkControllerComplex : Component
 
 		// Gizmo.Draw.LineBBox( cc.BoundingBox.Translate( end ) );
 
-		IsTouchingLadder = false;
+		_isTouchingLadder = false;
 
 		if ( pm.Hit )
 		{
-			IsTouchingLadder = true;
-			LadderNormal = pm.Normal;
+			_isTouchingLadder = true;
+			_ladderNormal = pm.Normal;
 		}
 	}
 
@@ -78,9 +78,9 @@ public partial class PlayerWalkControllerComplex : Component
 		Controller.IsOnGround = false;
 
 		var velocity = Controller.WishVelocity;
-		float normalDot = velocity.Dot( LadderNormal );
-		var cross = LadderNormal * normalDot;
-		Controller.Velocity = (velocity - cross) + (-normalDot * LadderNormal.Cross( Vector3.Up.Cross( LadderNormal ).Normal ));
+		float normalDot = velocity.Dot( _ladderNormal );
+		var cross = _ladderNormal * normalDot;
+		Controller.Velocity = (velocity - cross) + (-normalDot * _ladderNormal.Cross( Vector3.Up.Cross( _ladderNormal ).Normal ));
 
 		Controller.Move( withWishVelocity: false, withGravity: false );
 	}
@@ -88,27 +88,27 @@ public partial class PlayerWalkControllerComplex : Component
 	[ConVar( "debug_movement_ladderlatching" )]
 	public static bool LatchDebug { get; set; } = false;
 
-	int TryLatchNextTickCounter = 0;
-	Vector3 LastNonZeroWishVelocity;
-	private void LadderLatchCheck()
+	protected int _tryLatchNextTickCounter = 0;
+	protected Vector3 _lastNonZeroWishVelocity;
+	protected void LadderLatchCheck()
 	{
 		if ( !EnableLadders ) return;
 
 		if ( Input.Down( JumpAction ) || Input.Released( JumpAction ) )
 		{
-			TryLatchNextTickCounter = 0;
+			_tryLatchNextTickCounter = 0;
 			return;
 		}
 
 		if ( !Controller.WishVelocity.Normal.IsNearlyZero( 0.001f ) )
 		{
-			LastNonZeroWishVelocity = Controller.WishVelocity;
+			_lastNonZeroWishVelocity = Controller.WishVelocity;
 		}
 
-		if ( TryLatchNextTickCounter > 0 )
+		if ( _tryLatchNextTickCounter > 0 )
 		{
-			Controller.Velocity = (LastNonZeroWishVelocity.Normal * -100).WithZ( Controller.Velocity.z );
-			TryLatchNextTickCounter--;
+			Controller.Velocity = (_lastNonZeroWishVelocity.Normal * -100).WithZ( Controller.Velocity.z );
+			_tryLatchNextTickCounter--;
 		}
 
 		if ( Controller.GroundObject.IsValid() ) return;
@@ -117,7 +117,7 @@ public partial class PlayerWalkControllerComplex : Component
 		// Trace downwards and behind the way we are or was walking
 
 		var start = WorldPosition + (Vector3.Down * 16);
-		var end = start - (LastNonZeroWishVelocity.Normal * (Controller.Radius / 2));
+		var end = start - (_lastNonZeroWishVelocity.Normal * (Controller.Radius / 2));
 
 		var pm = Scene.Trace.Ray( start, end )
 					.Size( Controller.BoundingBox.Mins, Controller.BoundingBox.Maxs )
@@ -128,7 +128,7 @@ public partial class PlayerWalkControllerComplex : Component
 		if ( pm.Hit )
 		{
 			Controller.Velocity = Vector3.Zero.WithZ( Controller.Velocity.z );
-			TryLatchNextTickCounter = 10;
+			_tryLatchNextTickCounter = 10;
 		}
 
 		if ( LatchDebug )

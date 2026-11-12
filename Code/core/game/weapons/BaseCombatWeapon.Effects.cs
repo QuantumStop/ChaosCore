@@ -10,7 +10,7 @@ public partial class BaseCombatWeapon
 	protected virtual KelvinSpotLight _muzzleSpotLight { get; set; }
 	protected TemporaryEffect _delete { get; set; }
 
-	[ConVar( "debug_muzzle" )] static public bool DebugMuzzle { get; set; }
+	[ConVar( "debug_muzzle_clear", Help = "Print when muzzle effects (like muzzle light) are force-cleared." )] static public bool DebugMuzzle { get; set; }
 
 	public static Vector3 ReprojectToViewmodel( Vector3 worldPos, Vector3 cameraPos, Vector3 cameraForward, float viewmodelFov, float cameraFov, float flatten = 0f )
 	{
@@ -91,6 +91,8 @@ public partial class BaseCombatWeapon
 		_muzzleSpotLight.ConeInner = 0;
 		_muzzleSpotLight.ConeOuter = WeaponData.MuzzleLightFOV;
 		_muzzleSpotLight.Attenuation = 0.5f;
+		_muzzleSpotLight.FogMode = Light.FogInfluence.Disabled;
+		_muzzleSpotLight.Contribution = Light.LightContribution.Diffuse; // questionable but probably looks better if there isnt an additional shine
 	}
 
 	/// <summary>Force clear all effects</summary>

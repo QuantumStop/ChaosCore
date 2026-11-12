@@ -62,7 +62,7 @@ public class SniffOutScentAction : AIAction
 		_stateTimer = WorldTime.Now + _sniffDuration;
 		agent.Agent.Stop();
 
-		agent.BodyModel.Set( "b_SniffAir", true );
+		agent.BodyModel.Animation.Parameters.TrySet( "b_SniffAir", true );
 
 		if ( _trackedScent.HasValue )
 			agent.FaceTarget( _trackedScent.Value.Position, 8 );

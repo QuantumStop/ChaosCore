@@ -5,7 +5,7 @@ using System.IO;
 using System.Text.Json.Nodes;
 public abstract partial class GameManagerSystem : GameObjectSystem
 {
-	[ConCmd( "restart" )]
+	[ConCmd( "restart", Help = "Restart the map (scene) completely, no save." )]
 	public static void RestartLevel()
 	{
 		BaseGUIManager.Local?.PrepareForSceneLoad();
@@ -13,7 +13,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		Game.ActiveScene.Load( Game.ActiveScene.Source );   // restart current map as if it was loaded again from scratch
 	}
 
-	[ConCmd( "reload" )]
+	[ConCmd( "reload", Help = "Restart the map (scene) from last save." )]
 	public static void ReloadLevel()   // load whatever latest save is
 	{
 		if ( Rules is SingleplayerRules sp && sp.CanSaveLoad )
@@ -35,8 +35,8 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		}
 	}
 
-	[ConCmd( "scene" )] public static void CmdScene( string mapname, string parameter1 = "" ) => ChangeLevel( mapname, parameter1 );
-	[ConCmd( "map" )]
+	[ConCmd( "scene", Help = "Change the current scene (map)." )] public static void CmdScene( string mapname, string parameter1 = "" ) => ChangeLevel( mapname, parameter1 );
+	[ConCmd( "map", Help = "Change the current map (scene)." )]
 	public static async void ChangeLevel( string mapname, string parameter1 = "" )
 	{
 		if ( !Rules.AllowMapChange ) return;
@@ -92,7 +92,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 			?? ResourceLibrary.GetAll<SceneFile>().FirstOrDefault( x => string.Equals( x.ResourceName, mapname, StringComparison.OrdinalIgnoreCase ) );
 
 #if IGNIS || STANDALONE
-	[ConCmd( "save" )]
+	[ConCmd( "save", Help = "Make a save." )]
 	public static void SaveGame( string savename = "" ) => TrySaveGame( savename, GetExplicitSaveTitle( savename ) );
 #endif
 	public static bool SaveGameFromMenu( string savename = "" ) => TrySaveGame( savename, null );
@@ -138,7 +138,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 		return false;
 	}
 
-	[ConCmd( "quicksave" )]
+	[ConCmd( "quicksave", Help = "Make a quick save, 5 slots blah blah blah." )]
 	public static void QuickSave( int slot = 1 )
 	{
 #if IGNIS || STANDALONE
@@ -167,7 +167,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 #endif
 	}
 
-	[ConCmd( "quickload" )]
+	[ConCmd( "quickload", Help = "Load the last quick save, also with the slot thing." )]
 	public static void QuickLoad( int slot = 1 )
 	{
 		slot = Math.Clamp( slot, 1, 3 );
@@ -178,7 +178,7 @@ public abstract partial class GameManagerSystem : GameObjectSystem
 	private static string _lastSaveName;
 #endif
 
-	[ConCmd( "load" )]
+	[ConCmd( "load", Help = "Load the big boy save." )]
 	public static async void LoadGame( string savename )
 	{
 		if ( CanLoadSave() )

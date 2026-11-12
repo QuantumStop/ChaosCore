@@ -148,7 +148,7 @@ public partial class PlayerController
 	private Rotation _isometricMoveLookTurnTargetRotation;
 	private float _isometricMoveLookTurnStartTime;
 
-	private void UpdateIsometricCamera()
+	public void UpdateIsometricCamera()
 	{
 		if ( !Camera.IsValid() || !Head.IsValid() )
 			return;
@@ -173,10 +173,8 @@ public partial class PlayerController
 		Camera.WorldRotation = targetCameraRotation;
 	}
 
-	/// <summary>
-	/// Toggles between the chosen base camera mode and the isometric camera mode.
-	/// </summary>
-	private bool UpdateIsometricCameraToggle()
+	/// <summary>Toggles between the chosen base camera mode and the isometric camera mode.</summary>
+	public bool UpdateIsometricCameraToggle()
 	{
 		if ( IsometricToggleMode == IsometricToggleModes.None ) return false;
 		if ( !Input.Pressed( CameraToggleAction ) ) return false;
@@ -472,10 +470,8 @@ public partial class PlayerController
 
 	private bool IsometricLookActionHeld() => !string.IsNullOrEmpty( IsometricLookAction ) && Input.Down( IsometricLookAction );
 
-	/// <summary>
-	/// Restores whichever projection the base camera expects after leaving isometric.
-	/// </summary>
-	private void ResetBaseCameraProjection()
+	/// <summary>Restores whichever projection the base camera expects after leaving isometric.</summary>
+	public void ResetBaseCameraProjection()
 	{
 		if ( !Camera.IsValid() ) return;
 

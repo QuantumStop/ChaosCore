@@ -86,8 +86,6 @@ public static partial class Effects
 		[Property] public float TimeToDry { get; set; } = 60f;
 		/// <summary>The predefined colors</summary>
 		[Property, Space] public BloodColor.ColorList PresetColor { get; set; }
-		/// <summary>We can cheat and sort of get a multiply effect by putting the Color Mix to -1, but that inverts the colors so we have to account for that, also the edges are a tiny bit shit but should be ok</summary>
-		[Property] public bool CoolBlendMode { get; set; } = false;
 
 		private float _startScale;
 		[Property, ReadOnly, Feature( "Debug" )] private Gradient _definedColors = Color.Red;
@@ -99,14 +97,13 @@ public static partial class Effects
 			{
 				Decal = comp;
 				_startScale = Decal.Scale.ConstantValue;
-				Decal.ColorMix = CoolBlendMode ? -1 : Decal.ColorMix;
 			}
 
 			if ( !_useCustomColor )
 			{
 				_definedColors = new();
-				_definedColors.AddColor( 0, CoolBlendMode ? BloodColor.ConvertColor( PresetColor ).Invert() : BloodColor.ConvertColor( PresetColor ) );
-				_definedColors.AddColor( x: 1, CoolBlendMode ? BloodColor.ConvertColor( PresetColor, true ).Invert() : BloodColor.ConvertColor( PresetColor, true ) );
+				_definedColors.AddColor( 0, BloodColor.ConvertColor( PresetColor ) );
+				_definedColors.AddColor( x: 1, BloodColor.ConvertColor( PresetColor, true ) );
 			}
 
 			_time = 0;

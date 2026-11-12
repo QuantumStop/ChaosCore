@@ -86,8 +86,7 @@ public class BaseEntity : BaseCustomSerialize
 
 		var (editorVis, isModel) = ResolveEditorVisual();
 
-		if ( string.IsNullOrEmpty( editorVis ) || !ShouldDrawGizmo( isModel ) )
-			return;
+		if ( string.IsNullOrEmpty( editorVis ) || !ShouldDrawGizmo( isModel ) ) return;
 
 		EntityDefaultGizmo( editorVis, isModel );
 	}
@@ -100,8 +99,7 @@ public class BaseEntity : BaseCustomSerialize
 		Gizmo.Draw.Color = GetEditorVisColor();
 		if ( isModel )
 		{
-			if ( !Scene.IsEditor && GetComponent<ModelRenderer>().IsValid() && _initialized )
-				return;
+			if ( !Scene.IsEditor && GetComponent<ModelRenderer>().IsValid() && _initialized ) return;
 
 			Model model = Model.Load( editorVis );
 			Gizmo.Hitbox.Model( model );
@@ -130,8 +128,7 @@ public class BaseEntity : BaseCustomSerialize
 					? Color.White.WithAlpha( PulseAlpha() )
 					: Color.White;
 
-			if ( Gizmo.IsSelected || Gizmo.IsHovered )
-				Gizmo.Draw.LineBBox( model.Bounds );
+			if ( Gizmo.IsSelected || Gizmo.IsHovered ) Gizmo.Draw.LineBBox( model.Bounds );
 
 			return;
 		}

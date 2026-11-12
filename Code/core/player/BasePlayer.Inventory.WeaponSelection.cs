@@ -256,8 +256,7 @@ partial class BasePlayer
 	{
 		var buckets = GetDisplayBuckets();
 
-		if ( WeaponJustConfirmed )
-			return;
+		if ( WeaponJustConfirmed ) return;
 
 		// --- Handle scroll wheel ---
 		float scrollDelta = Input.MouseWheel.y;
@@ -289,8 +288,7 @@ partial class BasePlayer
 			}
 
 			int currentBucketIndex = SelectedBucket - 1;
-			if ( currentBucketIndex < 0 || currentBucketIndex >= buckets.Count )
-				return;
+			if ( currentBucketIndex < 0 || currentBucketIndex >= buckets.Count ) return;
 
 			var currentBucket = buckets[currentBucketIndex];
 			if ( currentBucket is null || currentBucket.Count == 0 )
@@ -347,16 +345,13 @@ partial class BasePlayer
 				if ( dispBucket.Count > 0 )
 				{
 					BaseCombatWeapon logicalWeapon = null;
-					if ( currentBucket is not null && PositionInSelectedBucket < currentBucket.Count )
-						logicalWeapon = currentBucket[PositionInSelectedBucket];
+					if ( currentBucket is not null && PositionInSelectedBucket < currentBucket.Count ) logicalWeapon = currentBucket[PositionInSelectedBucket];
 
 					if ( logicalWeapon.IsValid() )
 					{
 						int visualIndex = dispBucket.IndexOf( logicalWeapon );
-						if ( visualIndex >= 0 )
-							PositionInSelectedBucket = visualIndex;
-						else
-							PositionInSelectedBucket = Math.Clamp( PositionInSelectedBucket, 0, dispBucket.Count - 1 );
+						if ( visualIndex >= 0 ) PositionInSelectedBucket = visualIndex;
+						else PositionInSelectedBucket = Math.Clamp( PositionInSelectedBucket, 0, dispBucket.Count - 1 );
 					}
 					else
 					{

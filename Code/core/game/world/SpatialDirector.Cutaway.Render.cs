@@ -7,11 +7,10 @@ public sealed partial class SpatialDirector
 {
 	private void UpdateShaderCutaway()
 	{
-		if ( Scene is null || Target is null || Camera is null )
-			return;
+		if ( !Scene.IsValid() || !Target.IsValid() || !Camera.IsValid() ) return;
 
 		var start = Target.WorldPosition + TargetOffset;
-		var hasCookie = CutawayCookie is not null && CutawayCookie.IsValid;
+		var hasCookie = CutawayCookie.IsValid();
 
 		CutawayEndWorld = GetCutawayRayEnd( start );
 
@@ -20,10 +19,7 @@ public sealed partial class SpatialDirector
 
 		seeThrough = Math.Clamp( seeThrough, 0f, 1f );
 
-		var cutawaySize = new Vector2(
-			MathF.Max( CutawaySize.x, 0.001f ),
-			MathF.Max( CutawaySize.y, 0.001f )
-		);
+		Vector2 cutawaySize = new( MathF.Max( CutawaySize.x, 0.001f ), MathF.Max( CutawaySize.y, 0.001f ) );
 
 		Scene.RenderAttributes.Set( "CutawayEnabled", CutawayStrength > 0.001f ? 1f : 0f );
 		Scene.RenderAttributes.Set( "CutawayStrength", CutawayStrength );
@@ -73,16 +69,14 @@ public sealed partial class SpatialDirector
 		Scene.RenderAttributes.Set( "CutawayCookieTiling", CutawayCookieTiling ? 1f : 0f );
 		Scene.RenderAttributes.Set( "SpatialDirectorDebug", (float)ShaderDebugMode );
 
-		if ( hasCookie )
-			Scene.RenderAttributes.Set( "CutawayCookie", CutawayCookie );
+		if ( hasCookie ) Scene.RenderAttributes.Set( "CutawayCookie", CutawayCookie );
 
 		ApplyPatternAttributes( Scene.RenderAttributes );
 	}
 
 	private void SetShaderCutawayDisabled()
 	{
-		if ( Scene is null )
-			return;
+		if ( !Scene.IsValid() ) return;
 
 		Scene.RenderAttributes.Set( "CutawayEnabled", 0f );
 		Scene.RenderAttributes.Set( "CutawayStrength", 0f );

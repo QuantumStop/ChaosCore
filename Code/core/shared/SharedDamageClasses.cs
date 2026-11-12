@@ -5,6 +5,7 @@ public enum LifeState
 	Alive,
 	Dead,
 }
+
 public readonly struct DamageTypes
 {
 	/// <summary>generic damage -- do not use if you want players to flinch and bleed! This is a catch-all damage type for when no other type fits. It has no special properties or interactions.</summary>

@@ -16,7 +16,8 @@ public class ScriptedSequence : BaseEntity
 		DontMove,
 	}
 
-	public AnimGraphDirectPlayback DirectPlayback { get; set; }
+	//	public AnimGraphDirectPlayback DirectPlayback { get; set; }
+
 	/// <summary>
 	/// The NPC that the sequence will target.
 	/// </summary>
@@ -25,7 +26,7 @@ public class ScriptedSequence : BaseEntity
 	/// The animation played once the sequence begins. If none specified, it will go straight to the action animation.
 	/// </summary>
 	[Property] public bool UseAnimgraph { get; set; }
-	[Property, ShowIf( nameof( UseAnimgraph ), true )] public AnimationGraph Animgraph { get; set; }
+	[Property, ShowIf( nameof( UseAnimgraph ), true )] public Sandbox.Animation.Graph Animgraph { get; set; }
 	[Property, SequenceSelector, ShowIf( nameof( UseAnimgraph ), false )] public string EntryAnimation { get; set; }
 	/// <summary>
 	/// The primary animation played. Can be loop if specified, and stopped through scripting.
@@ -69,8 +70,7 @@ public class ScriptedSequence : BaseEntity
 
 	protected override void OnStart()
 	{
-		if ( StartActive )
-			BeginScriptedSequence();
+		if ( StartActive ) BeginScriptedSequence();
 
 		base.OnStart();
 	}
@@ -86,8 +86,7 @@ public class ScriptedSequence : BaseEntity
 		Model vmdl = Model.Load( GetEditorVis() );
 		Gizmo.Hitbox.Model( vmdl );
 
-		if ( _previewSceneModel is null )
-			_previewSceneModel = new SceneModel( Scene.SceneWorld, vmdl, WorldTransform ); // i did this on gizmo.world before. do not do as i did. it caused me great pain.
+		_previewSceneModel ??= new SceneModel( Scene.SceneWorld, vmdl, WorldTransform ); // i did this on gizmo.world before. do not do as i did. it caused me great pain.
 
 		_previewSceneModel.Transform = WorldTransform;
 
@@ -202,17 +201,19 @@ public class ScriptedSequence : BaseEntity
 
 	public IEnumerable<string> GetAnimationList()
 	{
-		if ( DirectPlayback.Sequences is null )
-		{
-			Log.Warning( $"No sequences for {TargetNPC.TargetName}" );
-		}
+		/*	
+				if ( DirectPlayback.Sequences is null )
+				{
+					Log.Warning( $"No sequences for {TargetNPC.TargetName}" );
+				}
 
-		foreach ( var seq in DirectPlayback.Sequences )
-		{
-			Log.Info( $"{seq} grabbed" );
-			yield return seq;
-		}
-
+				foreach ( var seq in DirectPlayback.Sequences )
+				{
+					Log.Info( $"{seq} grabbed" );
+					yield return seq;
+				}
+		*/
+		yield return string.Empty;
 	}
 
 	[Button]
@@ -236,11 +237,11 @@ public class ScriptedSequence : BaseEntity
 			IsWaitingForNPCMovement = true;
 		}
 
-		DirectPlayback = TargetNPC.BodyModel.SceneModel.DirectPlayback;
+		//	DirectPlayback = TargetNPC.BodyModel.SceneModel.CurrentSequence;
 
 		//	TargetNPC.Brain.idealState = NpcBrain.AIState.SCRIPTED;
 		TargetNPC.AIBrain.aiState = AI_BehaviorState.BEHAVIORSTATE_SCRIPTED;
-		TargetNPC.ScriptContext = AIController.ScriptingContext.SCRIPT_SEQUENCE;
+		TargetNPC.ScriptContext = ScriptingContext.SCRIPT_SEQUENCE;
 		TargetNPC.Cine = this;
 		TargetNPC.InCine = true;
 
@@ -267,10 +268,8 @@ public class ScriptedSequence : BaseEntity
 			IsActive = true;
 		}
 
-		if ( IsActive )
-		{
-			KeepTrack();
-		}
+		if ( IsActive ) KeepTrack();
+
 
 		base.OnFixedUpdate();
 	}
@@ -280,15 +279,16 @@ public class ScriptedSequence : BaseEntity
 		if ( IsAnimPlaying )
 		{
 			float elapsed = _startTime;
-			float duration = DirectPlayback.Duration;
+			//	float duration = DirectPlayback.Duration;
+			/*
+						if ( elapsed >= duration )
+						{
+							//Log.Info( $"Animation finished after {elapsed}s." );
+							IsAnimPlaying = false;
 
-			if ( elapsed >= duration )
-			{
-				//Log.Info( $"Animation finished after {elapsed}s." );
-				IsAnimPlaying = false;
-
-				DoNextTask();
-			}
+							DoNextTask();
+						}
+						*/
 		}
 	}
 
@@ -296,15 +296,9 @@ public class ScriptedSequence : BaseEntity
 	{
 		switch ( _counter )
 		{
-			case 0:
-				RunAction();
-				break;
-			case 1:
-				RunPostAction();
-				break;
-			case 2:
-				EndSequence();
-				break;
+			case 0: RunAction(); break;
+			case 1: RunPostAction(); break;
+			case 2: EndSequence(); break;
 		}
 
 	}
@@ -316,7 +310,7 @@ public class ScriptedSequence : BaseEntity
 
 	public void EndSequence()
 	{
-		DirectPlayback.Cancel();
+		//	DirectPlayback.Cancel();
 		IsActive = false;
 
 		if ( NextScript.IsValid() ) // if we have another script to do, get to it
@@ -336,10 +330,10 @@ public class ScriptedSequence : BaseEntity
 			DoNextTask();
 			return;
 		}
-		DirectPlayback.StartTime = WorldTime.Now;
+		//	DirectPlayback.StartTime = WorldTime.Now;
 		_startTime = 0;
 		IsAnimPlaying = true;
-		DirectPlayback.Play( EntryAnimation );
+		//	DirectPlayback.Play( EntryAnimation );
 		_counter = 0;
 	}
 
@@ -351,10 +345,10 @@ public class ScriptedSequence : BaseEntity
 			DoNextTask();
 			return;
 		}
-		DirectPlayback.StartTime = WorldTime.Now;
+		//	DirectPlayback.StartTime = WorldTime.Now;
 		_startTime = 0;
 		IsAnimPlaying = true;
-		DirectPlayback.Play( ActionAnimation );
+		//	DirectPlayback.Play( ActionAnimation );
 		if ( LoopActionAnimation ) return; // dont add to counter since that is what controls the flow
 		_counter++;
 	}
@@ -367,10 +361,10 @@ public class ScriptedSequence : BaseEntity
 			DoNextTask();
 			return;
 		}
-		DirectPlayback.StartTime = WorldTime.Now;
+		//	DirectPlayback.StartTime = WorldTime.Now;
 		_startTime = 0;
 		IsAnimPlaying = true;
-		DirectPlayback.Play( PostActionAnimation );
+		//	DirectPlayback.Play( PostActionAnimation );
 		_counter++;
 	}
 
